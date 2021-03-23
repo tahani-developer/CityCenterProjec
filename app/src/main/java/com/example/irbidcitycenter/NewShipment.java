@@ -2,16 +2,13 @@ package com.example.irbidcitycenter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class NewShipment extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Intent intent1 = new Intent(MainActivity.this, Login.class);
-        startActivity(intent1);
+        setContentView(R.layout.activity_new_shipment);
     }
 }
