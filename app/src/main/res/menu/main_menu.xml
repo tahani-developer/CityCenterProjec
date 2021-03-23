@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+  >
+
+    <group>
+
+        <item
+            android:id="@+id/menu_setting"
+            android:title="@string/setting"
+            android:icon="@drawable/ic_settings_black_24dp"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_import"
+            android:icon="@drawable/ic_arrow_import_black_24dp"
+
+            android:title="Import"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_export"
+            android:title="@string/export"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_arrow_export_black_24dp"
+            />
+
+
+
+    </group>
+
+
+
+    <group android:id="@+id/group2">
+
+        <item
+            android:id="@+id/menu_about"
+            android:title="@string/about"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_info_outline_black_24dp"/>
+
+
+    </group>
+</menu>
