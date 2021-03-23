@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    LinearLayout zoneLinear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initial() {
         drawerLayout = findViewById(R.id.main_drawerLayout);
         navigationView = findViewById(R.id.nav_view);
+        setupDrawerContent(navigationView);
         toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
@@ -48,8 +50,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+        zoneLinear=findViewById(R.id.zoneLinear);
+        zoneLinear.setOnClickListener(onClickListener);
 
+    }
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int id=v.getId();
+           switch (id){
+               case R.id.zoneLinear:
+                   Intent intent =new Intent(MainActivity.this,AddZone.class);
+                   startActivity(intent);
+                   break;
+
+           }
+        }
+    };
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(this);
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (toggle.onOptionsItemSelected(item)) {
@@ -70,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.menu_setting: {
                 Log.e("id", "menu_setting " + id);
+                drawerLayout.closeDrawer(navigationView);
                 openSettingDialog();
             }
             break;
@@ -88,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.ip_setting_dialog);
         dialog.show();
+
 
         //****************************
 
