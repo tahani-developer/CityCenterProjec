@@ -16,4 +16,7 @@
     <string name="year">Year</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="ZoneCode">Zone Code</string>
+    <string name="itemCode">Item Code</string>
+    <string name="qty">Qty</string>
 </resources>
