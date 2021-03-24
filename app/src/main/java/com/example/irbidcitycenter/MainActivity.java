@@ -1,7 +1,6 @@
 package com.example.irbidcitycenter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,18 +8,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.Build;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -29,13 +22,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    LinearLayout zoneLinear;
+    LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initial();
+
+
+
 
     }
 
@@ -52,7 +48,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         zoneLinear=findViewById(R.id.zoneLinear);
         zoneLinear.setOnClickListener(onClickListener);
-
+        shipmentlinear=findViewById(R.id.hipmentlinear);
+        shipmentlinear.setOnClickListener(onClickListener);
+        replacmentlinear=findViewById(R.id.Replacmentlinear);
+        replacmentlinear.setOnClickListener(onClickListener);
     }
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -63,7 +62,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                    Intent intent =new Intent(MainActivity.this,AddZone.class);
                    startActivity(intent);
                    break;
-
+               case R.id.hipmentlinear:
+                   Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
+                   startActivity(intent2);
+                   break;
+               case R.id.Replacmentlinear:
+                   Intent intent3 =new Intent(MainActivity.this,Replacement.class);
+                   startActivity(intent3);
+                   break;
            }
         }
     };

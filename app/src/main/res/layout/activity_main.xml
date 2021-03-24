@@ -11,8 +11,6 @@
     tools:openDrawer="start"
     android:orientation="vertical">
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -30,7 +28,7 @@
             android:layout_width="match_parent"
             android:background="@color/dark_blue_3"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-          card_view:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+          app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
             android:layout_height="?attr/actionBarSize">
         </androidx.appcompat.widget.Toolbar>
 
@@ -43,18 +41,18 @@
             <androidx.cardview.widget.CardView
 
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="20dp"
-                card_view:cardBackgroundColor="@color/orange"
+                app:cardBackgroundColor="@color/orange"
                 android:elevation="3dp"
-                card_view:cardPreventCornerOverlap="false"
+                app:cardPreventCornerOverlap="false"
                 android:id="@+id/saleCardView"
-                card_view:cardCornerRadius="15dp">
+                app:cardCornerRadius="15dp">
 
                 <RelativeLayout
                     android:id="@+id/list_container_bg"
@@ -89,51 +87,52 @@
             android:orientation="vertical">
 
 
-                <LinearLayout
+            <LinearLayout
 
+                android:id="@+id/hipmentlinear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/back_white_container"
+                android:elevation="3dp"
+
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/saleInvImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:elevation="3dp"
-                    android:background="@drawable/back_white_container"
-                    android:gravity="center"
+                    android:layout_weight="5"
+                    android:background="@color/yelow"
+                    android:clickable="true"
 
-                    android:orientation="horizontal">
+                    android:orientation="horizontal" />
 
-                    <LinearLayout
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/saleInvImageView"
-                        android:clickable="true"
-                        android:layout_width="match_parent"
-                        android:layout_weight="5"
-                        android:layout_height="match_parent"
-                        android:background="@color/yelow"
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
 
-                        android:orientation="horizontal" />
+                    android:layout_marginRight="5dp"
+                    android:background="@color/yelow" />
 
-                    <TextView
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-
-                        android:background="@color/yelow"
-                        android:layout_width="2dp"/>
-                    <TextView
-                        android:id="@+id/textView_trans"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_margin="10dp"
-                        android:gravity="center_horizontal"
-                        android:text="@string/NewShipment"
-                        android:textSize="18sp"
-                        android:textColor="@color/colorblue_dark"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/textView_trans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="@string/NewShipment"
+                    android:textColor="@color/colorblue_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
 
 
@@ -204,50 +203,51 @@
             android:orientation="vertical">
 
 
-                <LinearLayout
+            <LinearLayout
+                android:id="@+id/Replacmentlinear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/back_white_container"
+                android:elevation="3dp"
+
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:elevation="3dp"
-                    android:background="@drawable/back_white_container"
-                    android:gravity="center"
+                    android:layout_weight="5"
+                    android:background="@color/dark_blue_3"
+                    android:clickable="true"
 
-                    android:orientation="horizontal">
+                    android:orientation="horizontal" />
 
-                    <LinearLayout
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
 
-                        android:clickable="true"
-                        android:layout_width="match_parent"
-                        android:layout_weight="5"
-                        android:layout_height="match_parent"
-                        android:background="@color/dark_blue_3"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/dark_blue_3" />
 
-                        android:orientation="horizontal" />
-                    <TextView
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-
-                        android:background="@color/dark_blue_3"
-                        android:layout_width="2dp"/>
-
-                    <TextView
-                        android:id="@+id/textView_tr23"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_margin="10dp"
-                        android:gravity="center_horizontal"
-                        android:text="@string/Replacement"
-                        android:textSize="18sp"
-                        android:textColor="@color/colorblue_dark"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/textView_tr23"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="@string/Replacement"
+                    android:textColor="@color/colorblue_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
 
 
