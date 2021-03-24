@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,7 +50,7 @@
                         android:textSize="14sp" />
 
                     <EditText
-                        android:id="@+id/supplier_No"
+                        android:id="@+id/editZoneCode"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
@@ -64,6 +65,7 @@
 
                         />
                     <TextView
+                        android:id="@+id/scanZoneCode"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -71,6 +73,7 @@
                         android:gravity="center"
                         android:inputType="text"
                         android:padding="3dp"
+                        android:onClick="ScanCode"
 
                         android:drawableEnd="@drawable/ic_scan_black_24dp"
                         android:textColor="@color/dark_blue_3"
@@ -100,7 +103,8 @@
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"  />
 
-                    <TextView
+                    <EditText
+                        android:id="@+id/editItemCode"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
@@ -113,6 +117,7 @@
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"  />
                     <TextView
+                        android:id="@+id/scanItemCode"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -120,6 +125,7 @@
                         android:gravity="center"
                         android:inputType="text"
                         android:padding="3dp"
+                        android:onClick="ScanCode"
 
                         android:drawableEnd="@drawable/ic_scan_black_24dp"
                         android:textColor="@color/dark_blue_3"
@@ -150,6 +156,7 @@
                         android:textSize="14sp"  />
 
                     <EditText
+                        android:id="@+id/editQty"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
