@@ -24,7 +24,7 @@ class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replace
     @Override
     public replacementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.replacmentrecycler, parent, false);
-        return new ReplacementAdapter.replacementViewHolder(view);
+        return new replacementViewHolder(view);
     }
 
     @Override
@@ -50,7 +50,6 @@ class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replace
             to=itemView.findViewById( R.id.to);
             zone=itemView.findViewById( R.id.zone);
             itemcode=itemView.findViewById( R.id.itemcode);
-
            qty=itemView.findViewById( R.id.qty);
 
 
