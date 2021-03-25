@@ -46,7 +46,6 @@
                     android:layout_height="25dp"
                     android:layout_weight="1"
                     android:elevation="2dp"
-
                     android:gravity="center"
                     android:text="Po.No"
                     android:textColor="@color/dark_blue_3"
@@ -70,7 +69,6 @@
                     android:layout_width="60dp"
                     android:layout_height="20dp"
                     android:gravity="top"
-
                     tools:layout_editor_absoluteX="300dp"
                     tools:layout_editor_absoluteY="70dp">
 
@@ -110,21 +108,22 @@
                     android:gravity="center"
                     android:inputType="text"
                     android:padding="3dp"
-
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/boxnumscan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableEnd="@drawable/ic_scan_black_24dp"
+                    android:drawableRight="@drawable/ic_scan_black_24dp"
                     android:elevation="2dp"
                     android:gravity="center"
                     android:inputType="text"
+                    android:onClick="ScanCode"
                     android:padding="3dp"
-                    android:drawableEnd="@drawable/ic_scan_black_24dp"
                     android:textColor="@color/dark_blue_3"
-                    android:textSize="14sp"
-                    android:drawableRight="@drawable/ic_scan_black_24dp" />
+                    android:textSize="14sp" />
 
 
 
@@ -161,21 +160,22 @@
                     android:gravity="center"
                     android:inputType="text"
                     android:padding="3dp"
-
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/barcodescan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:drawableEnd="@drawable/ic_scan_black_24dp"
+                    android:drawableRight="@drawable/ic_scan_black_24dp"
                     android:elevation="2dp"
                     android:gravity="center"
                     android:inputType="text"
                     android:padding="3dp"
-                    android:drawableEnd="@drawable/ic_scan_black_24dp"
+                    android:onClick="ScanCode"
                     android:textColor="@color/dark_blue_3"
-                    android:textSize="14sp"
-                    android:drawableRight="@drawable/ic_scan_black_24dp" />
+                    android:textSize="14sp" />
 
 
             </LinearLayout>
@@ -208,7 +208,6 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:padding="3dp"
-
                     android:textSize="14sp" />
 
 
