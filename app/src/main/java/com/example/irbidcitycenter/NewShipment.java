@@ -5,11 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+
+
+import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
+import com.example.irbidcitycenter.Models.Shipment;
 
 import java.util.ArrayList;
 import java.util.List;

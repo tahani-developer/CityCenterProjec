@@ -8,9 +8,11 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.example.irbidcitycenter.Adapters.ReplacementAdapter;
+import com.example.irbidcitycenter.Models.ReplacementModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Models;
 
-class ReplacementModel {
+public  class ReplacementModel {
 
     String From;
     String To;

@@ -28,4 +28,5 @@
     <string name="ZoneCode">Zone Code</string>
     <string name="itemCode">Item Code</string>
     <string name="qty">Qty</string>
+    <string name="reqired_filled">*Reqired</string>
 </resources>

@@ -1,6 +1,6 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Models;
 
-class Shipment {
+public  class Shipment {
 
     String PoNo;
     String BoxNo;
