@@ -3,8 +3,6 @@ package com.example.irbidcitycenter;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +29,10 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+
+import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
+import com.example.irbidcitycenter.Models.Shipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,13 +119,7 @@ EditText  pono,boxno,barcode,qty;
                 return false;
             }
         });
-
-
-
-
-
-
-     /*   barcode.setOnKeyListener(new View.OnKeyListener() {
+        barcode.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -150,7 +146,7 @@ EditText  pono,boxno,barcode,qty;
 
 
 
-*/
+
 
   findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
       @Override

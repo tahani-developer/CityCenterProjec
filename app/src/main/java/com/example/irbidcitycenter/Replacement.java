@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,6 +22,9 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import com.example.irbidcitycenter.Adapters.ReplacementAdapter;
+import com.example.irbidcitycenter.Models.ReplacementModel;
 
 import java.util.ArrayList;
 import java.util.List;

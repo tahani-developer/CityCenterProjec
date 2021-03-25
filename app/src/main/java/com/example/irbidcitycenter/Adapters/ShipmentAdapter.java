@@ -1,4 +1,4 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,9 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.Models.Shipment;
+
 import java.util.List;
 
-class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder > {
+public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder > {
     private List<Shipment> list;
     Context shipment;
 

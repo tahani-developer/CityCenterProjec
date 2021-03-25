@@ -1,4 +1,4 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,9 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.Models.ReplacementModel;
+
+
 import java.util.List;
 
-class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
+public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
     private List<ReplacementModel> list;
     Context context;
 
