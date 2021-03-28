@@ -1,32 +1,33 @@
 package com.example.irbidcitycenter;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Adapters.BoxnoSearchAdapter;
+import com.example.irbidcitycenter.Adapters.PonoSearchAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -38,28 +39,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewShipment extends AppCompatActivity {
-EditText  pono,boxno,barcode,qty;
-    String  poNo;
+    public static String boxnotag;
+    static EditText pono;
+    static EditText boxno;
+    EditText barcode;
+    EditText qty;
+    public static Dialog dialog1,dialog2;
+    public static String ponotag;
+     static ArrayList<String> boxnumberslist;
+    static ArrayList<String> ponumberslist;
+    String poNo;
     String boxNo;
     String barCode;
-    String POnumselected,  BOXnumselected;
+    String Qty;
+    String POnumselected, BOXnumselected;
     RecyclerView recyclerView;
-    TextView searchView1,searchView2;
-    int Qty;
+    FloatingActionButton add;
+    TextView searchView1, searchView2;
+    int parceQty;
     ShipmentAdapter adapter;
+    BoxnoSearchAdapter boxnoSearchAdapter;
     private List<Shipment> shipmentList = new ArrayList<>();
 
     Shipment shipment;
     ListView listView;
-    ArrayAdapter<String > searchadapter;
-    public  static  int position=1;
+    BoxnoSearchAdapter searchadapter,searchadapter2;
+ PonoSearchAdapter ponoSearchAdapter,searchponoSearchAdapter;
+    public static int position = 1;
     public static final int REQUEST_Camera_Barcode = 1;
 
     private String[] List = new String[]{"po100", "po101",
-            "po102","po103"
-            ,"po104","po105",
-            "po106","po107"};
-
+            "po102", "po103"
+            , "po104", "po105",
+            "po106", "po107"};
 
 
     @Override
@@ -67,13 +79,13 @@ EditText  pono,boxno,barcode,qty;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_shipment);
 
- init();
+        init();
         pono.requestFocus();
         searchView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            showdailogponumber();
-            pono.setText( POnumselected);
+          showdailogponumber();
+
             }
         });
 
@@ -81,91 +93,44 @@ EditText  pono,boxno,barcode,qty;
         searchView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               showdailogboxnumber();
+                showdailogboxnumber();
+
 
             }
         });
 
 
 
-     /* pono.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if (keyCode == EditorInfo.IME_ACTION_DONE
-                        ||event.getAction() == KeyEvent.ACTION_DOWN
-                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
 
+        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filldata();
+            }
 
-                    if(!TextUtils.isEmpty(poNo))
-                    boxno.requestFocus();
-                    else {
-                        pono.setError("req");
-                        pono.requestFocus();
-                    }
-                    return true;
-                }
-                return false;
-            }
         });
-        boxno.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    barcode.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-        barcode.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    qty.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-        qty.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    filldata();
-                    return true;
-                }
-                return false;
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filldata();
+                pono.setText("");
+                boxno.setText("");
+                barcode.setText("");
+                qty.setText("");
             }
         });
 
 
 
+    }
 
-
-  findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-          showdailog(NewShipment.this);
-      }
-
-  });
-
-
-  }
- TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
+    TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.poNotxt:
-
                         boxno.requestFocus();
                         break;
                     case R.id.boxNotxt:
@@ -184,23 +149,38 @@ EditText  pono,boxno,barcode,qty;
             return true;
         }
     };
-private void filldata(){
 
+    private void filldata() {
+        poNo = pono.getText().toString();
+        boxNo = boxno.getText().toString();
+        barCode = barcode.getText().toString();
+       Qty = qty.getText().toString();
+        if( poNo.toString().trim().equals("")) pono.setError("required");
+        {
+            if( boxNo.toString().trim().equals("")) boxno.setError("required");
+            {     if( barCode.toString().trim().equals("")) barcode.setError("required");
 
+                     if( Qty.toString().trim().equals("")) {
+                         qty.setError("required");
+                     }
+                     else
+                         {
+         parceQty = Integer.parseInt(qty.getText().toString());
+       shipment = new Shipment(poNo, boxNo, barCode, parceQty);
+         shipmentList.add(shipment);
 
+         filladapter(shipmentList);
 
+                         }
+    }}}
 
+    private void filladapter(java.util.List<Shipment> shipmentList) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
+        adapter = new ShipmentAdapter(NewShipment.this, shipmentList);
+        recyclerView.setAdapter(adapter);
 
-    poNo=pono.getText().toString();
-    boxNo=boxno.getText().toString();
-    barCode=barcode.getText().toString();
-    Qty=Integer.parseInt(qty.getText().toString());
-    shipment=new Shipment( poNo,boxNo,barCode, Qty);
-    shipmentList.add(shipment);
-    recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
-    adapter = new ShipmentAdapter(NewShipment.this,shipmentList);
-    recyclerView.setAdapter(adapter);
-}
+    }
+
     public void ScanCode(View view) {
         switch (view.getId()) {
 
@@ -215,6 +195,7 @@ private void filldata(){
 
         openSmallCapture(type);
     }
+
     private void openSmallCapture(int type) {
         if (ContextCompat.checkSelfPermission(NewShipment.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(NewShipment.this, new String[]{Manifest.permission.CAMERA}, REQUEST_Camera_Barcode);
@@ -237,6 +218,7 @@ private void filldata(){
             //  searchByBarcodeNo(s + "");
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -256,18 +238,20 @@ private void filldata(){
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-    private void init(){
-        pono=findViewById(R.id.poNotxt);
-        boxno=findViewById(R.id.boxNotxt);
-        barcode=findViewById(R.id.barCodetxt);
-        qty=findViewById(R.id.Qtytxt);
-        recyclerView=findViewById(R.id.shipRec);
 
-        searchView1=findViewById(R.id.ponoSearch);
-        searchView2=findViewById(R.id.boxnoSearch);
+    private void init() {
+        pono = findViewById(R.id.poNotxt);
+        boxno = findViewById(R.id.boxNotxt);
+        barcode = findViewById(R.id.barCodetxt);
+        qty = findViewById(R.id.Qtytxt);
+        recyclerView = findViewById(R.id.shipRec);
+        add=findViewById(R.id.addrow);
+        searchView1 = findViewById(R.id.ponoSearch);
+        searchView2 = findViewById(R.id.boxnoSearch);
 
     }
-void  search(){
+
+    void search() {
   /*  searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String s) {
@@ -287,129 +271,235 @@ void  search(){
     });*/
     }
 
+/*
+    private void showdailog(Activity activity) {
 
+        final Dialog dialog = new Dialog(activity);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.pono_dialog_listview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
 
+        dialog.getWindow().setAttributes(lp);
+        final RecyclerView recyclerView1;
+        final EditText editText;
+        final ArrayList<String> searcharrayAdapter = new ArrayList<>();
+        final ArrayList<String> ponumberslist = new ArrayList<>();
+        ponumberslist.add("po100");
+        ponumberslist.add("po101");
+        ponumberslist.add("po102");
+        ponumberslist.add("po103");
+        ponumberslist.add("po104");
+        ponumberslist.add("po105");
+        recyclerView1=dialog.findViewById(R.id.listview1);
+        editText=dialog.findViewById(R.id.search_edt);
 
+        recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
+      searchadapter = new SearchAdapter(NewShipment.this,ponumberslist);
+        recyclerView1.setAdapter(searchadapter);
 
-   private void showdailog( Activity activity){
-
-    final Dialog dialog = new Dialog(activity);
-       dialog.setCancelable(false);
-       dialog.setContentView(R.layout.pono_dialog_listview);
-
-       /*Button btndialog = (Button) dialog.findViewById(R.id.btndialog);
+      Button btndialog = (Button) dialog.findViewById(R.id.btndialog);
        btndialog.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
 
                dialog.dismiss();
            }
-       });*/
-
-       ListView listView = (ListView) dialog.findViewById(R.id.listview);
-       ArrayAdapter arrayAdapter = new ArrayAdapter(this,R.layout.pono_dialog_listview, R.id.tv, List);
-       listView.setAdapter(arrayAdapter);
-
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-           //textView.setText("You have clicked : "+List[position]);
-               dialog.dismiss();
-           }
        });
-
-       dialog.show();
-    }
-
-
-void showdailogponumber(){
-    AlertDialog.Builder builderSingle = new AlertDialog.Builder(NewShipment.this);
-    //builderSingle.setIcon(R.drawable.ic_start_up);
-    builderSingle.setTitle("Select One Name:-");
-
-    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(NewShipment.this, android.R.layout.select_dialog_item);
-    arrayAdapter.add("po100");
-    arrayAdapter.add("po101");
-    arrayAdapter.add("po102");
-    arrayAdapter.add("po103");
-    arrayAdapter.add("po104");
-    arrayAdapter.add("po105");
-
-
-    builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-        }
-    });
-
-    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            POnumselected = arrayAdapter.getItem(which);
-            AlertDialog.Builder builderInner = new AlertDialog.Builder(NewShipment.this);
-            builderInner.setMessage(POnumselected);
-            builderInner.setTitle("Your Selected Item is");
-            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog,int which) {
-                    dialog.dismiss();
-                    pono.setText( POnumselected);
+      TextView serach=dialog.findViewById(R.id.dailog_pono_Search);
+        serach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searcharrayAdapter.clear();
+                for(int i=0;i<ponumberslist.size();i++)
+                {
+                    if (editText.getText().toString().trim().startsWith(ponumberslist.get(i)))
+                        searcharrayAdapter.add(ponumberslist.get(i));
+                    else
+                        Toast.makeText(NewShipment.this,
+                                "No Matched data", Toast.LENGTH_SHORT).show();
 
                 }
-            });
-            builderInner.show();
 
-        }
-    });
-    builderSingle.show();
+
+
+                searchadapter2 = new SearchAdapter(NewShipment.this,searcharrayAdapter );
+                recyclerView1.setAdapter(searchadapter2);
+
+
+            }
+
+        });
+
+
+
+        dialog.show();
+    }
+*/
+
+    void showdailogponumber() {
+
+
+    dialog2 = new Dialog(NewShipment.this);
+        dialog2.setCancelable(false);
+        dialog2.setContentView(R.layout.pono_dialog_listview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog2.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog2.getWindow().setAttributes(lp);
+        final RecyclerView recyclerView1;
+        final EditText editText;
+        final ArrayList<String> searcharrayAdapter = new ArrayList<>();
+    ponumberslist = new ArrayList<>();
+        ponumberslist.add("po100");
+        ponumberslist.add("po101");
+        ponumberslist.add("po102");
+        ponumberslist.add("po103");
+        ponumberslist.add("po104");
+        ponumberslist.add("po105");
+
+        recyclerView1=dialog2.findViewById(R.id.listview1);
+        editText=dialog2.findViewById(R.id.search_edt);
+
+        recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
+      ponoSearchAdapter= new PonoSearchAdapter(NewShipment.this,ponumberslist);
+        recyclerView1.setAdapter(  ponoSearchAdapter);
+
+        Button btndialog = (Button) dialog2.findViewById(R.id.btndialog);
+        btndialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog2.dismiss();
+            }
+        });
+        TextView serach=dialog2.findViewById(R.id.dailog_pono_Search);
+        serach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searcharrayAdapter.clear();
+                for(int i=0;i<ponumberslist.size();i++)
+                {
+                    if (editText.getText().toString().trim().startsWith(ponumberslist.get(i)))
+                        searcharrayAdapter.add(ponumberslist.get(i));
+                   /* else
+                        Toast.makeText(NewShipment.this,
+                                "No Matched data", Toast.LENGTH_SHORT).show();*/
+
+                }
+
+
+
+                searchponoSearchAdapter = new PonoSearchAdapter(NewShipment.this,searcharrayAdapter );
+                recyclerView1.setAdapter(searchadapter2);
+
+
+            }
+
+        });
+
+
+
+
+        dialog2.show();
+
+        dialog2.setCanceledOnTouchOutside(true);
 
     }
 
 
+    void showdailogboxnumber() {
+
+        dialog1 = new Dialog(NewShipment.this);
+        dialog1.setCancelable(false);
+        dialog1.setContentView(R.layout.pono_dialog_listview);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog1.getWindow().getAttributes());
+        lp.width = 600;
+        lp.height = 800;
+        lp.gravity = Gravity.CENTER;
 
 
+        dialog1.getWindow().setAttributes(lp);
+        final RecyclerView recyclerView1;
+        final EditText editText;
+        final ArrayList<String> searcharrayAdapter = new ArrayList<>();
+         boxnumberslist = new ArrayList<>();
+        boxnumberslist .add("box100");
+        boxnumberslist .add("box101");
+        boxnumberslist .add("box102");
+        boxnumberslist .add("box103");
+        boxnumberslist .add("box104");
+        boxnumberslist .add("box105");
+        boxnumberslist .add("box100");
+        boxnumberslist .add("box101");
+        boxnumberslist .add("box102");
+        boxnumberslist .add("box103");
+        boxnumberslist .add("box104");
+        boxnumberslist .add("box105");
 
+        recyclerView1=dialog1.findViewById(R.id.listview1);
+        editText=dialog1.findViewById(R.id.search_edt);
 
-    void showdailogboxnumber(){
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(NewShipment.this);
-        //builderSingle.setIcon(R.drawable.ic_start_up);
-        builderSingle.setTitle("Select One Name:-");
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(NewShipment.this, android.R.layout.select_dialog_item);
-        arrayAdapter.add("box100");
-        arrayAdapter.add("box101");
-        arrayAdapter.add("box102");
-        arrayAdapter.add("box103");
-        arrayAdapter.add("box104");
-        arrayAdapter.add("box105");
+        recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
+        searchadapter = new BoxnoSearchAdapter(NewShipment.this,boxnumberslist );
+        recyclerView1.setAdapter(searchadapter);
 
-
-        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+       LinearLayout linearLayout= dialog1.findViewById(R.id.linear);
+        Button btndialog = (Button) dialog1.findViewById(R.id.btndialog);
+        btndialog.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onClick(View v) {
+
+                dialog1.dismiss();
             }
         });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+        TextView serach=dialog1.findViewById(R.id.dailog_pono_Search);
+        serach.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                BOXnumselected = arrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(NewShipment.this);
-                builderInner.setMessage(  BOXnumselected);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog,int which) {
-                        dialog.dismiss();
-                        boxno.setText(  BOXnumselected);
+            public void onClick(View view) {
+                searcharrayAdapter.clear();
+                for(int i=0;i<boxnumberslist .size();i++)
+                {
+                    if (editText.getText().toString().trim().startsWith(boxnumberslist .get(i)))
+                        searcharrayAdapter.add(boxnumberslist .get(i));
 
-                    }
-                });
-                builderInner.show();
+
+                }
+
+                searchadapter2 = new BoxnoSearchAdapter(NewShipment.this,searcharrayAdapter );
+                recyclerView1.setAdapter(searchadapter2);
+
+
             }
+
         });
-        builderSingle.show();
+
+
+
+
+        dialog1.show();
+        dialog1.setCanceledOnTouchOutside(true);
+
+    }
+
+   public static void colsedialog(int i){
+        if(i==1)
+       dialog1.dismiss();
+        else
+           dialog2.dismiss();
+    }
+    public static void fillEdittext(){
+        boxno.setText(boxnumberslist.get(Integer.parseInt(boxnotag)));
+    }
+    public static void fillEdittext2(){
+        pono.setText(ponumberslist.get(Integer.parseInt(ponotag)));
     }
 
 }

@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -35,6 +37,7 @@ public class Replacement extends AppCompatActivity {
    String From,To,Zone,Itemcode,Qty;
    ReplacementModel replacement;
    ReplacementAdapter adapter;
+    FloatingActionButton add;
    RecyclerView replacmentRecycler;
     public static final int REQUEST_Camera_Barcode = 1;
     private List<ReplacementModel>  replacementlist = new ArrayList<>();
@@ -50,7 +53,7 @@ public class Replacement extends AppCompatActivity {
         itemcode=findViewById(R.id.itemcodeedt);
         qty=findViewById(R.id.qtyedt);
         replacmentRecycler=findViewById(R.id.replacmentRec);
-
+        add=findViewById(R.id.addrow);
 
 
 findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
@@ -60,7 +63,23 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
     }
 });
 
+        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filldata();
+            }
 
+        });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filldata();
+               zone.setText("");
+                 itemcode.setText("");
+                qty.setText("");
+
+            }
+        });
 /*
         zone.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -142,16 +161,25 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
 
         From="a";
         To="b";
-                Zone= zone.getText().toString();
+        Zone= zone.getText().toString();
         Itemcode= itemcode.getText().toString();
         Qty= qty.getText().toString();
+        if( Zone.toString().trim().equals("")) zone.setError("required");
+        {
+            if (Itemcode.toString().trim().equals("")) itemcode.setError("required");
+            {
 
-        replacement=new ReplacementModel (From,To,Zone,Itemcode,Qty);
-        replacementlist.add(replacement);
-        replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
-        adapter =new ReplacementAdapter(replacementlist,Replacement.this);
-        replacmentRecycler.setAdapter(adapter);
-
+                if (Qty.toString().trim().equals("")) {
+                    qty.setError("required");
+                } else {
+                    replacement = new ReplacementModel(From, To, Zone, Itemcode, Qty);
+                    replacementlist.add(replacement);
+                    replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
+                    adapter = new ReplacementAdapter(replacementlist, Replacement.this);
+                    replacmentRecycler.setAdapter(adapter);
+                }
+            }
+        }
     }
     private void readBarcode(int type) {
         //new IntentIntegrator(AddZone.this).setOrientationLocked(false).setCaptureActivity(CustomScannerActivity.class).initiateScan();

@@ -29,4 +29,23 @@
     <string name="itemCode">Item Code</string>
     <string name="qty">Qty</string>
     <string name="reqired_filled">*Reqired</string>
+
+
+        <string-array name="fromSpinner">
+            <item>aa</item>
+            <item>bb</item>
+            <item>cc</item>
+            <item>dd</item>
+        </string-array>
+
+
+        <string-array name="toSpinner">
+            <item>aa</item>
+            <item>bb</item>
+            <item>cc</item>
+            <item>dd</item>
+        </string-array>
+
+
+
 </resources>

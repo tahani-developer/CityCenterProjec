@@ -55,6 +55,7 @@
                 android:id="@+id/fromspinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                 android:entries="@array/fromSpinner"
                 android:layout_weight="1" />
 
             <TextView
@@ -71,6 +72,7 @@
 
             <Spinner
                 android:id="@+id/tospinner"
+                android:entries="@array/toSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -229,11 +231,33 @@
                 android:textSize="14sp"
                 android:drawableRight="@drawable/ic_scan_black_24dp" />
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="center"
+                android:layout_weight="8"
+                app:backgroundTint="@color/colorblue_dark"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_add_black_24dp"
+                tools:ignore="VectorDrawableCompat" />
+
 
         </LinearLayout>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="-.4"
+            android:gravity="top"
             android:background="@drawable/back_border_dark"
             android:padding="3dp">
 
@@ -286,16 +310,25 @@
                 android:text="Qty"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
-
+            <TextView
+                android:id="@+id/remove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight=".4"
+                android:gravity="right"
+                />
         </TableRow>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_weight=".6"
             android:layout_height="490dp">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:fillViewport="true">
 
                 <androidx.recyclerview.widget.RecyclerView
