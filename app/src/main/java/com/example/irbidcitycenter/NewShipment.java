@@ -348,8 +348,8 @@ public class NewShipment extends AppCompatActivity {
         dialog2.setContentView(R.layout.pono_dialog_listview);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog2.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.width = 600;
+        lp.height = 800;
         lp.gravity = Gravity.CENTER;
 
         dialog2.getWindow().setAttributes(lp);
@@ -363,6 +363,12 @@ public class NewShipment extends AppCompatActivity {
         ponumberslist.add("po103");
         ponumberslist.add("po104");
         ponumberslist.add("po105");
+        ponumberslist.add("po106");
+        ponumberslist.add("po107");
+        ponumberslist.add("po108");
+        ponumberslist.add("po109");
+        ponumberslist.add("po110");
+        ponumberslist.add("po111");
 
         recyclerView1=dialog2.findViewById(R.id.listview1);
         editText=dialog2.findViewById(R.id.search_edt);

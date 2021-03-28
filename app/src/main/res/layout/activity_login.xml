@@ -12,17 +12,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <FrameLayout
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="273dp"
-            android:background="@drawable/blue_bg">
+            android:background="@drawable/screen1"/>
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="195dp"
-                app:srcCompat="@drawable/ic_baseline_person_outline_24" />
-        </FrameLayout>
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +111,7 @@
                 android:layout_height="10.3dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="17dp"
-                android:src="@drawable/password" />
+                android:src="@drawable/ic_baseline_vpn_key_24" />
         </RelativeLayout>
 
         <TextView
@@ -94,10 +119,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="62dp"
+            android:layout_marginLeft="100dp"
             android:layout_marginTop="18.7dp"
-            android:layout_marginRight="62dp"
-            android:background="@drawable/blue_fill__rounded_color"
+            android:layout_marginRight="100dp"
+            android:background="@drawable/loginbtn"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
             android:paddingTop="14dp"
@@ -106,11 +131,39 @@
             android:textColor="#ffffff"
             android:textSize="12sp" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical"></LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical"/>
+        android:orientation="horizontal">
 
+        <View
+            android:layout_width="350dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@color/orange" />
 
+        <View
+            android:layout_width="350dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="#008000" />
+        <View
+            android:layout_width="350dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@color/colorblue1" />
+        <View
+            android:layout_width="350dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@color/red" />
+    </LinearLayout>
 </LinearLayout>
