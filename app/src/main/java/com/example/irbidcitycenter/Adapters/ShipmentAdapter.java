@@ -3,10 +3,17 @@ package com.example.irbidcitycenter.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -41,6 +48,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
         holder.boxnotxt.setText(list.get(position).getBoxNo());
         holder.qtytxt.setText(list.get(position).getQty()+"");
       holder.rmovetxt.setTag(position);
+        holder.qtytxt.setTag(position);
     }
     public void removeItem(int position) {
         list.remove(position);
@@ -53,14 +61,17 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
     }
 
     class ShipmentViewHolder extends RecyclerView.ViewHolder{
-        TextView ponotxt,boxnotxt,barcodetxt,qtytxt,rmovetxt;
+        TextView ponotxt,boxnotxt,barcodetxt,rmovetxt;
+        String newqty;
+        EditText qtytxt;
         public ShipmentViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ponotxt=itemView.findViewById(R.id.pono);
             boxnotxt=itemView.findViewById(R.id.boxno);
             barcodetxt=itemView.findViewById(R.id.barcode);
-            qtytxt=itemView.findViewById(R.id.qty);
+            qtytxt=itemView.findViewById(R.id.tbl_qty);
+            qtytxt.setOnEditorActionListener(onEditAction);
             rmovetxt=itemView.findViewById(R.id.remove);
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,6 +99,27 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
                     dialog.show();
                     dialog.setCanceledOnTouchOutside(true);
+                    /*qtytxt.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            Log.e("aaaaaaaaaaaaaaaaa", qtytxt.getText().toString());
+                            Toast.makeText(shipment,qtytxt.getText().toString(),Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            newqty=qtytxt.getText().toString();
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(Integer.parseInt(newqty));
+
+                            Toast.makeText(shipment,list.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),Toast.LENGTH_LONG).show();
+                            Log.e(list.get(Integer.parseInt(qtytxt.getTag().toString())).getQty()+"", "*****");
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });*/
 
 
 
@@ -97,5 +129,24 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
 
         }
+        EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                        || i == EditorInfo.IME_NULL) {
+                    switch (textView.getId()) {
+                        case R.id.tbl_qty:
+
+                            newqty=qtytxt.getText().toString();
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(Integer.parseInt(newqty));
+                            break;
+                    }
+
+                }
+
+                return true;
+            }
+        };
     }
+
 }

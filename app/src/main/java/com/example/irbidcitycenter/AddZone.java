@@ -34,7 +34,7 @@ public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
     public static EditText editZoneCode, editItemCode, editQty;
     public static final int REQUEST_Camera_Barcode = 1;
-    public ArrayList<ZoneModel> listZone;
+    public static ArrayList<ZoneModel> listZone;
     RecyclerView recycleZone;
     LinearLayoutManager layoutManager;
 
@@ -179,6 +179,7 @@ public class AddZone extends AppCompatActivity {
     public void saveData(View view) {
         switch (view.getId()) {
             case R.id.save:
+                editZoneCode.setText(listZone.get(0).getQty());
                 saveDataLocaky();
                 break;
         }

@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class NewShipment extends AppCompatActivity {
     static EditText pono;
     static EditText boxno;
     EditText barcode;
+
     EditText qty;
     public static Dialog dialog1,dialog2;
     public static String ponotag;
@@ -59,7 +61,7 @@ public class NewShipment extends AppCompatActivity {
     int parceQty;
     ShipmentAdapter adapter;
     BoxnoSearchAdapter boxnoSearchAdapter;
-    private List<Shipment> shipmentList = new ArrayList<>();
+    public static List<Shipment> shipmentList = new ArrayList<>();
 
     Shipment shipment;
     ListView listView;
@@ -94,10 +96,7 @@ public class NewShipment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showdailogboxnumber();
-
-
-            }
-        });
+            }});
 
 
 
@@ -105,18 +104,29 @@ public class NewShipment extends AppCompatActivity {
         findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filldata();
+
+
+           /*     pono.setText("");
+                boxno.setText("");
+                barcode.setText("");
+                qty.setText("1");
+                shipmentList.clear();
+                filladapter(shipmentList);
+                Toast.makeText(NewShipment.this,"data added successfuly",Toast.LENGTH_LONG).show();
+*/
+
             }
 
         });
-        add.setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.nextbox).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filldata();
-                pono.setText("");
                 boxno.setText("");
                 barcode.setText("");
-                qty.setText("");
+                qty.setText("1");
+                boxno.requestFocus();
+                //method to add to database
             }
         });
 
@@ -124,13 +134,17 @@ public class NewShipment extends AppCompatActivity {
 
     }
 
-    TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
+    EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
+
+
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
             if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.poNotxt:
+
                         boxno.requestFocus();
                         break;
                     case R.id.boxNotxt:
@@ -140,39 +154,55 @@ public class NewShipment extends AppCompatActivity {
                         qty.requestFocus();
                         break;
                     case R.id.Qtytxt:
+                              /*   pono.setText("");
+                boxno.setText("");
+                barcode.setText("");
+                qty.setText("1");*/
                         filldata();
                         break;
 
-                }
+                }}
 
-            }
             return true;
         }
     };
-
     private void filldata() {
         poNo = pono.getText().toString();
         boxNo = boxno.getText().toString();
         barCode = barcode.getText().toString();
        Qty = qty.getText().toString();
         if( poNo.toString().trim().equals("")) pono.setError("required");
-        {
-            if( boxNo.toString().trim().equals("")) boxno.setError("required");
-            {     if( barCode.toString().trim().equals("")) barcode.setError("required");
 
-                     if( Qty.toString().trim().equals("")) {
+       else {
+
+            if( boxNo.toString().trim().equals("")) boxno.setError("required");
+            else {     if( barCode.toString().trim().equals("")) barcode.setError("required");
+
+                  else   if( Qty.toString().trim().equals("")) {
                          qty.setError("required");
                      }
                      else
-                         {
-         parceQty = Integer.parseInt(qty.getText().toString());
-       shipment = new Shipment(poNo, boxNo, barCode, parceQty);
-         shipmentList.add(shipment);
-
-         filladapter(shipmentList);
+                         {    CheckPOnumber();
+                             parceQty = Integer.parseInt(qty.getText().toString());
+                             shipment = new Shipment(poNo, boxNo, barCode, parceQty);
+                             shipmentList.add(shipment);
+                             filladapter(shipmentList);
 
                          }
     }}}
+
+    private void CheckPOnumber() {
+        boolean flag=true;
+        if(!ponumberslist.isEmpty())
+        for(int i=0;i<ponumberslist.size();i++)
+            if(!poNo.equals(ponumberslist.get(i)))
+                flag=true;
+            else
+            {      flag=false;
+                break;
+            }
+        if(flag)Toast.makeText(NewShipment.this,"Purchase order not found in ",Toast.LENGTH_LONG).show();
+    }
 
     private void filladapter(java.util.List<Shipment> shipmentList) {
         recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
@@ -245,9 +275,10 @@ public class NewShipment extends AppCompatActivity {
         barcode = findViewById(R.id.barCodetxt);
         qty = findViewById(R.id.Qtytxt);
         recyclerView = findViewById(R.id.shipRec);
-        add=findViewById(R.id.addrow);
+
         searchView1 = findViewById(R.id.ponoSearch);
         searchView2 = findViewById(R.id.boxnoSearch);
+        qty.setOnEditorActionListener(onEditAction);
 
     }
 
@@ -412,10 +443,10 @@ public class NewShipment extends AppCompatActivity {
 
 
 
-
         dialog2.show();
 
         dialog2.setCanceledOnTouchOutside(true);
+
 
     }
 

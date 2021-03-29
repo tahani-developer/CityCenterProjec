@@ -36,89 +36,44 @@ public class Replacement extends AppCompatActivity {
     EditText  zone,itemcode,qty;
    String From,To,Zone,Itemcode,Qty;
    ReplacementModel replacement;
+
    ReplacementAdapter adapter;
     FloatingActionButton add;
    RecyclerView replacmentRecycler;
     public static final int REQUEST_Camera_Barcode = 1;
-    private List<ReplacementModel>  replacementlist = new ArrayList<>();
+    public static List<ReplacementModel>  replacementlist = new ArrayList<>();
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
 
+     init();
+
+
+findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+      //  filldata();
+
+    }
+});
+
+
+
+
+
+    }
+
+    private void init() {
         fromSpinner=findViewById(R.id.fromspinner);
         toSpinner=findViewById(R.id.tospinner);
         zone=findViewById(R.id.zoneedt);
         itemcode=findViewById(R.id.itemcodeedt);
         qty=findViewById(R.id.qtyedt);
         replacmentRecycler=findViewById(R.id.replacmentRec);
-        add=findViewById(R.id.addrow);
 
-
-findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        filldata();
-    }
-});
-
-        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filldata();
-            }
-
-        });
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filldata();
-               zone.setText("");
-                 itemcode.setText("");
-                qty.setText("");
-
-            }
-        });
-/*
-        zone.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-                    itemcode.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-       itemcode.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN)&&
-                        (keyCode == KeyEvent.KEYCODE_ENTER))  {
-                    // Perform action on key press
-                    qty.requestFocus();
-                    return true;
-                }
-                return false;
-            }
-        });
-        qty.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER))  {
-                    // Perform action on key press
-                    filldata();
-                    return true;
-                }
-                return false;
-            }
-        });
-*/
-
+        qty.setOnEditorActionListener(onEditAction);
     }
 
     public void ScanCode(View view) {
@@ -131,7 +86,7 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
                 break;
         }
     }
-    TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
+    EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
@@ -146,6 +101,9 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
                         break;
                     case R.id.qtyedt:
                         filldata();
+                        zone.setText("");
+                        itemcode.setText("");
+                        qty.setText("");
                         break;
                 }
 
@@ -165,21 +123,21 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
         Itemcode= itemcode.getText().toString();
         Qty= qty.getText().toString();
         if( Zone.toString().trim().equals("")) zone.setError("required");
-        {
-            if (Itemcode.toString().trim().equals("")) itemcode.setError("required");
-            {
 
-                if (Qty.toString().trim().equals("")) {
+           else if (Itemcode.toString().trim().equals("")) itemcode.setError("required");
+
+
+              else  if (Qty.toString().trim().equals(""))
                     qty.setError("required");
-                } else {
+                 else {
                     replacement = new ReplacementModel(From, To, Zone, Itemcode, Qty);
                     replacementlist.add(replacement);
-                    replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
+               replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
                     adapter = new ReplacementAdapter(replacementlist, Replacement.this);
                     replacmentRecycler.setAdapter(adapter);
                 }
-            }
-        }
+
+
     }
     private void readBarcode(int type) {
         //new IntentIntegrator(AddZone.this).setOrientationLocked(false).setCaptureActivity(CustomScannerActivity.class).initiateScan();

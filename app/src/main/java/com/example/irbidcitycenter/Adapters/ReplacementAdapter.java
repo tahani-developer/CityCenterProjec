@@ -3,17 +3,22 @@ package com.example.irbidcitycenter.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.irbidcitycenter.NewShipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Replacement;
 
 
 import java.util.List;
@@ -21,7 +26,7 @@ import java.util.List;
 public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
     private List<ReplacementModel> list;
     Context context;
-
+    String newqty;
     public ReplacementAdapter(List<ReplacementModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -40,7 +45,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.to.setText(list.get(position).getTo());
         holder.zone.setText(list.get(position).getZone());
         holder.itemcode.setText(list.get(position).getItemcode());
-        holder.qty.setText(list.get(position).getItemcode());
+        holder.qty.setText(list.get(position).getQty());
+        holder.qty.setTag(position);
         holder.rmovetxt.setTag(position);
     }
     public void removeItem(int position) {
@@ -54,7 +60,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
     }
 
     class replacementViewHolder extends RecyclerView.ViewHolder{
-          TextView from,to,zone,itemcode ,qty,rmovetxt;;
+          TextView from,to,zone,itemcode ,rmovetxt;;
+          EditText qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +70,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
             zone=itemView.findViewById( R.id.zone);
             itemcode=itemView.findViewById( R.id.itemcode);
            qty=itemView.findViewById( R.id.qty);
+            qty.setOnEditorActionListener(onEditAction);
             rmovetxt=itemView.findViewById(R.id.remove);
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +108,24 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
 
         }
+        EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                        || i == EditorInfo.IME_NULL) {
+                    switch (textView.getId()) {
+                        case R.id.qty:
+
+                            newqty=qty.getText().toString();
+                            Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setQty(newqty);
+                            break;
+                    }
+
+                }
+
+                return true;
+            }
+        };
     }
 
 
