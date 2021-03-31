@@ -179,7 +179,7 @@ public class AddZone extends AppCompatActivity {
     public void saveData(View view) {
         switch (view.getId()) {
             case R.id.save:
-                editZoneCode.setText(listZone.get(0).getQty());
+
                 saveDataLocaky();
                 break;
         }
