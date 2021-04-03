@@ -16,11 +16,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Models.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -33,10 +35,13 @@ import java.util.List;
 
 public class Replacement extends AppCompatActivity {
  Spinner fromSpinner,toSpinner;
-    EditText  zone,itemcode,qty;
+    public static EditText  zone,itemcode;
+    EditText qty;
+    Button save;
+    DatabaseHandler handler;
    String From,To,Zone,Itemcode,Qty;
    ReplacementModel replacement;
-
+    ReplacementModel replacementModel;
    ReplacementAdapter adapter;
     FloatingActionButton add;
    RecyclerView replacmentRecycler;
@@ -49,18 +54,25 @@ public class Replacement extends AppCompatActivity {
         setContentView(R.layout.activity_replacement);
 
      init();
+        handler=new DatabaseHandler(Replacement.this);
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            for (int i=0; i<replacementlist.size();i++)
+            handler.addReplacement(replacementlist.get(i));
+            }
+              });
 
 
-findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-      //  filldata();
+         findViewById(R.id.Re_cancel).setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 replacementlist.clear();
+                 adapter.notifyDataSetChanged();
 
-    }
-});
-
-
-
+             }
+         });
 
 
     }
@@ -72,17 +84,17 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
         itemcode=findViewById(R.id.itemcodeedt);
         qty=findViewById(R.id.qtyedt);
         replacmentRecycler=findViewById(R.id.replacmentRec);
-
+        save=findViewById(R.id.save);
         qty.setOnEditorActionListener(onEditAction);
     }
 
     public void ScanCode(View view) {
         switch (view.getId()) {
             case R.id.scanZoneCode:
-                readBarcode(1);
+                readBarcode(4);
                 break;
             case R.id.scanItemCode:
-                readBarcode(2);
+                readBarcode(5);
                 break;
         }
     }
@@ -113,12 +125,11 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
         }
     };
     private void filldata(){
-      //  From= fromSpinner.getSelectedItem().toString();
-      //  To= toSpinner.getSelectedItem().toString();
+        From= fromSpinner.getSelectedItem().toString();
+      To= toSpinner.getSelectedItem().toString();
        // Toast.makeText(Replacement.this, "sssss", Toast.LENGTH_SHORT).show();
 
-        From="a";
-        To="b";
+
         Zone= zone.getText().toString();
         Itemcode= itemcode.getText().toString();
         Qty= qty.getText().toString();
@@ -130,7 +141,13 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
               else  if (Qty.toString().trim().equals(""))
                     qty.setError("required");
                  else {
-                    replacement = new ReplacementModel(From, To, Zone, Itemcode, Qty);
+
+                    replacement = new ReplacementModel();
+                    replacement.setFrom(From);
+                    replacement.setTo(To);
+                     replacement.setItemcode(Itemcode);
+                     replacement.setQty(Qty);
+
                     replacementlist.add(replacement);
                replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
                     adapter = new ReplacementAdapter(replacementlist, Replacement.this);
@@ -157,10 +174,10 @@ findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
             }
         } else {
             Intent i = new Intent(Replacement.this, ScanActivity.class);
-            if (type == 1) {
-                i.putExtra("key", "1");
+            if (type == 4) {
+                i.putExtra("key", "4");
             } else {
-                i.putExtra("key", "2");
+                i.putExtra("key", "5");
             }
 
             startActivity(i);

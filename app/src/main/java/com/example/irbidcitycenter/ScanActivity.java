@@ -17,6 +17,10 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static com.example.irbidcitycenter.AddZone.editItemCode;
 import static com.example.irbidcitycenter.AddZone.editZoneCode;
+import static com.example.irbidcitycenter.NewShipment.barcode;
+import static com.example.irbidcitycenter.NewShipment.pono;
+import static com.example.irbidcitycenter.Replacement.itemcode;
+import static com.example.irbidcitycenter.Replacement.zone;
 
 
 public class ScanActivity extends AppCompatActivity
@@ -68,6 +72,10 @@ public class ScanActivity extends AppCompatActivity
                     Log.e("RESULT",""+rawResult.getText());
                 }
           else if(type.equals("2")){editItemCode.setText(valueBarcode);}
+          else if(type.equals("3")){ barcode.setText(valueBarcode);}
+          else if(type.equals("4")){  zone.setText(valueBarcode);}
+          else if(type.equals("5")){ itemcode.setText(valueBarcode);}
+
             onBackPressed();
 
             // If you would like to resume scanning, call this method below:
