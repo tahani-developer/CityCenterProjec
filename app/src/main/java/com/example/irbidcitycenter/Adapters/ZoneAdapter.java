@@ -3,6 +3,9 @@ package com.example.irbidcitycenter.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Replacement;
 
 import java.util.List;
+
+import static com.example.irbidcitycenter.AddZone.listZone;
 
 public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder > {
     private List<ZoneModel> list;
@@ -56,14 +61,41 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     }
 
     class ZoneViewHolder extends RecyclerView.ViewHolder{
-        TextView zoneCode,itemCode,qty,rmovetxt;
+      public   TextView zoneCode,itemCode,qty,rmovetxt;
         public ZoneViewHolder(@NonNull View itemView) {
             super(itemView);
 
             zoneCode=itemView.findViewById(R.id.zoneCode);
             itemCode=itemView.findViewById(R.id.itemCode);
             qty=itemView.findViewById(R.id.qtyZone);
-            qty.setOnEditorActionListener(onEditAction);
+            qty.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    String position="";
+                    try {
+                        position=qty.getTag().toString();
+                    }catch (Exception e){
+
+                    }
+
+                    if((editable.toString().trim().length()!=0)&&(!position.toString().trim().equals("")))
+                    {
+                        updateQtyList(editable.toString().trim(),position);
+                    }
+
+                }
+            });
+
             rmovetxt=itemView.findViewById(R.id.remove);
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -103,23 +135,13 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         }
 
 
-        EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
-                        || i == EditorInfo.IME_NULL) {
-                    switch (textView.getId()) {
-                        case R.id.qtyZone:
+    }
 
-                            newqty=qty.getText().toString();
-                            AddZone.listZone.get(Integer.parseInt(qty.getTag().toString())).setQty(newqty);
-                            break;
-                    }
+    private void updateQtyList(String qtyValue,String index) {
+        newqty=qtyValue;
+        int in=Integer.parseInt(index);
+        list.get(in).setQty(newqty);
+        listZone.get(in).setQty(newqty);
 
-                }
-
-                return true;
-            }
-        };
     }
 }

@@ -20,6 +20,10 @@ android {
     dataBinding {
         enabled = true
     }
+    repositories {
+        jcenter()
+        maven { url 'https://maven.google.com' }
+    }
 }
 
 dependencies {
@@ -44,5 +48,20 @@ dependencies {
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+    compile 'android.arch.persistence.room:runtime:1.0.0'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
 
 }
