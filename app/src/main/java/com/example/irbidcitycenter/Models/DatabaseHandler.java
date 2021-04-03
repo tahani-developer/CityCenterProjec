@@ -6,14 +6,18 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import java.util.List;
 
 import com.example.irbidcitycenter.Replacement;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     static SQLiteDatabase db;
     public static final String dbname="IrbidCityCenter.db";
+    public static final int version=6;
     public static final int version=11;
     String SETTINGS_TABLE="SETTINGS_TABLE";
     String COMPANY_Num="COMPANY_Num";
@@ -21,6 +25,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     String Years="Years";
     String updateqty ="updateqty";
     String USER_Num="USER_Num";
+    //**********************ZoneTable*************************
+    String ZONETABLE ="ZONETABLE";
+    String SERIALZONE="SERIALZONE";
+    String ZONECODE  ="ZONECODE";
+    String ITEMCODE  ="ITEMCODE";
+    String QTYZONE   ="QTYZONE";
+    String ISPOSTED  ="ISPOSTED";
+    String ZONEDATE  ="ZONEDATE";
+    String ZONETIME  ="ZONETIME";
+    String STORENO   ="STORENO";
+
+
 
 
     public DatabaseHandler(@Nullable Context context) {
@@ -65,6 +81,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_SETTINGS3);
 
 
+        //***************************************************************
+        String CREATE_TABLE_ZONE = "CREATE TABLE " + ZONETABLE + "("
+                + SERIALZONE + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ZONECODE + " TEXT,"
+                + ITEMCODE + " TEXT,"
+                +QTYZONE + " TEXT,"
+                +ISPOSTED +" INTEGER,"
+                +ZONEDATE + " TEXT,"
+
+                +ZONETIME + " TEXT,"
+
+                +STORENO + " TEXT"
+
+                +")";
+        db.execSQL(CREATE_TABLE_ZONE);
     }
 
     @Override
@@ -112,6 +143,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //    db.execSQL("ALTER TABLE REPLACEMENT_TABLE ADD  AUTO_INCREMENT SERIAL PRIMARY KEY");
      //   db.execSQL("ALTER TABLE SHIPMENT_TABLE ADD  AUTO_INCREMENT SERIAL PRIMARY KEY");
 
+
+
+        String CREATE_TABLE_ZONE = "CREATE TABLE if not EXISTS  " + ZONETABLE + "("
+                + SERIALZONE + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ZONECODE + " TEXT,"
+                + ITEMCODE + " TEXT,"
+                +QTYZONE + " TEXT,"
+                +ISPOSTED +" INTEGER,"
+                +ZONEDATE + " TEXT,"
+
+                +ZONETIME + " TEXT,"
+
+                +STORENO + " TEXT"
+
+                +")";
+        db.execSQL(CREATE_TABLE_ZONE);
+
     }
     public void addSettings(appSettings settings) {
         db = this.getWritableDatabase();
@@ -147,6 +195,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         db.delete(SETTINGS_TABLE, null, null);
         db.close();
+    }
+    public void deleteZoneTable() {
+        db = this.getWritableDatabase();
+        db.delete(ZONETABLE, null, null);
+        db.close();
+    }
+    public void addZone(List<ZoneModel> itemZone)
+    {
+        db = this.getReadableDatabase();
+        db.beginTransaction();
+        Log.e("itemZone", "" + itemZone.size());
+        for (int i = 0; i < itemZone.size(); i++) {
+            try {
+                db = this.getReadableDatabase();
+                ContentValues values = new ContentValues();
+               // values.put(SERIALZONE, itemZone.get(i).getItem_NAMEA());
+//                values.put(ZONECODE, itemZone.get(i).getZoneCode());
+//                values.put(ITEMCODE, itemZone.get(i).getItemCode());
+//                values.put(QTYZONE, itemZone.get(i).getQty());
+//                values.put(ISPOSTED, itemZone.get(i).getIsPostd());
+//                values.put(ZONEDATE, itemZone.get(i).getZoneDate());
+//                values.put(ZONETIME, itemZone.get(i).getZoneTime());
+//                values.put(STORENO, itemZone.get(i).getStoreNo());
+                db.insertWithOnConflict(ZONETABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+
+
+            } catch (Exception e) {
+                Log.e("DBAccount_Report", "" + e.getMessage());
+
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
     }
 
     public void AddNewShipment(Shipment shipment){

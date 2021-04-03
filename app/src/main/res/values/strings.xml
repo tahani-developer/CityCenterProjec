@@ -29,9 +29,10 @@
     <string name="itemCode">Item Code</string>
     <string name="qty">Qty</string>
     <string name="reqired_filled">*Reqired</string>
+    <string name="savedSuccsesfule">Saved Succsesfule</string>
 
 
-        <string-array name="fromSpinner">
+    <string-array name="fromSpinner">
             <item>aa</item>
             <item>bb</item>
             <item>cc</item>

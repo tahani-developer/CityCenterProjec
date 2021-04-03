@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.Manifest;
 import android.content.Intent;
@@ -22,11 +23,13 @@ import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.ReplacementAdapter;
 import com.example.irbidcitycenter.Adapters.ZoneAdapter;
+import com.example.irbidcitycenter.Interfaces.ZoneDao;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -37,6 +40,8 @@ public class AddZone extends AppCompatActivity {
     public static ArrayList<ZoneModel> listZone;
     RecyclerView recycleZone;
     LinearLayoutManager layoutManager;
+    public  RoomAllData my_dataBase;
+    ZoneAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,7 @@ public class AddZone extends AppCompatActivity {
         editQty.setOnEditorActionListener(onEditAction);
         listZone = new ArrayList<>();
         recycleZone = findViewById(R.id.recycleZone);
+        my_dataBase= RoomAllData.getInstanceDataBase(AddZone.this);
     }
 
     TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
@@ -91,13 +97,15 @@ public class AddZone extends AppCompatActivity {
                     itemZone.setZoneCode(editZoneCode.getText().toString());
                     itemZone.setItemCode(editItemCode.getText().toString());
                     itemZone.setQty(editQty.getText().toString());
+                    itemZone.setIsPostd("0");
+                    itemZone.setStoreNo("6");
+                    itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
+                    itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
                     listZone.add(itemZone);
                     fillAdapter(listZone);
                 }
             }
         }
-
-        // generalMethod.showSweetDialog(AddZone.this, 0, "Barcode", "Added");
 
     }
 
@@ -105,7 +113,7 @@ public class AddZone extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(AddZone.this);
         recycleZone.setLayoutManager(layoutManager);
-        ZoneAdapter adapter = new ZoneAdapter(AddZone.this, listZone);
+        adapter = new ZoneAdapter(AddZone.this, listZone);
         recycleZone.setAdapter(adapter);
         clearData();
     }
@@ -186,7 +194,28 @@ public class AddZone extends AppCompatActivity {
     }
 
     private void saveDataLocaky() {
+        Log.e("saveDataLocaky","listZone"+listZone.size());
+        long result[]= my_dataBase.zoneDao().insertAll(listZone);
 
+        if(result.length!=0)
+        {
+            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+        }
+        clearData();
+        clearLists();
+
+
+    }
+
+    private void clearLists() {
+        listZone.clear();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void getDataZone() {
+       List<ZoneModel> listZon=new ArrayList();
+        listZon=my_dataBase.zoneDao().getAllZones();
     }
 }
 

@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddZone"></activity>
+        <activity android:name=".AddZone"
+            android:windowSoftInputMode="adjustPan|adjustResize"></activity>
         <activity android:name=".Replacement"></activity>
         <activity android:name=".NewShipment" />
         <activity android:name=".ScanActivity" />
