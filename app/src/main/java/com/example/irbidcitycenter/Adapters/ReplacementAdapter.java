@@ -2,7 +2,6 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.irbidcitycenter.NewShipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Models.ReplacementModel;
-import com.example.irbidcitycenter.Replacement;
+import com.example.irbidcitycenter.Activity.Replacement;
 
 
 import java.util.List;

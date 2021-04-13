@@ -3,7 +3,6 @@ package com.example.irbidcitycenter.Models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -12,19 +11,16 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-import com.example.irbidcitycenter.Replacement;
-
 public class DatabaseHandler extends SQLiteOpenHelper {
     static SQLiteDatabase db;
     public static final String dbname="IrbidCityCenter.db";
-    public static final int version=6;
     public static final int version=11;
     String SETTINGS_TABLE="SETTINGS_TABLE";
-    String COMPANY_Num="COMPANY_Num";
+    String COMPANY_Num="COMPANYNO";
     String IP_ADDRESS="IP_ADDRESS";
-    String Years="Years";
-    String updateqty ="updateqty";
-    String USER_Num="USER_Num";
+    String Years="YEARS";
+    String updateqty ="UPDATEQTY";
+    String USER_Num="USERNO";
     //**********************ZoneTable*************************
     String ZONETABLE ="ZONETABLE";
     String SERIALZONE="SERIALZONE";
@@ -57,8 +53,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
         String CREATE_TABLE_SETTINGS2 = "CREATE TABLE if not EXISTS SHIPMENT_TABLE"  + "("
-                + "SERIAL" + " int"
-                + ",PONO" + " TEXT,"
+                + "SERIAL" + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "PONO" + " TEXT,"
                 + "BOXNO" + " TEXT,"
                 +"BARECODE" + " TEXT,"
                 +"QTY" +" TEXT,"
@@ -69,10 +65,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_SETTINGS2);
 
         String CREATE_TABLE_SETTINGS3 = "CREATE TABLE if not EXISTS REPLACEMENT_TABLE"  + "("
-                + "SERIAL" + " int,"
+                + "SERIAL" + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "FROMSTORE" + " TEXT,"
                 + "TOSTORE" + " TEXT,"
-                +"ZONE" + " TEXT,"
+                +"ZONECODE" + " TEXT,"
                 +"ITEMCODE" +" TEXT,"
                 +"QTY" + " TEXT,"
                 +"REPLACEMENTDATE" + " TEXT,"
@@ -109,7 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_SETTINGS);
 
         String CREATE_TABLE_SETTINGS2 = "CREATE TABLE if not EXISTS SHIPMENT_TABLE"  + "("
-                + "SERIAL" + " int"
+                + "SERIAL" + " INTEGER PRIMARY KEY AUTOINCREMENT"
                 + ",PONO" + " TEXT,"
                 + "BOXNO" + " TEXT,"
                 +"BARECODE" + " TEXT,"
@@ -121,7 +117,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_SETTINGS2);
 
         String CREATE_TABLE_SETTINGS3 = "CREATE TABLE if not EXISTS REPLACEMENT_TABLE"  + "("
-                + "SERIAL" + " int,"
+                + "SERIAL" + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "FROMSTORE" + " TEXT,"
                 + "TOSTORE" + " TEXT,"
                 +"ZONE" + " TEXT,"
@@ -130,19 +126,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 +"REPLACEMENTDATE" + " TEXT,"
                 +"ISPOSTED" + " TEXT DEFAULT '0'"
                 +")";
-
-
-     //   db.execSQL("ALTER TABLE REPLACEMENT_TABLE ADD COLUMN SERIAL int");
-   //     db.execSQL("ALTER TABLE SHIPMENT_TABLE ADD COLUMN SERIAL int");
-
-       // db.execSQL("ALTER TABLE REPLACEMENT_TABLE ADD COLUMN PRIMARY KEY (SERIAL)");
-        ;
-
-    //    db.execSQL(CREATE_TABLE_SETTINGS3);
-
-    //    db.execSQL("ALTER TABLE REPLACEMENT_TABLE ADD  AUTO_INCREMENT SERIAL PRIMARY KEY");
-     //   db.execSQL("ALTER TABLE SHIPMENT_TABLE ADD  AUTO_INCREMENT SERIAL PRIMARY KEY");
-
+        db.execSQL(CREATE_TABLE_SETTINGS3);
 
 
         String CREATE_TABLE_ZONE = "CREATE TABLE if not EXISTS  " + ZONETABLE + "("
@@ -233,7 +217,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void AddNewShipment(Shipment shipment){
-     db = this.getWritableDatabase();
+     /*db = this.getWritableDatabase();
         String date =String.valueOf(java.time.LocalDate.now());
         String time=String.valueOf(java.time.LocalTime.now());
         ContentValues contentValues = new ContentValues();
@@ -245,7 +229,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put("SHIPMENTDATE",date);
         contentValues.put("SHIPMENTTIME", time);
         db.insert("SHIPMENT_TABLE", null, contentValues);
-        db.close();
+        db.close();*/
     }
 
 

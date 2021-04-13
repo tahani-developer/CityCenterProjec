@@ -1,4 +1,4 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.irbidcitycenter.Models.DatabaseHandler;
+import com.example.irbidcitycenter.R;
 
 public class Login extends AppCompatActivity {
     EditText username,password;
-    DatabaseHandler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        handler=new DatabaseHandler(Login.this);
+
 
         username=findViewById(R.id.username_input);
         password=findViewById(R.id.pass);

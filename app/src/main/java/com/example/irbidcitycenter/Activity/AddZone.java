@@ -1,13 +1,11 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,17 +19,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.irbidcitycenter.Adapters.ReplacementAdapter;
 import com.example.irbidcitycenter.Adapters.ZoneAdapter;
-import com.example.irbidcitycenter.Interfaces.ZoneDao;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.ZoneModel;
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.RoomAllData;
+import com.example.irbidcitycenter.ScanActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
@@ -40,7 +38,7 @@ public class AddZone extends AppCompatActivity {
     public static ArrayList<ZoneModel> listZone;
     RecyclerView recycleZone;
     LinearLayoutManager layoutManager;
-    public  RoomAllData my_dataBase;
+    public RoomAllData my_dataBase;
     ZoneAdapter adapter;
 
     @Override

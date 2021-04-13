@@ -16,7 +16,7 @@
             android:id="@+id/menu_import"
             android:icon="@drawable/ic_arrow_import_black_24dp"
 
-            android:title="Import"
+            android:title="@string/Import"
             app:showAsAction="always" />
 
         <item

@@ -15,12 +15,11 @@ import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-import static com.example.irbidcitycenter.AddZone.editItemCode;
-import static com.example.irbidcitycenter.AddZone.editZoneCode;
-import static com.example.irbidcitycenter.NewShipment.barcode;
-import static com.example.irbidcitycenter.NewShipment.pono;
-import static com.example.irbidcitycenter.Replacement.itemcode;
-import static com.example.irbidcitycenter.Replacement.zone;
+import static com.example.irbidcitycenter.Activity.AddZone.editItemCode;
+import static com.example.irbidcitycenter.Activity.AddZone.editZoneCode;
+import static com.example.irbidcitycenter.Activity.NewShipment.barcode;
+import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
+import static com.example.irbidcitycenter.Activity.Replacement.zone;
 
 
 public class ScanActivity extends AppCompatActivity

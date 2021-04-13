@@ -1,12 +1,25 @@
 package com.example.irbidcitycenter.Models;
 
-public class appSettings {
-    String IP;
-String CompanyNum;
-String years;
-String UpdateQTY;
-String userNumber;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "SETTINGS_TABLE")
+public class appSettings {
+    @ColumnInfo(name = "IP_ADDRESS")
+    String IP;
+    @ColumnInfo(name = "COMPANYNO")
+String CompanyNum;
+    @ColumnInfo(name = "YEARS")
+String years;
+    @ColumnInfo(name = "UPDATEQTY")
+String UpdateQTY;
+    @ColumnInfo(name = "USERNO")
+String userNumber;
+    @PrimaryKey(autoGenerate = true)
+    public
+    int SERIALZONE;
     public appSettings(String IP, String companyNum, String years, String updateQTY, String userNumber) {
         this.IP = IP;
         CompanyNum = companyNum;

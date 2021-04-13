@@ -102,9 +102,7 @@
                         android:layout_weight="1"
                         android:maxLines="1"
                         android:background="@drawable/back_border_edit"
-                        android:text=""
                         android:textColor="@color/colorblue_dark"
-
                         android:textSize="13sp" />
 
                 </LinearLayout>

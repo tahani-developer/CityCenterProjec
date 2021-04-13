@@ -1,14 +1,48 @@
 package com.example.irbidcitycenter.Models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "SHIPMENT_TABLE")
 public  class Shipment {
-    String Serial;
+    @PrimaryKey(autoGenerate = true)
+     int SERIAL;
+    @ColumnInfo(name = "PONO")
     String PoNo;
+    @ColumnInfo(name = "BOXNO")
     String BoxNo;
+    @ColumnInfo(name = "BARECODE")
     String Barcode;
+    @ColumnInfo(name = "SHIPMENTDATE")
     String ShipmentDate;
+    @ColumnInfo(name = "SHIPMENTTIME")
     String ShipmentTime;
-    int Qty;
+    @ColumnInfo(name = "QTY")
+    String Qty;
+    @ColumnInfo(name = "ISPOSTED")
     String IsPosted;
+
+    @ColumnInfo(name = "ITEMNAME")
+    String Itemname ;
+    @ColumnInfo(name = "RECEIVEDQTY")
+    String Received ;
+
+    public String getReceived() {
+        return Received;
+    }
+
+    public void setReceived(String received) {
+        Received = received;
+    }
+
+    public String getItemname() {
+        return Itemname;
+    }
+
+    public void setItemname(String itemname) {
+        Itemname = itemname;
+    }
 
     public String getIsPosted() {
         return IsPosted;
@@ -34,18 +68,18 @@ public  class Shipment {
         ShipmentTime = shipmentTime;
     }
 
-    public String getSerial() {
-        return Serial;
+    public int getSERIAL() {
+        return SERIAL;
     }
 
-    public void setSerial(String serial) {
-        Serial = serial;
+    public void setSERIAL(int SERIAL) {
+        this.SERIAL = SERIAL;
     }
 
     public Shipment() {
     }
 
-    public Shipment(String poNo, String boxNo, String barcode, int qty) {
+    public Shipment(String poNo, String boxNo, String barcode, String qty) {
         PoNo = poNo;
         BoxNo = boxNo;
         Barcode = barcode;
@@ -76,11 +110,11 @@ public  class Shipment {
         Barcode = barcode;
     }
 
-    public int getQty() {
+    public  String getQty() {
         return Qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(String qty) {
         Qty = qty;
     }
 }

@@ -1,15 +1,18 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,14 +25,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.irbidcitycenter.Adapters.BoxnoSearchAdapter;
 import com.example.irbidcitycenter.Adapters.PonoSearchAdapter;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.DatabaseHandler;
 import com.example.irbidcitycenter.Models.PO;
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.RoomAllData;
+import com.example.irbidcitycenter.ScanActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -38,8 +49,14 @@ import com.google.zxing.integration.android.IntentResult;
 import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
 import com.example.irbidcitycenter.Models.Shipment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class NewShipment extends AppCompatActivity {
     public static String boxnotag;
@@ -57,6 +74,7 @@ public class NewShipment extends AppCompatActivity {
     String boxNo;
     String barCode;
     String Qty;
+    GeneralMethod generalMethod;
     String POnumselected, BOXnumselected;
     RecyclerView recyclerView;
     FloatingActionButton add;
@@ -67,18 +85,25 @@ public class NewShipment extends AppCompatActivity {
     public static List<Shipment> shipmentList = new ArrayList<>();
     public static List<PO> POlist = new ArrayList<>();
     Shipment shipment;
+    RequestQueue requestQueue;
     PO po;
     ListView listView;
+    public RoomAllData my_dataBase;
     BoxnoSearchAdapter searchadapter,searchadapter2;
  PonoSearchAdapter ponoSearchAdapter,searchponoSearchAdapter;
     public static int position = 1;
     public static final int REQUEST_Camera_Barcode = 1;
-    DatabaseHandler handler;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_shipment);
-        handler=new DatabaseHandler(NewShipment.this);
+
+        my_dataBase= RoomAllData.getInstanceDataBase(NewShipment.this);
+
+
+
         init();
         save.setEnabled(false);
         pono.requestFocus();
@@ -103,9 +128,7 @@ public class NewShipment extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                 for(int i=0;i<shipmentList.size();i++)
-                 handler.AddNewShipment(shipmentList.get(i));
-                shipmentList.clear();
+                saveData();
 
             }
 
@@ -155,12 +178,17 @@ public class NewShipment extends AppCompatActivity {
                     case R.id.poNotxt:
 
                         boxno.requestFocus();
+
                         break;
                     case R.id.boxNotxt:
+
                         barcode.requestFocus();
+
                         break;
                     case R.id.barCodetxt:
+
                         qty.requestFocus();
+
                         break;
                     case R.id.Qtytxt:
 
@@ -181,6 +209,8 @@ public class NewShipment extends AppCompatActivity {
             return true;
         }
     };
+
+
     private void filldata() {
         poNo = pono.getText().toString();
         boxNo = boxno.getText().toString();
@@ -198,8 +228,15 @@ public class NewShipment extends AppCompatActivity {
                      }
                      else {   // CheckPOnumber();
 
-                parceQty = Integer.parseInt(qty.getText().toString());
-                shipment = new Shipment(poNo, boxNo, barCode, parceQty);
+
+                shipment = new Shipment();
+                shipment.setPoNo(poNo);
+                shipment.setBoxNo(boxNo);
+                shipment.setBarcode(barCode);
+                shipment.setQty(Qty);
+                shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
+                shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
+
 
                 if (hasDuplicates(shipment)) {
                     barcode.setError("");
@@ -302,7 +339,8 @@ public class NewShipment extends AppCompatActivity {
         searchView1 = findViewById(R.id.ponoSearch);
         searchView2 = findViewById(R.id.boxnoSearch);
         qty.setOnEditorActionListener(onEditAction);
-
+        generalMethod=new GeneralMethod(NewShipment.this);
+        requestQueue= Volley.newRequestQueue(this);
     }
 
     void search() {
@@ -430,7 +468,6 @@ public class NewShipment extends AppCompatActivity {
         recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
       ponoSearchAdapter= new PonoSearchAdapter(NewShipment.this,ponumberslist);
         recyclerView1.setAdapter(  ponoSearchAdapter);
-
         Button btndialog = (Button) dialog2.findViewById(R.id.btndialog);
         btndialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -481,9 +518,10 @@ public class NewShipment extends AppCompatActivity {
         dialog1.setContentView(R.layout.pono_dialog_listview);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog1.getWindow().getAttributes());
-        lp.width = 600;
-        lp.height = 800;
-        lp.gravity = Gravity.CENTER;
+        lp.width = 200;
+        lp.height = 400;
+        lp.gravity = Gravity.RIGHT;
+        lp.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT);
 
 
         dialog1.getWindow().setAttributes(lp);
@@ -575,4 +613,20 @@ public class NewShipment extends AppCompatActivity {
         }
         return false;
     }
+    private void saveData() {
+
+        long result[]= my_dataBase.shipmentDao().insertAll(shipmentList);
+
+        if(result.length!=0)
+        {
+            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+        }
+
+        shipmentList.clear();
+
+
+    }
+
+
+
 }

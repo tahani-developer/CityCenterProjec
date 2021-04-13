@@ -1,15 +1,27 @@
 package com.example.irbidcitycenter.Models;
 
-public  class ReplacementModel {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "REPLACEMENT_TABLE")
+public  class ReplacementModel {
+    @ColumnInfo(name = "FROMSTORE")
     String From;
+    @ColumnInfo(name = "TOSTORE")
     String To;
+    @ColumnInfo(name = "ZONECODE")
     String Zone;
+    @ColumnInfo(name = "ITEMCODE")
     String Itemcode;
+    @ColumnInfo(name = "ISPOSTED")
     String IsPosted;
+    @ColumnInfo(name = "REPLACEMENTDATE")
     String ReplacementDate;
+    @ColumnInfo(name = "QTY")
     String Qty;
-    String Serial;
+    @PrimaryKey(autoGenerate = true)
+    int SERIALZONE;
 
     public ReplacementModel(String from, String to, String zone, String itemcode, String qty) {
         From = from;
@@ -35,12 +47,12 @@ public  class ReplacementModel {
         ReplacementDate = replacementDate;
     }
 
-    public String getSerial() {
-        return Serial;
+    public int getSERIALZONE() {
+        return SERIALZONE;
     }
 
-    public void setSerial(String serial) {
-        Serial = serial;
+    public void setSERIALZONE(int SERIALZONE) {
+        this.SERIALZONE = SERIALZONE;
     }
 
     public ReplacementModel() {

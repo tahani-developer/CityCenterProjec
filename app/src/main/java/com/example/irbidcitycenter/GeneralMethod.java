@@ -9,6 +9,8 @@ import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
+
 public class GeneralMethod {
     public  Context myContext;
     public GeneralMethod(Context context) {
@@ -29,12 +31,36 @@ public class GeneralMethod {
                         .setContentText(content)
                         .show();
                 break;
+            case 3://Error Type
+                new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(title)
+                        .setContentText(content)
+                        .show();
+                break;
+
+        }
+    }
+    public  static  void showSweetDialog2(Context context, int type, String title, String content,String content2){
+        switch ( type){
+
+            case 0:
+                new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText(title)
+                        .setContentText(content)
+                        .setConfirmButton(content2, new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                colsedialog(1);
+                            }
+                        })
+                        .show();
+                break;
         }
 
 
     }
     public String getCurentTimeDate(int flag){
-        String dateCurent,timeCurrent,dateTime="";
+        String dateCurent="",timeCurrent,dateTime="";
         Date currentTimeAndDate;
         SimpleDateFormat dateFormat, timeformat;
         currentTimeAndDate = Calendar.getInstance().getTime();
@@ -43,7 +69,7 @@ public class GeneralMethod {
 
             dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             dateCurent = dateFormat.format(currentTimeAndDate);
-            dateTime=convertToEnglish(dateCurent);
+           dateTime=convertToEnglish(dateCurent);
 
         }
         else {
@@ -57,7 +83,7 @@ public class GeneralMethod {
         return dateTime;
 
     }
-    public String convertToEnglish(String value) {
+    public static String convertToEnglish(String value) {
         String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫", "."));
         return newValue;
     }

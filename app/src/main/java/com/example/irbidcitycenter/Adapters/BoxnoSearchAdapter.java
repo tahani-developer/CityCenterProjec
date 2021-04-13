@@ -1,6 +1,5 @@
 package com.example.irbidcitycenter.Adapters;
 
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.irbidcitycenter.NewShipment;
+import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.R;
 
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
             boxnumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.confirm_pono_insearch);

@@ -2,30 +2,22 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.irbidcitycenter.AddZone;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
-import com.example.irbidcitycenter.Replacement;
 
 import java.util.List;
 
-import static com.example.irbidcitycenter.AddZone.listZone;
+import static com.example.irbidcitycenter.Activity.AddZone.listZone;
 
 public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder > {
     private List<ZoneModel> list;

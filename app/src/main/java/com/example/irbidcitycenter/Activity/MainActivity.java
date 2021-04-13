@@ -1,15 +1,16 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,26 +19,40 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.irbidcitycenter.Models.DatabaseHandler;
+import com.example.irbidcitycenter.GeneralMethod;
+import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.RoomAllData;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
+    GeneralMethod generalMethod;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     public static String SET_userNO;
     private Toolbar toolbar;
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
-    public appSettings settings;
-    public DatabaseHandler databaseHandler;
+    public List<appSettings> settingslist=new ArrayList<>();
+
+    public RoomAllData my_dataBase;
+    List<appSettings> appSettings;
+    appSettings settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initial();
-        databaseHandler=new DatabaseHandler(MainActivity.this);
+        my_dataBase= RoomAllData.getInstanceDataBase(MainActivity.this);
+
+
     }
 
     private void initial() {
@@ -64,15 +79,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int id=v.getId();
            switch (id){
                case R.id.zoneLinear:
-                   Intent intent =new Intent(MainActivity.this,AddZone.class);
+                   Intent intent =new Intent(MainActivity.this, AddZone.class);
                    startActivity(intent);
                    break;
                case R.id.hipmentlinear:
-                   Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
+                   Intent intent2 =new Intent(MainActivity.this, NewShipment.class);
                    startActivity(intent2);
                    break;
                case R.id.Replacmentlinear:
-                   Intent intent3 =new Intent(MainActivity.this,Replacement.class);
+                   Intent intent3 =new Intent(MainActivity.this, Replacement.class);
                    startActivity(intent3);
                    break;
            }
@@ -128,21 +143,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
         usernum.setText(SET_userNO);
-        settings= databaseHandler.getSettings();
 
-        ip.setText(settings.getIP());
-        conNO.setText( settings.getCompanyNum());
-        years.setText(settings.getYears());
+        getDataZone();
+        if(appSettings.size()!=0) {
+            ip.setText(appSettings.get(0).getIP());
+            conNO.setText(appSettings.get(0).getCompanyNum());
+            years.setText(appSettings.get(0).getYears());
+            if (appSettings.get(0).getUpdateQTY().equals("1"))
+                qtyUP.setChecked(true);
+        }
         //****************************
         dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-
-
-
-
+                deletesettings();
                 final String SET_IP=ip.getText().toString();
                 final String SET_conNO=conNO.getText().toString();
                 final String SET_years=years.getText().toString();
@@ -159,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 settings.setUpdateQTY(SET_years);
                 settings.setYears(SET_qtyup);
                 settings.setUserNumber(SET_userNO);
-                databaseHandler.addSettings(settings);
+                saveData(settings);
                 dialog.dismiss();
             }
         });
@@ -169,7 +184,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.dismiss();
             }
         });
+
     }
 
+    private void saveData(appSettings settings) {
 
+         my_dataBase.settingDao().insert(settings);
+
+            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+
+    }
+    private void getDataZone() {
+         appSettings=new ArrayList();
+        appSettings=my_dataBase.settingDao().getallsetting();
+    }
+    private void deletesettings(){
+        my_dataBase.settingDao().deleteALL();
+    }
 }

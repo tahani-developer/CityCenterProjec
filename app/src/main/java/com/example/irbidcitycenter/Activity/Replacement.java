@@ -1,9 +1,10 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.irbidcitycenter.Models.DatabaseHandler;
+import com.example.irbidcitycenter.GeneralMethod;
+import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.RoomAllData;
+import com.example.irbidcitycenter.ScanActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -33,12 +37,16 @@ import com.example.irbidcitycenter.Models.ReplacementModel;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 public class Replacement extends AppCompatActivity {
+    GeneralMethod generalMethod;
  Spinner fromSpinner,toSpinner;
     public static EditText  zone,itemcode;
     EditText qty;
     Button save;
-    DatabaseHandler handler;
+    public RoomAllData my_dataBase;
    String From,To,Zone,Itemcode,Qty;
    ReplacementModel replacement;
     ReplacementModel replacementModel;
@@ -46,21 +54,27 @@ public class Replacement extends AppCompatActivity {
     FloatingActionButton add;
    RecyclerView replacmentRecycler;
     public static final int REQUEST_Camera_Barcode = 1;
+
     public static List<ReplacementModel>  replacementlist = new ArrayList<>();
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
+        init();
 
-     init();
-        handler=new DatabaseHandler(Replacement.this);
+
+        my_dataBase= RoomAllData.getInstanceDataBase(Replacement.this);
+
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            for (int i=0; i<replacementlist.size();i++)
-            handler.addReplacement(replacementlist.get(i));
+
+           // for (int i=0; i<replacementlist.size();i++)
+           //     model.insert(replacementlist.get(i));
+
+                saveData();
             }
               });
 
@@ -86,6 +100,7 @@ public class Replacement extends AppCompatActivity {
         replacmentRecycler=findViewById(R.id.replacmentRec);
         save=findViewById(R.id.save);
         qty.setOnEditorActionListener(onEditAction);
+        generalMethod=new GeneralMethod(Replacement.this);
     }
 
     public void ScanCode(View view) {
@@ -147,6 +162,7 @@ public class Replacement extends AppCompatActivity {
                     replacement.setTo(To);
                      replacement.setItemcode(Itemcode);
                      replacement.setQty(Qty);
+                     replacement.setReplacementDate(generalMethod.getCurentTimeDate(1)+"");
 
                     replacementlist.add(replacement);
                replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
@@ -203,5 +219,19 @@ public class Replacement extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void saveData() {
+
+        long result[]= my_dataBase.replacementDao().insertAll(replacementlist);
+
+        if(result.length!=0)
+        {
+            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+        }
+
+        replacementlist.clear();
+
+
     }
 }

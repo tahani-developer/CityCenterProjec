@@ -1,4 +1,4 @@
-package com.example.irbidcitycenter;
+package com.example.irbidcitycenter.Activity;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
+import com.example.irbidcitycenter.R;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.ViewfinderView;

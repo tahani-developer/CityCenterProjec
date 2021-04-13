@@ -2,10 +2,6 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +9,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.irbidcitycenter.NewShipment;
+import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Models.Shipment;
 
@@ -138,7 +132,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                         case R.id.tbl_qty:
 
                             newqty=qtytxt.getText().toString();
-                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(Integer.parseInt(newqty));
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
                             break;
                     }
 

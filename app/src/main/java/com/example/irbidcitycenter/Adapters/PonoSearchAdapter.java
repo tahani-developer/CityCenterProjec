@@ -11,7 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.irbidcitycenter.NewShipment;
+import com.example.irbidcitycenter.Activity.NewShipment;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.R;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.SearchViewHolder1 >{
     private ArrayList<String> list;
     Context shipment;
+    GeneralMethod generalMethod;
 
     public PonoSearchAdapter(Context shipment,ArrayList<String> list) {
         this.list = list;
@@ -54,10 +56,11 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
             super(itemView);
             ponumber = itemView.findViewById(R.id.po);
 
-            ponumber.setOnClickListener(new View.OnClickListener() {
+           ponumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Dialog dialog = new Dialog(shipment);
+
+                   final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.confirm_pono_insearch);
 
