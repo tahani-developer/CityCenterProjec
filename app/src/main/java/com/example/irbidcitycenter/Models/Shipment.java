@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "SHIPMENT_TABLE")
 public  class Shipment {
     @PrimaryKey(autoGenerate = true)
@@ -117,4 +119,5 @@ public  class Shipment {
     public void setQty(String qty) {
         Qty = qty;
     }
+
 }

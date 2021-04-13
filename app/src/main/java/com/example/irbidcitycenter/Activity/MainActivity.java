@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
-    public DatabaseHandler databaseHandler;
+    public static String COMPANYNO;
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
 
     public RoomAllData my_dataBase;
     List<appSettings> appSettings;
-    appSettings settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,8 +157,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getDataZone();
         if(appSettings.size()!=0) {
+
             ip.setText(appSettings.get(0).getIP());
             conNO.setText(appSettings.get(0).getCompanyNum());
+            COMPANYNO=appSettings.get(0).getCompanyNum();
             years.setText(appSettings.get(0).getYears());
             if (appSettings.get(0).getUpdateQTY().equals("1"))
                 qtyUP.setChecked(true);
@@ -171,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 deletesettings();
                 final String SET_IP=ip.getText().toString();
                 final String SET_conNO=conNO.getText().toString();
+                COMPANYNO=conNO.getText().toString();
                 final String SET_years=years.getText().toString();
                 usernum.setText(SET_userNO);
 

@@ -3,6 +3,7 @@ package com.example.irbidcitycenter.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -16,7 +17,6 @@ import com.example.irbidcitycenter.R;
 public class Login extends AppCompatActivity {
     EditText username,password;
 
-    EditText username, password;
     LinearLayout colorLinear, imgInner, imgOutter;
     FrameLayout mainLinearAnim;
 
@@ -40,12 +40,13 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 if (username.getText().toString().trim().equals("6") && password.getText().toString().trim().equals("123")) {
                     MainActivity.SET_userNO = username.getText().toString().trim();
-
+                    Log.e("sssssssss","ssssssss");
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);
                 } else {
                     username.setError("");
                     password.setError("");
+
                 }
             }
         });
