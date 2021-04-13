@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
+    public appSettings settings;
+    public DatabaseHandler databaseHandler;
+    private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
 
     public RoomAllData my_dataBase;
@@ -79,15 +84,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int id=v.getId();
            switch (id){
                case R.id.zoneLinear:
-                   Intent intent =new Intent(MainActivity.this, AddZone.class);
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   zoneLinear.startAnimation(animation);
+                   Intent intent =new Intent(MainActivity.this,AddZone.class);
                    startActivity(intent);
                    break;
                case R.id.hipmentlinear:
-                   Intent intent2 =new Intent(MainActivity.this, NewShipment.class);
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   shipmentlinear.startAnimation(animation);
+                   Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
                    startActivity(intent2);
                    break;
                case R.id.Replacmentlinear:
-                   Intent intent3 =new Intent(MainActivity.this, Replacement.class);
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   replacmentlinear.startAnimation(animation);
+                   Intent intent3 =new Intent(MainActivity.this,Replacement.class);
                    startActivity(intent3);
                    break;
            }

@@ -24,6 +24,8 @@ android {
         jcenter()
         maven { url 'https://maven.google.com' }
     }
+    useLibrary 'org.apache.http.legacy'
+
 }
 
 dependencies {
@@ -63,5 +65,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
     compile 'android.arch.persistence.room:runtime:1.0.0'
     annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
+
 
 }
