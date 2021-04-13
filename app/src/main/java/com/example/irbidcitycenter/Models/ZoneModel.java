@@ -29,6 +29,27 @@ public class ZoneModel {
 
     @ColumnInfo(name = "STORENO")
     private   String storeNo;
+    @ColumnInfo(name = "ZONENAME")
+    private  String ZONENAME;
+
+    @ColumnInfo(name = "ZONETYPE")
+    private  String ZONETYPE;
+
+    public String getZONENAME() {
+        return ZONENAME;
+    }
+
+    public void setZONENAME(String ZONENAME) {
+        this.ZONENAME = ZONENAME;
+    }
+
+    public String getZONETYPE() {
+        return ZONETYPE;
+    }
+
+    public void setZONETYPE(String ZONETYPE) {
+        this.ZONETYPE = ZONETYPE;
+    }
 
     public int getSERIALZONE() {
         return SERIALZONE;

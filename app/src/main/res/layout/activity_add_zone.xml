@@ -80,7 +80,57 @@
                         android:drawableRight="@drawable/ic_scan_black_24dp" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:layout_height="25dp"
+
+                        android:text="@string/ZoneName"
+
+                        android:padding="3dp"
+                        android:gravity="center"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"  />
+
+                    <TextView
+                        android:id="@+id/zoneName"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_marginRight="5dp"
+                        android:layout_height="25dp"
+
+                        android:elevation="2dp"
+                        android:padding="3dp"
+                        android:gravity="center"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"  />
+                    <TextView
+                        android:id="@+id/sc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:onClick="ScanCode"
+                        android:visibility="invisible"
+
+                        android:drawableEnd="@drawable/ic_scan_black_24dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

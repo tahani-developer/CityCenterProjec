@@ -16,7 +16,6 @@ import com.example.irbidcitycenter.R;
 public class Login extends AppCompatActivity {
     EditText username,password;
 
-    EditText username, password;
     LinearLayout colorLinear, imgInner, imgOutter;
     FrameLayout mainLinearAnim;
 

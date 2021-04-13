@@ -43,13 +43,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
-    public DatabaseHandler databaseHandler;
+
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
 
     public RoomAllData my_dataBase;
     List<appSettings> appSettings;
-    appSettings settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

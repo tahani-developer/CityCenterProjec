@@ -27,6 +27,9 @@ public interface SettingDao {
     @Query ("select * from SETTINGS_TABLE")
     List<appSettings> getallsetting();
 
-
+    @Query ("select IP_ADDRESS from SETTINGS_TABLE")
+    String getIpAddress();
+    @Query ("select COMPANYNO from SETTINGS_TABLE")
+    String getCono();
 
 }

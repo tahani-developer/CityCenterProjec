@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.ZoneAdapter;
 import com.example.irbidcitycenter.GeneralMethod;
+import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -35,11 +36,14 @@ public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
     public static EditText editZoneCode, editItemCode, editQty;
     public static final int REQUEST_Camera_Barcode = 1;
-    public static ArrayList<ZoneModel> listZone;
+    public static ArrayList<ZoneModel> listZone,listAllZone;
     RecyclerView recycleZone;
     LinearLayoutManager layoutManager;
     public RoomAllData my_dataBase;
     ZoneAdapter adapter;
+    ImportData importData;
+    TextView zoneName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,14 @@ public class AddZone extends AppCompatActivity {
         editItemCode.setOnEditorActionListener(onEditAction);
         editZoneCode.setOnEditorActionListener(onEditAction);
         editQty = findViewById(R.id.editQty);
+        zoneName= findViewById(R.id.zoneName);
         editQty.setOnEditorActionListener(onEditAction);
         listZone = new ArrayList<>();
+        listAllZone=new ArrayList<>();
         recycleZone = findViewById(R.id.recycleZone);
         my_dataBase= RoomAllData.getInstanceDataBase(AddZone.this);
+        importData=new ImportData(AddZone.this);
+        importData.getAllZones();
     }
 
     TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
@@ -71,7 +79,8 @@ public class AddZone extends AppCompatActivity {
                         || i == EditorInfo.IME_NULL) {
                     switch (textView.getId()) {
                         case R.id.editZoneCode:
-                            editItemCode.requestFocus();
+                            searchZone(editZoneCode.getText().toString().trim());
+
                             break;
                         case R.id.editItemCode:
                             editQty.requestFocus();
@@ -86,6 +95,21 @@ public class AddZone extends AppCompatActivity {
             return true;
         }
     };
+
+    private void searchZone(String codeZone) {
+        for(int i=0;i<listAllZone.size();i++)
+        {
+            if(listAllZone.get(i).getZoneCode().equals(codeZone))
+            {
+
+                zoneName.setText(listAllZone.get(i).getZONENAME());
+                editItemCode.requestFocus();
+                break;
+            }
+        }
+
+
+    }
 
     private void addRow() {
         if (generalMethod.validateNotEmpty(editZoneCode)) {

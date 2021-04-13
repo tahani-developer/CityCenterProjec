@@ -61,7 +61,7 @@
             <item>dd</item>
         </string-array>
     <string name="Arabic">ar</string>
-
+    <string name="ZoneName">Zone Name</string>
 
 
 </resources>

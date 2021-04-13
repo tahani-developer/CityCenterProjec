@@ -37,4 +37,5 @@
     <string name="delete">Are you sure you want to               delete this entry?</string>
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
+    <string name="ZoneName">ZoneName</string>
 </resources>
