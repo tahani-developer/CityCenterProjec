@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "SHIPMENT_TABLE")
 public  class Shipment {
     @PrimaryKey(autoGenerate = true)
@@ -26,14 +28,14 @@ public  class Shipment {
     @ColumnInfo(name = "ITEMNAME")
     String Itemname ;
     @ColumnInfo(name = "RECEIVEDQTY")
-    String Received ;
+    String Receivedqty ;
 
-    public String getReceived() {
-        return Received;
+    public String getReceivedqty() {
+        return Receivedqty;
     }
 
-    public void setReceived(String received) {
-        Received = received;
+    public void setReceivedqty(String received) {
+        Receivedqty = received;
     }
 
     public String getItemname() {
@@ -117,4 +119,5 @@ public  class Shipment {
     public void setQty(String qty) {
         Qty = qty;
     }
+
 }

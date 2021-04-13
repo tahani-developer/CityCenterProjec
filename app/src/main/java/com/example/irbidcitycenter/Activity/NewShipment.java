@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.irbidcitycenter.Adapters.BoxnoSearchAdapter;
 import com.example.irbidcitycenter.Adapters.PonoSearchAdapter;
 import com.example.irbidcitycenter.GeneralMethod;
+import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.DatabaseHandler;
 import com.example.irbidcitycenter.Models.PO;
 import com.example.irbidcitycenter.R;
@@ -59,10 +60,14 @@ import java.util.List;
 
 
 public class NewShipment extends AppCompatActivity {
+
+    public static List<Shipment>  POdetailslisttest=new ArrayList<>();
+    ImportData importData;
     public static String boxnotag;
+    public Button next;
     public Button save;
     public static EditText pono;
-    static EditText boxno;
+    static EditText boxno,itemname,recQTY;
     public static EditText barcode;
     public TextView barcodescan;
     EditText qty;
@@ -99,11 +104,17 @@ public class NewShipment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_shipment);
+         //
+        Shipment shipment1=new Shipment();
+        shipment1.setItemname("ROYAL RED");
+        shipment1.setBarcode("6253349404082");
+        shipment1.setReceivedqty("ROYAL RED");
+        shipment1.setBoxNo("20");
+        POdetailslisttest.add(shipment1);
+
+         //
 
         my_dataBase= RoomAllData.getInstanceDataBase(NewShipment.this);
-
-
-
         init();
         save.setEnabled(false);
         pono.requestFocus();
@@ -119,22 +130,18 @@ public class NewShipment extends AppCompatActivity {
             public void onClick(View view) {
                 showdailogboxnumber();
             }});
-
-
-
-
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
-                saveData();
+                checkboxvalidty();
+             saveData();
 
             }
 
         });
 
-        findViewById(R.id.nextbox).setOnClickListener(new View.OnClickListener() {
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -154,8 +161,9 @@ public class NewShipment extends AppCompatActivity {
       findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-              shipmentList.clear();
-              adapter.notifyDataSetChanged();
+             if (shipmentList.size()!=0)
+             {shipmentList.clear();
+              adapter.notifyDataSetChanged();}
               save.setEnabled(false);
               barcode.setText("");
               qty.setText("1");
@@ -176,18 +184,28 @@ public class NewShipment extends AppCompatActivity {
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.poNotxt:
-
                         boxno.requestFocus();
+                        Log.e("newshipment","newshipment");
+                        //  importData.getboxno(NewShipment.this, MainActivity.COMPANYNO,pono.getText().toString());
+                    //    importData.getboxno(NewShipment.this,"290", "6");
+                      //  importData.getPOdetails(NewShipment.this,"290", "6");
+                        Log.e("newshipment","newshipment");
+
+                        itemname.setText(importData.POdetailslist.get(0).getItemname());
+                        recQTY.setText(importData.POdetailslist.get(0).getReceivedqty());
 
                         break;
                     case R.id.boxNotxt:
-
+                        checkboxvalidty();
                         barcode.requestFocus();
 
                         break;
                     case R.id.barCodetxt:
-
-                        qty.requestFocus();
+                       if(checkitemcodevalidty())
+                       { qty.requestFocus();
+                        next.setEnabled(true);}
+                       else
+                           next.setEnabled(false);
 
                         break;
                     case R.id.Qtytxt:
@@ -216,6 +234,8 @@ public class NewShipment extends AppCompatActivity {
         boxNo = boxno.getText().toString();
         barCode = barcode.getText().toString();
        Qty = qty.getText().toString();
+
+
         if( poNo.toString().trim().equals("")) pono.setError("required");
 
        else {
@@ -329,6 +349,8 @@ public class NewShipment extends AppCompatActivity {
     }
 
     private void init() {
+        importData=new ImportData(NewShipment.this);
+        next=findViewById(R.id.nextbox);
         pono = findViewById(R.id.poNotxt);
         boxno = findViewById(R.id.boxNotxt);
         barcode = findViewById(R.id.barCodetxt);
@@ -341,6 +363,10 @@ public class NewShipment extends AppCompatActivity {
         qty.setOnEditorActionListener(onEditAction);
         generalMethod=new GeneralMethod(NewShipment.this);
         requestQueue= Volley.newRequestQueue(this);
+
+        itemname=findViewById(R.id.Itemnametxt);
+        recQTY=findViewById(R.id.recQtytxt);
+
     }
 
     void search() {
@@ -628,5 +654,28 @@ public class NewShipment extends AppCompatActivity {
     }
 
 
+    private void checkboxvalidty() {
 
+
+       if(!importData.BoxNolist.contains(boxNo))
+         generalMethod.showSweetDialog(NewShipment.this, 3,"", "boxNO does not exists in this PO");
+    }
+    private boolean checkitemcodevalidty() {
+//
+        boolean flag = false;
+        for (int i = 0; i < importData.POdetailslist.size(); i++)
+        {
+            if (!importData.POdetailslist.get(i).getBarcode().equals(barcode.getText().toString()))
+            {
+                flag = false;
+                generalMethod.showSweetDialog(NewShipment.this, 3, "", "this item does not exists in this PO");
+                return true;
+            }
+            else {
+                flag= true;
+                break;
+            }
+      }
+
+        return  flag;  }
 }
