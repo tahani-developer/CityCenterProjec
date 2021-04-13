@@ -28,14 +28,14 @@ public  class Shipment {
     @ColumnInfo(name = "ITEMNAME")
     String Itemname ;
     @ColumnInfo(name = "RECEIVEDQTY")
-    String Received ;
+    String Receivedqty ;
 
-    public String getReceived() {
-        return Received;
+    public String getReceivedqty() {
+        return Receivedqty;
     }
 
-    public void setReceived(String received) {
-        Received = received;
+    public void setReceivedqty(String received) {
+        Receivedqty = received;
     }
 
     public String getItemname() {

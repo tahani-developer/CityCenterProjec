@@ -60,6 +60,8 @@ import java.util.List;
 
 
 public class NewShipment extends AppCompatActivity {
+
+    public static List<Shipment>  POdetailslisttest=new ArrayList<>();
     ImportData importData;
     public static String boxnotag;
     public Button next;
@@ -102,6 +104,15 @@ public class NewShipment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_shipment);
+         //
+        Shipment shipment1=new Shipment();
+        shipment1.setItemname("ROYAL RED");
+        shipment1.setBarcode("6253349404082");
+        shipment1.setReceivedqty("ROYAL RED");
+        shipment1.setBoxNo("20");
+        POdetailslisttest.add(shipment1);
+
+         //
 
         my_dataBase= RoomAllData.getInstanceDataBase(NewShipment.this);
         init();
@@ -123,8 +134,8 @@ public class NewShipment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-                saveData();
+                checkboxvalidty();
+             saveData();
 
             }
 
@@ -150,8 +161,9 @@ public class NewShipment extends AppCompatActivity {
       findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-              shipmentList.clear();
-              adapter.notifyDataSetChanged();
+             if (shipmentList.size()!=0)
+             {shipmentList.clear();
+              adapter.notifyDataSetChanged();}
               save.setEnabled(false);
               barcode.setText("");
               qty.setText("1");
@@ -175,12 +187,12 @@ public class NewShipment extends AppCompatActivity {
                         boxno.requestFocus();
                         Log.e("newshipment","newshipment");
                         //  importData.getboxno(NewShipment.this, MainActivity.COMPANYNO,pono.getText().toString());
-                        importData.getboxno(NewShipment.this,"290", "6");
-                        importData.getPOdetails(NewShipment.this,"290", "6");
+                    //    importData.getboxno(NewShipment.this,"290", "6");
+                      //  importData.getPOdetails(NewShipment.this,"290", "6");
                         Log.e("newshipment","newshipment");
 
                         itemname.setText(importData.POdetailslist.get(0).getItemname());
-                        recQTY.setText(importData.POdetailslist.get(0).getReceived());
+                        recQTY.setText(importData.POdetailslist.get(0).getReceivedqty());
 
                         break;
                     case R.id.boxNotxt:
@@ -222,6 +234,8 @@ public class NewShipment extends AppCompatActivity {
         boxNo = boxno.getText().toString();
         barCode = barcode.getText().toString();
        Qty = qty.getText().toString();
+
+
         if( poNo.toString().trim().equals("")) pono.setError("required");
 
        else {
@@ -352,7 +366,7 @@ public class NewShipment extends AppCompatActivity {
 
         itemname=findViewById(R.id.Itemnametxt);
         recQTY=findViewById(R.id.recQtytxt);
-        importData.getboxno(NewShipment.this,"290", "6");
+
     }
 
     void search() {
@@ -642,14 +656,26 @@ public class NewShipment extends AppCompatActivity {
 
     private void checkboxvalidty() {
 
-        if(!importData.BoxNolist.contains(boxNo))
-            generalMethod.showSweetDialog(NewShipment.this, 3,"", "boxNO does not exists in this PO");
+
+       if(!importData.BoxNolist.contains(boxNo))
+         generalMethod.showSweetDialog(NewShipment.this, 3,"", "boxNO does not exists in this PO");
     }
     private boolean checkitemcodevalidty() {
+//
+        boolean flag = false;
+        for (int i = 0; i < importData.POdetailslist.size(); i++)
+        {
+            if (!importData.POdetailslist.get(i).getBarcode().equals(barcode.getText().toString()))
+            {
+                flag = false;
+                generalMethod.showSweetDialog(NewShipment.this, 3, "", "this item does not exists in this PO");
+                return true;
+            }
+            else {
+                flag= true;
+                break;
+            }
+      }
 
-        if(!importData.POdetailslist.contains( barcode.getText().toString()))
-            return false;
-        else
-            return true;
-    }
+        return  flag;  }
 }
