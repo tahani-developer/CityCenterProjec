@@ -15,6 +15,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -36,9 +37,9 @@ import static com.example.irbidcitycenter.Activity.AddZone.listAllZone;
 
 public class ImportData {
     private Context context;
-    public  String ipAddress="",CONO="",headerDll="",link="";
-    public RoomAllData my_dataBase;
     public  String ipAddress="",CONO="",headerDll="",link="",PONO="";
+    public RoomAllData my_dataBase;
+
     public static List<String> BoxNolist=new ArrayList<>();
     public static List<Shipment> POdetailslist=new ArrayList<>();
     public ImportData(Context context) {
@@ -53,13 +54,14 @@ public class ImportData {
     }
 
 
-    public void getboxno(Context context,String cono,String pono) {
+    public void getboxno() {
         Log.e("ingetboxno","ingetboxno");
-        new JSONTaskGetBoxNo(context,cono,pono).execute();
+        new JSONTask_getAllPOboxNO().execute();
     }
-    public void getPOdetails(Context context,String cono,String pono) {
+    public void getPOdetails() {
         Log.e("","");
-        new JSONTaskGetPOdetails(context,cono,pono).execute();
+        //new JSONTaskGetPOdetails(context,cono,pono).execute();
+        new JSONTask_getAllPOdetails().execute();
     }
 
     private void getIpAddress() {
@@ -83,7 +85,7 @@ public class ImportData {
 
     private class JSONTask_getAllZoneCode extends AsyncTask<String, String, JSONArray> {
 
-        private String custId = "",JsonResponse;
+        private String custId = "", JsonResponse;
 
         @Override
         protected void onPreExecute() {
@@ -99,8 +101,8 @@ public class ImportData {
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://"+ipAddress.trim()+headerDll.trim()+"/IrGetAllZone?CONO="+CONO.trim();
-                    Log.e("link",""+link);
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetAllZone?CONO=" + CONO.trim();
+                    Log.e("link", "" + link);
                 }
             } catch (Exception e) {
 
@@ -162,7 +164,7 @@ public class ImportData {
                 return null;
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("Exception",""+e.getMessage());
+                Log.e("Exception", "" + e.getMessage());
 //                progressDialog.dismiss();
                 return null;
             }
@@ -179,17 +181,16 @@ public class ImportData {
             JSONObject result = null;
             Log.e("onPostExecute", "" + array.length());
 
-            if (array != null&&array.length()!=0) {
+            if (array != null && array.length() != 0) {
                 Log.e("onPostExecute", "" + array.toString());
 
-                for(int i=0;i<array.length(); i++)
-                {
+                for (int i = 0; i < array.length(); i++) {
                     try {
-                        result=array.getJSONObject(i);
+                        result = array.getJSONObject(i);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    ZoneModel itemZone=new ZoneModel();
+                    ZoneModel itemZone = new ZoneModel();
                     try {
                         itemZone.setZoneCode(result.getString("ZONENO"));
                         itemZone.setZONENAME(result.getString("ZONENAME"));
@@ -199,10 +200,12 @@ public class ImportData {
                         e.printStackTrace();
                     }
                 }
-                Log.e("listAllZone",""+listAllZone.size());
+                Log.e("listAllZone", "" + listAllZone.size());
 
+            }
+        }
     }
-    private class JSONTaskGetBoxNo extends AsyncTask<String, String, String>{
+ private class JSONTaskGetBoxNo extends AsyncTask<String, String, String>{
         private Context context;
         private String Pono;
         private String Cono;
@@ -215,6 +218,7 @@ public class ImportData {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             Log.e("onPreExecute","onPreExecute");
         }
 
@@ -315,15 +319,12 @@ public class ImportData {
         }
 }
 
-    private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
+private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
         private Context context;
         private String Pono;
         private String Cono;
 
-            }
-        }
 
-    }
         public JSONTaskGetPOdetails(Context context, String pono, String cono) {
             this.context = context;
             Pono = pono;
@@ -435,7 +436,268 @@ public class ImportData {
 
 
         }
+
+
+
+
+
+        /////////
+        private class JSONTask_getAllPOdetails extends AsyncTask<String, String, JSONArray> {
+
+            private String custId = "", JsonResponse;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                String do_ = "my";
+
+            }
+
+            @Override
+            protected JSONArray doInBackground(String... params) {
+
+                try {
+                    if (!ipAddress.equals("")) {
+                        //http://localhost:8082/IrGetAllZone?CONO=290
+
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO=6&ITEMCODE=6253349404082";
+
+                        Log.e("link", "" + link);
+                    }
+                } catch (Exception e) {
+
+                }
+
+                try {
+
+                    //*************************************
+
+                    String JsonResponse = null;
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet();
+                    request.setURI(new URI(link));
+
+//
+
+                    HttpResponse response = client.execute(request);
+
+
+                    BufferedReader in = new BufferedReader(new
+                            InputStreamReader(response.getEntity().getContent()));
+
+                    StringBuffer sb = new StringBuffer("");
+                    String line = "";
+                    Log.e("finalJson***Import", sb.toString());
+
+                    while ((line = in.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    in.close();
+
+
+                    // JsonResponse = sb.toString();
+
+                    String finalJson = sb.toString();
+                    Log.e("finalJson***Import", finalJson);
+
+
+                    JSONArray parentObject = new JSONArray(finalJson);
+
+                    return parentObject;
+
+
+                }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+                catch (HttpHostConnectException ex) {
+                    ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+
+                            Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                    return null;
+                }
+
+
+                //***************************
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray array) {
+                super.onPostExecute(array);
+
+                JSONObject jsonObject1 = null;
+                Log.e("onPostExecute", "" + array.length());
+
+                if (array != null && array.length() != 0) {
+                    Log.e("onPostExecute", "" + array.toString());
+
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            jsonObject1 = array.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                      Shipment shipment=new Shipment();
+                        try {
+                            shipment.setBarcode(jsonObject1.getString("ItemOCode"));
+                            shipment.setQty(jsonObject1.getString("Qty"));
+                            shipment.setItemname(jsonObject1.getString("ItemNameA"));
+                            shipment.setBoxNo(jsonObject1.getString("BOXNO"));
+                            POdetailslist.add(shipment);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.size());
+
+                }
+            }
+        }
+
+
+
+
+    private class JSONTask_getAllPOboxNO extends AsyncTask<String, String, JSONArray> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    //http://localhost:8082/IrGetAllZone?CONO=290
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO=6";
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                JSONArray parentObject = new JSONArray(finalJson);
+
+                return parentObject;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray array) {
+            super.onPostExecute(array);
+
+            JSONObject jsonObject1 = null;
+            Log.e("onPostExecute", "" + array.length());
+
+            if (array != null && array.length() != 0) {
+                Log.e("onPostExecute", "" + array.toString());
+
+                for (int i = 0; i < array.length(); i++) {
+                    try {
+                        jsonObject1 = array.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+
+                        BoxNolist.add(jsonObject1.getString("BOXNO"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.e("    BoxNolist", "" +     BoxNolist.size());
+
+            }
+        }
     }
+
+
+
+
+
+
+}
 
 
 

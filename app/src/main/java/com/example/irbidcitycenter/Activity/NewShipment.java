@@ -61,7 +61,7 @@ import java.util.List;
 
 public class NewShipment extends AppCompatActivity {
 
-    public static List<Shipment>  POdetailslisttest=new ArrayList<>();
+
     ImportData importData;
     public static String boxnotag;
     public Button next;
@@ -75,7 +75,7 @@ public class NewShipment extends AppCompatActivity {
     public static String ponotag;
      static ArrayList<String> boxnumberslist;
     static ArrayList<String> ponumberslist;
-    String poNo;
+    public static String poNo;
     String boxNo;
     String barCode;
     String Qty;
@@ -104,16 +104,6 @@ public class NewShipment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_shipment);
-         //
-        Shipment shipment1=new Shipment();
-        shipment1.setItemname("ROYAL RED");
-        shipment1.setBarcode("6253349404082");
-        shipment1.setReceivedqty("ROYAL RED");
-        shipment1.setBoxNo("20");
-        POdetailslisttest.add(shipment1);
-
-         //
-
         my_dataBase= RoomAllData.getInstanceDataBase(NewShipment.this);
         init();
         save.setEnabled(false);
@@ -349,6 +339,7 @@ public class NewShipment extends AppCompatActivity {
     }
 
     private void init() {
+
         importData=new ImportData(NewShipment.this);
         next=findViewById(R.id.nextbox);
         pono = findViewById(R.id.poNotxt);
@@ -366,7 +357,8 @@ public class NewShipment extends AppCompatActivity {
 
         itemname=findViewById(R.id.Itemnametxt);
         recQTY=findViewById(R.id.recQtytxt);
-
+        importData.getPOdetails();
+        importData.getboxno();
     }
 
     void search() {
