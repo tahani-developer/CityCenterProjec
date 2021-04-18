@@ -22,20 +22,30 @@ public  class Shipment {
     String ShipmentTime;
     @ColumnInfo(name = "QTY")
     String Qty;
-    @ColumnInfo(name = "ISPOSTED")
+    @ColumnInfo(name = "ISPOSTED" ,defaultValue = "0")
     String IsPosted;
 
     @ColumnInfo(name = "ITEMNAME")
     String Itemname ;
-    @ColumnInfo(name = "RECEIVEDQTY")
-    String Receivedqty ;
+    @ColumnInfo(name = "PoQTY")
+    String Poqty;
 
-    public String getReceivedqty() {
-        return Receivedqty;
+    String Differ ;
+
+    public String getDiffer() {
+        return Differ;
     }
 
-    public void setReceivedqty(String received) {
-        Receivedqty = received;
+    public void setDiffer(String differ) {
+        Differ = differ;
+    }
+
+    public String getPoqty() {
+        return Poqty;
+    }
+
+    public void setPoqty(String poqty) {
+        Poqty = poqty;
     }
 
     public String getItemname() {

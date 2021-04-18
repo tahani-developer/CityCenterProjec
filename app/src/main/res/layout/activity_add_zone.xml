@@ -207,7 +207,7 @@
                         android:layout_weight="1"
                         android:layout_marginRight="5dp"
                         android:layout_height="25dp"
-                        android:text="@string/qty"
+                        android:text="@string/recQty"
 
                         android:elevation="2dp"
                         android:padding="3dp"
@@ -310,7 +310,7 @@
                         />
 
                     <TextView
-                        android:text="@string/qty"
+                        android:text="@string/recQty"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:layout_width="0dp"

@@ -12,7 +12,8 @@
     <string name="to">إلى</string>
     <string name="pono">رقم الطلبية</string>
     <string name="savedSuccsesfule">تم الحفظ بنجاح</string>
-    <string name="qty">الكمية</string>
+    <string name="Poqty">الكمية الأصلية</string>
+    <string name="notvaildqty">لا توجد كمية كافية</string>
     <string name="action_sign_in_short">تسجيل دخول</string>
     <string name="login_failed">فشل تسجيل الدخول</string>
     <string name="save">حفظ</string>
@@ -38,6 +39,13 @@
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
     <string name="ZoneName">ZoneName</string>
+    <string name="finish">إنهاء</string>
+    <string name="recQty">الكمية المدخلة</string>
+    <string name="Itemname">إسم المادة</string>
+    <string name="Differ">الفرق</string>
+    <string name="Arabic">عربي</string>
+    <string name="boxnovalidate">الصندوق غير موجود بهذه الطلبية</string>
+    <string name="barcodevalidate">المادة غير موجودة بهذه الطلبية</string>
     <string name="confirm_title">تأكيد</string>
     <string name="messageExit">هل تريد الخروج؟</string>
     <string name="ok">نعم</string>
