@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import com.example.irbidcitycenter.Models.Shipment;
@@ -34,14 +35,21 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import static com.example.irbidcitycenter.Activity.AddZone.listAllZone;
+import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
+import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
+import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
+
 
 public class ImportData {
+    public  static String itemn;
+    public  static String poqty;
     private Context context;
-    public  String ipAddress="",CONO="",headerDll="",link="",PONO="";
+    public  String ipAddress="",CONO="",headerDll="",link="";
     public RoomAllData my_dataBase;
 
     public static List<String> BoxNolist=new ArrayList<>();
     public static List<Shipment> POdetailslist=new ArrayList<>();
+    public ImportData(){}
     public ImportData(Context context) {
         this.context = context;
         my_dataBase= RoomAllData.getInstanceDataBase(context);
@@ -59,8 +67,9 @@ public class ImportData {
         new JSONTask_getAllPOboxNO().execute();
     }
     public void getPOdetails() {
-        Log.e("","");
+        Log.e("getPOdetails","getPOdetails");
         //new JSONTaskGetPOdetails(context,cono,pono).execute();
+
         new JSONTask_getAllPOdetails().execute();
     }
 
@@ -179,7 +188,7 @@ public class ImportData {
             super.onPostExecute(array);
 
             JSONObject result = null;
-            Log.e("onPostExecute", "" + array.length());
+
 
             if (array != null && array.length() != 0) {
                 Log.e("onPostExecute", "" + array.toString());
@@ -205,237 +214,7 @@ public class ImportData {
             }
         }
     }
- private class JSONTaskGetBoxNo extends AsyncTask<String, String, String>{
-        private Context context;
-        private String Pono;
-        private String Cono;
-        public JSONTaskGetBoxNo( Context context, String pono,String cono) {
-            this.context=context;
-            this.Pono=pono;
-            this.Cono=cono;
 
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            Log.e("onPreExecute","onPreExecute");
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            try {
-
-                ipAddress = "10.0.0.22:8082/IrGetBOXNO?";
-                if (!ipAddress.equals("")) {
-                    link = "http://" + ipAddress;
-                    Log.e("doInBackground","doInBackground");
-                }
-            } catch (Exception e) {
-
-            }
-
-            try {
-                Log.e(" try"," try");
-                String JsonResponse = null;
-                HttpClient client = new DefaultHttpClient();
-                HttpPost request = new HttpPost();
-                request.setURI(new URI(link));
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
-                nameValuePairs.add(new BasicNameValuePair("PONO", Pono));
-                nameValuePairs.add(new BasicNameValuePair("COMPANYNO", Cono));
-                Log.e("Pono",Pono);
-                request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-                HttpResponse response = client.execute(request);
-                BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                StringBuffer sb = new StringBuffer("");
-                String line = "";
-
-                while ((line = in.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                in.close();
-
-
-                JsonResponse = sb.toString();
-                return JsonResponse;
-
-
-            } catch (HttpHostConnectException ex) {
-                ex.printStackTrace();
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
-                    public void run() {
-
-                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-                return null;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                if (s != null) {
-                    if (s.contains("RESULT")) {
-
-                        JSONObject jsonObject = null;
-
-                            jsonObject = new JSONObject(s);
-                            JSONArray jsonArray = jsonObject.getJSONArray("RESULT");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                BoxNolist.add(jsonObject1.getString("BOXNO"));
-                            }
-
-
-
-                    } else {
-
-                    }
-
-                }
-                else {
-
-                }
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-}
-
-private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
-        private Context context;
-        private String Pono;
-        private String Cono;
-
-
-        public JSONTaskGetPOdetails(Context context, String pono, String cono) {
-            this.context = context;
-            Pono = pono;
-            Cono = cono;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-
-                ipAddress = "10.0.0.22:8082/IrGetItemInfo?";
-                if (!ipAddress.equals("")) {
-                    link = "http://" + ipAddress;
-                }
-            } catch (Exception e) {
-
-            }
-
-            try {
-
-                String JsonResponse = null;
-                HttpClient client = new DefaultHttpClient();
-                HttpPost request = new HttpPost();
-                request.setURI(new URI(link));
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
-                nameValuePairs.add(new BasicNameValuePair("PONO", Pono));
-                nameValuePairs.add(new BasicNameValuePair("COMPANYNO", Cono));
-                request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-                HttpResponse response = client.execute(request);
-                BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                StringBuffer sb = new StringBuffer("");
-                String line = "";
-
-                while ((line = in.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                in.close();
-
-
-                JsonResponse = sb.toString();
-                return JsonResponse;
-
-
-            } catch (HttpHostConnectException ex) {
-                ex.printStackTrace();
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
-                    public void run() {
-
-                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-                return null;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                if (s != null) {
-                    if (s.contains("RESULT")) {
-
-                        JSONObject jsonObject = null;
-
-                        jsonObject = new JSONObject(s);
-                        JSONArray jsonArray = jsonObject.getJSONArray("RESULT");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                            Shipment shipment=new Shipment();
-                            shipment.setBarcode(jsonObject1.getString("ItemOCode"));
-                            shipment.setQty(jsonObject1.getString("Qty"));
-                            shipment.setItemname(jsonObject1.getString("ItemNameA"));
-                            shipment.setBoxNo(jsonObject1.getString("BOXNO"));
-
-                            POdetailslist.add(shipment);
-                        }
-
-
-
-                    } else {
-
-                    }
-
-                }
-                else {
-
-                }
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-
-
-        }
 
 
 
@@ -460,7 +239,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                     if (!ipAddress.equals("")) {
                         //http://localhost:8082/IrGetAllZone?CONO=290
 
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO=6&ITEMCODE=6253349404082";
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo+"&ITEMCODE=6253349404082";
 
                         Log.e("link", "" + link);
                     }
@@ -539,7 +318,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                 super.onPostExecute(array);
 
                 JSONObject jsonObject1 = null;
-                Log.e("onPostExecute", "" + array.length());
+
 
                 if (array != null && array.length() != 0) {
                     Log.e("onPostExecute", "" + array.toString());
@@ -553,7 +332,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                       Shipment shipment=new Shipment();
                         try {
                             shipment.setBarcode(jsonObject1.getString("ItemOCode"));
-                            shipment.setQty(jsonObject1.getString("Qty"));
+                            shipment.setPoqty(jsonObject1.getString("Qty"));
                             shipment.setItemname(jsonObject1.getString("ItemNameA"));
                             shipment.setBoxNo(jsonObject1.getString("BOXNO"));
                             POdetailslist.add(shipment);
@@ -561,7 +340,16 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                             e.printStackTrace();
                         }
                     }
+                    itemname.setText(POdetailslist.get(0).getItemname());
+                    PoQTY.setText(POdetailslist.get(0).getPoqty());
+                    poqty=POdetailslist.get(0).getPoqty();
+                    //
+
+
+
                     Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.size());
+                    Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.get(0).getItemname());
+
 
                 }
             }
@@ -588,7 +376,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO=6";
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo;
 
                     Log.e("link", "" + link);
                 }
@@ -667,7 +455,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-            Log.e("onPostExecute", "" + array.length());
+
 
             if (array != null && array.length() != 0) {
                 Log.e("onPostExecute", "" + array.toString());
@@ -687,6 +475,7 @@ private class JSONTaskGetPOdetails extends AsyncTask<String, String, String>{
                     }
                 }
                 Log.e("    BoxNolist", "" +     BoxNolist.size());
+                Log.e("    BoxNolist", "" +     BoxNolist.get(0));
 
             }
         }

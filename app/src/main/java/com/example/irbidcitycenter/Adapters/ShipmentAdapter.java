@@ -2,6 +2,8 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.http.DelegatingSSLSession;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +16,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.irbidcitycenter.Activity.NewShipment;
+import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Models.Shipment;
 
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
+import static com.example.irbidcitycenter.Activity.NewShipment.updateAdpapter;
+
+
 public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder > {
     private List<Shipment> list;
     Context shipment;
+    public static String newqty, oldqty,olddif;
+    public static int sum = 10;
 
     public ShipmentAdapter(Context shipment, List<Shipment> list) {
         this.list = list;
@@ -40,10 +49,15 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
         holder.ponotxt.setText(list.get(position).getPoNo());
         holder.barcodetxt.setText(list.get(position).getBarcode());
         holder.boxnotxt.setText(list.get(position).getBoxNo());
-        holder.qtytxt.setText(list.get(position).getQty()+"");
-      holder.rmovetxt.setTag(position);
+        holder.qtytxt.setText(list.get(position).getQty() + "");
+
+       holder.diff.setText(list.get(position).getDiffer());
+        holder.rmovetxt.setTag(position);
         holder.qtytxt.setTag(position);
+        newqty = list.get(position).getQty();
+        oldqty = list.get(position).getQty();
     }
+
     public void removeItem(int position) {
         list.remove(position);
         notifyItemRemoved(position);
@@ -54,31 +68,36 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
         return list.size();
     }
 
-    class ShipmentViewHolder extends RecyclerView.ViewHolder{
-        TextView ponotxt,boxnotxt,barcodetxt,rmovetxt;
-        String newqty;
+    class ShipmentViewHolder extends RecyclerView.ViewHolder {
+        TextView ponotxt, boxnotxt, barcodetxt, rmovetxt, diff;
+
         EditText qtytxt;
+
         public ShipmentViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            ponotxt=itemView.findViewById(R.id.pono);
-            boxnotxt=itemView.findViewById(R.id.boxno);
-            barcodetxt=itemView.findViewById(R.id.barcode);
-            qtytxt=itemView.findViewById(R.id.tbl_qty);
+            ponotxt = itemView.findViewById(R.id.pono);
+            boxnotxt = itemView.findViewById(R.id.boxno);
+            barcodetxt = itemView.findViewById(R.id.barcode);
+            qtytxt = itemView.findViewById(R.id.tbl_qty);
             qtytxt.setOnEditorActionListener(onEditAction);
-            rmovetxt=itemView.findViewById(R.id.remove);
+            rmovetxt = itemView.findViewById(R.id.remove);
+            diff = itemView.findViewById(R.id.differ);
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final String tag= rmovetxt.getTag().toString();
-
+                    final String tag = rmovetxt.getTag().toString();
                     final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.delete_entry);
                     dialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
+                            sum += Integer.parseInt(list.get(Integer.parseInt(tag)).getQty());
+                            Log.e("on remove click",sum+"");
                             removeItem(Integer.parseInt(tag));
+                            PoQTY.setText(sum + "");
                             dialog.dismiss();
 
                         }
@@ -86,36 +105,13 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                     dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                          dialog.dismiss();
+                            dialog.dismiss();
 
                         }
                     });
 
                     dialog.show();
                     dialog.setCanceledOnTouchOutside(true);
-                    /*qtytxt.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            Log.e("aaaaaaaaaaaaaaaaa", qtytxt.getText().toString());
-                            Toast.makeText(shipment,qtytxt.getText().toString(),Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            newqty=qtytxt.getText().toString();
-                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(Integer.parseInt(newqty));
-
-                            Toast.makeText(shipment,list.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),Toast.LENGTH_LONG).show();
-                            Log.e(list.get(Integer.parseInt(qtytxt.getTag().toString())).getQty()+"", "*****");
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-
-                        }
-                    });*/
-
-
 
 
                 }
@@ -123,6 +119,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
 
         }
+
         EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -131,9 +128,17 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                     switch (textView.getId()) {
                         case R.id.tbl_qty:
 
-                            newqty=qtytxt.getText().toString();
+                            oldqty =NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
+                            olddif =NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
+                            Log.e("oldqty", oldqty);
+                            sum+=Integer.parseInt(oldqty);
+                            newqty = qtytxt.getText().toString();
+                            Log.e("newqty",  newqty);
                             NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
-                            break;
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(sum-Integer.parseInt(newqty)));
+                            sum-=Integer.parseInt(newqty);
+                            PoQTY.setText(sum+"");
+                            updateAdpapter();
                     }
 
                 }
@@ -141,6 +146,41 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                 return true;
             }
         };
+
     }
+
+   /* public int getDifferentQTY() {//int sum=ImportData.POdetailslist.get(0).getReceivedqty())
+        if (NewShipment.updateflage == 1) {
+            sum-= Integer.parseInt(newqty);
+            Log.e("getDifferentQTY()  sum", String.valueOf(sum));
+            Log.e("getDifferentQTY()  newqty", newqty);
+
+            PoQTY.setText(sum + "");
+            return sum;
+
+        } else {
+
+            return sum;
+        }
+
+
+    }
+    */
+
+
+ /*  public int minusPOQTY(){
+       sum-= Integer.parseInt(newqty);
+       Log.e("getDifferentQTY()  sum", String.valueOf(sum));
+
+
+       PoQTY.setText(sum + "");
+       Log.e("getDifferentQTY()  newqty", String.valueOf(newqty));
+       return sum;
+   }**/
+
+
+
+
+
 
 }
