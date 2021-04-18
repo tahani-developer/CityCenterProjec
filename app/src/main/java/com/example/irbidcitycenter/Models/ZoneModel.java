@@ -1,8 +1,13 @@
 package com.example.irbidcitycenter.Models;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity(tableName = "ZONETABLE")
 public class ZoneModel {
@@ -118,4 +123,19 @@ public class ZoneModel {
         this.qty = qty;
     }
 
+    public JSONObject getJSONObjectDelphi() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("ZONENO", zoneCode);
+            obj.put("ITEMCODE", itemCode);
+            obj.put("QTY", qty);
+            obj.put("TRDATE", zoneDate);
+            obj.put("TRTIME", zoneTime);
+
+
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
+    }
 }

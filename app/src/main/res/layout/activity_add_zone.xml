@@ -67,7 +67,7 @@
                         android:id="@+id/scanZoneCode"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"
@@ -78,6 +78,17 @@
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"
                         android:drawableRight="@drawable/ic_scan_black_24dp" />
+                    <TextView
+                        android:id="@+id/zoneSearch"
+
+                        android:onClick="showZoneDialog"
+                        android:drawableEnd="@drawable/ic_baseline_search_24"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:gravity="top">
+
+                    </TextView>
 
                 </LinearLayout>
                 <LinearLayout
@@ -213,10 +224,23 @@
                         android:background="@drawable/back_border_edit"
                         android:elevation="2dp"
                         android:maxLines="1"
+                        android:inputType="number"
                         android:padding="3dp"
                         android:gravity="center"
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"  />
+                    <EditText
+                        android:id="@+id/itemKintText"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:visibility="gone"
+                        android:layout_height="1dp" />
+                    <EditText
+                        android:id="@+id/exportStateText"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:visibility="gone"
+                        android:layout_height="1dp" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -368,6 +392,7 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="3dp"
                     android:padding="3dp"
+                    android:onClick="exitAddZone"
                     android:layout_marginRight="55dp"
                     android:textSize="16sp"
                     android:textColor="@color/red"

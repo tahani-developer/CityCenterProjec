@@ -31,9 +31,11 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import com.google.gson.Gson;
 
+import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
+import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 import static com.example.irbidcitycenter.Activity.AddZone.listAllZone;
+import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 
 public class ImportData {
     private Context context;
@@ -55,7 +57,6 @@ public class ImportData {
 
 
     public void getboxno() {
-        Log.e("ingetboxno","ingetboxno");
         new JSONTask_getAllPOboxNO().execute();
     }
     public void getPOdetails() {
@@ -81,6 +82,143 @@ public class ImportData {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void getKindItem(String itemNo) {
+        if(!ipAddress.equals(""))
+        {
+            new JSONTask_getItemKind(itemNo).execute();
+        }
+        else {
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public class JSONTask_getItemKind extends AsyncTask<String, String, String> {
+
+        private String itemNo = "", JsonResponse;
+
+        public JSONTask_getItemKind(String itemNo) {
+            this.itemNo = itemNo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                 //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+itemNo.trim();
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+                HttpResponse response = client.execute(request);
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", "itemNo"+finalJson);
+
+
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.e("onPostExecute", ""+result );
+            if (result != null ) {
+                validateKind=false;
+                if (result.contains("ITEMTYPE")) {
+                    try {
+                        ZoneModel requestDetail=new ZoneModel();
+                        JSONArray requestArray = null;
+                        requestArray =  new JSONArray(result);
+                        Log.e("requestArray", "" + requestArray.length());
+
+
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            JSONObject infoDetail = requestArray.getJSONObject(i);
+                            requestDetail = new ZoneModel();
+                            requestDetail.setZONETYPE(infoDetail.get("ITEMTYPE").toString());
+                            requestDetail.setZoneCode(infoDetail.get("ITEMCODE").toString());
+                            requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
+
+                        }
+                        itemKind=requestDetail.getZONETYPE();
+                        itemKintText.setText(itemKind);
+
+
+                    } catch (JSONException e) {
+//                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    itemKintText.setText("NOTEXIST");
+                }
+                    Log.e("onPostExecute", "NotFound" + result.toString());
+
+
+
+
+            }
+        }
     }
 
     private class JSONTask_getAllZoneCode extends AsyncTask<String, String, JSONArray> {
@@ -179,7 +317,6 @@ public class ImportData {
             super.onPostExecute(array);
 
             JSONObject result = null;
-            Log.e("onPostExecute", "" + array.length());
 
             if (array != null && array.length() != 0) {
                 Log.e("onPostExecute", "" + array.toString());

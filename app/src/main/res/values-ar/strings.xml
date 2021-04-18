@@ -38,4 +38,10 @@
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
     <string name="ZoneName">ZoneName</string>
+    <string name="confirm_title">تأكيد</string>
+    <string name="messageExit">هل تريد الخروج؟</string>
+    <string name="ok">نعم</string>
+    <string name="warning">Warning</string>
+    <string name="fillYourList">Fill Your List !!</string>
+    <string name="invaledZero">Invaled Zero</string>
 </resources>

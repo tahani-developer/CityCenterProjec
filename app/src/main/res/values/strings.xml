@@ -62,6 +62,12 @@
         </string-array>
     <string name="Arabic">ar</string>
     <string name="ZoneName">Zone Name</string>
+    <string name="confirm_title">Confirm</string>
+    <string name="messageExit">Are You Sure To Exit ?</string>
+    <string name="ok">OK</string>
+    <string name="warning">Warning</string>
+    <string name="fillYourList">Fill Your List !!</string>
+    <string name="invaledZero">Invaled Zero</string>
 
 
 </resources>

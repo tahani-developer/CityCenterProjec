@@ -31,7 +31,7 @@ public class GeneralMethod {
                         .setContentText(content)
                         .show();
                 break;
-            case 3://Error Type
+            case 3://warning Type
                 new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText(title)
                         .setContentText(content)
@@ -95,6 +95,19 @@ public class GeneralMethod {
         }
         else {
             editText.setError(myContext.getResources().getString(R.string.reqired_filled));
+            editText.requestFocus();
+            return false;
+        }
+
+    }
+    public boolean validateNotZero(EditText editText) {
+        if(!editText.getText().toString().equals("0") &&Integer.parseInt(editText.getText().toString().trim())!=0)
+        {
+            editText.setError(null);
+            return true;
+        }
+        else {
+            editText.setError(myContext.getResources().getString(R.string.invaledZero));
             editText.requestFocus();
             return false;
         }

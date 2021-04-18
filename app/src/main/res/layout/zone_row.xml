@@ -43,6 +43,7 @@
             android:background="@drawable/qtyedittext"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:inputType="number"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             android:layout_weight="1"

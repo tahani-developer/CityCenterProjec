@@ -7,11 +7,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
 
@@ -23,9 +25,11 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     private List<ZoneModel> list;
     Context context;
     String newqty;
+    GeneralMethod generalMethod;
     public ZoneAdapter(Context context, List<ZoneModel> list) {
         this.list = list;
         this.context = context;
+        generalMethod=new GeneralMethod(context);
     }
 
     @NonNull
@@ -53,7 +57,8 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     }
 
     class ZoneViewHolder extends RecyclerView.ViewHolder{
-      public   TextView zoneCode,itemCode,qty,rmovetxt;
+      public   TextView zoneCode,itemCode,rmovetxt;
+      public EditText qty;
         public ZoneViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -82,6 +87,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
                     if((editable.toString().trim().length()!=0)&&(!position.toString().trim().equals("")))
                     {
+                        if(generalMethod.validateNotZero(qty))
                         updateQtyList(editable.toString().trim(),position);
                     }
 

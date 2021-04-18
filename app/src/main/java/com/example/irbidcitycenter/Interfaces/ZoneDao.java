@@ -35,4 +35,7 @@ public interface ZoneDao {
 
     @Query("SELECT * FROM ZONETABLE where  SERIALZONE IN(:Itemid) ")
     public  List<ZoneModel> getZonebyId(int Itemid);
+
+// @Query("update  ZONETABLE  set ISPOSTED =1 where  ZONECODE = zoneCode ")
+// public  void updateZoneIsPosted(String zoneCode);
 }
