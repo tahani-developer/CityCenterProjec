@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.irbidcitycenter.Adapters.ShipmentAdapter.sum;
-
+import static com.example.irbidcitycenter.ImportData.posize;
 
 
 public class NewShipment extends AppCompatActivity {
@@ -101,6 +101,14 @@ public class NewShipment extends AppCompatActivity {
         init();
         save.setEnabled(false);
     pono.requestFocus();
+    ///
+    boxno.setEnabled(false);
+       barcode.setEnabled(false);
+        qty.setEnabled(false);
+    ////
+
+
+
       /*  searchView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,6 +129,15 @@ public class NewShipment extends AppCompatActivity {
              saveData();
                 importData.BoxNolist.clear();
                 importData.POdetailslist.clear();
+
+
+                pono.requestFocus();
+                ///
+                boxno.setEnabled(false);
+                barcode.setEnabled(false);
+                qty.setEnabled(false);
+                ////
+                
             }
 
         });
@@ -129,12 +146,18 @@ public class NewShipment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                boxno.setEnabled(true);
-                boxno.requestFocus();
+
+
                 boxno.setText("");
                 barcode.setText("");
                 qty.setText("1");
+                ///
                 pono.setEnabled(false);
+                boxno.setEnabled(true);
+                barcode.setEnabled(false);
+                boxno.requestFocus();
+                qty.setEnabled(false);
+                ////
                 searchView1.setEnabled(false);
                 searchView2.setEnabled(true);
 
@@ -170,10 +193,16 @@ public class NewShipment extends AppCompatActivity {
                     switch (textView.getId()) {
                         case R.id.poNotxt:
                             getDataPo();
-                            boxno.requestFocus();
-
+                            ///
+                           if(posize>0)
+                            {
+                                boxno.setEnabled(true);
+                                boxno.requestFocus();
+                            }
                             break;
                         case R.id.boxNotxt:
+                            barcode.setEnabled(true);
+
                             Log.e("    BoxNolist", "" +     importData.BoxNolist.size());
                             checkboxvalidty();
                             barcode.requestFocus();
@@ -182,6 +211,7 @@ public class NewShipment extends AppCompatActivity {
                         case R.id.barCodetxt:
                             if (checkitemcodevalidty())
                             {
+                                qty.setEnabled(true);
                                 qty.requestFocus();
                                 break;
                                 //next.setEnabled(true);
@@ -210,8 +240,8 @@ public class NewShipment extends AppCompatActivity {
                              next.setEnabled(true);
                         }
 
-
-
+                            barcode.requestFocus();
+                            qty.setEnabled(false);
 
                             break;
 

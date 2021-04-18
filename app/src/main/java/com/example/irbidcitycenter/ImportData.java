@@ -43,6 +43,7 @@ import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
 
 
 public class ImportData {
+    public static int posize;
     public  static String itemn;
     public  static String poqty;
     private Context context;
@@ -487,6 +488,7 @@ public class ImportData {
 
 
                     Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.size());
+                  posize= POdetailslist.size();
                     Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.get(0).getItemname());
 
 
