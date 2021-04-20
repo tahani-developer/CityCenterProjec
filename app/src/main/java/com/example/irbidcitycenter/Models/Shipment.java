@@ -1,8 +1,13 @@
 package com.example.irbidcitycenter.Models;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -129,5 +134,25 @@ public  class Shipment {
     public void setQty(String qty) {
         Qty = qty;
     }
+    public JSONObject getJSONObjectDelphi() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("PONO", PoNo);
+            obj.put("BOXNO", BoxNo);
+            obj.put("ITEMCODE", Barcode);
+            obj.put("SHIPMENTDATE", ShipmentDate);
+            obj.put("SHIPMENTTIME", ShipmentTime);
+            obj.put("QTY", Qty);
+            obj.put("ISPOSTED", IsPosted);
+            obj.put("ITEMNAME", Itemname);
+            obj.put("POQTY", Poqty);
 
+
+
+
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
+    }
 }

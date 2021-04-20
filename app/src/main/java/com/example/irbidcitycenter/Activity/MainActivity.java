@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
+import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String COMPANYNO;
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
-
+ImportData importData;
     public RoomAllData my_dataBase;
     List<appSettings> appSettings;
 
@@ -58,12 +59,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initial();
+        getStors();
+
         my_dataBase= RoomAllData.getInstanceDataBase(MainActivity.this);
 
 
     }
 
+    private void getStors() {
+        importData.getStore();
+    }
+
     private void initial() {
+        importData=new ImportData(MainActivity.this);
         drawerLayout = findViewById(R.id.main_drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         setupDrawerContent(navigationView);
@@ -81,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         replacmentlinear=findViewById(R.id.Replacmentlinear);
         replacmentlinear.setOnClickListener(onClickListener);
         exportData=new ExportData(MainActivity.this);
+
+
+
+
     }
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override

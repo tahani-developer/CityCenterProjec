@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import org.apache.http.HttpResponse;
@@ -40,6 +43,10 @@ public class ExportData {
     public RoomAllData my_dataBase;
     SweetAlertDialog pdVoucher;
     JSONObject vouchersObject;
+    JSONObject ShipmentObject;
+    JSONObject ReplacmentObject;
+    private JSONArray jsonArrayShipment;
+    private JSONArray jsonArrayReplacement;
     private JSONArray jsonArrayVouchers;
     public  List<NewShipment> listAllShipment   =new ArrayList<>();
     public  List<Replacement> listAllReplacment =new ArrayList<>();
@@ -62,6 +69,20 @@ public class ExportData {
 
 
     }
+    public void exportReplacementList(ArrayList<ReplacementModel>replacementlist) {
+        getReplacmentObject(replacementlist);
+        pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdVoucher.setTitleText(" Start export Vouchers");
+        pdVoucher.setCancelable(false);
+        pdVoucher.show();
+
+        new JSONTask_AddReplacment(replacementlist).execute();
+    }
+    private void  getReplacmentObject(ArrayList<ReplacementModel>replacementlist) {
+        jsonArrayReplacement = new JSONArray();
+        for (int i = 0; i < replacementlist.size(); i++)
+        {
     public void exportAllUnposted(List<ZoneModel> listZone, List<NewShipment> listShipment, List<Replacement> listReplacment){
         exportZoneList(listZone,2);
         listAllShipment=listShipment;
@@ -70,6 +91,18 @@ public class ExportData {
 
     public void exportZoneList(List<ZoneModel> listZone,int type) {
         typeExportZone=type;
+            jsonArrayReplacement.put(replacementlist.get(i).getJSONObjectDelphi());
+
+        }
+        try {
+            ReplacmentObject=new JSONObject();
+            ReplacmentObject.put("JSN",jsonArrayReplacement);
+            Log.e("vouchersObject",""+ReplacmentObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void exportZoneList(ArrayList<ZoneModel> listZone) {
         getZoneObject(listZone);
         pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -192,6 +225,7 @@ public class ExportData {
         @Override
         protected void onPostExecute(final String result) {
             super.onPostExecute(result);
+//            progressDialog.dismiss();
             Log.e("onPostExecute",""+result);
             pdVoucher.dismissWithAnimation();
             if (result != null && !result.equals("")) {
@@ -199,7 +233,7 @@ public class ExportData {
                 {
                     if(typeExportZone==1)
                     {
-                        exportStateText.setText("exported");   
+                        exportStateText.setText("exported");
                     }
                     else {
                         if(typeExportZone==2)
@@ -209,7 +243,7 @@ public class ExportData {
 
                         }
                     }
-                   
+
 
 
                 }else {
@@ -235,3 +269,224 @@ public class ExportData {
         my_dataBase.replacementDao().updateReplacmentPosted();
     }
 }
+
+
+
+    public void exportShipmentsList(ArrayList<Shipment> listShipment) {
+        Log.e("exportShipmentsList","exportShipmentsList");
+        getShipmentObject(listShipment);
+        pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdVoucher.setTitleText(" Start export shipments");
+        pdVoucher.setCancelable(false);
+        pdVoucher.show();
+
+        new JSONTask_AddShipments(listShipment).execute();
+    }
+
+
+    private void getShipmentObject(ArrayList<Shipment> listShipment) {
+        Log.e("getShipmentObject","getShipmentObject");
+        jsonArrayShipment = new JSONArray();
+        for (int i = 0; i < listShipment.size(); i++)
+        {
+
+            jsonArrayShipment.put(listShipment.get(i).getJSONObjectDelphi());
+            Log.e("list elements",""+listShipment.get(i).getJSONObjectDelphi());
+
+        }
+        try {
+            ShipmentObject=new JSONObject();
+            ShipmentObject.put("JSN",jsonArrayShipment);
+            Log.e("ShipmentObject",""+ShipmentObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class JSONTask_AddShipments extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+        ArrayList<Shipment> shipmentList=new ArrayList<>();
+
+
+        public JSONTask_AddShipments(ArrayList<Shipment> shipmentList) {
+            this.shipmentList = shipmentList;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            URLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    //http://localhost:8082/ExportIrNEWSHIPMENT?CONO=290&JSONSTR={"JSN":[{"PONO":60,"BOXNO":150,"ITEMCODE":123456,"ITEMNAME":"AAAAA",
+                    // "SHIPMENTTIME":"10:30","SHIPMENTDATE":"01/04/2021","QTY":15,"POQTY":10,"ISPOSTED":0},{"PONO":60,"BOXNO":150,
+                    // "ITEMCODE":7894566,"ITEMNAME":"BBBB","SHIPMENTTIME":"11:30",
+                    // "SHIPMENTDATE":"01/04/2021","QTY":20,"POQTY":30,"ISPOSTED":0}]}
+
+                    link = "http://"+ipAddress.trim()+headerDll.trim()+"/ExportIrNEWSHIPMENT";
+
+
+
+                    Log.e("URL_TO_HIT",""+link);
+                }
+            } catch (Exception e) {
+                //progressDialog.dismiss();
+
+            }
+
+            try {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost request = new HttpPost();
+                try {
+                    request.setURI(new URI(link));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
+                nameValuePairs.add(new BasicNameValuePair("JSONSTR", ShipmentObject.toString().trim()));
+                request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                HttpResponse response = client.execute(request);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                JsonResponse = sb.toString();
+                Log.e("JsonResponse", "Exporship" + JsonResponse);
+
+
+            }
+            catch (Exception e) {
+            }
+            return JsonResponse ;
+    }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            super.onPostExecute(result);
+//            progressDialog.dismiss();
+            Log.e("onPostExecute",""+result);
+            pdVoucher.dismissWithAnimation();
+
+        }
+}
+
+
+
+  public class  JSONTask_AddReplacment extends AsyncTask<String, String, String> {
+      private String JsonResponse = null;
+
+      ArrayList<ReplacementModel> replacementList=new ArrayList<>();
+
+      public JSONTask_AddReplacment(ArrayList<ReplacementModel> replacementList) {
+          this.replacementList = replacementList;
+      }
+
+      @Override
+      protected void onPreExecute() {
+          super.onPreExecute();
+
+
+      }
+      @Override
+      protected String doInBackground(String... strings) {
+
+
+          URLConnection connection = null;
+          BufferedReader reader = null;
+
+          try {
+              if (!ipAddress.equals("")) {
+
+                  http://localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
+                  link = "http://"+ipAddress.trim()+headerDll.trim()+"/IrTransFer";
+
+
+
+                  Log.e("URL_TO_HIT",""+link);
+              }
+          } catch (Exception e) {
+              //progressDialog.dismiss();
+
+          }
+
+          try {
+              HttpClient client = new DefaultHttpClient();
+              HttpPost request = new HttpPost();
+              try {
+                  request.setURI(new URI(link));
+              } catch (URISyntaxException e) {
+                  e.printStackTrace();
+              }
+
+
+              List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+              nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
+              nameValuePairs.add(new BasicNameValuePair("JSONSTR", ReplacmentObject.toString().trim()));
+              Log.e("JSONSTR",ReplacmentObject.toString());
+              request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+              HttpResponse response = client.execute(request);
+
+              BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+              StringBuffer sb = new StringBuffer("");
+              String line = "";
+
+              while ((line = in.readLine()) != null) {
+                  sb.append(line);
+              }
+
+              in.close();
+
+
+              JsonResponse = sb.toString();
+              Log.e("JsonResponse", "Expor Replacement" + JsonResponse);
+
+
+          }
+          catch (Exception e) {
+          }
+          return JsonResponse ;
+      }
+
+      @Override
+      protected void onPostExecute(final String result) {
+          super.onPostExecute(result);
+//            progressDialog.dismiss();
+          Log.e("onPostExecute",""+result);
+          pdVoucher.dismissWithAnimation();
+
+
+      }
+
+  }
+
+
+
+
+
+
+
+}
+
+
