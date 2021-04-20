@@ -33,7 +33,7 @@ public interface ReplacementDao {
 
     @Query("SELECT * FROM REPLACEMENT_TABLE where ISPOSTED = :s")
     List<Replacement> getUnpostedReplacement(String s);
-
-    @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
-    void updateReplacmentPosted();
+//
+//    @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
+//    void updateReplacmentPosted();
 }

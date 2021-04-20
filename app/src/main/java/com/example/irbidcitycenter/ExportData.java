@@ -83,14 +83,7 @@ public class ExportData {
         jsonArrayReplacement = new JSONArray();
         for (int i = 0; i < replacementlist.size(); i++)
         {
-    public void exportAllUnposted(List<ZoneModel> listZone, List<NewShipment> listShipment, List<Replacement> listReplacment){
-        exportZoneList(listZone,2);
-        listAllShipment=listShipment;
-        listAllReplacment=listReplacment;
-    }
 
-    public void exportZoneList(List<ZoneModel> listZone,int type) {
-        typeExportZone=type;
             jsonArrayReplacement.put(replacementlist.get(i).getJSONObjectDelphi());
 
         }
@@ -102,7 +95,14 @@ public class ExportData {
             e.printStackTrace();
         }
     }
-    public void exportZoneList(ArrayList<ZoneModel> listZone) {
+    public void exportAllUnposted(List<ZoneModel> listZone, List<NewShipment> listShipment, List<Replacement> listReplacment){
+        exportZoneList(listZone,2);
+        listAllShipment=listShipment;
+        listAllReplacment=listReplacment;
+    }
+
+    public void exportZoneList(List<ZoneModel> listZone,int type) {
+            typeExportZone=type;
         getZoneObject(listZone);
         pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -268,7 +268,7 @@ public class ExportData {
         my_dataBase.shipmentDao().updateShipmentPosted();
         my_dataBase.replacementDao().updateReplacmentPosted();
     }
-}
+
 
 
 
