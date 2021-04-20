@@ -273,6 +273,7 @@ public class AddZone extends AppCompatActivity {
                         editItemCode.requestFocus();
 
                         fillAdapter(listZone);
+                        clearData();
 
                     }
 
@@ -315,7 +316,7 @@ public class AddZone extends AppCompatActivity {
         recycleZone.setLayoutManager(layoutManager);
         adapter = new ZoneAdapter(AddZone.this, listZone);
         recycleZone.setAdapter(adapter);
-        clearData();
+
     }
 
     public static void clearData() {
@@ -427,16 +428,18 @@ public class AddZone extends AppCompatActivity {
         }
 
         clearAllScreenZon();
+        fillAdapter(listZone);
 
 
     }
    public void exportData(){
-       exportData.exportZoneList(listZone);
+       exportData.exportZoneList(listZone,1);
    }
 
     public static void clearLists() {
         listZone.clear();
-        adapter.notifyDataSetChanged();
+
+       // adapter.notifyDataSetChanged();
 
     }
 
@@ -476,7 +479,16 @@ public class AddZone extends AppCompatActivity {
 
     public void showZoneDialog(View view) {
         if(view.getId()==R.id.zoneSearch)
-        {showDialogSearch(AddZone.this);
+        {
+            if(listAllZone.size()!=0)
+            {
+                showDialogSearch(AddZone.this);
+            }
+            else {
+                importData.getAllZones();
+            }
+
+
 
         }
     }
@@ -538,14 +550,43 @@ public class AddZone extends AppCompatActivity {
 
     }
    void setZone(int i){
-       indexZone=i;
-       editZoneCode.setText(listAllZone.get(i).getZoneCode());
+       if(!editZoneCode.getText().toString().equals(""))
+       {
+           new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                   .setTitleText(getResources().getString(R.string.confirm_title))
+                   .setContentText(getResources().getString(R.string.clearAllData))
+                   .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                       @Override
+                       public void onClick(SweetAlertDialog sweetAlertDialog) {
+                           sweetAlertDialog.dismissWithAnimation();
+                           clearAllScreenZon();
+                           fillAdapter(listZone);
+                           fillData(i);
 
-       zoneName.setText(listAllZone.get(i).getZONENAME());
-       editZoneCode.setEnabled(false);
-       editItemCode.setEnabled(true);
-       editItemCode.requestFocus();
+                       }
+                   }).setCancelButton(getResources().getString(R.string.cancel), new SweetAlertDialog.OnSweetClickListener() {
+               @Override
+               public void onClick(SweetAlertDialog sweetAlertDialog) {
+                   sweetAlertDialog.dismissWithAnimation();
+               }
+           })
+                   .show();
 
+       }else {
+           fillData(i);
+       }
+
+
+    }
+
+    private void fillData(int i) {
+        indexZone=i;
+        editZoneCode.setText(listAllZone.get(i).getZoneCode());
+
+        zoneName.setText(listAllZone.get(i).getZONENAME());
+        editZoneCode.setEnabled(false);
+        editItemCode.setEnabled(true);
+        editItemCode.requestFocus();
     }
 }
 

@@ -38,4 +38,14 @@ public interface ZoneDao {
 
 // @Query("update  ZONETABLE  set ISPOSTED =1 where  ZONECODE = zoneCode ")
 // public  void updateZoneIsPosted(String zoneCode);
+
+
+ @Query("SELECT * FROM ZONETABLE where ISPOSTED = :posted")
+ public  List<ZoneModel> getUnpostedZone(String posted);
+
+ @Query("SELECT * FROM ZONETABLE ")
+ public  List<ZoneModel> getUnpostedZone2();
+
+ @Query("UPDATE ZONETABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
+  public   void updateZonePosted();
 }

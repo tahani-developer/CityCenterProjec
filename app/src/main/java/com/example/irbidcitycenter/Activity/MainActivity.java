@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
+    ExportData exportData;
+
     public static int setflage=0;
     public static String COMPANYNO;
     private Animation animation;
@@ -86,6 +89,7 @@ ImportData importData;
         shipmentlinear.setOnClickListener(onClickListener);
         replacmentlinear=findViewById(R.id.Replacmentlinear);
         replacmentlinear.setOnClickListener(onClickListener);
+        exportData=new ExportData(MainActivity.this);
 
 
 
@@ -145,11 +149,29 @@ ImportData importData;
                 openSettingDialog();
             }
             break;
+            case R.id.menu_export:
+                exportAllData();
+
+            break;
 
         }
 
 
         return true;
+
+    }
+
+    private void exportAllData() {
+        List<ZoneModel> listZon=new ArrayList();
+        List<NewShipment> newShipmentList=new ArrayList();
+        List<Replacement> replacementList=new ArrayList();
+
+        listZon=my_dataBase.zoneDao().getUnpostedZone("0");
+        newShipmentList=my_dataBase.shipmentDao().getUnpostedShipment("0");
+        replacementList=my_dataBase.replacementDao().getUnpostedReplacement("0");
+
+        Log.e("listZon2","unposted"+listZon.size()+"\tShipment"+newShipmentList.size()+"repla"+replacementList.size());
+        exportData.exportAllUnposted(listZon,newShipmentList,replacementList);
 
     }
 
@@ -223,9 +245,13 @@ ImportData importData;
     }
     private void getDataZone() {
          appSettings=new ArrayList();
-        appSettings=my_dataBase.settingDao().getallsetting();
+         try {
+             appSettings=my_dataBase.settingDao().getallsetting();
+         }
+        catch (Exception e){}
     }
     private void deletesettings(){
+        if(appSettings.size()!=0)
         my_dataBase.settingDao().deleteALL();
     }
 }

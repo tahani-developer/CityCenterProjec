@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -29,4 +30,10 @@ public interface ReplacementDao {
 
     @Query ("select * from REPLACEMENT_TABLE")
     LiveData<List<ReplacementModel>> getallReplacement();
+
+    @Query("SELECT * FROM REPLACEMENT_TABLE where ISPOSTED = :s")
+    List<Replacement> getUnpostedReplacement(String s);
+
+    @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
+    void updateReplacmentPosted();
 }
