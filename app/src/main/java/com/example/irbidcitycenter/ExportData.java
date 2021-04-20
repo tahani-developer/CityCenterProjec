@@ -48,8 +48,8 @@ public class ExportData {
     private JSONArray jsonArrayShipment;
     private JSONArray jsonArrayReplacement;
     private JSONArray jsonArrayVouchers;
-    public  List<NewShipment> listAllShipment   =new ArrayList<>();
-    public  List<Replacement> listAllReplacment =new ArrayList<>();
+    public  ArrayList<Shipment> listAllShipment   =new ArrayList<>();
+    public  List<ReplacementModel> listAllReplacment =new ArrayList<>();
     int typeExportZone=0;
     public ExportData(Context context) {
         this.context = context;
@@ -94,15 +94,16 @@ public class ExportData {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-    public void exportAllUnposted(List<ZoneModel> listZone, List<NewShipment> listShipment, List<Replacement> listReplacment){
+        }
+
+    public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, List<ReplacementModel> listReplacment){
         exportZoneList(listZone,2);
         listAllShipment=listShipment;
         listAllReplacment=listReplacment;
     }
 
     public void exportZoneList(List<ZoneModel> listZone,int type) {
-            typeExportZone=type;
+        typeExportZone=type;
         getZoneObject(listZone);
         pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -110,7 +111,7 @@ public class ExportData {
         pdVoucher.setCancelable(false);
         pdVoucher.show();
 
-         new JSONTaskDelphi(listZone).execute();
+        new JSONTaskDelphi(listZone).execute();
     }
 
     private void getZoneObject(List<ZoneModel> listZone) {
@@ -238,8 +239,8 @@ public class ExportData {
                     else {
                         if(typeExportZone==2)
                         {
-                            updateDataBasePosted();
-//                            exportNewShepment();
+                            my_dataBase.zoneDao().updateZonePosted();
+                            exportShipmentsList(listAllShipment);
 
                         }
                     }
@@ -265,12 +266,9 @@ public class ExportData {
 
     private void updateDataBasePosted() {
         my_dataBase.zoneDao().updateZonePosted();
-        my_dataBase.shipmentDao().updateShipmentPosted();
-        my_dataBase.replacementDao().updateReplacmentPosted();
+//        my_dataBase.shipmentDao().updateShipmentPosted();
+//        my_dataBase.replacementDao().updateReplacmentPosted();
     }
-
-
-
 
     public void exportShipmentsList(ArrayList<Shipment> listShipment) {
         Log.e("exportShipmentsList","exportShipmentsList");

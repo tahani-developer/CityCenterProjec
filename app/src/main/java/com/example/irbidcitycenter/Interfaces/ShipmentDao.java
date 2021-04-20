@@ -14,6 +14,7 @@ import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
+import java.util.ArrayList;
 import java.util.List;
 @Dao
 public interface ShipmentDao {
@@ -35,7 +36,7 @@ public interface ShipmentDao {
     LiveData<List<Shipment>> getallShipment();
 
     @Query("SELECT * FROM SHIPMENT_TABLE where ISPOSTED = :s")
-    List<NewShipment> getUnpostedShipment(String s);
+   List<Shipment> getUnpostedShipment(String s);
 
     @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateShipmentPosted();
