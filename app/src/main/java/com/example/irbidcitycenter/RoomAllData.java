@@ -18,7 +18,7 @@ import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class}, version = 10,exportSchema = false)
+@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class}, version = 11,exportSchema = false)
 public abstract class RoomAllData extends RoomDatabase  {
     private  static  RoomAllData database;
     public  static  String dataBaseName="DBRoomIrbidCenter";

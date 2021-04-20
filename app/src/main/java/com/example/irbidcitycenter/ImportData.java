@@ -457,7 +457,7 @@ public class ImportData {
                 super.onPostExecute(array);
 
                 JSONObject jsonObject1 = null;
-                Log.e("onPostExecute", "" + array.length());
+               // Log.e("onPostExecute", "" + array.length());
 
                 if (array != null && array.length() != 0) {
                     Log.e("onPostExecute", "" + array.toString());

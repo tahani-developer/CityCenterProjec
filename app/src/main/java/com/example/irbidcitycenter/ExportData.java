@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Activity.NewShipment;
+import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import org.apache.http.HttpResponse;
@@ -39,6 +41,9 @@ public class ExportData {
     SweetAlertDialog pdVoucher;
     JSONObject vouchersObject;
     private JSONArray jsonArrayVouchers;
+    public  List<NewShipment> listAllShipment   =new ArrayList<>();
+    public  List<Replacement> listAllReplacment =new ArrayList<>();
+    int typeExportZone=0;
     public ExportData(Context context) {
         this.context = context;
         my_dataBase= RoomAllData.getInstanceDataBase(context);
@@ -57,8 +62,14 @@ public class ExportData {
 
 
     }
+    public void exportAllUnposted(List<ZoneModel> listZone, List<NewShipment> listShipment, List<Replacement> listReplacment){
+        exportZoneList(listZone,2);
+        listAllShipment=listShipment;
+        listAllReplacment=listReplacment;
+    }
 
-    public void exportZoneList(ArrayList<ZoneModel> listZone) {
+    public void exportZoneList(List<ZoneModel> listZone,int type) {
+        typeExportZone=type;
         getZoneObject(listZone);
         pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -69,7 +80,7 @@ public class ExportData {
          new JSONTaskDelphi(listZone).execute();
     }
 
-    private void getZoneObject(ArrayList<ZoneModel> listZone) {
+    private void getZoneObject(List<ZoneModel> listZone) {
         jsonArrayVouchers = new JSONArray();
         for (int i = 0; i < listZone.size(); i++)
         {
@@ -90,9 +101,9 @@ public class ExportData {
         private String JsonResponse = null;
         private HttpURLConnection urlConnection = null;
         private BufferedReader reader = null;
-        ArrayList<ZoneModel> listZones=new ArrayList<>();
+       List<ZoneModel> listZones=new ArrayList<>();
 
-        public JSONTaskDelphi(ArrayList<ZoneModel> listZones) {
+        public JSONTaskDelphi(List<ZoneModel> listZones) {
             this.listZones = listZones;
         }
 
@@ -181,26 +192,46 @@ public class ExportData {
         @Override
         protected void onPostExecute(final String result) {
             super.onPostExecute(result);
-//            progressDialog.dismiss();
             Log.e("onPostExecute",""+result);
             pdVoucher.dismissWithAnimation();
             if (result != null && !result.equals("")) {
                 if(result.contains("Saved Successfully"))
                 {
-                    exportStateText.setText("exported");
+                    if(typeExportZone==1)
+                    {
+                        exportStateText.setText("exported");   
+                    }
+                    else {
+                        if(typeExportZone==2)
+                        {
+                            updateDataBasePosted();
+//                            exportNewShepment();
+
+                        }
+                    }
+                   
 
 
                 }else {
-                    exportStateText.setText("not");
+                    if(typeExportZone==1) {
+                        exportStateText.setText("not");
+                    }
 
                 }
 //                Toast.makeText(context, "onPostExecute"+result, Toast.LENGTH_SHORT).show();
 
 
-            } else {
+            } else {  if(typeExportZone==1) {
                 exportStateText.setText("not");
+            }
                 Toast.makeText(context, "onPostExecute", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void updateDataBasePosted() {
+        my_dataBase.zoneDao().updateZonePosted();
+        my_dataBase.shipmentDao().updateShipmentPosted();
+        my_dataBase.replacementDao().updateReplacmentPosted();
     }
 }
