@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
-
+    public static int setflage=0;
     public static String COMPANYNO;
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();

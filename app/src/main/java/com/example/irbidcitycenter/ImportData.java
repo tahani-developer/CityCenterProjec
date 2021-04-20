@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Models.ReplacementModel;
@@ -39,15 +40,17 @@ import java.util.List;
 
 import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
-import static com.example.irbidcitycenter.Activity.AddZone.listAllZone;
+
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
 import static com.example.irbidcitycenter.Activity.NewShipment.respon;
+import static com.example.irbidcitycenter.Activity.Replacement.itemKintText1;
 
 
 public class ImportData {
+    public static ArrayList<ZoneModel> listAllZone =new ArrayList<>();
     public static int posize;
     public  static String itemn;
     public  static String poqty;
@@ -70,20 +73,26 @@ public class ImportData {
 
     }
     public void getStore() {
-
+        if(!ipAddress.equals(""))
         new JSONTask_getAllStoreData().execute();
+        else
+        Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
     public void getboxno() {
         Log.e("ingetboxno","ingetboxno");
+        if(!ipAddress.equals(""))
         new JSONTask_getAllPOboxNO().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
     public void getPOdetails() {
         Log.e("getPOdetails","getPOdetails");
         //new JSONTaskGetPOdetails(context,cono,pono).execute();
-
+        if(!ipAddress.equals(""))
         new JSONTask_getAllPOdetails().execute();
-
+else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
     private void getIpAddress() {
@@ -221,8 +230,10 @@ public class ImportData {
 
                         }
                         itemKind=requestDetail.getZONETYPE();
+                        if(MainActivity.setflage==0)
                         itemKintText.setText(itemKind);
-
+                        else
+                        itemKintText1.setText(itemKind);
 
                     } catch (JSONException e) {
 //                        progressDialog.dismiss();
@@ -231,7 +242,10 @@ public class ImportData {
                 }
                 else
                 {
+                     if(MainActivity.setflage==0)
                     itemKintText.setText("NOTEXIST");
+                    else
+                        itemKintText1.setText("NOTEXIST");
                 }
                     Log.e("onPostExecute", "NotFound" + result.toString());
 

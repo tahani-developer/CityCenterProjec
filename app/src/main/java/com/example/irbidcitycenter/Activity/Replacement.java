@@ -43,9 +43,11 @@ import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.irbidcitycenter.Activity.AddZone.listAllZone;
+
 import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
+import static com.example.irbidcitycenter.Activity.AddZone.validItem;
+import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Replacement extends AppCompatActivity {
 
@@ -54,7 +56,7 @@ public class Replacement extends AppCompatActivity {
  Spinner fromSpinner,toSpinner;
     ExportData exportData;
     ImportData importData;
-    public static EditText itemKintText;
+    public static EditText itemKintText1;
     public static EditText  zone,itemcode;
     EditText qty;
     Button save;
@@ -118,9 +120,13 @@ public class Replacement extends AppCompatActivity {
         exportData.exportReplacementList(replacementlist);
     }
     private void init() {
-        itemKintText= findViewById(R.id.itemKintTextRE);
+        MainActivity.setflage=1;
+        itemKintText1= findViewById(R.id.itemKintTextRE);
         exportData = new ExportData(Replacement.this);
-        importData = new ImportData(Replacement.this);
+        importData=new ImportData(Replacement.this);
+        listAllZone.clear();
+        importData.getAllZones();
+
         fromSpinner=findViewById(R.id.fromspinner);
         toSpinner=findViewById(R.id.tospinner);
         zone=findViewById(R.id.zoneedt);
@@ -167,7 +173,7 @@ public class Replacement extends AppCompatActivity {
 
             }
         });
-        itemKintText.addTextChangedListener(new TextWatcher() {
+        itemKintText1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -187,7 +193,7 @@ public class Replacement extends AppCompatActivity {
                         validateKind=false;
                         qty.setEnabled(false);
                         generalMethod.showSweetDialog(Replacement.this,3,"This Item Not Exist","");
-                        itemKintText.setText("");
+                        itemKintText1.setText("");
                     }
                     else {
                         validateKind=false;
@@ -203,20 +209,22 @@ public class Replacement extends AppCompatActivity {
             spinnerArray.add(Storelist.get(i).getSTORENO()+"  "+Storelist.get(i).getSTORENAME());
 
 
+
     }
     private void compareItemKind(String itemKind) {
-        /*validItem=false;
+
+        validItem=false;
         if(listAllZone.get(indexZone).getZONETYPE().equals(itemKind))
         {
             validItem=true;
-            editItemCode.setEnabled(false);
-            editQty.setEnabled(true);
-            editQty.requestFocus();}
+            itemcode.setEnabled(false);
+            qty.setEnabled(true);
+            qty.requestFocus();}
         else {
-            editQty.setEnabled(false);
-            generalMethod.showSweetDialog(AddZone.this,0,"Item Kind Not Match To Zone Type","");
+            qty.setEnabled(false);
+            generalMethod.showSweetDialog(Replacement.this,0,"Item Kind Not Match To Zone Type","");
         }
-        itemKintText.setText("");*/
+        itemKintText1.setText("");
     }
     public void ScanCode(View view) {
         switch (view.getId()) {
@@ -246,8 +254,8 @@ public class Replacement extends AppCompatActivity {
 
                      if(indexZone!=-1)
                         {
-                            Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
-                            if(itemKintText.getText().toString().equals("")&&validateKind==false)
+                            Log.e("itemKintText",""+itemKintText1.getText().toString()+"\t"+validateKind);
+                            if(itemKintText1.getText().toString().equals("")&&validateKind==false)
                             {
                                 validateItemKind(itemcode.getText().toString().trim());
                             }
@@ -266,6 +274,7 @@ public class Replacement extends AppCompatActivity {
                         break;
 
                         case R.id.qtyedt:
+                            itemcode.setEnabled(false);
                         filldata();
                         zone.setText("");
                         itemcode.setText("");
@@ -284,7 +293,6 @@ public class Replacement extends AppCompatActivity {
     };
     private void validateItemKind(String itemNo) {
         validateKind=true;
-        // http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
         importData.getKindItem(itemNo);
     }
     private void searchZone(String codeZone) {
