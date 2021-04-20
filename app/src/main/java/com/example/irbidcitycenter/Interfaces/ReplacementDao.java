@@ -32,7 +32,7 @@ public interface ReplacementDao {
     LiveData<List<ReplacementModel>> getallReplacement();
 
     @Query("SELECT * FROM REPLACEMENT_TABLE where ISPOSTED = :s")
-    List<Replacement> getUnpostedReplacement(String s);
+    List<ReplacementModel> getUnpostedReplacement(String s);
 
     @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateReplacmentPosted();

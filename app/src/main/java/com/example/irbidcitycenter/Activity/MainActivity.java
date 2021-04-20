@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
@@ -162,12 +164,12 @@ ImportData importData;
 
     private void exportAllData() {
         List<ZoneModel> listZon=new ArrayList();
-        List<NewShipment> newShipmentList=new ArrayList();
-        List<Replacement> replacementList=new ArrayList();
+        ArrayList<Shipment> newShipmentList=new ArrayList();
+        ArrayList<ReplacementModel> replacementList=new ArrayList();
 
         listZon=my_dataBase.zoneDao().getUnpostedZone("0");
-        newShipmentList=my_dataBase.shipmentDao().getUnpostedShipment("0");
-        replacementList=my_dataBase.replacementDao().getUnpostedReplacement("0");
+        newShipmentList=(ArrayList<Shipment>) my_dataBase.shipmentDao().getUnpostedShipment("0");
+        replacementList=(ArrayList<ReplacementModel>) my_dataBase.replacementDao().getUnpostedReplacement("0");
 
         Log.e("listZon2","unposted"+listZon.size()+"\tShipment"+newShipmentList.size()+"repla"+replacementList.size());
         exportData.exportAllUnposted(listZon,newShipmentList,replacementList);
