@@ -43,6 +43,8 @@
     <string name="Import" >Import</string>
     <string name="finish" >Finish</string>
     <string name="recQty" >recQty</string>
+    <string name="invalidPONO" >in valid PO number</string>
+    <string name="existsBARCODE" >BareCode not exists</string>
     <string name="Itemname" >Itemname</string>
     <string name="Differ" >Differ</string>
 <string name="confirm">Are you sure you want to select this entry?</string>
@@ -50,18 +52,18 @@
             \n delete this entry?</string>
     <string name="yes">yes</string>
     <string-array name="fromSpinner">
-            <item>aa</item>
-            <item>bb</item>
-            <item>cc</item>
-            <item>dd</item>
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+            <item>4</item>
         </string-array>
 
 
         <string-array name="toSpinner">
-            <item>aa</item>
-            <item>bb</item>
-            <item>cc</item>
-            <item>dd</item>
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+            <item>4</item>
         </string-array>
     <string name="Arabic">ar</string>
     <string name="ZoneName">Zone Name</string>

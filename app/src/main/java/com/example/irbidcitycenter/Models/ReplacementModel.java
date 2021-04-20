@@ -1,8 +1,13 @@
 package com.example.irbidcitycenter.Models;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity(tableName = "REPLACEMENT_TABLE")
 public  class ReplacementModel {
@@ -96,6 +101,23 @@ public  class ReplacementModel {
 
     public void setQty(String qty) {
         Qty = qty;
+    }
+    public JSONObject getJSONObjectDelphi() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("FROMSTR", From);
+            obj.put("TOSTR", To);
+            obj.put("ZONE", Zone);
+            obj.put("ITEMCODE", Itemcode);
+            obj.put("QTY", Qty);
+
+
+
+
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
     }
 }
 
