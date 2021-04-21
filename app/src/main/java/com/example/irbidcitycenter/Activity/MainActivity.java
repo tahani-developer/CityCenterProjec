@@ -167,11 +167,17 @@ ImportData importData;
         List<ZoneModel> listZon=new ArrayList();
         ArrayList<Shipment> newShipmentList=new ArrayList();
         ArrayList<ReplacementModel> replacementList=new ArrayList();
+        List<Shipment> listShipment;
+        List<ReplacementModel>listReplasment;
 
         listZon=my_dataBase.zoneDao().getUnpostedZone("0");
-        newShipmentList=(ArrayList<Shipment>) my_dataBase.shipmentDao().getUnpostedShipment("0");
-        replacementList=(ArrayList<ReplacementModel>) my_dataBase.replacementDao().getUnpostedReplacement("0");
+        listShipment=my_dataBase.shipmentDao().getUnpostedShipment("0");
+        listReplasment=my_dataBase.replacementDao().getUnpostedReplacement("0");
 
+        newShipmentList=(ArrayList<Shipment>) listShipment;
+
+        replacementList=(ArrayList<ReplacementModel>)listReplasment ;
+        Log.e("exportAllData","2"+newShipmentList.size());
         Log.e("listZon2","unposted"+listZon.size()+"\tShipment"+newShipmentList.size()+"repla"+replacementList.size());
         exportData.exportAllUnposted(listZon,newShipmentList,replacementList);
 

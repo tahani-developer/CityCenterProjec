@@ -390,6 +390,7 @@ public class Replacement extends AppCompatActivity {
     };
     private void validateItemKind(String itemNo) {
         validateKind=true;
+        // http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
         importData.getKindItem(itemNo);
     }
     private void searchZone(String codeZone) {
@@ -463,6 +464,8 @@ public class Replacement extends AppCompatActivity {
         replacmentRecycler.setAdapter(adapter);
     }
 
+
+    }
     private void readBarcode(int type) {
         //new IntentIntegrator(AddZone.this).setOrientationLocked(false).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
