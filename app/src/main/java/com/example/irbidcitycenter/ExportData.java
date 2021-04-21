@@ -49,7 +49,7 @@ public class ExportData {
     private JSONArray jsonArrayReplacement;
     private JSONArray jsonArrayVouchers;
     public  ArrayList<Shipment> listAllShipment   =new ArrayList<>();
-    public  List<ReplacementModel> listAllReplacment =new ArrayList<>();
+    public  ArrayList<ReplacementModel> listAllReplacment =new ArrayList<>();
     int typeExportZone=0;
     public ExportData(Context context) {
         this.context = context;
@@ -94,9 +94,10 @@ public class ExportData {
         }
         }
 
-    public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, List<ReplacementModel> listReplacment){
+    public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, ArrayList<ReplacementModel> listReplacment){
         exportZoneList(listZone,2);
         listAllShipment=listShipment;
+        Log.e("exportAllUnposted","listAllShipment"+listAllShipment.size());
         listAllReplacment=listReplacment;
     }
 
@@ -383,6 +384,10 @@ public class ExportData {
 //            progressDialog.dismiss();
             Log.e("onPostExecute",""+result);
             pdVoucher.dismissWithAnimation();
+            if(listAllReplacment.size()!=0)
+            {
+                exportReplacementList(listAllReplacment);
+            }
 
         }
 }

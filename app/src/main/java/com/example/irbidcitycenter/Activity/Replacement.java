@@ -335,6 +335,7 @@ public class Replacement extends AppCompatActivity {
                      replacement.setItemcode(Itemcode);
                      replacement.setQty(Qty);
                      replacement.setReplacementDate(generalMethod.getCurentTimeDate(1)+"");
+                     replacement.setIsPosted("0");
 
                     replacementlist.add(replacement);
                replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
