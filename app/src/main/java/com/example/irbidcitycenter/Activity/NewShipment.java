@@ -143,13 +143,13 @@ public class NewShipment extends AppCompatActivity {
 
                     exportData();
                    // saveData();
-                    if(saved==true)
+                  /*  if(saved==true)
                     {importData.BoxNolist.clear();
-                    importData.POdetailslist.clear();
-                    shipmentList.clear();
-                    adapter.notifyDataSetChanged();
+                        importData.POdetailslist.clear();
+                        shipmentList.clear();
+                        adapter.notifyDataSetChanged();
 
-                    filladapter(shipmentList);}
+                        filladapter(shipmentList);}*/
                     ///
 
                     pono.setText("");
@@ -576,6 +576,12 @@ public class NewShipment extends AppCompatActivity {
                     if(editable.toString().trim().equals("exported"))
                     {saveData(1);
                             saved=true;
+                        importData.BoxNolist.clear();
+                        importData.POdetailslist.clear();
+                        shipmentList.clear();
+                        adapter.notifyDataSetChanged();
+
+                        filladapter(shipmentList);
                     }
                     else  if(editable.toString().trim().equals("not"))
                     {         saved=true;

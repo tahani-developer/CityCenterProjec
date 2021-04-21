@@ -8,6 +8,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
@@ -761,7 +763,7 @@ else
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-
+            if (array != null)
             if (array.contains("STORENO"))
             {
                 if (array != null && array.length() != 0) {
@@ -794,7 +796,7 @@ else
                 }
             else {
 
-                NewShipment.respon.setText("nodata");
+                Replacement.respon.setText("nodata");
 
 
 
