@@ -465,7 +465,7 @@ public class Replacement extends AppCompatActivity {
     }
 
 
-    }
+
     private void readBarcode(int type) {
         //new IntentIntegrator(AddZone.this).setOrientationLocked(false).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
