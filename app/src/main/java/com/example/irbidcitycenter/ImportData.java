@@ -229,11 +229,12 @@ else
                             requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
 
                         }
-                        itemKind=requestDetail.getZONETYPE();
+                        itemKind=requestDetail.getZONENAME();
+                        Log.e("itemKind",""+itemKind);
                         if(MainActivity.setflage==0)
-                        itemKintText.setText(itemKind);
+                        itemKintText.setText(requestDetail.getZONETYPE());
                         else
-                        itemKintText1.setText(itemKind);
+                        itemKintText1.setText(requestDetail.getZONETYPE());
 
                     } catch (JSONException e) {
 //                        progressDialog.dismiss();
@@ -762,22 +763,24 @@ else
 
             JSONObject jsonObject1 = null;
 
-            if (array.contains("STORENO"))
-            {
+
                 if (array != null && array.length() != 0) {
                     Log.e("onPostExecute", "" +array.length()+"  "+ array.toString());
                     try {
-                        JSONArray requestArray = null;
-                        requestArray =  new JSONArray(array);
+                        if (array.contains("STORENO"))
+                        {
+                            JSONArray requestArray = null;
+                        requestArray = new JSONArray(array);
 
 
-                    for (int i = 0; i < requestArray.length(); i++) {
-                        store=new Store();
-                        jsonObject1 =  requestArray.getJSONObject(i);
-                        store.setSTORENO(jsonObject1.getString("STORENO"));
-                        store.setSTORENAME(jsonObject1.getString("STORENAME"));
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            store = new Store();
+                            jsonObject1 = requestArray.getJSONObject(i);
+                            store.setSTORENO(jsonObject1.getString("STORENO"));
+                            store.setSTORENAME(jsonObject1.getString("STORENAME"));
 
-                        Storelist.add(store);
+                            Storelist.add(store);
+                        }
                     }
                     }
                          catch (JSONException e)
@@ -791,7 +794,7 @@ else
 
                     //
 
-                }
+
             else {
 
                 NewShipment.respon.setText("nodata");
