@@ -509,6 +509,7 @@ public class ExportData {
 //            progressDialog.dismiss();
           Log.e("onPostExecute",""+result);
           pdVoucher.dismissWithAnimation();
+
           if (result != null && !result.equals("")) {
               if(result.contains("Saved Successfully"))
 

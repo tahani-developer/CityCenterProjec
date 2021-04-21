@@ -105,10 +105,12 @@ public class Replacement extends AppCompatActivity {
 
                 exportData();
                 //saveData();
-                if(saved)
+                zone.setEnabled(true);
+               zone.requestFocus();
+              /*  if(saved==true)
                 {replacementlist.clear();
                 fillAdapter();
-                adapter.notifyDataSetChanged();}
+                adapter.notifyDataSetChanged();}*/
             }
               });
 
@@ -290,6 +292,9 @@ public class Replacement extends AppCompatActivity {
                     if(editable.toString().trim().equals("exported"))
                     {saveData(1);
                         saved=true;
+                        {replacementlist.clear();
+                            fillAdapter();
+                            adapter.notifyDataSetChanged();}
                     }
                     else  if(editable.toString().trim().equals("not"))
                     {         saved=true;

@@ -8,6 +8,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
@@ -762,25 +764,23 @@ else
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-
-
+            if (array != null)
+            if (array.contains("STORENO"))
+            {
                 if (array != null && array.length() != 0) {
                     Log.e("onPostExecute", "" +array.length()+"  "+ array.toString());
                     try {
-                        if (array.contains("STORENO"))
-                        {
-                            JSONArray requestArray = null;
-                        requestArray = new JSONArray(array);
+                        JSONArray requestArray = null;
+                        requestArray =  new JSONArray(array);
 
 
-                        for (int i = 0; i < requestArray.length(); i++) {
-                            store = new Store();
-                            jsonObject1 = requestArray.getJSONObject(i);
-                            store.setSTORENO(jsonObject1.getString("STORENO"));
-                            store.setSTORENAME(jsonObject1.getString("STORENAME"));
+                    for (int i = 0; i < requestArray.length(); i++) {
+                        store=new Store();
+                        jsonObject1 =  requestArray.getJSONObject(i);
+                        store.setSTORENO(jsonObject1.getString("STORENO"));
+                        store.setSTORENAME(jsonObject1.getString("STORENAME"));
 
-                            Storelist.add(store);
-                        }
+                        Storelist.add(store);
                     }
                     }
                          catch (JSONException e)
@@ -794,10 +794,10 @@ else
 
                     //
 
-
+                }
             else {
 
-                NewShipment.respon.setText("nodata");
+                Replacement.respon.setText("nodata");
 
 
 
