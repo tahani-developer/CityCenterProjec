@@ -508,7 +508,7 @@ else
                         }
 
 
-                    NewShipment.respon.setText(shipment.getBarcode());
+                    NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
                     itemname.setText(POdetailslist.get(0).getItemname());
                     PoQTY.setText(POdetailslist.get(0).getPoqty());
                     poqty=POdetailslist.get(0).getPoqty();
@@ -524,7 +524,7 @@ else
                 }
             }else {
 
-                    NewShipment.respon.setText("not exists");
+                    NewShipment.respon.setText("notexists");
 
 
 
@@ -794,7 +794,7 @@ else
                 }
             else {
 
-                NewShipment.respon.setText("no data");
+                NewShipment.respon.setText("nodata");
 
 
 

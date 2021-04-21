@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 import com.example.irbidcitycenter.ScanActivity;
@@ -44,19 +45,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.AddZone.validItem;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Replacement extends AppCompatActivity {
-
+    boolean saved=false;
     public static TextView respon;
     GeneralMethod generalMethod;
  Spinner fromSpinner,toSpinner;
     ExportData exportData;
     ImportData importData;
-    public static EditText itemKintText1;
+    public static EditText itemKintText1 ,poststateRE;
     public static EditText  zone,itemcode;
     EditText qty;
     Button save;
@@ -85,9 +88,10 @@ public class Replacement extends AppCompatActivity {
         fromSpinner.setAdapter(adapter);
         toSpinner.setAdapter(adapter);
         toSpinner.setSelection(1);
-  zone.requestFocus();
-  itemcode.setEnabled(false);
-  qty.setEnabled(false);
+        zone.requestFocus();
+        itemcode.setEnabled(false);
+        qty.setEnabled(false);
+        save.setEnabled(false);
         my_dataBase= RoomAllData.getInstanceDataBase(Replacement.this);
 
 
@@ -98,8 +102,13 @@ public class Replacement extends AppCompatActivity {
            // for (int i=0; i<replacementlist.size();i++)
            //     model.insert(replacementlist.get(i));
 
-                saveData();
-              exportData();
+
+                exportData();
+                //saveData();
+                if(saved)
+                {replacementlist.clear();
+                fillAdapter();
+                adapter.notifyDataSetChanged();}
             }
               });
 
@@ -110,16 +119,72 @@ public class Replacement extends AppCompatActivity {
                 if(replacementlist.size()>0) {
                     replacementlist.clear();
                     adapter.notifyDataSetChanged();
+
+
+
                 }
+                 Intent intent =new Intent(Replacement.this,MainActivity.class);
+                 startActivity(intent);
              }
          });
 
 
     }
+
+
+    public boolean AddInCaseDuplicates(ReplacementModel replacement) {
+        boolean flag = false;
+        if (replacementlist.size() != 0)
+            for (int i = 0; i < replacementlist.size(); i++) {
+
+                if (replacementlist.get(i).getZone().equals(replacement.getZone())
+                        && replacementlist.get(i).getItemcode().equals(replacement.getItemcode())) {
+                    replacementlist.get(i).setQty(Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty) + "");
+                    adapter.notifyDataSetChanged();
+                    flag = true;
+                    break;
+
+
+                } else
+                    flag = false;
+                continue;
+            }
+
+        return flag;
+
+    }
+
+
+
+
+    @Override
+    public void onBackPressed() {
+        showExitDialog();
+    }
+    private void showExitDialog() {
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.confirm_title))
+                .setContentText(getResources().getString(R.string.messageExit))
+                .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                        finish();
+                        Intent intent=new Intent(Replacement.this,MainActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+    }
     public void exportData() {
+        for(int i=0;i<replacementlist.size();i++)
+        { replacementlist.get(i).setFrom(replacementlist.get(i).getFrom().substring(0, replacementlist.get(i).getFrom().indexOf(" ")));
+            replacementlist.get(i).setTo(replacementlist.get(i).getTo().substring(0, replacementlist.get(i).getTo().indexOf(" ")));
+        }
         exportData.exportReplacementList(replacementlist);
     }
     private void init() {
+        poststateRE=findViewById(R.id.poststatRE);
         MainActivity.setflage=1;
         itemKintText1= findViewById(R.id.itemKintTextRE);
         exportData = new ExportData(Replacement.this);
@@ -208,6 +273,33 @@ public class Replacement extends AppCompatActivity {
         for(int i=0;i<Storelist.size();i++)
             spinnerArray.add(Storelist.get(i).getSTORENO()+"  "+Storelist.get(i).getSTORENAME());
 
+        poststateRE.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if(editable.toString().length()!=0)
+                {
+                    if(editable.toString().trim().equals("exported"))
+                    {saveData(1);
+                        saved=true;
+                    }
+                    else  if(editable.toString().trim().equals("not"))
+                    {         saved=true;
+                        saveData(0);
+                    }
+                }
+            }
+        });
 
 
     }
@@ -243,15 +335,14 @@ public class Replacement extends AppCompatActivity {
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.zoneedt:
-                        searchZone(zone.getText().toString());
+                        searchZone(zone.getText().toString().trim());
                        // itemcode.setEnabled(true);
                        // itemcode.requestFocus();
                         break;
 
                     case R.id.itemcodeedt:
-
+                        //zone.setEnabled(false);
                         zone.setEnabled(false);
-
                      if(indexZone!=-1)
                         {
                             Log.e("itemKintText",""+itemKintText1.getText().toString()+"\t"+validateKind);
@@ -275,7 +366,8 @@ public class Replacement extends AppCompatActivity {
 
                         case R.id.qtyedt:
                             itemcode.setEnabled(false);
-                        filldata();
+                            filldata();
+                      save.setEnabled(true);
                         zone.setText("");
                         itemcode.setText("");
                         qty.setText("");
@@ -305,7 +397,7 @@ public class Replacement extends AppCompatActivity {
 
                 itemcode.setEnabled(true);
                 itemcode.requestFocus();
-               // zone.setEnabled(false);
+                zone.setEnabled(false);
                 break;
             }
         }
@@ -319,7 +411,8 @@ public class Replacement extends AppCompatActivity {
     }
 
     private void filldata(){
-        From= fromSpinner.getSelectedItem().toString();
+
+        From=  fromSpinner.getSelectedItem().toString();
       To= toSpinner.getSelectedItem().toString();
        // Toast.makeText(Replacement.this, "sssss", Toast.LENGTH_SHORT).show();
 
@@ -339,19 +432,32 @@ public class Replacement extends AppCompatActivity {
                     replacement = new ReplacementModel();
                     replacement.setFrom(From);
                     replacement.setTo(To);
-            replacement.setZone(Zone);
+                    replacement.setZone(Zone);
                      replacement.setItemcode(Itemcode);
                      replacement.setQty(Qty);
+                     replacement.setIsPosted("0");
                      replacement.setReplacementDate(generalMethod.getCurentTimeDate(1)+"");
+            if(AddInCaseDuplicates(replacement))
+            {
 
-                    replacementlist.add(replacement);
-               replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
-                    adapter = new ReplacementAdapter(replacementlist, Replacement.this);
-                    replacmentRecycler.setAdapter(adapter);
+            }
+
+            else
+            { replacementlist.add(replacement);
+                    fillAdapter();}
+
+
                 }
 
 
     }
+
+    private void fillAdapter() {
+        replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
+        adapter = new ReplacementAdapter(replacementlist, Replacement.this);
+        replacmentRecycler.setAdapter(adapter);
+    }
+
     private void readBarcode(int type) {
         //new IntentIntegrator(AddZone.this).setOrientationLocked(false).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
@@ -401,8 +507,10 @@ public class Replacement extends AppCompatActivity {
         }
     }
 
-    private void saveData() {
-
+    private void saveData(int isposted) {
+        if(isposted==1)
+            for (int i = 0; i < replacementlist.size(); i++)
+                replacementlist.get(i).setIsPosted("1");
         long result[]= my_dataBase.replacementDao().insertAll(replacementlist);
 
         if(result.length!=0)
@@ -410,7 +518,7 @@ public class Replacement extends AppCompatActivity {
             generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
         }
 
-        //replacementlist.clear();
+
 
 
     }
