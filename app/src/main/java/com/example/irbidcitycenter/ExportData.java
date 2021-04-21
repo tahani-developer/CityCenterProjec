@@ -36,6 +36,8 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.exportStateText;
+import static com.example.irbidcitycenter.Activity.NewShipment.poststate;
+import static com.example.irbidcitycenter.Activity.Replacement.poststateRE;
 
 public class ExportData {
     private Context context;
@@ -51,6 +53,8 @@ public class ExportData {
     public  ArrayList<Shipment> listAllShipment   =new ArrayList<>();
     public  ArrayList<ReplacementModel> listAllReplacment =new ArrayList<>();
     int typeExportZone=0;
+    int typeExportShipment=0;
+    int typeExportReplacement=0;
     public ExportData(Context context) {
         this.context = context;
         my_dataBase= RoomAllData.getInstanceDataBase(context);
@@ -81,7 +85,9 @@ public class ExportData {
     }
     private void  getReplacmentObject(ArrayList<ReplacementModel>replacementlist) {
         jsonArrayReplacement = new JSONArray();
-        for (int i = 0; i < replacementlist.size(); i++) {
+        for (int i = 0; i < replacementlist.size(); i++)
+        {
+
             jsonArrayReplacement.put(replacementlist.get(i).getJSONObjectDelphi());
 
         }
@@ -389,8 +395,35 @@ public class ExportData {
                 exportReplacementList(listAllReplacment);
             }
 
+
+            if (result != null && !result.equals("")) {
+                if(result.contains("Saved Successfully"))
+
+
+                    {
+                        poststate.setText("exported");
+                    }
+
+                    else
+
+                        {
+                            poststate.setText("not");
+
+                        }
+                    }
+
+
+
+
+
+                }
+//                Toast.makeText(context, "onPostExecute"+result, Toast.LENGTH_SHORT).show();
+
+
+
+
         }
-}
+
 
 
 
@@ -476,7 +509,21 @@ public class ExportData {
 //            progressDialog.dismiss();
           Log.e("onPostExecute",""+result);
           pdVoucher.dismissWithAnimation();
+          if (result != null && !result.equals("")) {
+              if(result.contains("Saved Successfully"))
 
+
+              {
+                  poststateRE.setText("exported");
+              }
+
+              else
+
+              {
+                  poststateRE.setText("not");
+
+              }
+          }
 
       }
 

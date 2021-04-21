@@ -51,12 +51,13 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
+import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
     public static EditText editZoneCode, editItemCode, editQty,itemKintText,exportStateText;
     public static final int REQUEST_Camera_Barcode = 1;
-    public static ArrayList<ZoneModel> listZone,listAllZone;
+    public static ArrayList<ZoneModel> listZone;
     RecyclerView recycleZone;
     LinearLayoutManager layoutManager;
     public RoomAllData my_dataBase;
@@ -89,7 +90,7 @@ public class AddZone extends AppCompatActivity {
         exportStateText= findViewById(R.id.exportStateText);
         editQty.setOnEditorActionListener(onEditAction);
         listZone = new ArrayList<>();
-        listAllZone=new ArrayList<>();
+
         recycleZone = findViewById(R.id.recycleZone);
         my_dataBase= RoomAllData.getInstanceDataBase(AddZone.this);
         importData=new ImportData(AddZone.this);

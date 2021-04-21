@@ -30,7 +30,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
     private List<Shipment> list;
     Context shipment;
     public static String newqty, oldqty,olddif;
-    public static int sum = 10;
+    public static int sum ;
 
     public ShipmentAdapter(Context shipment, List<Shipment> list) {
         this.list = list;
@@ -94,10 +94,10 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                         @Override
                         public void onClick(View view) {
 
-                            sum += Integer.parseInt(list.get(Integer.parseInt(tag)).getQty());
+                            //sum += Integer.parseInt(list.get(Integer.parseInt(tag)).getQty());
                             Log.e("on remove click",sum+"");
                             removeItem(Integer.parseInt(tag));
-                            PoQTY.setText(sum + "");
+                            //PoQTY.setText(sum + "");
                             dialog.dismiss();
 
                         }
@@ -137,7 +137,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                             NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
                             NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(sum-Integer.parseInt(newqty)));
                             sum-=Integer.parseInt(newqty);
-                            PoQTY.setText(sum+"");
+                          //  PoQTY.setText(sum+"");
                             updateAdpapter();
                     }
 

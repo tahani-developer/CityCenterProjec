@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public appSettings settings;
     ExportData exportData;
 
+    public static int setflage=0;
     public static String COMPANYNO;
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
