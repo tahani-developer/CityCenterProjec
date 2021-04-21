@@ -309,8 +309,6 @@ public class NewShipment extends AppCompatActivity {
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
                         finish();
-                        Intent intent=new Intent(NewShipment.this,MainActivity.class);
-                        startActivity(intent);
                     }
                 })
                 .show();
@@ -376,12 +374,12 @@ public class NewShipment extends AppCompatActivity {
                         shipmentList.add(shipment);
                         updateflage = 1;
                         filladapter(shipmentList);
-                        try {
-                            readBarcode(3);
-                        }catch (Exception e)
-                        {
-                            Log.e("readBarcode",""+e.getMessage());
-                        }
+//                        try {
+//                            readBarcode(3);
+//                        }catch (Exception e)
+//                        {
+//                            Log.e("readBarcode",""+e.getMessage());
+//                        }
 
                     }
 

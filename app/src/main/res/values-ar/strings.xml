@@ -52,5 +52,6 @@
     <string name="warning">Warning</string>
     <string name="fillYourList">Fill Your List !!</string>
     <string name="invaledZero">Invaled Zero</string>
-    <string name="clearAllData">Clear All Data??</string>
+    <string name="clearAllData">مسح جميع البيانات؟؟</string>
+    <string name="Qty">الكمية</string>
 </resources>

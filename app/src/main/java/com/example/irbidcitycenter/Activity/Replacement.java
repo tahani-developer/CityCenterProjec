@@ -172,8 +172,6 @@ public class Replacement extends AppCompatActivity {
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
                         finish();
-                        Intent intent=new Intent(Replacement.this,MainActivity.class);
-                        startActivity(intent);
                     }
                 })
                 .show();

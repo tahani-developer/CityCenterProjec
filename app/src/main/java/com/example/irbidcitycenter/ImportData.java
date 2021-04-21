@@ -231,11 +231,12 @@ else
                             requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
 
                         }
-                        itemKind=requestDetail.getZONETYPE();
+                        itemKind=requestDetail.getZONENAME();
+                        Log.e("itemKind",""+itemKind);
                         if(MainActivity.setflage==0)
-                        itemKintText.setText(itemKind);
+                        itemKintText.setText(requestDetail.getZONETYPE());
                         else
-                        itemKintText1.setText(itemKind);
+                        itemKintText1.setText(requestDetail.getZONETYPE());
 
                     } catch (JSONException e) {
 //                        progressDialog.dismiss();

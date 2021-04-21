@@ -50,6 +50,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 
@@ -63,11 +64,12 @@ public class AddZone extends AppCompatActivity {
     public RoomAllData my_dataBase;
     public static ZoneAdapter adapter;
     ImportData importData;
-   public static TextView zoneName;
+   public static TextView zoneName,itemName;
     public  static String itemKind="";
     public  int indexZone=-1,updatedIndex=-1;
     ExportData exportData;
     public static boolean validItem=false,validateKind=false;
+
 
 
     @Override
@@ -86,6 +88,7 @@ public class AddZone extends AppCompatActivity {
         editZoneCode.setOnEditorActionListener(onEditAction);
         editQty = findViewById(R.id.editQty);
         zoneName= findViewById(R.id.zoneName);
+        itemName= findViewById(R.id.itemName);
         itemKintText= findViewById(R.id.itemKintText);
         exportStateText= findViewById(R.id.exportStateText);
         editQty.setOnEditorActionListener(onEditAction);
@@ -160,11 +163,12 @@ public class AddZone extends AppCompatActivity {
         });
     }
 
-    private void compareItemKind(String itemKind) {
+    private void compareItemKind(String itemTypa) {
         validItem=false;
-        if(listAllZone.get(indexZone).getZONETYPE().equals(itemKind))
+        if(listAllZone.get(indexZone).getZONETYPE().equals(itemTypa))
         {
             validItem=true;
+            itemName.setText(itemKind);
             editItemCode.setEnabled(false);
             editQty.setEnabled(true);
             editQty.requestFocus();}
@@ -324,6 +328,7 @@ public class AddZone extends AppCompatActivity {
         editQty.setText("");
 //        editZoneCode.setText("");
         editItemCode.requestFocus();
+        itemName.setText("");
     }
     public  static  void clearAllScreenZon(){
 
@@ -465,8 +470,8 @@ public class AddZone extends AppCompatActivity {
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
                         finish();
-                        Intent intent=new Intent(AddZone.this,MainActivity.class);
-                        startActivity(intent);
+//                        Intent intent=new Intent(AddZone.this,MainActivity.class);
+//                        startActivity(intent);
                     }
                 })
                 .show();
