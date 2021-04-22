@@ -190,11 +190,13 @@ public class NewShipment extends AppCompatActivity {
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (shipmentList.size() != 0) {
                     shipmentList.clear();
                     filladapter( shipmentList);
 
                 }
+
                 Intent intent =new Intent(NewShipment.this,MainActivity.class);
                 startActivity(intent);
             }
