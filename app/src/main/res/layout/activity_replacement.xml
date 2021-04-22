@@ -228,7 +228,7 @@
                 android:gravity="center"
                 android:padding="3dp"
                 android:text="1"
-                android:inputType="text"
+                android:inputType="number"
                 android:textColor="@color/dark_blue_3"
                 android:textSize="14sp"
                 />

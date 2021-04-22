@@ -40,25 +40,7 @@ public class GeneralMethod {
 
         }
     }
-    public  static  void showSweetDialog2(Context context, int type, String title, String content,String content2){
-        switch ( type){
 
-            case 0:
-                new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText(title)
-                        .setContentText(content)
-                        .setConfirmButton(content2, new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                colsedialog(1);
-                            }
-                        })
-                        .show();
-                break;
-        }
-
-
-    }
     public String getCurentTimeDate(int flag){
         String dateCurent="",timeCurrent,dateTime="";
         Date currentTimeAndDate;

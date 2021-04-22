@@ -40,6 +40,18 @@ public class ZoneModel {
     @ColumnInfo(name = "ZONETYPE")
     private  String ZONETYPE;
 
+    public String getItemName() {
+        return ItemName;
+    }
+
+    public void setItemName(String itemName) {
+        ItemName = itemName;
+    }
+
+    private String ItemName;
+
+
+
     public String getZONENAME() {
         return ZONENAME;
     }

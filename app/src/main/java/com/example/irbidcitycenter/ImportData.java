@@ -49,6 +49,7 @@ import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
 import static com.example.irbidcitycenter.Activity.NewShipment.respon;
 import static com.example.irbidcitycenter.Activity.Replacement.itemKintText1;
+import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 
 
 public class ImportData {
@@ -59,7 +60,7 @@ public class ImportData {
     private Context context;
     public  String ipAddress="",CONO="",headerDll="",link="";
     public RoomAllData my_dataBase;
-
+    public static String zonetype;
     public static List<Store> Storelist=new ArrayList<>();
     public static List<String> BoxNolist=new ArrayList<>();
     public static List<Shipment> POdetailslist=new ArrayList<>();
@@ -148,7 +149,7 @@ else
 
                  //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+itemNo.trim();
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+convertToEnglish(itemNo.trim());
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
@@ -232,6 +233,7 @@ else
 
                         }
                         itemKind=requestDetail.getZONENAME();
+                        zonetype=requestDetail.getZONETYPE();
                         Log.e("itemKind",""+itemKind);
                         if(MainActivity.setflage==0)
                         itemKintText.setText(requestDetail.getZONETYPE());
@@ -407,7 +409,7 @@ else
                     if (!ipAddress.equals("")) {
                         //http://localhost:8082/IrGetAllZone?CONO=290
 
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo.trim()+"&ITEMCODE="+NewShipment.barCode.trim();
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo.trim()+"&ITEMCODE="+convertToEnglish(NewShipment.barCode.trim());
 
                         Log.e("link", "" + link);
                     }
@@ -556,7 +558,7 @@ else
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo.trim();
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+convertToEnglish(poNo.trim());
 
                     Log.e("link", "" + link);
                 }
