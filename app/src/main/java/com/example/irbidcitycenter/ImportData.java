@@ -232,7 +232,7 @@ else
 
                         }
                         itemKind=requestDetail.getZONENAME();
-
+                        Log.e("itemKind",""+itemKind);
                         if(MainActivity.setflage==0)
                         itemKintText.setText(requestDetail.getZONETYPE());
                         else
@@ -407,7 +407,7 @@ else
                     if (!ipAddress.equals("")) {
                         //http://localhost:8082/IrGetAllZone?CONO=290
 
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo+"&ITEMCODE="+NewShipment.barCode;
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo.trim()+"&ITEMCODE="+NewShipment.barCode.trim();
 
                         Log.e("link", "" + link);
                     }
@@ -556,7 +556,7 @@ else
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo;
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo.trim();
 
                     Log.e("link", "" + link);
                 }

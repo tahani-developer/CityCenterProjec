@@ -272,6 +272,7 @@ public class NewShipment extends AppCompatActivity {
                         }*/
                         barcode.setEnabled(true);
                         barcode.requestFocus();
+
                         qty.setEnabled(false);
 
 
@@ -313,7 +314,7 @@ public class NewShipment extends AppCompatActivity {
     }
     private void getPOdetails() {
         Log.e("newshipment", "getPOdetails");
-        barCode = barcode.getText().toString();
+        barCode = barcode.getText().toString().trim();
         importData.getPOdetails();
     }
 
@@ -323,7 +324,7 @@ public class NewShipment extends AppCompatActivity {
 
     private void getboxData() {
         Log.e("newshipment", "getboxData");
-        poNo = pono.getText().toString();
+        poNo = pono.getText().toString().trim();
         importData.getboxno();
         //importData.getPOdetails();
 
@@ -432,6 +433,7 @@ public class NewShipment extends AppCompatActivity {
 
             case R.id.barcodescan:
                 readBarcode(3);
+                qty.requestFocus();
 
         }
     }
@@ -935,7 +937,7 @@ public class NewShipment extends AppCompatActivity {
     public boolean checkboxvalidty() {
 
 
-        if (!importData.BoxNolist.contains(boxno.getText().toString()))
+        if (!importData.BoxNolist.contains(boxno.getText().toString().trim()))
         { generalMethod.showSweetDialog(NewShipment.this, 3, "", this.getResources().getString(R.string.boxnovalidate));
         return false;
     }
@@ -947,7 +949,7 @@ private void checkitemcodevalidty() {
         for (int i = 0; i < importData.POdetailslist.size(); i++)
         {
 
-            if(!boxno.getText().toString().equals(importData.POdetailslist.get(i).getBoxNo())) {
+            if(!boxno.getText().toString().trim().equals(importData.POdetailslist.get(i).getBoxNo())) {
                     generalMethod.showSweetDialog(NewShipment.this, 3, "", this.getResources().getString(R.string.barcodevalidate));
                break;
                 }

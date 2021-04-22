@@ -325,9 +325,11 @@ public class Replacement extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.scanZoneCode:
                 readBarcode(4);
+                itemcode.requestFocus();
                 break;
             case R.id.scanItemCode:
                 readBarcode(5);
+                qty.requestFocus();
                 break;
         }
     }
@@ -421,8 +423,8 @@ public class Replacement extends AppCompatActivity {
        // Toast.makeText(Replacement.this, "sssss", Toast.LENGTH_SHORT).show();
 
 
-        Zone= zone.getText().toString();
-        Itemcode= itemcode.getText().toString();
+        Zone= zone.getText().toString().trim();
+        Itemcode= itemcode.getText().toString().trim();
         Qty= qty.getText().toString();
         if( Zone.toString().trim().equals("")) zone.setError("required");
 
