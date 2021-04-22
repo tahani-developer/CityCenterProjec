@@ -270,8 +270,7 @@ public class AddZone extends AppCompatActivity {
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
-                        if(itemCodeExist(convertToEnglish(editItemCode.getText().toString())))
-                        if(itemCodeExist(editItemCode.getText().toString().trim()))
+                        if(itemCodeExist(convertToEnglish(editItemCode.getText().toString().trim())))
                         {
                             updateListZones(itemZone,updatedIndex);
 
