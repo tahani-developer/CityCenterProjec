@@ -32,4 +32,10 @@ public interface SettingDao {
     @Query ("select COMPANYNO from SETTINGS_TABLE")
     String getCono();
 
+    @Query ("update SETTINGS_TABLE set  YEARS =:coYear ")
+    void  updateCompanyYear(String coYear);
+
+    @Query ("update SETTINGS_TABLE set  COMPANYNO=:cono ")
+    void  updateCompanyInfo(String cono);
+
 }
