@@ -75,6 +75,7 @@
     <string name="invaledZero">Invaled Zero</string>
     <string name="clearAllData">Clear All Data??</string>
     <string name="Qty">Qty</string>
+    <string name="selectCompany">Select Company</string>
 
 
 </resources>

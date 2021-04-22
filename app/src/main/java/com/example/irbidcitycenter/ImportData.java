@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -44,6 +45,7 @@ import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
+import static com.example.irbidcitycenter.Activity.Login.getListCom;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
@@ -63,6 +65,7 @@ public class ImportData {
     public static List<Store> Storelist=new ArrayList<>();
     public static List<String> BoxNolist=new ArrayList<>();
     public static List<Shipment> POdetailslist=new ArrayList<>();
+    public static ArrayList<CompanyInfo> companyInList=new ArrayList<>();
     public ImportData(){}
     public ImportData(Context context) {
         this.context = context;
@@ -125,6 +128,19 @@ else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void getCompanyInfo() {
+        ipAddress="10.0.0.22:8082";
+        if(!ipAddress.equals(""))
+        {
+            new JSONTask_getCompanyInfo().execute();
+        }
+        else {
+
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public class JSONTask_getItemKind extends AsyncTask<String, String, String> {
 
         private String itemNo = "", JsonResponse;
@@ -195,7 +211,7 @@ else
                 h.post(new Runnable() {
                     public void run() {
 
-                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -258,7 +274,147 @@ else
             }
         }
     }
+    public class JSONTask_getCompanyInfo extends AsyncTask<String, String, String> {
 
+        private String itemNo = "", JsonResponse;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+
+                if (!ipAddress.equals("")) {
+                    //http://localhost:8082/IrGetCoYear
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetCoYear";
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+                HttpResponse response = client.execute(request);
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", "Company"+finalJson);
+
+
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.e("onPostExecute", ""+result );
+            if (result != null ) {
+                // {
+                //    "CoNo": "200",
+                //    "CoYear": "2021",
+                //    "CoNameA": "Al Rayyan Plastic Factory 2017"
+                //  },
+
+                if (result.contains("CoNo")) {
+                    try {
+                        CompanyInfo requestDetail=new CompanyInfo();
+                        JSONArray requestArray = null;
+                        requestArray =  new JSONArray(result);
+                        companyInList=new ArrayList<>();
+
+
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            JSONObject infoDetail = requestArray.getJSONObject(i);
+                            requestDetail = new CompanyInfo();
+                            requestDetail.setCoNo(infoDetail.get("CoNo").toString());
+                            requestDetail.setCoYear(infoDetail.get("CoYear").toString());
+                            requestDetail.setCoNameA(infoDetail.get("CoNameA").toString());
+
+                            companyInList.add(requestDetail);
+                        }
+                        if(companyInList.size()!=0)
+                        {
+                            getListCom.setText("fill");
+                        }
+
+
+
+
+//                            itemKintText.setText(requestDetail.getZONETYPE());
+
+
+
+                    } catch (JSONException e) {
+//                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    if(MainActivity.setflage==0)
+                        itemKintText.setText("NOTEXIST");
+                    else
+                        itemKintText1.setText("NOTEXIST");
+                }
+                Log.e("onPostExecute", "NotFound" + result.toString());
+
+
+
+
+            }
+        }
+    }
     private class JSONTask_getAllZoneCode extends AsyncTask<String, String, JSONArray> {
 
         private String custId = "", JsonResponse;
@@ -332,7 +488,7 @@ else
                 h.post(new Runnable() {
                     public void run() {
 
-                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -463,7 +619,7 @@ else
                     h.post(new Runnable() {
                         public void run() {
 
-                            Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
                         }
                     });
 
@@ -612,7 +768,7 @@ else
                 h.post(new Runnable() {
                     public void run() {
 
-                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -758,7 +914,7 @@ else
                 h.post(new Runnable() {
                     public void run() {
 
-                        Toast.makeText(context, "Ip Connection Failed AccountStatment", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
                     }
                 });
 

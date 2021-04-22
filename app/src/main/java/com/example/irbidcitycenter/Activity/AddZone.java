@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -258,14 +259,14 @@ public class AddZone extends AppCompatActivity {
                     if(generalMethod.validateNotZero(editQty))
                     {
                         ZoneModel itemZone = new ZoneModel();
-                        itemZone.setZoneCode(editZoneCode.getText().toString());
-                        itemZone.setItemCode(editItemCode.getText().toString());
-                        itemZone.setQty(editQty.getText().toString());
+                        itemZone.setZoneCode(editZoneCode.getText().toString().trim());
+                        itemZone.setItemCode(editItemCode.getText().toString().trim());
+                        itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
-                        if(itemCodeExist(editItemCode.getText().toString()))
+                        if(itemCodeExist(editItemCode.getText().toString().trim()))
                         {
                             updateListZones(itemZone,updatedIndex);
 
@@ -509,6 +510,8 @@ public class AddZone extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
+        LinearLayout headerComp2=dialog.findViewById(R.id.headerComp2);
+        headerComp2.setVisibility(View.GONE);
         ArrayList<String> nameOfEngi=new ArrayList<>();
         final ListView listZones = dialog.findViewById(R.id.listViewEngineering);
 
@@ -555,7 +558,7 @@ public class AddZone extends AppCompatActivity {
 
     }
    void setZone(int i){
-       if(!editZoneCode.getText().toString().equals(""))
+       if(!editZoneCode.getText().toString().trim().equals(""))
        {
            new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                    .setTitleText(getResources().getString(R.string.confirm_title))
