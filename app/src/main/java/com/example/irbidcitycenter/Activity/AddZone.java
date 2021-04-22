@@ -53,7 +53,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
+import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
+import static com.example.irbidcitycenter.ImportData.zonetype;
 
 public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
@@ -263,9 +265,12 @@ public class AddZone extends AppCompatActivity {
                         itemZone.setItemCode(editItemCode.getText().toString().trim());
                         itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
+                        itemZone.setZONETYPE(zonetype);
+                        itemZone.setItemName(itemName.getText().toString());
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
+                        if(itemCodeExist(convertToEnglish(editItemCode.getText().toString())))
                         if(itemCodeExist(editItemCode.getText().toString().trim()))
                         {
                             updateListZones(itemZone,updatedIndex);
@@ -305,7 +310,7 @@ public class AddZone extends AppCompatActivity {
     private boolean itemCodeExist(String itemCode) {
         for(int i=0;i<listZone.size();i++)
         {
-            if(listZone.get(i).getItemCode().equals(itemCode.trim()))
+            if(convertToEnglish(listZone.get(i).getItemCode()).equals(convertToEnglish(itemCode.trim())))
             {
                 updatedIndex=i;
                 Log.e("itemCodeExist",""+updatedIndex);
@@ -405,7 +410,11 @@ public class AddZone extends AppCompatActivity {
             case R.id.save:
                 if(listZone.size()!=0)
                 {
-                    exportData();
+                    for(int i=0;i<listZone.size();i++) {
+                        listZone.get(i).setItemCode(convertToEnglish(listZone.get(i).getItemCode()));
+                        listZone.get(i).setQty(convertToEnglish(listZone.get(i).getQty()));
+                    }
+                        exportData();
 
                 }
                 else {

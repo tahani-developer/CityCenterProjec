@@ -262,4 +262,9 @@ ImportData importData;
         if(appSettings.size()!=0)
         my_dataBase.settingDao().deleteALL();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

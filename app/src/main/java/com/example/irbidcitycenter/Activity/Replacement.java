@@ -47,6 +47,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.AddZone.validItem;
@@ -102,15 +103,15 @@ public class Replacement extends AppCompatActivity {
            // for (int i=0; i<replacementlist.size();i++)
            //     model.insert(replacementlist.get(i));
 
+                if (replacementlist.size() > 0) {
+                    for(int i=0;i<replacementlist.size();i++)
+                    { replacementlist.get(i).setItemcode(convertToEnglish( replacementlist.get(i).getItemcode()));
+                      replacementlist.get(i).setQty(convertToEnglish( replacementlist.get(i).getQty()));}
+                    exportData();
+                    zone.setEnabled(true);
+                    zone.requestFocus();
+                }
 
-                exportData();
-                //saveData();
-                zone.setEnabled(true);
-               zone.requestFocus();
-              /*  if(saved==true)
-                {replacementlist.clear();
-                fillAdapter();
-                adapter.notifyDataSetChanged();}*/
             }
               });
 
@@ -139,8 +140,8 @@ public class Replacement extends AppCompatActivity {
         if (replacementlist.size() != 0)
             for (int i = 0; i < replacementlist.size(); i++) {
 
-                if (replacementlist.get(i).getZone().equals(replacement.getZone())
-                        && replacementlist.get(i).getItemcode().equals(replacement.getItemcode())) {
+                if (convertToEnglish(replacementlist.get(i).getZone()).equals(convertToEnglish(replacement.getZone()))
+                        && convertToEnglish(replacementlist.get(i).getItemcode()).equals(convertToEnglish(replacement.getItemcode()))) {
                     replacementlist.get(i).setQty(Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty) + "");
                     adapter.notifyDataSetChanged();
                     flag = true;
@@ -325,11 +326,11 @@ public class Replacement extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.scanZoneCode:
                 readBarcode(4);
-                itemcode.requestFocus();
+
                 break;
             case R.id.scanItemCode:
                 readBarcode(5);
-                qty.requestFocus();
+
                 break;
         }
     }
@@ -424,8 +425,8 @@ public class Replacement extends AppCompatActivity {
 
 
         Zone= zone.getText().toString().trim();
-        Itemcode= itemcode.getText().toString().trim();
-        Qty= qty.getText().toString();
+        Itemcode= itemcode.getText().toString().trim().replaceAll("\\s", "");
+        Qty= qty.getText().toString().trim();
         if( Zone.toString().trim().equals("")) zone.setError("required");
 
            else if (Itemcode.toString().trim().equals("")) itemcode.setError("required");
