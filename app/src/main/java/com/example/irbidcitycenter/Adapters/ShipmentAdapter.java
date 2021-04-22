@@ -135,7 +135,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                             newqty = qtytxt.getText().toString();
                             Log.e("newqty",  newqty);
                             NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
-                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(sum-Integer.parseInt(newqty)));
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1*(sum-Integer.parseInt(newqty))));
                             sum-=Integer.parseInt(newqty);
                           //  PoQTY.setText(sum+"");
                             updateAdpapter();
