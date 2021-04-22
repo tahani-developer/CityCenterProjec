@@ -218,14 +218,12 @@ public class NewShipment extends AppCompatActivity {
                 switch (textView.getId()) {
                     case R.id.poNotxt:
 
-                        if (pono.getText().toString().trim().equals("6")) {
+                        if (!pono.getText().toString().trim().equals("")) {
                             getboxData();
-                            if (boxnorespon.getText().length() > 0) {
-                                NewShipment.boxno.setEnabled(true);
-                                NewShipment.boxno.requestFocus();
-                            }
-                        } else
-                            generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.invalidPONO));
+
+                        }
+                        //else
+                          //  generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.invalidPONO));
                         break;
                     case R.id.boxNotxt:
                          pono.setEnabled(false);
@@ -334,8 +332,8 @@ public class NewShipment extends AppCompatActivity {
 
 
     private void filldata() {
-        Qty = qty.getText().toString();
-        boxNo = boxno.getText().toString();
+        Qty = qty.getText().toString().trim();
+        boxNo = boxno.getText().toString().trim();
 
 
         ShipmentAdapter.newqty = Qty;
@@ -359,7 +357,8 @@ public class NewShipment extends AppCompatActivity {
                     shipment.setBarcode(barCode);
                     shipment.setQty(Qty);
                     shipment.setIsPosted("0");
-                    shipment.setDiffer(getDiff() + "");
+                    int qty=Integer.parseInt(Qty);
+                    shipment.setDiffer(getDiff(qty) + "");
                     shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                     shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                     shipment.setPoqty(PoQTY.getText().toString());
@@ -389,15 +388,21 @@ public class NewShipment extends AppCompatActivity {
         }
     }
 
-    public int getDiff() {
+    public int getDiff(int qty) {
 
-        sum-= Integer.parseInt(Qty);
-        Log.e("getDifferentQTY()  sum", String.valueOf(sum));
+        Log.e("getDifferentQTY()sum", String.valueOf(sum)+"\tqty="+qty);
 
 
-        //PoQTY.setText(sum + "");
-        Log.e("getDifferentQTY()  newqty", String.valueOf(Qty));
-        return sum;
+        if(sum>=qty)
+        {
+            sum-= qty;
+            return   -sum;
+
+        }
+        else {
+            return Math.abs(sum);
+        }
+
     }
 
 
@@ -590,6 +595,36 @@ public class NewShipment extends AppCompatActivity {
         });
 
 
+        boxnorespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if(editable.toString().length()!=0)
+                {
+                    if(editable.toString().equals("Not"))
+                    {
+                        NewShipment.pono.setError("Invalid");
+
+                    }else {
+                        if (boxnorespon.getText().length() > 0) {
+                            NewShipment.boxno.setEnabled(true);
+                            NewShipment.boxno.requestFocus();
+                        }
+                    }
+
+                }
+            }
+        });
 
 
 

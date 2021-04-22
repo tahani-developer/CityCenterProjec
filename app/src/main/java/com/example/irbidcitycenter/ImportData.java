@@ -232,7 +232,7 @@ else
 
                         }
                         itemKind=requestDetail.getZONENAME();
-                        Log.e("itemKind",""+itemKind);
+
                         if(MainActivity.setflage==0)
                         itemKintText.setText(requestDetail.getZONETYPE());
                         else
@@ -538,7 +538,7 @@ else
 
 
 
-    private class JSONTask_getAllPOboxNO extends AsyncTask<String, String, JSONArray> {
+    private class JSONTask_getAllPOboxNO extends AsyncTask<String, String, String> {
 
         private String custId = "", JsonResponse;
 
@@ -550,7 +550,7 @@ else
         }
 
         @Override
-        protected JSONArray doInBackground(String... params) {
+        protected String doInBackground(String... params) {
 
             try {
                 if (!ipAddress.equals("")) {
@@ -598,9 +598,9 @@ else
                 Log.e("finalJson***Import", finalJson);
 
 
-                JSONArray parentObject = new JSONArray(finalJson);
+//                JSONArray parentObject = new JSONArray(finalJson);
 
-                return parentObject;
+                return finalJson;
 
 
             }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
@@ -631,13 +631,25 @@ else
         }
 
         @Override
-        protected void onPostExecute(JSONArray array) {
-            super.onPostExecute(array);
+        protected void onPostExecute(String respon) {
+            super.onPostExecute(respon);
 
             JSONObject jsonObject1 = null;
 
 
-            if (array != null && array.length() != 0) {
+            if (respon != null && respon.length() != 0) {
+                if(respon.contains("BOXNO"))
+                {   JSONArray array = null;
+
+
+                    try {
+                        array =  new JSONArray(respon);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
                 Log.e("onPostExecute", "" + array.toString());
 
                 for (int i = 0; i < array.length(); i++) {
@@ -656,13 +668,18 @@ else
                 }
                 Log.e("    BoxNolist", "" +     BoxNolist.size());
                 Log.e("    BoxNolist", "" +     BoxNolist.get(0));
+                    NewShipment.boxnorespon.setText(BoxNolist.get(0));
+                    if (NewShipment.boxnorespon.getText().length() > 0) {
+                        NewShipment.boxno.setEnabled(true);
+                        NewShipment.boxno.requestFocus();
+                    }
+            }
+                else if(respon.contains("No Parameter Found"))
+                {
+                    NewShipment.boxnorespon.setText("Not");
+                }
+            }
 
-            }
-            NewShipment.boxnorespon.setText(BoxNolist.get(0));
-            if (NewShipment.boxnorespon.getText().length() > 0) {
-                NewShipment.boxno.setEnabled(true);
-                NewShipment.boxno.requestFocus();
-            }
         }
     }
 

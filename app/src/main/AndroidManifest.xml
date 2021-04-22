@@ -26,12 +26,19 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activity.AddZone"
-            android:windowSoftInputMode="adjustPan|adjustResize"></activity>
-        <activity android:name=".Activity.Replacement"></activity>
-        <activity android:name=".Activity.NewShipment" />
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".Activity.Replacement"
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".Activity.NewShipment"
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".ScanActivity" />
         <activity android:name=".Activity.MainActivity"/>
-        <activity android:name=".Activity.Login" >
+        <activity android:name=".Activity.Login"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
