@@ -407,7 +407,7 @@ else
                     if (!ipAddress.equals("")) {
                         //http://localhost:8082/IrGetAllZone?CONO=290
 
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo+"&ITEMCODE="+NewShipment.barCode;
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo.trim()+"&ITEMCODE="+NewShipment.barCode.trim();
 
                         Log.e("link", "" + link);
                     }
@@ -556,7 +556,7 @@ else
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo;
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+poNo.trim();
 
                     Log.e("link", "" + link);
                 }
@@ -658,7 +658,7 @@ else
                 Log.e("    BoxNolist", "" +     BoxNolist.get(0));
 
             }
-            NewShipment.boxnorespon.setText(BoxNolist.get(0));
+//            NewShipment.boxnorespon.setText(BoxNolist.get(0));
             if (NewShipment.boxnorespon.getText().length() > 0) {
                 NewShipment.boxno.setEnabled(true);
                 NewShipment.boxno.requestFocus();
