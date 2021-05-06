@@ -82,7 +82,7 @@ public class Replacement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
         init();
-
+        getStors();
 
   ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, spinnerArray);
@@ -119,15 +119,30 @@ public class Replacement extends AppCompatActivity {
          findViewById(R.id.Re_cancel).setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
-                if(replacementlist.size()>0) {
-                    replacementlist.clear();
-                    adapter.notifyDataSetChanged();
+
+                 new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
+                         .setTitleText(getResources().getString(R.string.confirm_title))
+                         .setContentText(getResources().getString(R.string.messageExit))
+                         .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                             @Override
+                             public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                 sweetAlertDialog.dismissWithAnimation();
+                                 if(replacementlist.size()>0) {
+                                     replacementlist.clear();
+                                     adapter.notifyDataSetChanged();
 
 
 
-                }
-                 Intent intent =new Intent(Replacement.this,MainActivity.class);
-                 startActivity(intent);
+                                 }
+                                 Intent intent =new Intent(Replacement.this,MainActivity.class);
+                                 startActivity(intent);
+                                 finish();
+                             }
+                         })
+                         .show();
+
+
+
              }
          });
 
@@ -176,6 +191,9 @@ public class Replacement extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+    private void getStors() {
+        importData.getStore();
     }
     public void exportData() {
         for(int i=0;i<replacementlist.size();i++)

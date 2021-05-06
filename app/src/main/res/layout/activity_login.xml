@@ -110,15 +110,16 @@
             <!-- INPUT -->
             <EditText
                 android:id="@+id/username_input"
-                android:layout_width="match_parent"
+                android:layout_width="290dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="-14dp"
                 android:layout_toRightOf="@+id/username_icon"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/poppins_regular"
                 android:hint="UsernNme"
                 android:inputType="text"
                 android:maxLines="1"
-              android:padding="2dp"
+                android:padding="2dp"
                 android:text="6"
                 android:textCursorDrawable="@drawable/cursor_color"
                 android:textSize="14sp" />

@@ -190,15 +190,26 @@ public class NewShipment extends AppCompatActivity {
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(getResources().getString(R.string.confirm_title))
+                        .setContentText(getResources().getString(R.string.messageExit))
+                        .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismissWithAnimation();
+                                if (shipmentList.size() != 0) {
+                                    shipmentList.clear();
+                                    filladapter( shipmentList);
 
-                if (shipmentList.size() != 0) {
-                    shipmentList.clear();
-                    filladapter( shipmentList);
+                                }
 
-                }
+                                Intent intent =new Intent(NewShipment.this,MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .show();
 
-                Intent intent =new Intent(NewShipment.this,MainActivity.class);
-                startActivity(intent);
             }
         });
 
