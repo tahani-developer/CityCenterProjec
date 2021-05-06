@@ -62,16 +62,14 @@ ImportData importData;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initial();
-        getStors();
+
 
         my_dataBase= RoomAllData.getInstanceDataBase(MainActivity.this);
 
 
     }
 
-    private void getStors() {
-        importData.getStore();
-    }
+
 
     private void initial() {
         importData=new ImportData(MainActivity.this);

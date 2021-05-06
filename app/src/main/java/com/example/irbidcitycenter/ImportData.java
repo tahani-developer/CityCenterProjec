@@ -55,25 +55,28 @@ import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 
 
 public class ImportData {
-    public static ArrayList<ZoneModel> listAllZone =new ArrayList<>();
+    public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
     public static int posize;
-    public  static String itemn;
-    public  static String poqty;
+    public static String itemn;
+    public static String poqty;
     private Context context;
-    public  String ipAddress="",CONO="",headerDll="",link="";
+    public String ipAddress = "", CONO = "", headerDll = "", link = "";
     public RoomAllData my_dataBase;
     public static String zonetype;
-    public static List<Store> Storelist=new ArrayList<>();
-    public static List<String> BoxNolist=new ArrayList<>();
-    public static List<Shipment> POdetailslist=new ArrayList<>();
-    public static ArrayList<CompanyInfo> companyInList=new ArrayList<>();
-    public ImportData(){}
+    public static List<Store> Storelist = new ArrayList<>();
+    public static List<String> BoxNolist = new ArrayList<>();
+    public static List<Shipment> POdetailslist = new ArrayList<>();
+    public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
+
+    public ImportData() {
+    }
+
     public ImportData(Context context) {
         this.context = context;
-        my_dataBase= RoomAllData.getInstanceDataBase(context);
+        my_dataBase = RoomAllData.getInstanceDataBase(context);
         try {
             getIpAddress();
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(context, "Fill Ip and Company No", Toast.LENGTH_SHORT).show();
         }
 
@@ -228,9 +231,9 @@ else
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.e("onPostExecute", ""+result );
-            if (result != null ) {
-                validateKind=false;
+            Log.e("onPostExecute", "" + result);
+            if (result != null) {
+                validateKind = false;
                 if (result.contains("ITEMTYPE")) {
                     try {
                         ZoneModel requestDetail=new ZoneModel();
@@ -274,6 +277,7 @@ else
             }
         }
     }
+
     public class JSONTask_getCompanyInfo extends AsyncTask<String, String, String> {
 
         private String itemNo = "", JsonResponse;
@@ -325,7 +329,7 @@ else
                 // JsonResponse = sb.toString();
 
                 String finalJson = sb.toString();
-                Log.e("finalJson***Import", "Company"+finalJson);
+                Log.e("finalJson***Import", "Company" + finalJson);
 
 
 
@@ -368,10 +372,10 @@ else
 
                 if (result.contains("CoNo")) {
                     try {
-                        CompanyInfo requestDetail=new CompanyInfo();
+                        CompanyInfo requestDetail = new CompanyInfo();
                         JSONArray requestArray = null;
-                        requestArray =  new JSONArray(result);
-                        companyInList=new ArrayList<>();
+                        requestArray = new JSONArray(result);
+                        companyInList = new ArrayList<>();
 
 
                         for (int i = 0; i < requestArray.length(); i++) {
@@ -383,16 +387,12 @@ else
 
                             companyInList.add(requestDetail);
                         }
-                        if(companyInList.size()!=0)
-                        {
+                        if (companyInList.size() != 0) {
                             getListCom.setText("fill");
                         }
 
 
-
-
 //                            itemKintText.setText(requestDetail.getZONETYPE());
-
 
 
                     } catch (JSONException e) {
@@ -400,21 +400,19 @@ else
                         e.printStackTrace();
                     }
                 }
-                else
-                {
-                    if(MainActivity.setflage==0)
-                        itemKintText.setText("NOTEXIST");
-                    else
-                        itemKintText1.setText("NOTEXIST");
-                }
                 Log.e("onPostExecute", "NotFound" + result.toString());
 
 
-
-
+            }
+            else {
+                if (MainActivity.setflage == 0)
+                    itemKintText.setText("NOTEXIST");
+                else
+                    itemKintText1.setText("NOTEXIST");
             }
         }
     }
+
     private class JSONTask_getAllZoneCode extends AsyncTask<String, String, JSONArray> {
 
         private String custId = "", JsonResponse;
@@ -513,26 +511,29 @@ else
             JSONObject result = null;
 
 
-            if (array != null && array.length() != 0) {
+            if (array != null ) {
+                if (array.length() != 0) {
+                    Log.e("onPostExecute", "" + array.toString());
 
-                for (int i = 0; i < array.length(); i++) {
-                    try {
-                        result = array.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            result = array.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        ZoneModel itemZone = new ZoneModel();
+                        try {
+                            itemZone.setZoneCode(result.getString("ZONENO"));
+                            itemZone.setZONENAME(result.getString("ZONENAME"));
+                            itemZone.setZONETYPE(result.getString("ZONETYPE"));
+                            listAllZone.add(itemZone);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    ZoneModel itemZone = new ZoneModel();
-                    try {
-                        itemZone.setZoneCode(result.getString("ZONENO"));
-                        itemZone.setZONENAME(result.getString("ZONENAME"));
-                        itemZone.setZONETYPE(result.getString("ZONETYPE"));
-                        listAllZone.add(itemZone);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
+
                 }
-
-
             }
         }
     }
@@ -542,155 +543,161 @@ else
 
 
 
-        /////////
-        private class JSONTask_getAllPOdetails extends AsyncTask<String, String,String> {
+    /////////
+    private class JSONTask_getAllPOdetails extends AsyncTask<String, String, String> {
 
-            private String custId = "", JsonResponse;
-            Shipment shipment;
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                String do_ = "my";
+        private String custId = "", JsonResponse;
+        Shipment shipment;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    //http://localhost:8082/IrGetAllZone?CONO=290
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim() + "&PONO=" + poNo.trim() + "&ITEMCODE=" + convertToEnglish(NewShipment.barCode.trim());
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("getAllPOdetails doInBackground, ", e.getMessage());
             }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try {
-                    if (!ipAddress.equals("")) {
-                        //http://localhost:8082/IrGetAllZone?CONO=290
-
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemInfo?CONO=" + CONO.trim()+"&PONO="+poNo.trim()+"&ITEMCODE="+convertToEnglish(NewShipment.barCode.trim());
-
                         Log.e("link", "" + link);
                     }
                 } catch (Exception e) {
             Log.e("getAllPOdetails",e.getMessage());
                 }
 
-                try {
+            try {
 
-                    //*************************************
+                //*************************************
 
-                    String JsonResponse = null;
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet();
-                    request.setURI(new URI(link));
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
 
 //
 
-                    HttpResponse response = client.execute(request);
+                HttpResponse response = client.execute(request);
 
 
-                    BufferedReader in = new BufferedReader(new
-                            InputStreamReader(response.getEntity().getContent()));
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
 
-                    StringBuffer sb = new StringBuffer("");
-                    String line = "";
-                    Log.e("finalJson***Import", sb.toString());
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
 
-                    while ((line = in.readLine()) != null) {
-                        sb.append(line);
-                    }
-
-                    in.close();
-
-
-                    // JsonResponse = sb.toString();
-
-                    String finalJson = sb.toString();
-                    Log.e("finalJson***Import", finalJson);
-
-
-                    //JSONArray parentObject = new JSONArray(finalJson);
-
-                    return finalJson;
-
-
-                }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
-                catch (HttpHostConnectException ex) {
-                    ex.printStackTrace();
-//                progressDialog.dismiss();
-
-                    Handler h = new Handler(Looper.getMainLooper());
-                    h.post(new Runnable() {
-                        public void run() {
-
-                            Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("Exception", "" + e.getMessage());
-//                progressDialog.dismiss();
-                    return null;
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
                 }
 
+                in.close();
 
-                //***************************
 
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                //JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(String array) {
-                super.onPostExecute(array);
 
-                JSONObject jsonObject1 = null;
+            //***************************
 
-                if (array.contains("ItemOCode")){
-                if (array != null && array.length() != 0) {
+        }
+
+        @Override
+        protected void onPostExecute(String array) {
+            super.onPostExecute(array);
+
+            JSONObject jsonObject1 = null;
+
+
+            if (array != null) {
+                if (array.length() != 0) {
+                    if (array.contains("ItemOCode")) {
+                        Log.e("onPostExecute", "" + array.toString());
 
 
                         try {
                             JSONArray requestArray = null;
-                            requestArray =  new JSONArray(array);
+                            requestArray = new JSONArray(array);
 
                             for (int i = 0; i < requestArray.length(); i++) {
 
-                            shipment=new Shipment();
-                                jsonObject1 =  requestArray.getJSONObject(i);
-                            shipment.setBarcode(jsonObject1.getString("ItemOCode"));
-                            shipment.setPoqty(jsonObject1.getString("Qty"));
-                            shipment.setItemname(jsonObject1.getString("ItemNameA"));
-                            shipment.setBoxNo(jsonObject1.getString("BOXNO"));
-                            POdetailslist.add(shipment);
-                        } }
-                    catch (JSONException e) {
+                                shipment = new Shipment();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                shipment.setBarcode(jsonObject1.getString("ItemOCode"));
+                                shipment.setPoqty(jsonObject1.getString("Qty"));
+                                shipment.setItemname(jsonObject1.getString("ItemNameA"));
+                                shipment.setBoxNo(jsonObject1.getString("BOXNO"));
+                                POdetailslist.add(shipment);
+                            }
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
 
-                    NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
-                    itemname.setText(POdetailslist.get(0).getItemname());
-                    PoQTY.setText(POdetailslist.get(0).getPoqty());
-                    poqty=POdetailslist.get(0).getPoqty();
-                    //
+                        NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
+                        itemname.setText(POdetailslist.get(0).getItemname());
+                        PoQTY.setText(POdetailslist.get(0).getPoqty());
+                        poqty = POdetailslist.get(0).getPoqty();
+                        //
 
 
+                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.size());
+                        posize = POdetailslist.size();
+                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.get(0).getItemname());
 
 
-                  posize= POdetailslist.size();
-
-
-
+                    }
                 }
             }else {
 
-                    NewShipment.respon.setText("notexists");
+                NewShipment.respon.setText("notexists");
 
 
-
-                }}
+            }
 
         }
 
-
-
-
+    }
     private class JSONTask_getAllPOboxNO extends AsyncTask<String, String, String> {
 
         private String custId = "", JsonResponse;
@@ -709,7 +716,7 @@ else
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim()+"&PONO="+convertToEnglish(poNo.trim());
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim() + "&PONO=" + convertToEnglish(poNo.trim());
 
                     Log.e("link", "" + link);
                 }
@@ -790,185 +797,190 @@ else
             JSONObject jsonObject1 = null;
 
 
-            if (respon != null && respon.length() != 0) {
-                if(respon.contains("BOXNO"))
-                {   JSONArray array = null;
+            if (respon != null) {
+                if (respon.length() != 0) {
+                    if (respon.contains("BOXNO")) {
+                        JSONArray array = null;
 
 
-                    try {
-                        array =  new JSONArray(respon);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                for (int i = 0; i < array.length(); i++) {
-                    try {
-                        jsonObject1 = array.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-
-                        BoxNolist.add(jsonObject1.getString("BOXNO"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                    NewShipment.boxnorespon.setText(BoxNolist.get(0));
-                    if (NewShipment.boxnorespon.getText().length() > 0) {
-                        NewShipment.boxno.setEnabled(true);
-                        NewShipment.boxno.requestFocus();
-                    }
-            }
-                else if(respon.contains("No Parameter Found"))
-                {
-                    NewShipment.boxnorespon.setText("Not");
-                }
-            }
-
-        }
-    }
-
-
-    private class JSONTask_getAllStoreData extends AsyncTask<String, String,String> {
-
-
-        Store store;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            String do_ = "my";
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                if (!ipAddress.equals("")) {
-                    http://10.0.0.22:8082/Getsore
-
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/Getsore" ;
-
-                    Log.e("link", "" + link);
-                }
-            } catch (Exception e) {
-                Log.e("getAllStore",e.getMessage());
-            }
-
-            try {
-
-                //*************************************
-
-                String JsonResponse = null;
-                HttpClient client = new DefaultHttpClient();
-                HttpGet request = new HttpGet();
-                request.setURI(new URI(link));
-
-//
-
-                HttpResponse response = client.execute(request);
-
-
-                BufferedReader in = new BufferedReader(new
-                        InputStreamReader(response.getEntity().getContent()));
-
-                StringBuffer sb = new StringBuffer("");
-                String line = "";
-                Log.e("finalJson***Import", sb.toString());
-
-                while ((line = in.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                in.close();
-
-
-                // JsonResponse = sb.toString();
-
-                String finalJson = sb.toString();
-                Log.e("finalJson***Import", finalJson);
-
-
-                //JSONArray parentObject = new JSONArray(finalJson);
-
-                return finalJson;
-
-
-            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
-            catch (HttpHostConnectException ex) {
-                ex.printStackTrace();
-//                progressDialog.dismiss();
-
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
-                    public void run() {
-
-                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-                return null;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("Exception", "" + e.getMessage());
-//                progressDialog.dismiss();
-                return null;
-            }
-
-
-            //***************************
-
-        }
-
-        @Override
-        protected void onPostExecute(String array) {
-            super.onPostExecute(array);
-
-            JSONObject jsonObject1 = null;
-            if (array != null)
-            if (array.contains("STORENO"))
-            {
-                if (array != null && array.length() != 0) {
-                    try {
-                        JSONArray requestArray = null;
-                        requestArray =  new JSONArray(array);
-
-
-                    for (int i = 0; i < requestArray.length(); i++) {
-                        store=new Store();
-                        jsonObject1 =  requestArray.getJSONObject(i);
-                        store.setSTORENO(jsonObject1.getString("STORENO"));
-                        store.setSTORENAME(jsonObject1.getString("STORENAME"));
-
-                        Storelist.add(store);
-                    }
-                    }
-                         catch (JSONException e)
-                        {
+                        try {
+                            array = new JSONArray(respon);
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
 
-                    }
-//                    Replacement.respon.setText(store.getSTORENO());
+                        Log.e("onPostExecute", "" + array.toString());
 
-                    //
+                        for (int i = 0; i < array.length(); i++) {
+                            try {
+                                jsonObject1 = array.getJSONObject(i);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+
+                                BoxNolist.add(jsonObject1.getString("BOXNO"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.e("    BoxNolist", "" + BoxNolist.size());
+                        Log.e("    BoxNolist", "" + BoxNolist.get(0));
+                        NewShipment.boxnorespon.setText(BoxNolist.get(0));
+                        if (NewShipment.boxnorespon.getText().length() > 0) {
+                            NewShipment.boxno.setEnabled(true);
+                            NewShipment.boxno.requestFocus();
+                        }
+                    }
+                    }
+                }
+            else if (respon.contains("No Parameter Found")) {
+                NewShipment.boxnorespon.setText("Not");
+            }
+        }
+
+    }
+        private class JSONTask_getAllStoreData extends AsyncTask<String, String, String> {
+
+
+            Store store;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                String do_ = "my";
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try {
+                    if (!ipAddress.equals("")) {
+                        http:
+//10.0.0.22:8082/Getsore
+
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/Getsore";
+
+                        Log.e("link", "" + link);
+                    }
+                } catch (Exception e) {
+                    Log.e("getAllStore doInBackground, ", e.getMessage());
+                }
+
+                try {
+
+                    //*************************************
+
+                    String JsonResponse = null;
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet();
+                    request.setURI(new URI(link));
+
+//
+
+                    HttpResponse response = client.execute(request);
+
+
+                    BufferedReader in = new BufferedReader(new
+                            InputStreamReader(response.getEntity().getContent()));
+
+                    StringBuffer sb = new StringBuffer("");
+                    String line = "";
+                    Log.e("finalJson***Import", sb.toString());
+
+                    while ((line = in.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    in.close();
+
+
+                    // JsonResponse = sb.toString();
+
+                    String finalJson = sb.toString();
+                    Log.e("finalJson***Import", finalJson);
+
+
+                    //JSONArray parentObject = new JSONArray(finalJson);
+
+                    return finalJson;
+
+
+                }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+                catch (HttpHostConnectException ex) {
+                    ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+
+                            Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                    return null;
+                }
+
+
+                //***************************
+
+            }
+
+            @Override
+            protected void onPostExecute(String array) {
+                super.onPostExecute(array);
+
+                JSONObject jsonObject1 = null;
+                if (array != null) {
+                    if (array.contains("STORENO")) {
+
+                            if (array.length() != 0) {
+                                Log.e("onPostExecute", "" + array.length() + "  " + array.toString());
+                                try {
+                                    JSONArray requestArray = null;
+                                    requestArray = new JSONArray(array);
+
+
+                                    for (int i = 0; i < requestArray.length(); i++) {
+                                        store = new Store();
+                                        jsonObject1 = requestArray.getJSONObject(i);
+                                        store.setSTORENO(jsonObject1.getString("STORENO"));
+                                        store.setSTORENAME(jsonObject1.getString("STORENAME"));
+
+                                        Storelist.add(store);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            }
+
+
+
+                    }
+                } else {
+
+                    Replacement.respon.setText("nodata");
+
 
                 }
-            else {
-
-                Replacement.respon.setText("nodata");
-
-
-
-            }}
             }
 
 
+
     }
+}
 
 
 
