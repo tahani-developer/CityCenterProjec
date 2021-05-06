@@ -2,7 +2,7 @@
     <string name="app_name">IrbidCityCenter</string>
     <string name="NewShipment">New Shipment</string>
     <string name="Zone">Zone</string>
-    <string name="Replacement">Replacement</string>
+    <string name="Replacement">Replenishment</string>
     <string name="setting">Setting</string>
     <string name="about">About</string>
     <string name="signout">signout</string>

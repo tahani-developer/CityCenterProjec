@@ -73,8 +73,22 @@ public class Login extends AppCompatActivity {
                 if (username.getText().toString().trim().equals("6") && password.getText().toString().trim().equals("123")) {
                     MainActivity.SET_userNO = username.getText().toString().trim();
                     Log.e("sssssssss","ssssssss");
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    startActivity(intent);
+                    if(existCoNo(2))
+                    {
+                        if(existCoNo(1))
+                        {
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else {
+                            generalMethod.showSweetDialog(Login.this,3,"fill company No setting","");
+                        }
+
+                    }
+                    else {
+                        generalMethod.showSweetDialog(Login.this,3,"fill ip setting","");
+                    }
+
                 } else {
                     username.setError("");
                     password.setError("");
