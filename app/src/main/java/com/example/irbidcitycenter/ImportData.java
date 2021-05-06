@@ -645,8 +645,9 @@ else
 
                 JSONObject jsonObject1 = null;
 
-                if (array.contains("ItemOCode")){
+
                 if (array != null && array.length() != 0) {
+                    if (array.contains("ItemOCode")){
                     Log.e("onPostExecute", "" + array.toString());
 
 
@@ -939,27 +940,24 @@ else
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-            if (array != null)
-            if (array.contains("STORENO"))
-            {
-                if (array != null && array.length() != 0) {
-                    Log.e("onPostExecute", "" +array.length()+"  "+ array.toString());
-                    try {
-                        JSONArray requestArray = null;
-                        requestArray =  new JSONArray(array);
+            if (array != null) {
+                if (array.contains("STORENO")) {
+                    if (array != null && array.length() != 0) {
+                        Log.e("onPostExecute", "" + array.length() + "  " + array.toString());
+                        try {
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(array);
 
 
-                    for (int i = 0; i < requestArray.length(); i++) {
-                        store=new Store();
-                        jsonObject1 =  requestArray.getJSONObject(i);
-                        store.setSTORENO(jsonObject1.getString("STORENO"));
-                        store.setSTORENAME(jsonObject1.getString("STORENAME"));
+                            for (int i = 0; i < requestArray.length(); i++) {
+                                store = new Store();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                store.setSTORENO(jsonObject1.getString("STORENO"));
+                                store.setSTORENAME(jsonObject1.getString("STORENAME"));
 
-                        Storelist.add(store);
-                    }
-                    }
-                         catch (JSONException e)
-                        {
+                                Storelist.add(store);
+                            }
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
@@ -970,6 +968,7 @@ else
                     //
 
                 }
+            }
             else {
 
                 Replacement.respon.setText("nodata");
