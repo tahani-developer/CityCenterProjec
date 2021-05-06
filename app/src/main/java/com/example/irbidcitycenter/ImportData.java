@@ -131,7 +131,6 @@ else
     }
 
     public void getCompanyInfo() {
-        ipAddress="10.0.0.22:8082";
         if(!ipAddress.equals(""))
         {
             new JSONTask_getCompanyInfo().execute();
@@ -237,7 +236,6 @@ else
                         ZoneModel requestDetail=new ZoneModel();
                         JSONArray requestArray = null;
                         requestArray =  new JSONArray(result);
-                        Log.e("requestArray", "" + requestArray.length());
 
 
                         for (int i = 0; i < requestArray.length(); i++) {
@@ -516,7 +514,6 @@ else
 
 
             if (array != null && array.length() != 0) {
-                Log.e("onPostExecute", "" + array.toString());
 
                 for (int i = 0; i < array.length(); i++) {
                     try {
@@ -535,7 +532,6 @@ else
                     }
                 }
 
-                Log.e("listAllZone", "" + listAllZone.size());
 
             }
         }
@@ -570,7 +566,7 @@ else
                         Log.e("link", "" + link);
                     }
                 } catch (Exception e) {
-            Log.e("getAllPOdetails doInBackground, ",e.getMessage());
+            Log.e("getAllPOdetails",e.getMessage());
                 }
 
                 try {
@@ -647,7 +643,6 @@ else
 
                 if (array.contains("ItemOCode")){
                 if (array != null && array.length() != 0) {
-                    Log.e("onPostExecute", "" + array.toString());
 
 
                         try {
@@ -677,9 +672,9 @@ else
 
 
 
-                    Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.size());
+
                   posize= POdetailslist.size();
-                    Log.e("    POdetailslist.add(shipment);", "" +     POdetailslist.get(0).getItemname());
+
 
 
                 }
@@ -806,10 +801,6 @@ else
                         e.printStackTrace();
                     }
 
-
-
-                Log.e("onPostExecute", "" + array.toString());
-
                 for (int i = 0; i < array.length(); i++) {
                     try {
                         jsonObject1 = array.getJSONObject(i);
@@ -824,8 +815,6 @@ else
                         e.printStackTrace();
                     }
                 }
-                Log.e("    BoxNolist", "" +     BoxNolist.size());
-                Log.e("    BoxNolist", "" +     BoxNolist.get(0));
                     NewShipment.boxnorespon.setText(BoxNolist.get(0));
                     if (NewShipment.boxnorespon.getText().length() > 0) {
                         NewShipment.boxno.setEnabled(true);
@@ -865,7 +854,7 @@ else
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-                Log.e("getAllStore doInBackground, ",e.getMessage());
+                Log.e("getAllStore",e.getMessage());
             }
 
             try {
@@ -943,7 +932,6 @@ else
             if (array.contains("STORENO"))
             {
                 if (array != null && array.length() != 0) {
-                    Log.e("onPostExecute", "" +array.length()+"  "+ array.toString());
                     try {
                         JSONArray requestArray = null;
                         requestArray =  new JSONArray(array);
