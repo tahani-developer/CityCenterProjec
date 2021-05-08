@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="locale">
 <!--    <ScrollView-->
 <!--        android:layout_width="match_parent"-->
@@ -54,10 +55,11 @@
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/back_border_edit"
+                        android:inputType="text"
+                        android:maxLines="1"
 
-                        android:elevation="2dp"
                         android:padding="3dp"
                         android:gravity="center"
                         android:textColor="@color/dark_blue_3"
@@ -75,15 +77,17 @@
                         android:padding="3dp"
                         android:onClick="ScanCode"
 
-                        android:drawableEnd="@drawable/ic_scan_black_24dp"
+
+
+                        app:drawableEndCompat="@drawable/ic_scan_black_24dp"
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"
-                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+                        app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
                     <TextView
                         android:id="@+id/zoneSearch"
 
                         android:onClick="showZoneDialog"
-                        android:drawableEnd="@drawable/ic_baseline_search_24"
+                        app:drawableEndCompat="@drawable/ic_baseline_search_24"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -138,10 +142,10 @@
                         android:onClick="ScanCode"
                         android:visibility="invisible"
 
-                        android:drawableEnd="@drawable/ic_scan_black_24dp"
+
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"
-                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+                  />
 
 
                 </LinearLayout>
@@ -172,10 +176,11 @@
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/back_border_edit"
+                        android:maxLines="1"
 
-                        android:elevation="2dp"
+
                         android:padding="3dp"
                         android:gravity="center"
                         android:textColor="@color/dark_blue_3"
@@ -190,15 +195,14 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:onClick="ScanCode"
-                        android:drawableEnd="@drawable/ic_scan_black_24dp"
+                      app:drawableEndCompat="@drawable/ic_scan_black_24dp"
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"
-                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+                        app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
                     <TextView
                         android:id="@+id/zon"
                         android:onClick="showZoneDialog"
                         android:visibility="invisible"
-                        android:drawableEnd="@drawable/ic_baseline_search_24"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -250,10 +254,8 @@
                         android:padding="3dp"
                         android:visibility="invisible"
 
-                        android:drawableEnd="@drawable/ic_scan_black_24dp"
                         android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+                        android:textSize="14sp" />
 
 
                 </LinearLayout>
@@ -283,9 +285,9 @@
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
+                        android:layout_height="match_parent"
                         android:background="@drawable/back_border_edit"
-                        android:elevation="2dp"
+
                         android:maxLines="1"
                         android:inputType="number"
                         android:padding="3dp"
@@ -314,10 +316,10 @@
                         android:visibility="invisible"
                         android:padding="3dp"
 
-                        android:drawableEnd="@drawable/ic_scan_black_24dp"
+
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp"
-                        android:drawableRight="@drawable/ic_scan_black_24dp" />
+                       />
 
 
                 </LinearLayout>

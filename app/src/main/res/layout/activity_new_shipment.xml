@@ -13,6 +13,7 @@
         android:orientation="vertical">
         <TextView
             android:id="@+id/textView2"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -80,17 +81,17 @@
                     android:padding="3dp"
                     android:textSize="14sp" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/ponoSearch"
+                    app:srcCompat="@drawable/ic_baseline_search_24"
 
-                    android:drawableEnd="@drawable/ic_baseline_search_24"
                     android:layout_width="60dp"
                     android:layout_height="20dp"
                     android:gravity="top"
                     tools:layout_editor_absoluteX="300dp"
                     tools:layout_editor_absoluteY="70dp">
 
-                </TextView>
+                </ImageView>
 
 
             </LinearLayout>
@@ -128,16 +129,16 @@
                     android:padding="3dp"
                     android:textSize="14sp" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/boxnoSearch"
-                    android:drawableEnd="@drawable/ic_baseline_search_24"
+                    app:srcCompat="@drawable/ic_baseline_search_24"
                     android:layout_height="wrap_content"
                     android:layout_width="60dp"
                     android:gravity="top"
                     tools:layout_editor_absoluteX="300dp"
                     tools:layout_editor_absoluteY="70dp">
 
-                </TextView>
+                </ImageView>
 
 
 
@@ -182,8 +183,7 @@
                     android:layout_height="20dp"
                     android:layout_width="60dp"
 
-                    android:drawableEnd="@drawable/ic_scan_black_24dp"
-                    android:drawableRight="@drawable/ic_scan_black_24dp"
+                    app:drawableEndCompat="@drawable/ic_scan_black_24dp"
                     android:elevation="2dp"
                     android:gravity="center"
                     android:inputType="text"

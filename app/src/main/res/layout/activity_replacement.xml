@@ -18,6 +18,7 @@
         android:layout_marginBottom="10dp"
         android:layout_weight="0"
         android:textStyle="bold"
+        android:visibility="gone"
         android:textSize="35dp"
         android:textColor="@color/colorblue_dark"
         android:drawableTint="@color/colorblue_dark"
@@ -136,10 +137,11 @@
                 android:inputType="text"
                 android:onClick="ScanCode"
                 android:padding="3dp"
-                android:drawableEnd="@drawable/ic_scan_black_24dp"
+                app:drawableEndCompat="@drawable/ic_scan_black_24dp"
                 android:textColor="@color/dark_blue_3"
                 android:textSize="14sp"
-                android:drawableRight="@drawable/ic_scan_black_24dp" />
+
+                app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
 
 
 
@@ -183,8 +185,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableEnd="@drawable/ic_scan_black_24dp"
-                android:drawableRight="@drawable/ic_scan_black_24dp"
+                app:drawableEndCompat="@drawable/ic_scan_black_24dp"
+                app:drawableRightCompat="@drawable/ic_scan_black_24dp"
                 android:elevation="2dp"
                 android:onClick="ScanCode"
                 android:gravity="center"
@@ -243,10 +245,10 @@
                 android:visibility="invisible"
                 android:padding="3dp"
                 android:id="@+id/respons"
-                android:drawableEnd="@drawable/ic_scan_black_24dp"
+                app:drawableEndCompat="@drawable/ic_scan_black_24dp"
                 android:textColor="@color/dark_blue_3"
                 android:textSize="14sp"
-                android:drawableRight="@drawable/ic_scan_black_24dp" />
+                app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
 
         </LinearLayout>
 

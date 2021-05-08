@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public appSettings settings;
     ExportData exportData;
 
-    public static int setflage=0;
+    public static int setflage=-1;
     public static String COMPANYNO;
     private Animation animation;
     public List<appSettings> settingslist=new ArrayList<>();
@@ -175,8 +175,6 @@ ImportData importData;
         newShipmentList=(ArrayList<Shipment>) listShipment;
 
         replacementList=(ArrayList<ReplacementModel>)listReplasment ;
-        Log.e("exportAllData","2"+newShipmentList.size());
-        Log.e("listZon2","unposted"+listZon.size()+"\tShipment"+newShipmentList.size()+"repla"+replacementList.size());
         exportData.exportAllUnposted(listZon,newShipmentList,replacementList);
 
     }

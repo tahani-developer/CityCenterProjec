@@ -68,8 +68,6 @@ public class ImportData {
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
 
-    public ImportData() {
-    }
 
     public ImportData(Context context) {
         this.context = context;
@@ -136,7 +134,12 @@ else
     public void getCompanyInfo() {
         if(!ipAddress.equals(""))
         {
-            new JSONTask_getCompanyInfo().execute();
+            try {
+                new JSONTask_getCompanyInfo().execute();
+            }
+            catch (Exception e)
+            {}
+
         }
         else {
 
@@ -255,6 +258,7 @@ else
                         if(MainActivity.setflage==0)
                         itemKintText.setText(requestDetail.getZONETYPE());
                         else
+                        if(MainActivity.setflage == 1)
                         itemKintText1.setText(requestDetail.getZONETYPE());
 
                     } catch (JSONException e) {
@@ -267,9 +271,10 @@ else
                      if(MainActivity.setflage==0)
                     itemKintText.setText("NOTEXIST");
                     else
+                     if(MainActivity.setflage == 1)
                         itemKintText1.setText("NOTEXIST");
                 }
-                    Log.e("onPostExecute", "NotFound" + result.toString());
+
 
 
 
@@ -408,6 +413,7 @@ else
                 if (MainActivity.setflage == 0)
                     itemKintText.setText("NOTEXIST");
                 else
+                    if(MainActivity.setflage == 1)
                     itemKintText1.setText("NOTEXIST");
             }
         }
@@ -568,18 +574,17 @@ else
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-                Log.e("getAllPOdetails doInBackground, ", e.getMessage());
+                Log.e("getAllPOdetails", e.getMessage());
             }
-                        Log.e("link", "" + link);
-                    }
-                } catch (Exception e) {
-            Log.e("getAllPOdetails",e.getMessage());
-                }
 
+//                } catch (Exception e) {
+//            Log.e("getAllPOdetails",e.getMessage());
+//                }
+//
             try {
-
-                //*************************************
-
+//
+//                //*************************************
+//
                 String JsonResponse = null;
                 HttpClient client = new DefaultHttpClient();
                 HttpGet request = new HttpGet();
@@ -681,9 +686,8 @@ else
                         //
 
 
-                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.size());
+
                         posize = POdetailslist.size();
-                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.get(0).getItemname());
 
 
                     }
@@ -810,8 +814,6 @@ else
                         }
 
 
-                        Log.e("onPostExecute", "" + array.toString());
-
                         for (int i = 0; i < array.length(); i++) {
                             try {
                                 jsonObject1 = array.getJSONObject(i);
@@ -826,19 +828,19 @@ else
                                 e.printStackTrace();
                             }
                         }
-                        Log.e("    BoxNolist", "" + BoxNolist.size());
-                        Log.e("    BoxNolist", "" + BoxNolist.get(0));
                         NewShipment.boxnorespon.setText(BoxNolist.get(0));
                         if (NewShipment.boxnorespon.getText().length() > 0) {
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
                         }
                     }
+                    else if (respon.contains("No Parameter Found")) {
+                        NewShipment.boxnorespon.setText("Not");
                     }
+                    }
+
                 }
-            else if (respon.contains("No Parameter Found")) {
-                NewShipment.boxnorespon.setText("Not");
-            }
+
         }
 
     }
@@ -867,7 +869,7 @@ else
                         Log.e("link", "" + link);
                     }
                 } catch (Exception e) {
-                    Log.e("getAllStore doInBackground, ", e.getMessage());
+                    Log.e("getAllSto", e.getMessage());
                 }
 
                 try {
@@ -901,7 +903,6 @@ else
                     // JsonResponse = sb.toString();
 
                     String finalJson = sb.toString();
-                    Log.e("finalJson***Import", finalJson);
 
 
                     //JSONArray parentObject = new JSONArray(finalJson);
@@ -945,7 +946,6 @@ else
                     if (array.contains("STORENO")) {
 
                             if (array.length() != 0) {
-                                Log.e("onPostExecute", "" + array.length() + "  " + array.toString());
                                 try {
                                     JSONArray requestArray = null;
                                     requestArray = new JSONArray(array);

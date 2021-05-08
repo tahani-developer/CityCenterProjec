@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="370dp"
+    android:layout_width="340dp"
     android:layout_height="350dp">
     <TextView
         android:id="@+id/getListCom"
@@ -22,7 +22,7 @@
         <TextView
 
             android:visibility="visible"
-            android:text="CONO "
+            android:text="@string/CONO"
             android:layout_weight="3"
             android:gravity="center"
             android:textColor="@color/dark_blue_3"
@@ -33,7 +33,7 @@
         <TextView
             android:id="@+id/headerComp12"
             android:visibility="visible"
-            android:text="COYear"
+            android:text="@string/COYear"
             android:layout_weight="3"
             android:textColor="@color/dark_blue_3"
             android:textStyle="bold"
@@ -43,7 +43,7 @@
             android:id="@+id/headerComp"
             android:visibility="visible"
             android:layout_weight="2"
-            android:text="Com Name "
+            android:text="@string/ComName"
             android:textColor="@color/dark_blue_3"
             android:textStyle="bold"
             android:layout_height="wrap_content"
@@ -56,7 +56,6 @@
         android:layout_margin="5dp"
         android:divider="@color/layer6"
         android:dividerHeight="1dp"
-
 
       android:background="@drawable/edittext_back"
         android:layout_width="match_parent"
