@@ -72,7 +72,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 if (username.getText().toString().trim().equals("6") && password.getText().toString().trim().equals("123")) {
                     MainActivity.SET_userNO = username.getText().toString().trim();
-                    Log.e("sssssssss","ssssssss");
+                    Log.e("sssssssss2","ssssssss");
                     if(existCoNo(2))
                     {
                         if(existCoNo(1))
