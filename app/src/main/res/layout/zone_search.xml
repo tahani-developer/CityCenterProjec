@@ -56,6 +56,8 @@
         android:layout_margin="5dp"
         android:divider="@color/layer6"
         android:dividerHeight="1dp"
+        android:visibility="visible"
+
 
       android:background="@drawable/edittext_back"
         android:layout_width="match_parent"

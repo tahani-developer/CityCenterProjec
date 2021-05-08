@@ -862,9 +862,9 @@ else
                 try {
                     if (!ipAddress.equals("")) {
                         http:
-//10.0.0.22:8082/Getsore
+//http://10.0.0.22:8082/Getsore?CONO=304
 
-                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/Getsore";
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/Getsore?CONO="+CONO.trim();
 
                         Log.e("link", "" + link);
                     }
@@ -949,7 +949,7 @@ else
                                 try {
                                     JSONArray requestArray = null;
                                     requestArray = new JSONArray(array);
-
+                                    Storelist.clear();
 
                                     for (int i = 0; i < requestArray.length(); i++) {
                                         store = new Store();

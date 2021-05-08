@@ -539,7 +539,7 @@ public class AddZone extends AppCompatActivity {
             for(int i=0;i<listAllZone.size();i++)
             {
 //                nameOfEngi.add("tahani");
-                nameOfEngi.add(listAllZone.get(i).getZONENAME());
+                nameOfEngi.add(listAllZone.get(i).getZoneCode());
             }
             Log.e("nameOfEngi",""+nameOfEngi.size());
 
@@ -572,6 +572,7 @@ public class AddZone extends AppCompatActivity {
                 listZones.requestFocusFromTouch();
                 listZones.setSelection(position);
                 selectedZon[0] =listAllZone.get(position).getZoneCode();
+                Log.e("nameOfEngi",""+selectedZon[0]);
 
             }
         });
@@ -625,7 +626,8 @@ public class AddZone extends AppCompatActivity {
         indexZone=i;
         editZoneCode.setText(listAllZone.get(i).getZoneCode());
 
-        zoneName.setText(listAllZone.get(i).getZONENAME());
+        zoneName.setText(listAllZone.get(i).getZONETYPE());
+        Log.e("getZONENAME",""+listAllZone.get(i).getZONENAME());
         editZoneCode.setEnabled(false);
         editItemCode.setEnabled(true);
         editItemCode.requestFocus();
