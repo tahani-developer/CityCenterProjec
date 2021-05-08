@@ -27,14 +27,21 @@
             android:gravity="center"
             android:orientation="vertical"
             android:padding="16dp">
+            <TextView android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/version"
+                android:textSize="14sp"
+                android:textColor="@color/layer6"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/nav_header_imageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
-                android:src="@drawable/irbid"
+
+                android:src= "@drawable/irbid"
                 app:civ_border_width="1dp" />
+<!--            android:src="@drawable/irbid"-->
 
             <!--            <TextView-->
             <!--                android:id="@+id/nav_header_textView"-->
@@ -72,14 +79,16 @@
                 android:gravity="center"
 
                 android:layout_weight="2" />
-            <TextView
+            <ImageView
                 android:id="@+id/companyName"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:onClick="showCompanyDialog"
-                android:drawableStart="@drawable/ic_keyboard_arrow_down_black_24dp"
+                app:srcCompat="@drawable/ic_keyboard_arrow_down2"
                 android:layout_weight="3" />
+<!--                android:drawableStart="@drawable/ic_keyboard_arrow_down_black_24dp"-->
+
             </LinearLayout>
             <TextView
                 android:id="@+id/selectedCompany"
@@ -130,7 +139,7 @@
                 android:layout_height="10.3dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="17dp"
-                android:src="@drawable/ic_person_black_24dp" />
+                app:srcCompat="@drawable/ic_person_black_24dp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -164,7 +173,7 @@
                 android:layout_height="10.3dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="17dp"
-                android:src="@drawable/ic_baseline_vpn_key_24" />
+                app:srcCompat="@drawable/ic_baseline_vpn_key_24" />
         </RelativeLayout>
 
         <LinearLayout
@@ -193,9 +202,9 @@
 
                 android:background="@drawable/loginbtn"
                 android:fontFamily="@font/poppins_medium"
-
-
-                android:text="Login"
+                android:padding="2dp"
+                android:textStyle="bold"
+                android:text="@string/Login"
                 android:textColor="#ffffff"
                 android:textSize="16sp" />
             <TextView

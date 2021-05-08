@@ -68,8 +68,6 @@ public class ImportData {
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
 
-    public ImportData() {
-    }
 
     public ImportData(Context context) {
         this.context = context;
@@ -81,62 +79,69 @@ public class ImportData {
         }
 
     }
-
     public void getStore() {
-        if (!ipAddress.equals(""))
-            new JSONTask_getAllStoreData().execute();
+        if(!ipAddress.equals(""))
+        new JSONTask_getAllStoreData().execute();
         else
-            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
     public void getboxno() {
-        Log.e("ingetboxno", "ingetboxno");
-        if (!ipAddress.equals(""))
-            new JSONTask_getAllPOboxNO().execute();
+        Log.e("ingetboxno","ingetboxno");
+        if(!ipAddress.equals(""))
+        new JSONTask_getAllPOboxNO().execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
-
     public void getPOdetails() {
-        Log.e("getPOdetails", "getPOdetails");
+        Log.e("getPOdetails","getPOdetails");
         //new JSONTaskGetPOdetails(context,cono,pono).execute();
-        if (!ipAddress.equals(""))
-            new JSONTask_getAllPOdetails().execute();
-        else
+        if(!ipAddress.equals(""))
+        new JSONTask_getAllPOdetails().execute();
+else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
     private void getIpAddress() {
-        headerDll = "";
-        ipAddress = my_dataBase.settingDao().getIpAddress().trim();
-        CONO = my_dataBase.settingDao().getCono().trim();
-        Log.e("getIpAddress", "" + ipAddress);
+        headerDll="";
+        ipAddress=my_dataBase.settingDao().getIpAddress().trim();
+        CONO=my_dataBase.settingDao().getCono().trim();
+        Log.e("getIpAddress",""+ipAddress);
 
 
     }
-
-    public void getAllZones() {
-        if (!ipAddress.equals("")) {
+    public  void getAllZones(){
+        if(!ipAddress.equals(""))
+        {
             new JSONTask_getAllZoneCode().execute();
-        } else {
+        }
+        else {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     public void getKindItem(String itemNo) {
-        if (!ipAddress.equals("")) {
+        if(!ipAddress.equals(""))
+        {
             new JSONTask_getItemKind(itemNo).execute();
-        } else {
+        }
+        else {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void getCompanyInfo() {
-        ipAddress = "10.0.0.22:8082";
-        if (!ipAddress.equals("")) {
-            new JSONTask_getCompanyInfo().execute();
-        } else {
+        if(!ipAddress.equals(""))
+        {
+            try {
+                new JSONTask_getCompanyInfo().execute();
+            }
+            catch (Exception e)
+            {}
+
+        }
+        else {
 
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
@@ -163,9 +168,9 @@ public class ImportData {
             try {
                 if (!ipAddress.equals("")) {
 
-                    //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
+                 //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim() + "&&ITEMCODE=" + convertToEnglish(itemNo.trim());
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+convertToEnglish(itemNo.trim());
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
@@ -196,7 +201,8 @@ public class ImportData {
                 // JsonResponse = sb.toString();
 
                 String finalJson = sb.toString();
-                Log.e("finalJson***Import", "itemNo" + finalJson);
+                Log.e("finalJson***Import", "itemNo"+finalJson);
+
 
 
                 return finalJson;
@@ -233,10 +239,9 @@ public class ImportData {
                 validateKind = false;
                 if (result.contains("ITEMTYPE")) {
                     try {
-                        ZoneModel requestDetail = new ZoneModel();
+                        ZoneModel requestDetail=new ZoneModel();
                         JSONArray requestArray = null;
-                        requestArray = new JSONArray(result);
-                        Log.e("requestArray", "" + requestArray.length());
+                        requestArray =  new JSONArray(result);
 
 
                         for (int i = 0; i < requestArray.length(); i++) {
@@ -247,25 +252,31 @@ public class ImportData {
                             requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
 
                         }
-                        itemKind = requestDetail.getZONENAME();
-                        zonetype = requestDetail.getZONETYPE();
-                        Log.e("itemKind", "" + itemKind);
-                        if (MainActivity.setflage == 0)
-                            itemKintText.setText(requestDetail.getZONETYPE());
+                        itemKind=requestDetail.getZONENAME();
+                        zonetype=requestDetail.getZONETYPE();
+                        Log.e("itemKind",""+itemKind);
+                        if(MainActivity.setflage==0)
+                        itemKintText.setText(requestDetail.getZONETYPE());
                         else
-                            itemKintText1.setText(requestDetail.getZONETYPE());
+                        if(MainActivity.setflage == 1)
+                        itemKintText1.setText(requestDetail.getZONETYPE());
 
                     } catch (JSONException e) {
 //                        progressDialog.dismiss();
                         e.printStackTrace();
                     }
-                } else {
-                    if (MainActivity.setflage == 0)
-                        itemKintText.setText("NOTEXIST");
+                }
+                else
+                {
+                     if(MainActivity.setflage==0)
+                    itemKintText.setText("NOTEXIST");
                     else
+                     if(MainActivity.setflage == 1)
                         itemKintText1.setText("NOTEXIST");
                 }
-                Log.e("onPostExecute", "NotFound" + result.toString());
+
+
+
 
 
             }
@@ -326,6 +337,7 @@ public class ImportData {
                 Log.e("finalJson***Import", "Company" + finalJson);
 
 
+
                 return finalJson;
 
 
@@ -355,8 +367,8 @@ public class ImportData {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.e("onPostExecute", "" + result);
-            if (result != null) {
+            Log.e("onPostExecute", ""+result );
+            if (result != null ) {
                 // {
                 //    "CoNo": "200",
                 //    "CoYear": "2021",
@@ -401,6 +413,7 @@ public class ImportData {
                 if (MainActivity.setflage == 0)
                     itemKintText.setText("NOTEXIST");
                 else
+                    if(MainActivity.setflage == 1)
                     itemKintText1.setText("NOTEXIST");
             }
         }
@@ -525,12 +538,15 @@ public class ImportData {
                         }
                     }
 
-                    Log.e("listAllZone", "" + listAllZone.size());
 
                 }
             }
         }
     }
+
+
+
+
 
 
     /////////
@@ -558,13 +574,17 @@ public class ImportData {
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-                Log.e("getAllPOdetails doInBackground, ", e.getMessage());
+                Log.e("getAllPOdetails", e.getMessage());
             }
 
+//                } catch (Exception e) {
+//            Log.e("getAllPOdetails",e.getMessage());
+//                }
+//
             try {
-
-                //*************************************
-
+//
+//                //*************************************
+//
                 String JsonResponse = null;
                 HttpClient client = new DefaultHttpClient();
                 HttpGet request = new HttpGet();
@@ -666,9 +686,8 @@ public class ImportData {
                         //
 
 
-                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.size());
+
                         posize = POdetailslist.size();
-                        Log.e("    POdetailslist.add(shipment);", "" + POdetailslist.get(0).getItemname());
 
 
                     }
@@ -795,8 +814,6 @@ public class ImportData {
                         }
 
 
-                        Log.e("onPostExecute", "" + array.toString());
-
                         for (int i = 0; i < array.length(); i++) {
                             try {
                                 jsonObject1 = array.getJSONObject(i);
@@ -811,19 +828,19 @@ public class ImportData {
                                 e.printStackTrace();
                             }
                         }
-                        Log.e("    BoxNolist", "" + BoxNolist.size());
-                        Log.e("    BoxNolist", "" + BoxNolist.get(0));
                         NewShipment.boxnorespon.setText(BoxNolist.get(0));
                         if (NewShipment.boxnorespon.getText().length() > 0) {
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
                         }
                     }
+                    else if (respon.contains("No Parameter Found")) {
+                        NewShipment.boxnorespon.setText("Not");
                     }
+                    }
+
                 }
-            else if (respon.contains("No Parameter Found")) {
-                NewShipment.boxnorespon.setText("Not");
-            }
+
         }
 
     }
@@ -852,7 +869,7 @@ public class ImportData {
                         Log.e("link", "" + link);
                     }
                 } catch (Exception e) {
-                    Log.e("getAllStore doInBackground, ", e.getMessage());
+                    Log.e("getAllSto", e.getMessage());
                 }
 
                 try {
@@ -886,7 +903,6 @@ public class ImportData {
                     // JsonResponse = sb.toString();
 
                     String finalJson = sb.toString();
-                    Log.e("finalJson***Import", finalJson);
 
 
                     //JSONArray parentObject = new JSONArray(finalJson);
@@ -930,7 +946,6 @@ public class ImportData {
                     if (array.contains("STORENO")) {
 
                             if (array.length() != 0) {
-                                Log.e("onPostExecute", "" + array.length() + "  " + array.toString());
                                 try {
                                     JSONArray requestArray = null;
                                     requestArray = new JSONArray(array);

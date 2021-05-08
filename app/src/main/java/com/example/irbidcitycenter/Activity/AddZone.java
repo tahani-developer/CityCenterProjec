@@ -16,9 +16,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -84,6 +86,7 @@ public class AddZone extends AppCompatActivity {
     }
 
     private void initial() {
+        MainActivity.setflage=0;
         generalMethod = new GeneralMethod(AddZone.this);
         editZoneCode = findViewById(R.id.editZoneCode);
         editItemCode = findViewById(R.id.editItemCode);
@@ -192,6 +195,7 @@ public class AddZone extends AppCompatActivity {
                         || i == EditorInfo.IME_NULL) {
                     switch (textView.getId()) {
                         case R.id.editZoneCode:
+                            editZoneCode.setError(null);
                             searchZone(editZoneCode.getText().toString().trim());
 
                             break;
@@ -245,10 +249,15 @@ public class AddZone extends AppCompatActivity {
                 break;
             }
         }
-        if(indexZone==-1){
-            editItemCode.setEnabled(false);
-            editQty.setEnabled(false);
-            editZoneCode.setError("Invalid Zone");
+        if(indexZone==-1) {
+            if (listAllZone.size() != 0) {
+                editItemCode.setEnabled(false);
+                editQty.setEnabled(false);
+                editZoneCode.setError("Invalid Zone");
+            }
+            else {
+                Toast.makeText(this, "No Data", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
@@ -535,9 +544,26 @@ public class AddZone extends AppCompatActivity {
             Log.e("nameOfEngi",""+nameOfEngi.size());
 
 //                    simple_list_item_1 simple_list_item_activated_1
-            ArrayAdapter<String> itemsAdapter =
-                    new ArrayAdapter<String>(AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi);
-            listZones.setAdapter(itemsAdapter);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                    (AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    /// Get the Item from ListView
+                    View view = super.getView(position, convertView, parent);
+
+                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                    // Set the text size 25 dip for ListView each item
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                    tv.setTextColor(getResources().getColor(R.color.text_color));
+
+                    // Return the view
+                    return view;
+                }
+            };
+//            ArrayAdapter<String> itemsAdapter =
+//                    new ArrayAdapter<String>(AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi);
+            listZones.setAdapter(arrayAdapter);
         }
         listZones.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -76,6 +76,10 @@
     <string name="clearAllData">Clear All Data??</string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
+    <string name="version">v 1.0</string>
+    <string name="ComName">Com Name</string>
+    <string name="COYear">COYear</string>
+    <string name="Login">Login</string>
 
 
 </resources>

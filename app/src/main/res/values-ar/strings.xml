@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">IrbidCityCenter</string>
     <string name="reqired_filled">مطلوب</string>
-    <string name="about">عن</string>
+    <string name="about">المطور</string>
     <string name="barcode">الباركود</string>
     <string name="boxnum">رقم الصندوق</string>
     <string name="cancel">إلغاء</string>
@@ -21,7 +21,7 @@
     <string name="server_ip">server_ip</string>
     <string name="settings_ip">settings_ip</string>
     <string name="IP_PORT">IP_PORT</string>
-    <string name="ZoneCode">ZoneCode</string>
+    <string name="ZoneCode">رقم المنطقة</string>
     <string name="setting">الإعدادات</string>
     <string name="signout">تسجيل خروج</string>
     <string name="CONO">رقم الشركة</string>
@@ -38,7 +38,7 @@
     <string name="delete">Are you sure you want to               delete this entry?</string>
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
-    <string name="ZoneName">ZoneName</string>
+    <string name="ZoneName">اسم المنطقة</string>
     <string name="finish">إنهاء</string>
     <string name="recQty">الكمية المدخلة</string>
     <string name="Itemname">إسم المادة</string>
@@ -49,10 +49,13 @@
     <string name="confirm_title">تأكيد</string>
     <string name="messageExit">هل تريد الخروج؟</string>
     <string name="ok">نعم</string>
-    <string name="warning">Warning</string>
-    <string name="fillYourList">Fill Your List !!</string>
+    <string name="warning">تحذير</string>
+    <string name="fillYourList">الجدول فارغ!!</string>
     <string name="invaledZero">Invaled Zero</string>
     <string name="clearAllData">مسح جميع البيانات؟؟</string>
     <string name="Qty">الكمية</string>
-    <string name="selectCompany">Select Company</string>
+    <string name="selectCompany">اختيار شركة</string>
+    <string name="ComName">اسم الشركة</string>
+    <string name="COYear">السنة</string>
+    <string name="Login">تسجيل الدخول</string>
 </resources>

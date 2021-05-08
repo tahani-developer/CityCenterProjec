@@ -3,6 +3,8 @@ package com.example.irbidcitycenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -43,7 +45,7 @@ public class ExportData {
     private Context context;
     public  String ipAddress="",CONO="",headerDll="",link="",PONO="";
     public RoomAllData my_dataBase;
-    SweetAlertDialog pdVoucher;
+    SweetAlertDialog pdVoucher,pdshipmant,pdRepla;
     JSONObject vouchersObject;
     JSONObject ShipmentObject;
     JSONObject ReplacmentObject;
@@ -75,11 +77,11 @@ public class ExportData {
     }
     public void exportReplacementList(ArrayList<ReplacementModel>replacementlist) {
         getReplacmentObject(replacementlist);
-        pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
-        pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdVoucher.setTitleText(" Start export Vouchers");
-        pdVoucher.setCancelable(false);
-        pdVoucher.show();
+        pdRepla = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdRepla.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdRepla.setTitleText(" Start export Vouchers");
+        pdRepla.setCancelable(false);
+        pdRepla.show();
 
         new JSONTask_AddReplacment(replacementlist).execute();
     }
@@ -174,6 +176,16 @@ public class ExportData {
             } catch (Exception e) {
                 //progressDialog.dismiss();
 
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        pdVoucher.dismissWithAnimation();
+
+                        Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
 
 //********************************************************
@@ -262,7 +274,10 @@ public class ExportData {
 
 
             } else {  if(typeExportZone==1) {
-                exportStateText.setText("not");
+                try {
+                    exportStateText.setText("not");
+                }catch (Exception e){}
+
             }
                 Toast.makeText(context, "onPostExecute", Toast.LENGTH_SHORT).show();
             }
@@ -278,11 +293,11 @@ public class ExportData {
     public void exportShipmentsList(ArrayList<Shipment> listShipment) {
         Log.e("exportShipmentsList","exportShipmentsList");
         getShipmentObject(listShipment);
-        pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
-        pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdVoucher.setTitleText(" Start export shipments");
-        pdVoucher.setCancelable(false);
-        pdVoucher.show();
+        pdshipmant = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdshipmant.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdshipmant.setTitleText(" Start export shipments");
+        pdshipmant.setCancelable(false);
+        pdshipmant.show();
 
         new JSONTask_AddShipments(listShipment).execute();
     }
@@ -345,6 +360,7 @@ public class ExportData {
                 }
             } catch (Exception e) {
                 //progressDialog.dismiss();
+                pdshipmant.dismissWithAnimation();
 
             }
 
@@ -389,7 +405,7 @@ public class ExportData {
             super.onPostExecute(result);
 //            progressDialog.dismiss();
             Log.e("onPostExecute",""+result);
-            pdVoucher.dismissWithAnimation();
+            pdshipmant.dismissWithAnimation();
             if(listAllReplacment.size()!=0)
             {
                 exportReplacementList(listAllReplacment);
@@ -461,6 +477,7 @@ public class ExportData {
               }
           } catch (Exception e) {
               //progressDialog.dismiss();
+              pdRepla.dismissWithAnimation();
 
           }
 
@@ -508,7 +525,7 @@ public class ExportData {
           super.onPostExecute(result);
 //            progressDialog.dismiss();
           Log.e("onPostExecute",""+result);
-          pdVoucher.dismissWithAnimation();
+          pdRepla.dismissWithAnimation();
 
           if (result != null && !result.equals("")) {
               if(result.contains("Saved Successfully"))

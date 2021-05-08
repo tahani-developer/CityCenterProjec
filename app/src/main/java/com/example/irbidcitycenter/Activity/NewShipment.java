@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -88,7 +89,7 @@ public class NewShipment extends AppCompatActivity {
     String POnumselected, BOXnumselected;
     RecyclerView recyclerView;
     FloatingActionButton add;
-    TextView searchView1, searchView2;
+    ImageView searchView1, searchView2;
     int parceQty;
     public static ShipmentAdapter adapter;
     BoxnoSearchAdapter boxnoSearchAdapter;
@@ -816,7 +817,7 @@ public class NewShipment extends AppCompatActivity {
         lp.width = 200;
         lp.height = 400;
         lp.gravity = Gravity.RIGHT;
-        lp.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT);
+//        lp.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT);
 
 
         dialog1.getWindow().setAttributes(lp);

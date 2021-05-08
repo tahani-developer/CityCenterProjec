@@ -225,7 +225,7 @@ public class Login extends AppCompatActivity {
 
                                     // Set the text size 25 dip for ListView each item
                                     tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-
+                                    tv.setTextColor(getResources().getColor(R.color.text_color));
                                     // Return the view
                                     return view;
                                 }
