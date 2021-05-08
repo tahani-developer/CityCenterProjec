@@ -120,7 +120,7 @@ public class NewShipment extends AppCompatActivity {
         barcode.setEnabled(false);
         qty.setEnabled(false);
         ////
-
+        next.setEnabled(false);
 
 
       /*  searchView1.setOnClickListener(new View.OnClickListener() {
@@ -285,7 +285,7 @@ public class NewShipment extends AppCompatActivity {
                         //clear item data
                         itemname.setText("");
                         PoQTY.setText("");
-
+                        next.setEnabled(true);
 
                         break;
 

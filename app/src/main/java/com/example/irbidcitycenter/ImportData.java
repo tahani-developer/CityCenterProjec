@@ -691,7 +691,7 @@ public class ImportData {
         protected void onPreExecute() {
             super.onPreExecute();
             String do_ = "my";
-
+            Log.e("onPreExecute", "onPreExecute");
         }
 
         @Override
