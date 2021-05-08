@@ -959,6 +959,7 @@ else
 
                                         Storelist.add(store);
                                     }
+                                    Replacement.respon.setText("fill");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

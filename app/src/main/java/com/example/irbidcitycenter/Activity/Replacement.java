@@ -84,11 +84,7 @@ public class Replacement extends AppCompatActivity {
         init();
         getStors();
 
-  ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray);
-        fromSpinner.setAdapter(adapter);
-        toSpinner.setAdapter(adapter);
-        toSpinner.setSelection(1);
+
         zone.requestFocus();
         itemcode.setEnabled(false);
         qty.setEnabled(false);
@@ -246,6 +242,13 @@ public class Replacement extends AppCompatActivity {
                         respon.setText("");
                     }
                     else {
+                        if(editable.toString().equals("fill"))
+                        {
+                            for(int i=0;i<Storelist.size();i++)
+                                spinnerArray.add(Storelist.get(i).getSTORENO()+"  "+Storelist.get(i).getSTORENAME());
+                        }
+                        fillSp();
+
 
                         Log.e("afterTextChanged",""+editable.toString());
 
@@ -289,8 +292,7 @@ public class Replacement extends AppCompatActivity {
 
             }
         });
-        for(int i=0;i<Storelist.size();i++)
-            spinnerArray.add(Storelist.get(i).getSTORENO()+"  "+Storelist.get(i).getSTORENAME());
+
 
         poststateRE.addTextChangedListener(new TextWatcher() {
             @Override
@@ -325,6 +327,16 @@ public class Replacement extends AppCompatActivity {
 
 
     }
+
+    private void fillSp() {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, spinnerArray);
+        fromSpinner.setAdapter(adapter);
+        toSpinner.setAdapter(adapter);
+        toSpinner.setSelection(1);
+    }
+
     private void compareItemKind(String itemKind) {
 
         validItem=false;
