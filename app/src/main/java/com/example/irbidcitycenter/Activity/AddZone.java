@@ -90,7 +90,35 @@ public class AddZone extends AppCompatActivity {
         generalMethod = new GeneralMethod(AddZone.this);
         editZoneCode = findViewById(R.id.editZoneCode);
         editItemCode = findViewById(R.id.editItemCode);
-        editItemCode.setOnEditorActionListener(onEditAction);
+       // editItemCode.setOnEditorActionListener(onEditAction);
+        editItemCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().trim().equals(""))
+                {
+                    if(indexZone!=-1)
+                    {
+                       // Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
+                        if(itemKintText.getText().toString().equals("")&&validateKind==false)
+                        {
+                            validateItemKind(editItemCode.getText().toString().trim());
+                        }
+                    }
+                    else editZoneCode.setError("Invalid Zone");
+                }
+
+            }
+        });
         editZoneCode.setOnEditorActionListener(onEditAction);
         editQty = findViewById(R.id.editQty);
         zoneName= findViewById(R.id.zoneName);
@@ -177,7 +205,14 @@ public class AddZone extends AppCompatActivity {
             itemName.setText(itemKind);
             editItemCode.setEnabled(false);
             editQty.setEnabled(true);
-            editQty.requestFocus();}
+            editQty.setText("1");
+            if(validItem)
+            {
+                itemKintText.setText("");
+                addRow();
+            }
+//            editQty.requestFocus();
+        }
         else {
             editQty.setEnabled(false);
             generalMethod.showSweetDialog(AddZone.this,0,"Item Kind Not Match To Zone Type","");
@@ -190,7 +225,7 @@ public class AddZone extends AppCompatActivity {
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 //            if (keyEvent.getAction() != KeyEvent.ACTION_UP) {// null object reference
                // Log.e("onEditorAction","i"+i+"\ti"+keyEvent.getDeviceId());
-                if (i!= KeyEvent.ACTION_UP) {// duplicate
+//                if (i!= KeyEvent.ACTION_UP) {// duplicate
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                         || i == EditorInfo.IME_NULL) {
                     switch (textView.getId()) {
@@ -208,7 +243,6 @@ public class AddZone extends AppCompatActivity {
                                     validateItemKind(editItemCode.getText().toString().trim());
                                 }
                             }
-
                             else editZoneCode.setError("Invalid Zone");
 
                             break;
@@ -223,7 +257,7 @@ public class AddZone extends AppCompatActivity {
                     }
 
                 }
-            }
+//            }
             return true;
         }
     };
@@ -241,11 +275,9 @@ public class AddZone extends AppCompatActivity {
             if(listAllZone.get(i).getZoneCode().equals(codeZone))
             {
                 indexZone=i;
+                fillData(i);
 
-                zoneName.setText(listAllZone.get(i).getZONENAME());
-                editZoneCode.setEnabled(false);
-                editItemCode.setEnabled(true);
-                editItemCode.requestFocus();
+
                 break;
             }
         }
@@ -627,10 +659,11 @@ public class AddZone extends AppCompatActivity {
         editZoneCode.setText(listAllZone.get(i).getZoneCode());
 
         zoneName.setText(listAllZone.get(i).getZONETYPE());
-        Log.e("getZONENAME",""+listAllZone.get(i).getZONENAME());
         editZoneCode.setEnabled(false);
         editItemCode.setEnabled(true);
         editItemCode.requestFocus();
+
+
     }
 }
 
