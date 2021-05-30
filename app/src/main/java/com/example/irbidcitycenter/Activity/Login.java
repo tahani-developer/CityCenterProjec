@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,15 +29,35 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
-import java.util.ArrayList;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.irbidcitycenter.Activity.AddZone.exportStateText;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Login extends AppCompatActivity {
@@ -72,7 +95,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 if (username.getText().toString().trim().equals("6") && password.getText().toString().trim().equals("123")) {
                     MainActivity.SET_userNO = username.getText().toString().trim();
-                    Log.e("sssssssss2","ssssssss");
                     if(existCoNo(2))
                     {
                         if(existCoNo(1))
@@ -205,15 +227,7 @@ public class Login extends AppCompatActivity {
                             for (int i = 0; i < importData.companyInList.size(); i++) {
                                 nameOfEngi.add(importData.companyInList.get(i).getCoNo() + "\t\t" + importData.companyInList.get(i).getCoYear() + "\t\t" + importData.companyInList.get(i).getCoNameA());
                             }
-                            Log.e("nameOfEngi", "" + nameOfEngi.size());
 
-//                    simple_list_item_1 simple_list_item_activated_1 simple_list_item_1
-//                            ArrayAdapter<String> itemsAdapter =
-//                                    new ArrayAdapter<String>(Login.this, android.R.layout.simple_list_item_activated_1, nameOfEngi);
-//                            listCompany.setAdapter(itemsAdapter);
-
-                            //**********************
-                            // Create an ArrayAdapter from List
                             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
                                     (Login.this, android.R.layout.simple_list_item_1, nameOfEngi) {
                                 @Override
@@ -257,8 +271,6 @@ public class Login extends AppCompatActivity {
                 selectedCom =importData.companyInList.get(position).getCoNameA();
                 cono=importData.companyInList.get(position).getCoNo();
                 coYear=importData.companyInList.get(position).getCoYear();
-                Log.e("onItemClick",""+rowZone[0]+"\t"+selectedCom);
-                Log.e("onItemClick",""+cono+"\t"+coYear);
 
             }
         });

@@ -45,7 +45,7 @@
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"
-                        android:padding="3dp"
+                        android:padding="1dp"
                         android:text="@string/ZoneCode"
                         android:textColor="@color/dark_blue_3"
                         android:textSize="14sp" />
@@ -179,6 +179,7 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/back_border_edit"
                         android:maxLines="1"
+                        android:inputType="text"
 
 
                         android:padding="3dp"
