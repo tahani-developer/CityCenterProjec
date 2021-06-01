@@ -46,6 +46,7 @@
     <string name="Arabic">عربي</string>
     <string name="boxnovalidate">الصندوق غير موجود بهذه الطلبية</string>
     <string name="barcodevalidate">المادة غير موجودة بهذه الطلبية</string>
+    <string name="barcodeexists">رقم الماده غير صحيح</string>
     <string name="confirm_title">تأكيد</string>
     <string name="messageExit">هل تريد الخروج؟</string>
     <string name="ok">نعم</string>
@@ -58,4 +59,5 @@
     <string name="ComName">اسم الشركة</string>
     <string name="COYear">السنة</string>
     <string name="Login">تسجيل الدخول</string>
+    <string name="messageExit2">سوف تفقد المعلومات، هل تريد الخروج؟</string>
 </resources>

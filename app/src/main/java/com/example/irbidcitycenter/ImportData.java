@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.toolbox.StringRequest;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
@@ -51,6 +52,10 @@ import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
 import static com.example.irbidcitycenter.Activity.NewShipment.respon;
 import static com.example.irbidcitycenter.Activity.Replacement.itemKintText1;
+import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
+
+import static com.example.irbidcitycenter.Activity.Replacement.qtyrespons;
+import static com.example.irbidcitycenter.Activity.Replacement.zone;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 
 
@@ -66,6 +71,7 @@ public class ImportData {
     public static List<Store> Storelist = new ArrayList<>();
     public static List<String> BoxNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
+    public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
 
 
@@ -77,6 +83,12 @@ public class ImportData {
         } catch (Exception e) {
             Toast.makeText(context, "Fill Ip and Company No", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    public void getQty() {
+
+            new  JSONTask_getQTYOFZone().execute();
 
     }
     public void getStore() {
@@ -652,7 +664,7 @@ else
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-
+            Log.e("onPostExecute", "" + array.toString());
 
             if (array != null) {
                 if (array.length() != 0) {
@@ -671,7 +683,7 @@ else
                                 shipment.setBarcode(jsonObject1.getString("ItemOCode"));
                                 shipment.setPoqty(jsonObject1.getString("Qty"));
                                 shipment.setItemname(jsonObject1.getString("ItemNameA"));
-                                shipment.setBoxNo(jsonObject1.getString("BOXNO"));
+                                shipment.setBoxNo(jsonObject1.getString("Hints"));
                                 POdetailslist.add(shipment);
                             }
                         } catch (JSONException e) {
@@ -690,6 +702,10 @@ else
                         posize = POdetailslist.size();
 
 
+                    }
+                    else
+                    {
+                        NewShipment.respon.setText("invlalid");
                     }
                 }
             }else {
@@ -718,15 +734,16 @@ else
 
             try {
                 if (!ipAddress.equals("")) {
-                    //http://localhost:8082/IrGetAllZone?CONO=290
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim() + "&PONO=" + convertToEnglish(poNo.trim());
+
+                   link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim() + "&PONO=" + convertToEnglish(poNo.trim());
 
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-
+                Log.e("Exception",""+e.getMessage());
             }
+
 
             try {
 
@@ -814,7 +831,7 @@ else
                         }
 
 
-                        for (int i = 0; i < array.length(); i++) {
+                        if (array.length()>0)for (int i = 0; i < array.length(); i++) {
                             try {
                                 jsonObject1 = array.getJSONObject(i);
                             } catch (JSONException e) {
@@ -977,6 +994,151 @@ else
 
                 }
             }
+
+
+
+    }
+
+
+
+    private class JSONTask_getQTYOFZone extends AsyncTask<String, String, String> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    // http://10.0.0.22:8082/GetZoneDatInfo?CONO=290&ZONENO=6&ITEMCODE=6253349404082
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetZoneDatInfo?CONO=" + CONO.trim()+"&ZONENO="+zone.getText().toString().trim()+"&ITEMCODE="+itemcode.getText().toString().trim();
+                    //    link ="http://10.0.0.22:8082/GetZoneDatInfo?CONO=304&ZONENO=C03D&ITEMCODE=8058578435856";
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+               // JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String array) {
+            super.onPostExecute(array);
+String d="";
+            JSONObject jsonObject1 = null;
+            if (array != null) {
+                if (array.contains("QTY")) {
+
+                    if (array.length() != 0) {
+                        try {
+
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(array);
+
+                            for (int i = 0; i < requestArray.length(); i++) {
+
+                                ZoneModel zoneModel = new ZoneModel();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                zoneModel.setZoneCode(jsonObject1.getString("ZONENO"));
+                                zoneModel.setItemCode(jsonObject1.getString("ITEMCODE"));
+                                zoneModel.setQty(jsonObject1.getString("QTY"));
+                                d=jsonObject1.getString("QTY");
+                                listQtyZone.add(zoneModel);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                    qtyrespons.setText("QTY");
+                    Log.e("qtyrespons",qtyrespons.getText().toString()+d);
+                    Replacement.qty.setText(d);
+                    }
+                else {
+
+                    qtyrespons.setText("nodata");
+
+
+                }
+
+            }
+        }
+
+
 
 
 

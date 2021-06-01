@@ -20,6 +20,8 @@ public class ZoneModel {
     @ColumnInfo(name = "ITEMCODE")
     private   String itemCode;
 
+
+
     @ColumnInfo(name = "QTYZONE")
     private   String qty;
 

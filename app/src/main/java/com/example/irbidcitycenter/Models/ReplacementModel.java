@@ -25,6 +25,16 @@ public  class ReplacementModel {
     String ReplacementDate;
     @ColumnInfo(name = "QTY")
     String Qty;
+    public String getRecQty() {
+        return recQty;
+    }
+
+    public void setRecQty(String recQty) {
+        this.recQty = recQty;
+    }
+
+    @ColumnInfo(name = "RECQTY")
+    private   String recQty;
     @PrimaryKey(autoGenerate = true)
     int SERIALZONE;
 

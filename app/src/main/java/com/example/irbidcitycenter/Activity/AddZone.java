@@ -515,15 +515,39 @@ public class AddZone extends AppCompatActivity {
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText(getResources().getString(R.string.confirm_title))
                 .setContentText(getResources().getString(R.string.messageExit))
-                .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismissWithAnimation();
-                        finish();
+
+                        new SweetAlertDialog(AddZone.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.messageExit2))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                        finish();
 //                        Intent intent=new Intent(AddZone.this,MainActivity.class);
 //                        startActivity(intent);
+                                    }
+                                })
+                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                })
+                                .show();
+
+
                     }
                 })
+              .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                  @Override
+                  public void onClick(SweetAlertDialog sweetAlertDialog) {
+                      sweetAlertDialog.dismiss();
+                  }
+              })
                 .show();
     }
 

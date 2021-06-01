@@ -194,19 +194,45 @@ public class NewShipment extends AppCompatActivity {
                 new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText(getResources().getString(R.string.confirm_title))
                         .setContentText(getResources().getString(R.string.messageExit))
-                        .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-                                if (shipmentList.size() != 0) {
-                                    shipmentList.clear();
-                                    filladapter( shipmentList);
 
-                                }
 
-                                Intent intent =new Intent(NewShipment.this,MainActivity.class);
-                                startActivity(intent);
-                                finish();
+
+                                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText(getResources().getString(R.string.confirm_title))
+                                        .setContentText(getResources().getString(R.string.messageExit2))
+                                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                sweetAlertDialog.dismissWithAnimation();
+                             if (shipmentList.size() != 0) {
+                                 shipmentList.clear();
+                                  filladapter( shipmentList);
+
+                              }
+
+                             Intent intent =new Intent(NewShipment.this,MainActivity.class);
+                             startActivity(intent);
+                              finish();
+
+                                            }
+                                        })
+                                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                sweetAlertDialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+
+                            }
+                        })
+                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismiss();
                             }
                         })
                         .show();
@@ -230,6 +256,8 @@ public class NewShipment extends AppCompatActivity {
 
                         if (!pono.getText().toString().trim().equals("")) {
                             getboxData();
+//                            boxno.setEnabled(true);
+//                            boxno.requestFocus();
 
                         }
                         //else
@@ -245,12 +273,15 @@ public class NewShipment extends AppCompatActivity {
 
                         break;
                     case R.id.barCodetxt:
-                        boxno.setEnabled(false);
-                        POdetailslist.clear();
-                        getPOdetails();
-                        qty.setEnabled(true);
-                        qty.requestFocus();
 
+               {
+                            boxno.setEnabled(false);
+                            POdetailslist.clear();
+                            Log.e("xxxxxxx", "vvvvvvvv");
+                            getPOdetails();
+                            qty.setEnabled(true);
+                            qty.requestFocus();
+                 }
                                 break;
                                 //next.setEnabled(true);
 
@@ -258,9 +289,12 @@ public class NewShipment extends AppCompatActivity {
 
 
                     case R.id.RecQtytxt:
-                      barcode.setEnabled(false);
 
-                        checkitemcodevalidty();
+                        if(!checkitemcodevalidty())
+                            generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
+                        else
+
+                        {barcode.setEnabled(false);
                             filldata();
                             pono.setEnabled(false);
                             searchView1.setEnabled(false);
@@ -271,7 +305,7 @@ public class NewShipment extends AppCompatActivity {
                             next.setEnabled(true);
                             save.setEnabled(true);
                             barcode.setText("");
-                            qty.setText("1");
+                            qty.setText("1");}
 
                         /*else {
                             //   barcode.setError("");
@@ -302,20 +336,56 @@ public class NewShipment extends AppCompatActivity {
         showExitDialog();
     }
     private void showExitDialog() {
-        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText(getResources().getString(R.string.confirm_title))
                 .setContentText(getResources().getString(R.string.messageExit))
-                .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismissWithAnimation();
-                        finish();
+
+
+
+                        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.messageExit2))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                        if (shipmentList.size() != 0) {
+                                            shipmentList.clear();
+                                            filladapter( shipmentList);
+
+                                        }
+
+                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+                                })
+                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                })
+                                .show();
+
+                    }
+                })
+                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
                     }
                 })
                 .show();
+
+
     }
     private void getPOdetails() {
-        Log.e("newshipment", "getPOdetails");
+
         barCode = barcode.getText().toString().trim();
         importData.getPOdetails();
     }
@@ -541,12 +611,14 @@ public class NewShipment extends AppCompatActivity {
                         respon.setText("");
                     }
                     else {
-                        if(editable.toString().equals("nodata"))
-                        {}
-                        else {
-                            Log.e("afterTextChanged",""+editable.toString());
+                        if(editable.toString().equals("invlalid"))
+                        {
 
-
+                            generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodeexists));
+                            barcode.requestFocus();
+                            qty.setEnabled(false);
+                        }
+                        else  {
 
                             try {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
@@ -557,10 +629,11 @@ public class NewShipment extends AppCompatActivity {
                             {
                                 Log.e("afterTextChanged",""+e.getMessage()+"");
                             }
+                            qty.setEnabled(true);
+                            qty.requestFocus();
 
                         }
-                        qty.setEnabled(true);
-                        qty.requestFocus();
+
 
 
                     }
@@ -959,19 +1032,29 @@ public class NewShipment extends AppCompatActivity {
        else
                return true;
 }
-private void checkitemcodevalidty() {
+private boolean checkitemcodevalidty() {
+        boolean f=false;
+        Log.e("checkitemcodevalidty", "checkitemcodevalidty");
 
         for (int i = 0; i < importData.POdetailslist.size(); i++)
         {
 
-            if(!convertToEnglish(boxno.getText().toString().trim()).equals(importData.POdetailslist.get(i).getBoxNo())) {
-                    generalMethod.showSweetDialog(NewShipment.this, 3, "", this.getResources().getString(R.string.barcodevalidate));
+            if(!convertToEnglish(boxno.getText().toString().trim()).
+                    equals(importData.POdetailslist.get(i).getBoxNo())
+                  && !convertToEnglish(barcode.getText().toString().trim()).
+                    equals(importData.POdetailslist.get(i).getBarcode())
+
+            ) {
+              f=false;
                break;
                 }
+            else
+                  f=true;
+            continue;
 
       }
 
 
-    }
+   return  f; }
 
 }

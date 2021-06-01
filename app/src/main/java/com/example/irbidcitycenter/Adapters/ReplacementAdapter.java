@@ -2,6 +2,9 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,9 @@ import com.example.irbidcitycenter.Activity.Replacement;
 
 
 import java.util.List;
+
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
     private List<ReplacementModel> list;
@@ -69,6 +75,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
            qty=itemView.findViewById( R.id.qty);
             qty.setOnEditorActionListener(onEditAction);
             rmovetxt=itemView.findViewById(R.id.remove);
+
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -89,15 +96,10 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                         @Override
                         public void onClick(View view) {
                             dialog.dismiss();
-
-
                         }
                     });
-
                     dialog.show();
                     dialog.setCanceledOnTouchOutside(true);
-
-
 
 
                 }
@@ -105,6 +107,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
 
         }
+
+
         EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -114,7 +118,15 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                         case R.id.qty:
 
                             newqty=qty.getText().toString();
-                            Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setQty(newqty);
+                            String zone=Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
+                            String itemcode=Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getItemcode();
+                           if( checkQtyValidateinRow(newqty,itemcode,zone))
+                           {
+                              // updateQTYOfZoneinRow(newqty,zone,itemcode);
+                               Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
+                            }
+                           else
+                              showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
                             break;
                     }
 
@@ -124,7 +136,36 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
             }
         };
     }
+    public  boolean checkQtyValidateinRow(String newQty, String itemco,String zonecode) {
+        Log.e("checkQtyValidateinRow","heckQtyValidate");
+        for (int i = 0; i < listQtyZone.size(); i++) {
+            if (itemco.trim().equals(listQtyZone.get(i).getItemCode().trim())
+                    &&zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
+                if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
+                {
+                    return true;
+
+                }
+                else {
+                    return false;
 
 
+                }
+            }
+        }
 
+        return false; }
+
+    /*private void updateQTYOfZoneinRow(String newQty, String itemco,String zonecode) {
+        String d="";
+        Log.e("updateQTYOfZoneinRow()",d) ;
+        for (int i = 0; i < listQtyZone.size(); i++) {
+            if (itemco.trim().equals(listQtyZone.get(i).getItemCode().trim())
+                    && zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
+                listQtyZone.get(i).setQty(Integer.parseInt(listQtyZone.get(i).getQty()) - Integer.parseInt( newQty) + "");
+                d = listQtyZone.get(i).getQty();
+            }
+        }
+
+    }*/
 }
