@@ -375,9 +375,11 @@ public class Replacement extends AppCompatActivity {
                     recqty.requestFocus();}
                     else
                     {
+                        generalMethod.showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
                         recqty.setEnabled(false);
                         Log.e("bbbbb","2222");
                         itemcode.requestFocus();
+
                     }
                 }
             }
