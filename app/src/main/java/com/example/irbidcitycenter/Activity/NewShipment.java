@@ -114,15 +114,15 @@ public class NewShipment extends AppCompatActivity {
         BoxNolist.clear();
         POdetailslist.clear();
         init();
+
+        //
         save.setEnabled(false);
         pono.requestFocus();
-        ///
         boxno.setEnabled(false);
         barcode.setEnabled(false);
         qty.setEnabled(false);
-        ////
         next.setEnabled(false);
-
+        //
 
       /*  searchView1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +136,9 @@ public class NewShipment extends AppCompatActivity {
             public void onClick(View view) {
                 showdailogboxnumber();
             }});*/
+
+
+      //1. save button
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,6 +163,7 @@ public class NewShipment extends AppCompatActivity {
 
 
 
+
                     ////
                 } else {
                     generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
@@ -168,6 +172,7 @@ public class NewShipment extends AppCompatActivity {
 
         });
 
+        //2. next box button
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,6 +193,7 @@ public class NewShipment extends AppCompatActivity {
             }
         });
 
+        //3. cancel button
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,6 +248,7 @@ public class NewShipment extends AppCompatActivity {
 
     }
 
+    //4. actions will done when user bress next key in keyboard
     TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
 
 
@@ -267,19 +274,22 @@ public class NewShipment extends AppCompatActivity {
                          pono.setEnabled(false);
                         if (checkboxvalidty())
                         { barcode.setEnabled(true);
-                        barcode.requestFocus();}
+                        //barcode.requestFocus();
+                            readBarcode(3);
+
+                        }
                         else
                             barcode.setEnabled(false);
 
                         break;
                     case R.id.barCodetxt:
 
-               {
+             {
                             boxno.setEnabled(false);
                             POdetailslist.clear();
                             getPOdetails();
                             qty.setEnabled(true);
-                            qty.requestFocus();
+
                  }
                                 break;
                                 //next.setEnabled(true);
@@ -288,8 +298,8 @@ public class NewShipment extends AppCompatActivity {
 
 
                     case R.id.RecQtytxt:
-
-                        if(!checkitemcodevalidty())
+                        if(qty.getText().toString().equals("0"))qty.setText("1");
+                     if(!checkitemcodevalidty())
                             generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
                         else
 
@@ -306,10 +316,7 @@ public class NewShipment extends AppCompatActivity {
                             barcode.setText("");
                             qty.setText("1");}
 
-                        /*else {
-                            //   barcode.setError("");
-                            next.setEnabled(true);
-                        }*/
+
                         barcode.setEnabled(true);
                         barcode.requestFocus();
 
@@ -322,6 +329,7 @@ public class NewShipment extends AppCompatActivity {
                         next.setEnabled(true);
 
                         break;
+
 
                 }
             }
@@ -442,8 +450,8 @@ public class NewShipment extends AppCompatActivity {
 
 
                     if (AddInCaseDuplicates(shipment)) {
-                        // barcode.setError("");
-                        // Toast.makeText(NewShipment.this, " item Duplicate", Toast.LENGTH_LONG).show();
+                         barcode.requestFocus();
+
 
                     } else {
                         shipmentList.add(shipment);
@@ -629,7 +637,7 @@ public class NewShipment extends AppCompatActivity {
                                 Log.e("afterTextChanged",""+e.getMessage()+"");
                             }
                             qty.setEnabled(true);
-                            qty.requestFocus();
+                           // qty.requestFocus();
 
                         }
 
@@ -671,6 +679,7 @@ public class NewShipment extends AppCompatActivity {
                     else  if(editable.toString().trim().equals("not"))
                     {         saved=true;
                         saveData(0);;
+                        generalMethod.showSweetDialog(NewShipment.this, 0, getResources().getString(R.string.errorsaving), "");
                     }
                 }
             }
@@ -698,7 +707,7 @@ public class NewShipment extends AppCompatActivity {
                         NewShipment.pono.setError("Invalid");
 
                     }else {
-                        if (boxnorespon.getText().length() > 0) {
+                        if (boxnorespon.getText().equals("BOXNO")) {
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
                         }
@@ -728,8 +737,44 @@ public class NewShipment extends AppCompatActivity {
                     boxno.setEnabled(false);
                     POdetailslist.clear();
                     getPOdetails();
-                    qty.setEnabled(true);
-                    qty.requestFocus();
+                   // qty.setEnabled(true);
+                    //qty.requestFocus();
+                    ////////
+                  //  if(!checkitemcodevalidty())
+                  //      generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
+                  //  else
+
+                    {barcode.setEnabled(false);
+                        filldata();
+                        pono.setEnabled(false);
+                        searchView1.setEnabled(false);
+                        boxno.setEnabled(false);
+                        searchView2.setEnabled(false);
+
+
+                        next.setEnabled(true);
+                        save.setEnabled(true);
+                        barcode.setText("");
+                        qty.setText("1");
+                    }
+
+                        /*else {
+                            //   barcode.setError("");
+                            next.setEnabled(true);
+                        }*/
+                    barcode.setEnabled(true);
+                    barcode.requestFocus();
+
+                    qty.setEnabled(false);
+
+
+                    //clear item data
+                    itemname.setText("");
+                    PoQTY.setText("");
+
+
+
+
                 }
             }
         });

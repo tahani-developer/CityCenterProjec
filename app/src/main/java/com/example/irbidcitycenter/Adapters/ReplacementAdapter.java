@@ -24,6 +24,7 @@ import com.example.irbidcitycenter.Activity.Replacement;
 import java.util.List;
 
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.itemn;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
@@ -48,9 +49,12 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.to.setText(list.get(position).getTo());
         holder.zone.setText(list.get(position).getZone());
         holder.itemcode.setText(list.get(position).getItemcode());
-        holder.qty.setText(list.get(position).getQty());
+        holder.qty.setText(list.get(position).getRecQty());
         holder.qty.setTag(position);
         holder.rmovetxt.setTag(position);
+
+        holder.itemqty.setText(list.get(position).getQty());
+        holder.itemqty.setEnabled(false);
     }
     public void removeItem(int position) {
         list.remove(position);
@@ -63,8 +67,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
     }
 
     class replacementViewHolder extends RecyclerView.ViewHolder{
-          TextView from,to,zone,itemcode ,rmovetxt;;
-          EditText qty;
+          TextView from,to,zone,itemcode ,rmovetxt,itemqty;;
+          TextView qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,10 +76,10 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
             to=itemView.findViewById( R.id.to);
             zone=itemView.findViewById( R.id.zone);
             itemcode=itemView.findViewById( R.id.itemcode);
-           qty=itemView.findViewById( R.id.qty);
+           qty=itemView.findViewById( R.id.tblqty);
             qty.setOnEditorActionListener(onEditAction);
             rmovetxt=itemView.findViewById(R.id.remove);
-
+            itemqty=itemView.findViewById(R.id.itemqty);
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

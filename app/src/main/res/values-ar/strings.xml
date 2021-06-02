@@ -46,6 +46,7 @@
     <string name="Arabic">عربي</string>
     <string name="boxnovalidate">الصندوق غير موجود بهذه الطلبية</string>
     <string name="barcodevalidate">المادة غير موجودة بهذه الطلبية</string>
+    <string name="samestore">غير مسموح اختيار نفس المخزن</string>
     <string name="barcodeexists">رقم الماده غير صحيح</string>
     <string name="confirm_title">تأكيد</string>
     <string name="messageExit">هل تريد الخروج؟</string>
@@ -59,5 +60,7 @@
     <string name="ComName">اسم الشركة</string>
     <string name="COYear">السنة</string>
     <string name="Login">تسجيل الدخول</string>
+    <string name="itemqty">كمية المادة</string>
     <string name="messageExit2">سوف تفقد المعلومات، هل تريد الخروج؟</string>
+    <string name="errorsaving">لم يتم الحفظ</string>
 </resources>

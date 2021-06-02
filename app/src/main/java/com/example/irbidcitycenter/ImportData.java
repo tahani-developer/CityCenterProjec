@@ -845,7 +845,7 @@ else
                                 e.printStackTrace();
                             }
                         }
-                        NewShipment.boxnorespon.setText(BoxNolist.get(0));
+                        NewShipment.boxnorespon.setText("BOXNO");
                         if (NewShipment.boxnorespon.getText().length() > 0) {
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
@@ -1096,7 +1096,7 @@ else
         @Override
         protected void onPostExecute(String array) {
             super.onPostExecute(array);
-String d="";
+           String d="";
             JSONObject jsonObject1 = null;
             if (array != null) {
                 if (array.contains("QTY")) {
