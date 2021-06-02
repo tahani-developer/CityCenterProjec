@@ -277,7 +277,6 @@ public class NewShipment extends AppCompatActivity {
                {
                             boxno.setEnabled(false);
                             POdetailslist.clear();
-                            Log.e("xxxxxxx", "vvvvvvvv");
                             getPOdetails();
                             qty.setEnabled(true);
                             qty.requestFocus();
@@ -710,7 +709,30 @@ public class NewShipment extends AppCompatActivity {
         });
 
 
+        barcode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if(editable.toString().length()!=0)
+                {
+                    boxno.setEnabled(false);
+                    POdetailslist.clear();
+                    getPOdetails();
+                    qty.setEnabled(true);
+                    qty.requestFocus();
+                }
+            }
+        });
 
 
     }
