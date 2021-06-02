@@ -368,10 +368,10 @@ public class NewShipment extends AppCompatActivity {
                                             filladapter( shipmentList);
 
                                         }
-
-                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
-                                        startActivity(intent);
                                         finish();
+//                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
+//                                        startActivity(intent);
+
 
                                     }
                                 })
