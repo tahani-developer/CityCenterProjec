@@ -246,7 +246,6 @@ else
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.e("onPostExecute", "" + result);
             if (result != null) {
                 validateKind = false;
                 if (result.contains("ITEMTYPE")) {
@@ -379,7 +378,6 @@ else
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.e("onPostExecute", ""+result );
             if (result != null ) {
                 // {
                 //    "CoNo": "200",
@@ -417,7 +415,6 @@ else
                         e.printStackTrace();
                     }
                 }
-                Log.e("onPostExecute", "NotFound" + result.toString());
 
 
             }
@@ -531,7 +528,7 @@ else
 
             if (array != null ) {
                 if (array.length() != 0) {
-                    Log.e("onPostExecute", "" + array.toString());
+
 
                     for (int i = 0; i < array.length(); i++) {
                         try {
@@ -664,12 +661,10 @@ else
             super.onPostExecute(array);
 
             JSONObject jsonObject1 = null;
-            Log.e("onPostExecute", "" + array.toString());
 
             if (array != null) {
                 if (array.length() != 0) {
                     if (array.contains("ItemOCode")) {
-                        Log.e("onPostExecute", "" + array.toString());
 
 
                         try {
@@ -1127,6 +1122,7 @@ else
                     qtyrespons.setText("QTY");
                     Log.e("qtyrespons",qtyrespons.getText().toString()+d);
                     Replacement.qty.setText(d);
+                    Log.e("qtyrespons",qtyrespons.getText().toString()+d);
                     }
                 else {
 
