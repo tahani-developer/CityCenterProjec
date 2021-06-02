@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.AddZone.validItem;
@@ -87,6 +89,47 @@ public class Replacement extends AppCompatActivity {
         setContentView(R.layout.activity_replacement);
         init();
         getStors();
+        fromSpinner.setSelection(0);
+        toSpinner.setSelection(1);
+        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code her
+
+                if(toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem()))
+                {
+                    showSweetDialog(Replacement.this, 3,getResources().getString(R.string.samestore), "");
+                    if(fromSpinner.getSelectedItemPosition()!=1) toSpinner.setSelection(1);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code her
+
+                if(toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem()))
+                {
+                    showSweetDialog(Replacement.this, 3,getResources().getString(R.string.samestore), "");
+                    if(toSpinner.getSelectedItemPosition()!=0)fromSpinner.setSelection(0);
+                    //else
+                    //   fromSP.setSelection(1);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
 
 
         zone.requestFocus();
@@ -182,11 +225,11 @@ public class Replacement extends AppCompatActivity {
                     int sum=Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty);
                     if(checkQtyValidate(String.valueOf(sum))) {
                         replacementlist.get(i).setQty(Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty) + "");
-                        adapter.notifyDataSetChanged();
+                     if(adapter!=null)adapter.notifyDataSetChanged();
                         flag = true;
                     }
                     else
-                    generalMethod.showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                    showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
                     flag = true;
                     break;
 
@@ -240,6 +283,7 @@ public class Replacement extends AppCompatActivity {
         importData = new ImportData(Replacement.this);
         listAllZone.clear();
         importData.getAllZones();
+        listQtyZone.clear();
 
         fromSpinner = findViewById(R.id.fromspinner);
         toSpinner = findViewById(R.id.tospinner);
@@ -309,7 +353,7 @@ public class Replacement extends AppCompatActivity {
                     if (editable.toString().equals("NOTEXIST")) {
                         validateKind = false;
                         recqty.setEnabled(false);
-                        generalMethod.showSweetDialog(Replacement.this, 3, "This Item Not Exist", "");
+                        showSweetDialog(Replacement.this, 3, "This Item Not Exist", "");
                         itemKintText1.setText("");
                     } else {
                         validateKind = false;
@@ -375,7 +419,7 @@ public class Replacement extends AppCompatActivity {
                     recqty.requestFocus();}
                     else
                     {
-                        generalMethod.showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
+                        showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
                         recqty.setEnabled(false);
                         Log.e("bbbbb","2222");
                         itemcode.requestFocus();
@@ -384,7 +428,51 @@ public class Replacement extends AppCompatActivity {
                 }
             }
         });
+itemcode.addTextChangedListener(new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        if (editable.toString().length() != 0) {
+
+            zone.setEnabled(false);
+            importData.getQty();
+            //
+
+
+
+
+            itemcode.setEnabled(false);
+
+            {
+                filldata();
+                Replacement.qty.setText("");
+                save.setEnabled(true);
+                zone.setText("");
+                itemcode.setText("");
+                recqty.setText("1");
+                zone.setEnabled(true);
+
+                itemcode.setEnabled(false);
+                recqty.setEnabled(false);
+                itemcode.requestFocus();
+            }
+
+
+
+
+
+        }
+    }
+});
     }
 
     private void fillSp() {
@@ -406,7 +494,7 @@ public class Replacement extends AppCompatActivity {
             recqty.requestFocus();
         } else {
             recqty.setEnabled(false);
-            generalMethod.showSweetDialog(Replacement.this, 0, "Item Kind Not Match To Zone Type", "");
+            showSweetDialog(Replacement.this, 0, "Item Kind Not Match To Zone Type", "");
         }
         itemKintText1.setText("");
     }
@@ -449,28 +537,39 @@ public class Replacement extends AppCompatActivity {
 
 
                         importData.getQty();
-                       // recqty.setEnabled(true);
+                        // recqty.setEnabled(true);
 
                         break;
 
-                    case R.id.qtyedt:
+                    case R.id.qtyedt: {
 
-                        itemcode.setEnabled(false);
 
-                        if ( checkQtyValidate(recqty.getText().toString())) {
-                            filldata();
-                            save.setEnabled(true);
-                            zone.setText("");
-                            itemcode.setText("");
-                            recqty.setText("1");
-                            zone.setEnabled(true);
-                            zone.requestFocus();
+                       if(Integer.parseInt(recqty.getText().toString())==0)
+                           recqty.setText("1");
+
                             itemcode.setEnabled(false);
-                            recqty.setEnabled(false);
-                            break;
-                        } else
-                            generalMethod.showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                            if (checkQtyValidate(recqty.getText().toString())) {
+                                filldata();
+                                Replacement.qty.setText("");
+                                save.setEnabled(true);
+                                zone.setText("");
+                                itemcode.setText("");
+                                recqty.setText("1");
+                                zone.setEnabled(true);
+                                zone.requestFocus();
+                                itemcode.setEnabled(false);
+                                recqty.setEnabled(false);
+                                break;
+                            } else
+                                showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+
+
+                    }
+
+
                 }
+
+
 
             }
 
@@ -529,7 +628,8 @@ public class Replacement extends AppCompatActivity {
             replacement.setTo(To);
             replacement.setZone(Zone);
             replacement.setItemcode(Itemcode);
-            replacement.setQty(Qty);
+            replacement.setRecQty(Qty);
+            replacement.setQty(qty.getText().toString());
             replacement.setIsPosted("0");
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
            //updateQTYOfZone();
@@ -622,7 +722,7 @@ public class Replacement extends AppCompatActivity {
         long result[] = my_dataBase.replacementDao().insertAll(replacementlist);
 
         if (result.length != 0) {
-            generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule), "");
+            showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule), "");
         }
 
 
