@@ -49,12 +49,13 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.to.setText(list.get(position).getTo());
         holder.zone.setText(list.get(position).getZone());
         holder.itemcode.setText(list.get(position).getItemcode());
+//        Log.e("onBindViewHolder202020",""+list.get(position).getRecQty());
         holder.qty.setText(list.get(position).getRecQty());
         holder.qty.setTag(position);
         holder.rmovetxt.setTag(position);
-
         holder.itemqty.setText(list.get(position).getQty());
         holder.itemqty.setEnabled(false);
+        holder.qty.setEnabled(true);
     }
     public void removeItem(int position) {
         list.remove(position);
@@ -68,18 +69,57 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
     class replacementViewHolder extends RecyclerView.ViewHolder{
           TextView from,to,zone,itemcode ,rmovetxt,itemqty;;
-          TextView qty;
+          EditText qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);
             from=itemView.findViewById( R.id.from);
             to=itemView.findViewById( R.id.to);
             zone=itemView.findViewById( R.id.zone);
-            itemcode=itemView.findViewById( R.id.itemcode);
+            itemcode=(TextView) itemView.findViewById( R.id.itemcode);
            qty=itemView.findViewById( R.id.tblqty);
-            qty.setOnEditorActionListener(onEditAction);
+           // qty.setOnEditorActionListener(onEditAction);
             rmovetxt=itemView.findViewById(R.id.remove);
             itemqty=itemView.findViewById(R.id.itemqty);
+
+
+
+            qty.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (editable.toString().length() != 0) {
+                        try {
+                            newqty=editable.toString();
+                            String zone = Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
+                            String itemcode = Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getItemcode();
+                            if (checkQtyValidateinRow(newqty, itemcode, zone)) {
+                                // updateQTYOfZoneinRow(newqty,zone,itemcode);
+                                Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
+                            } else
+                                showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
+                        }catch (Exception e){}
+
+                        //newqty = qty.getText().toString();
+
+                    }
+                }});
+
+
+
+
+
+
+
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -119,7 +159,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                         || i == EditorInfo.IME_NULL) {
                     switch (textView.getId()) {
-                        case R.id.qty:
+                        case R.id.tblqty:
 
                             newqty=qty.getText().toString();
                             String zone=Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
@@ -147,7 +187,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                     &&zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
                 if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
                 {
-                    return true;
+                      return true;
 
                 }
                 else {

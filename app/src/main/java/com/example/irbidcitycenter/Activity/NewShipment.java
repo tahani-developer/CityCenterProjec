@@ -168,6 +168,10 @@ public class NewShipment extends AppCompatActivity {
                 } else {
                     generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
                 }
+                shipmentList.clear();
+                adapter.notifyDataSetChanged();
+                filladapter(shipmentList);
+
             }
 
         });
@@ -679,7 +683,7 @@ public class NewShipment extends AppCompatActivity {
                     else  if(editable.toString().trim().equals("not"))
                     {         saved=true;
                         saveData(0);;
-                        generalMethod.showSweetDialog(NewShipment.this, 0, getResources().getString(R.string.errorsaving), "");
+
                     }
                 }
             }

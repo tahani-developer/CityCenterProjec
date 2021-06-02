@@ -155,7 +155,9 @@ public class Replacement extends AppCompatActivity {
                     zone.setEnabled(true);
                     zone.requestFocus();
                 }
-
+                replacementlist.clear();
+                fillAdapter();
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -222,9 +224,10 @@ public class Replacement extends AppCompatActivity {
 
                 if (convertToEnglish(replacementlist.get(i).getZone()).equals(convertToEnglish(replacement.getZone()))
                         && convertToEnglish(replacementlist.get(i).getItemcode()).equals(convertToEnglish(replacement.getItemcode()))) {
-                    int sum=Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty);
+                    int sum=Integer.parseInt(replacementlist.get(i).getRecQty()) + Integer.parseInt(recqty.getText().toString().trim());
+                    Log.e("aaasum ",sum+"");
                     if(checkQtyValidate(String.valueOf(sum))) {
-                        replacementlist.get(i).setQty(Integer.parseInt(replacementlist.get(i).getQty()) + Integer.parseInt(Qty) + "");
+                        replacementlist.get(i).setRecQty((sum+""));
                      if(adapter!=null)adapter.notifyDataSetChanged();
                         flag = true;
                     }
@@ -261,6 +264,7 @@ public class Replacement extends AppCompatActivity {
                     }
                 })
                 .show();
+        replacementlist.clear();;
     }
 
     private void getStors() {
@@ -428,7 +432,7 @@ public class Replacement extends AppCompatActivity {
                 }
             }
         });
-itemcode.addTextChangedListener(new TextWatcher() {
+/*itemcode.addTextChangedListener(new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -472,7 +476,7 @@ itemcode.addTextChangedListener(new TextWatcher() {
 
         }
     }
-});
+});*/
     }
 
     private void fillSp() {
@@ -524,21 +528,7 @@ itemcode.addTextChangedListener(new TextWatcher() {
 
                     case R.id.itemcodeedt:
                         zone.setEnabled(false);
-                    /* if(indexZone!=-1)
-                        {
-                            Log.e("itemKintText",""+itemKintText1.getText().toString()+"\t"+validateKind);
-                            if(itemKintText1.getText().toString().equals("")&&validateKind==false)
-                            {
-                                validateItemKind(itemcode.getText().toString().trim());
-                            }
-                        }
-
-                        else zone.setError("Invalid Zone");*/
-
-
                         importData.getQty();
-                        // recqty.setEnabled(true);
-
                         break;
 
                     case R.id.qtyedt: {
@@ -736,10 +726,20 @@ itemcode.addTextChangedListener(new TextWatcher() {
                     && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
                 if (Integer.parseInt(recqty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
                 {
+                    Log.e("checkQtyValidate itemcode",itemcode.getText().toString());
+                    Log.e("checkQtyValidate zone",zone.getText().toString());
+                    Log.e("checkQtyValidate recqty",recqty);
+                    Log.e("checkQtyValidate","heckQtyValidate");
+                    Log.e("checkQtyValidate qty or ",listQtyZone.get(i).getQty());
                     return true;
 
               }
                 else {
+                    Log.e("checkQtyValidate itemcode",itemcode.getText().toString());
+                    Log.e("checkQtyValidate zone",zone.getText().toString());
+                    Log.e("checkQtyValidate recqty",recqty);
+                    Log.e("checkQtyValidate","heckQtyValidate");
+
                     return false;
 
 
