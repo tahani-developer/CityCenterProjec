@@ -454,13 +454,14 @@ public class NewShipment extends AppCompatActivity {
 
 
                     if (AddInCaseDuplicates(shipment)) {
-                         barcode.requestFocus();
+                        clearBarcodeData();
 
 
                     } else {
                         shipmentList.add(shipment);
                         updateflage = 1;
                         filladapter(shipmentList);
+                        clearBarcodeData();
 //                        try {
 //                            readBarcode(3);
 //                        }catch (Exception e)
@@ -474,6 +475,17 @@ public class NewShipment extends AppCompatActivity {
             }
 
         }
+    }
+
+    private void clearBarcodeData() {
+        barcode.setText("");
+        itemname.setText("");
+        PoQTY.setText("");
+        barcode.requestFocus();
+        itemname.setText("");
+        PoQTY.setText("");
+        next.setEnabled(true);
+        save.setEnabled(true);
     }
 
     public int getDiff(int qty) {
@@ -635,6 +647,8 @@ public class NewShipment extends AppCompatActivity {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
                                 sum= Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
 
+                                filldata();
+
 
                             }catch (NumberFormatException e)
                             {
@@ -748,33 +762,33 @@ public class NewShipment extends AppCompatActivity {
                   //      generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
                   //  else
 
-                    {barcode.setEnabled(false);
-                        filldata();
-                        pono.setEnabled(false);
-                        searchView1.setEnabled(false);
-                        boxno.setEnabled(false);
-                        searchView2.setEnabled(false);
-
-
-                        next.setEnabled(true);
-                        save.setEnabled(true);
-                        barcode.setText("");
-                        qty.setText("1");
-                    }
+//                    {barcode.setEnabled(false);
+//                        filldata();
+//                        pono.setEnabled(false);
+//                        searchView1.setEnabled(false);
+//                        boxno.setEnabled(false);
+//                        searchView2.setEnabled(false);
+//
+//
+//                        next.setEnabled(true);
+//                        save.setEnabled(true);
+//                        barcode.setText("");
+//                        qty.setText("1");
+//                    }
 
                         /*else {
                             //   barcode.setError("");
                             next.setEnabled(true);
                         }*/
-                    barcode.setEnabled(true);
-                    barcode.requestFocus();
-
-                    qty.setEnabled(false);
-
-
-                    //clear item data
-                    itemname.setText("");
-                    PoQTY.setText("");
+//                    barcode.setEnabled(true);
+//                    barcode.requestFocus();
+//
+//                    qty.setEnabled(false);
+//
+//
+//                    //clear item data
+//                    itemname.setText("");
+//                    PoQTY.setText("");
 
 
 

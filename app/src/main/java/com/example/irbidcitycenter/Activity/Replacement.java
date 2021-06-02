@@ -458,7 +458,7 @@ public class Replacement extends AppCompatActivity {
 
             {
                 filldata();
-                Replacement.qty.setText("");
+//                Replacement.qty.setText("");
                 save.setEnabled(true);
                 zone.setText("");
                 itemcode.setText("");
@@ -540,7 +540,7 @@ public class Replacement extends AppCompatActivity {
                             itemcode.setEnabled(false);
                             if (checkQtyValidate(recqty.getText().toString())) {
                                 filldata();
-                                Replacement.qty.setText("");
+//                                Replacement.qty.setText("");
                                 save.setEnabled(true);
                                 zone.setText("");
                                 itemcode.setText("");
@@ -619,7 +619,9 @@ public class Replacement extends AppCompatActivity {
             replacement.setZone(Zone);
             replacement.setItemcode(Itemcode);
             replacement.setRecQty(Qty);
+            Log.e("replacement","1=="+qty.getText().toString());
             replacement.setQty(qty.getText().toString());
+            Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
            //updateQTYOfZone();
