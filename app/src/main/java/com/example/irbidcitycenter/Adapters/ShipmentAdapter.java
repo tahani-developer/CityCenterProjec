@@ -3,6 +3,8 @@ package com.example.irbidcitycenter.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.http.DelegatingSSLSession;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,7 +51,8 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
         holder.ponotxt.setText(list.get(position).getPoNo());
         holder.barcodetxt.setText(list.get(position).getBarcode());
         holder.boxnotxt.setText(list.get(position).getBoxNo());
-        holder.qtytxt.setText(list.get(position).getQty() + "");
+        Log.e("getqty",list.get(position).getQty());
+        holder.qtytxt.setText(list.get(position).getQty());
 
        holder.diff.setText(list.get(position).getDiffer());
         holder.rmovetxt.setTag(position);
@@ -80,7 +83,50 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
             boxnotxt = itemView.findViewById(R.id.boxno);
             barcodetxt = itemView.findViewById(R.id.barcode);
             qtytxt = itemView.findViewById(R.id.tbl_qty);
-            qtytxt.setOnEditorActionListener(onEditAction);
+           // qtytxt.setOnEditorActionListener(onEditAction);
+           qtytxt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (editable.toString().length() != 0) {
+                        try {
+                            oldqty = NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
+                            olddif = NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
+
+                            sum += Integer.parseInt(oldqty);
+                            newqty = qtytxt.getText().toString();
+                            Log.e("newqty", newqty);
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (sum - Integer.parseInt(newqty))));
+                            sum -= Integer.parseInt(newqty);
+                            //  PoQTY.setText(sum+"");
+                            updateAdpapter();
+                        } catch (Exception e) {
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+                }
+            });
+
+
+
             rmovetxt = itemView.findViewById(R.id.remove);
             diff = itemView.findViewById(R.id.differ);
             rmovetxt.setOnClickListener(new View.OnClickListener() {

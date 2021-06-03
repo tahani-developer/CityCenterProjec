@@ -63,4 +63,5 @@
     <string name="itemqty">كمية المادة</string>
     <string name="messageExit2">سوف تفقد المعلومات، هل تريد الخروج؟</string>
     <string name="errorsaving">لم يتم الحفظ</string>
+    <string name="searchhere">أبحث هنا</string>
 </resources>
