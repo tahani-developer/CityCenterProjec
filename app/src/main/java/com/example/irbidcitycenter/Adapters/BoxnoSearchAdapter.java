@@ -70,7 +70,7 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
                        public void onClick(View view) {
                            NewShipment.boxnotag= boxnumber.getTag().toString();
                            NewShipment.colsedialog(1);
-                           NewShipment.fillEdittext();
+                           NewShipment.fillBoxEdittext();
                           dialog.dismiss();
                        }
                    });

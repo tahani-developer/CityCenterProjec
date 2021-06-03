@@ -16,7 +16,7 @@
     <string name="year">Year</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-
+    <string name="searchhere">Search her</string>
     <string name="itemqty">item qty</string>
     <string name="samestore">not allowed to choose the same store</string>
     <string name="title_activity_login">LoginActivity</string>

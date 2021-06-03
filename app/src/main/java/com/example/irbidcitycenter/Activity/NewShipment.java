@@ -3,6 +3,7 @@ package com.example.irbidcitycenter.Activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompatSideChannelService;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.http.DelegatingSSLSession;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -57,8 +58,7 @@ import static com.example.irbidcitycenter.Adapters.ShipmentAdapter.sum;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.ImportData.BoxNolist;
 import static com.example.irbidcitycenter.ImportData.POdetailslist;
-import static com.example.irbidcitycenter.ImportData.poqty;
-import static com.example.irbidcitycenter.ImportData.posize;
+import static com.example.irbidcitycenter.ImportData.PoNolist;
 
 
 public class NewShipment extends AppCompatActivity {
@@ -79,8 +79,8 @@ public class NewShipment extends AppCompatActivity {
     EditText qty;
     public static Dialog dialog1, dialog2;
     public static String ponotag;
-    static ArrayList<String> boxnumberslist;
-    static ArrayList<String> ponumberslist;
+
+
     public static String poNo;
     String boxNo;
     public static String barCode;
@@ -100,7 +100,7 @@ public class NewShipment extends AppCompatActivity {
     PO po;
     ListView listView;
     public RoomAllData my_dataBase;
-    BoxnoSearchAdapter searchadapter, searchadapter2;
+    BoxnoSearchAdapter boxsearchadapter, boxsearchadapter2;
     PonoSearchAdapter ponoSearchAdapter, searchponoSearchAdapter;
     public static int position = 1;
     public static final int REQUEST_Camera_Barcode = 1;
@@ -124,18 +124,19 @@ public class NewShipment extends AppCompatActivity {
         next.setEnabled(false);
         //
 
-      /*  searchView1.setOnClickListener(new View.OnClickListener() {
+      searchView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
           showdailogponumber();
 
             }
         });
+    
         searchView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showdailogboxnumber();
-            }});*/
+            }});
 
 
       //1. save button
@@ -163,13 +164,16 @@ public class NewShipment extends AppCompatActivity {
 
 
 
-
                     ////
                 } else {
                     generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
                 }
+
+                importData.BoxNolist.clear();
+                importData.POdetailslist.clear();
                 shipmentList.clear();
                 adapter.notifyDataSetChanged();
+
                 filladapter(shipmentList);
 
             }
@@ -192,7 +196,7 @@ public class NewShipment extends AppCompatActivity {
                 qty.setEnabled(false);
                 ////
                 searchView1.setEnabled(false);
-                searchView2.setEnabled(false);
+                searchView2.setEnabled(true);
 
             }
         });
@@ -290,7 +294,7 @@ public class NewShipment extends AppCompatActivity {
 
              {
                             boxno.setEnabled(false);
-                            POdetailslist.clear();
+
                             getPOdetails();
                             qty.setEnabled(true);
 
@@ -368,10 +372,10 @@ public class NewShipment extends AppCompatActivity {
                                             filladapter( shipmentList);
 
                                         }
-                                        finish();
-//                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
-//                                        startActivity(intent);
 
+                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
 
                                     }
                                 })
@@ -454,14 +458,13 @@ public class NewShipment extends AppCompatActivity {
 
 
                     if (AddInCaseDuplicates(shipment)) {
-                        clearBarcodeData();
+                         barcode.requestFocus();
 
 
                     } else {
                         shipmentList.add(shipment);
                         updateflage = 1;
                         filladapter(shipmentList);
-                        clearBarcodeData();
 //                        try {
 //                            readBarcode(3);
 //                        }catch (Exception e)
@@ -475,17 +478,6 @@ public class NewShipment extends AppCompatActivity {
             }
 
         }
-    }
-
-    private void clearBarcodeData() {
-        barcode.setText("");
-        itemname.setText("");
-        PoQTY.setText("");
-        barcode.requestFocus();
-        itemname.setText("");
-        PoQTY.setText("");
-        next.setEnabled(true);
-        save.setEnabled(true);
     }
 
     public int getDiff(int qty) {
@@ -507,7 +499,7 @@ public class NewShipment extends AppCompatActivity {
     }
 
 
-    private void CheckPOnumber() {
+   /* private void CheckPOnumber() {
         boolean flag = true;
         if (!ponumberslist.isEmpty())
             for (int i = 0; i < ponumberslist.size(); i++)
@@ -519,7 +511,7 @@ public class NewShipment extends AppCompatActivity {
                 }
         if (flag)
             Toast.makeText(NewShipment.this, "Purchase order not found in ", Toast.LENGTH_LONG).show();
-    }
+    }*/
 
     private void filladapter(java.util.List<Shipment> shipmentList) {
         recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
@@ -585,9 +577,12 @@ public class NewShipment extends AppCompatActivity {
     }
 
     private void init() {
-        poststate=findViewById(R.id.poststate);
+
+
         exportData = new ExportData(NewShipment.this);
         importData = new ImportData(NewShipment.this);
+        poststate=findViewById(R.id.poststate);
+        getPoNu();
         next = findViewById(R.id.nextbox);
         boxnorespon = findViewById(R.id.boxnorespon);
         respon = findViewById(R.id.respon);
@@ -610,6 +605,22 @@ public class NewShipment extends AppCompatActivity {
 
         itemname = findViewById(R.id.Itemnametxt);
         PoQTY = findViewById(R.id.PoQtytxt);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         respon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -647,15 +658,32 @@ public class NewShipment extends AppCompatActivity {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
                                 sum= Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
 
-                                filldata();
+
+                                {barcode.setEnabled(false);
+                                    filldata();
+                                    pono.setEnabled(false);
+                                    searchView1.setEnabled(false);
+                                    boxno.setEnabled(false);
+
+
+
+                                    next.setEnabled(true);
+                                    save.setEnabled(true);
+                                    barcode.setText("");
+                                    qty.setText("1");
+                                }
+
+
+
+
 
 
                             }catch (NumberFormatException e)
                             {
                                 Log.e("afterTextChanged",""+e.getMessage()+"");
                             }
-                            qty.setEnabled(true);
-                           // qty.requestFocus();
+
+
 
                         }
 
@@ -762,33 +790,25 @@ public class NewShipment extends AppCompatActivity {
                   //      generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
                   //  else
 
-//                    {barcode.setEnabled(false);
-//                        filldata();
-//                        pono.setEnabled(false);
-//                        searchView1.setEnabled(false);
-//                        boxno.setEnabled(false);
-//                        searchView2.setEnabled(false);
-//
-//
-//                        next.setEnabled(true);
-//                        save.setEnabled(true);
-//                        barcode.setText("");
-//                        qty.setText("1");
-//                    }
+
+
+
+
+
 
                         /*else {
                             //   barcode.setError("");
                             next.setEnabled(true);
                         }*/
-//                    barcode.setEnabled(true);
-//                    barcode.requestFocus();
-//
-//                    qty.setEnabled(false);
-//
-//
-//                    //clear item data
-//                    itemname.setText("");
-//                    PoQTY.setText("");
+                    barcode.setEnabled(true);
+                    barcode.requestFocus();
+
+                    qty.setEnabled(false);
+
+
+                    //clear item data
+                    itemname.setText("");
+                    PoQTY.setText("");
 
 
 
@@ -798,6 +818,11 @@ public class NewShipment extends AppCompatActivity {
         });
 
 
+    }
+
+    private void getPoNu() {
+        PoNolist.clear();
+        importData.getPoNum();
     }
 
     void search() {
@@ -897,35 +922,22 @@ public class NewShipment extends AppCompatActivity {
         dialog2.setContentView(R.layout.pono_dialog_listview);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog2.getWindow().getAttributes());
-        lp.width = 600;
-        lp.height = 800;
+        lp.width = 500;
+        lp.height = 600;
         lp.gravity = Gravity.CENTER;
 
         dialog2.getWindow().setAttributes(lp);
         final RecyclerView recyclerView1;
         final EditText editText;
         final ArrayList<String> searcharrayAdapter = new ArrayList<>();
-        ponumberslist = new ArrayList<>();
-        ponumberslist.add("po100");
-        ponumberslist.add("po101");
-        ponumberslist.add("po102");
-        ponumberslist.add("po103");
-        ponumberslist.add("po104");
-        ponumberslist.add("po105");
-        ponumberslist.add("po106");
-        ponumberslist.add("po107");
-        ponumberslist.add("po108");
-        ponumberslist.add("po109");
-        ponumberslist.add("po110");
-        ponumberslist.add("po111");
 
         recyclerView1 = dialog2.findViewById(R.id.listview1);
         editText = dialog2.findViewById(R.id.search_edt);
 
         recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
-        ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, ponumberslist);
+        ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, PoNolist );
         recyclerView1.setAdapter(ponoSearchAdapter);
-        Button btndialog = (Button) dialog2.findViewById(R.id.btndialog);
+        Button btndialog = (Button) dialog2.findViewById(R.id.cancelbtndialog);
         btndialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -933,29 +945,41 @@ public class NewShipment extends AppCompatActivity {
                 dialog2.dismiss();
             }
         });
-        TextView serach = dialog2.findViewById(R.id.dailog_pono_Search);
-        serach.setOnClickListener(new View.OnClickListener() {
+       
+        
+
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                searcharrayAdapter.clear();
-                for (int i = 0; i < ponumberslist.size(); i++) {
-                    if (editText.getText().toString().trim().startsWith(ponumberslist.get(i)))
-                        searcharrayAdapter.add(ponumberslist.get(i));
-                   /* else
-                        Toast.makeText(NewShipment.this,
-                                "No Matched data", Toast.LENGTH_SHORT).show();*/
-
-                }
-
-
-                searchponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, searcharrayAdapter);
-                recyclerView1.setAdapter(searchadapter2);
-
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
-        });
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.e("afterText",editText.getText().toString());
+                if (editText.getText().toString().trim().equals("")) {
+                    ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, PoNolist);
+                    recyclerView1.setAdapter(ponoSearchAdapter);
+
+                } else {
+                    searcharrayAdapter.clear();
+                    for (int i = 0; i < PoNolist.size(); i++) {
+                        if (editText.getText().toString().trim().equals(PoNolist.get(i)))
+                            searcharrayAdapter.add(PoNolist.get(i));
+
+
+                    }
+                    ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, searcharrayAdapter);
+                    recyclerView1.setAdapter(ponoSearchAdapter);
+
+                }
+            }
+        });
 
         dialog2.show();
 
@@ -969,12 +993,12 @@ public class NewShipment extends AppCompatActivity {
 
         dialog1 = new Dialog(NewShipment.this);
         dialog1.setCancelable(false);
-        dialog1.setContentView(R.layout.pono_dialog_listview);
+        dialog1.setContentView(R.layout.box_dialog_listview);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog1.getWindow().getAttributes());
-        lp.width = 200;
-        lp.height = 400;
-        lp.gravity = Gravity.RIGHT;
+        lp.width = 500;
+        lp.height = 600;
+        lp.gravity = Gravity.CENTER;
 //        lp.setColorMode(ActivityInfo.COLOR_MODE_DEFAULT);
 
 
@@ -982,29 +1006,16 @@ public class NewShipment extends AppCompatActivity {
         final RecyclerView recyclerView1;
         final EditText editText;
         final ArrayList<String> searcharrayAdapter = new ArrayList<>();
-        boxnumberslist = new ArrayList<>();
-        boxnumberslist.add("box100");
-        boxnumberslist.add("box101");
-        boxnumberslist.add("box102");
-        boxnumberslist.add("box103");
-        boxnumberslist.add("box104");
-        boxnumberslist.add("box105");
-        boxnumberslist.add("box100");
-        boxnumberslist.add("box101");
-        boxnumberslist.add("box102");
-        boxnumberslist.add("box103");
-        boxnumberslist.add("box104");
-        boxnumberslist.add("box105");
 
-        recyclerView1 = dialog1.findViewById(R.id.listview1);
-        editText = dialog1.findViewById(R.id.search_edt);
+        recyclerView1 = dialog1.findViewById(R.id.boxlistview);
+        editText = dialog1.findViewById(R.id.boxsearch_edt);
 
         recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
-        searchadapter = new BoxnoSearchAdapter(NewShipment.this, boxnumberslist);
-        recyclerView1.setAdapter(searchadapter);
+        boxsearchadapter = new BoxnoSearchAdapter(NewShipment.this,BoxNolist);
+        recyclerView1.setAdapter(boxsearchadapter);
 
-        LinearLayout linearLayout = dialog1.findViewById(R.id.linear);
-        Button btndialog = (Button) dialog1.findViewById(R.id.btndialog);
+        LinearLayout linearLayout = dialog1.findViewById(R.id.boxlinear);
+        Button btndialog = (Button) dialog1.findViewById(R.id.cancelbtnBoxdialog);
         btndialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1012,27 +1023,38 @@ public class NewShipment extends AppCompatActivity {
                 dialog1.dismiss();
             }
         });
-        TextView serach = dialog1.findViewById(R.id.dailog_pono_Search);
-        serach.setOnClickListener(new View.OnClickListener() {
+        
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                searcharrayAdapter.clear();
-                for (int i = 0; i < boxnumberslist.size(); i++) {
-                    if (editText.getText().toString().trim().startsWith(boxnumberslist.get(i)))
-                        searcharrayAdapter.add(boxnumberslist.get(i));
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                
+            }
 
-
-                }
-
-                searchadapter2 = new BoxnoSearchAdapter(NewShipment.this, searcharrayAdapter);
-                recyclerView1.setAdapter(searchadapter2);
-
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText.getText().toString().trim().equals("")) {
+
+                    boxsearchadapter2 = new BoxnoSearchAdapter(NewShipment.this, BoxNolist);
+                    recyclerView1.setAdapter( boxsearchadapter2);
+
+                } else {
+                    searcharrayAdapter.clear();
+                    for (int i = 0; i < BoxNolist.size(); i++) {
+                        if (editText.getText().toString().trim().equals(BoxNolist.get(i)))
+                            searcharrayAdapter.add(BoxNolist.get(i));
+
+                    }
+
+                    boxsearchadapter2 = new BoxnoSearchAdapter(NewShipment.this, searcharrayAdapter);
+                    recyclerView1.setAdapter( boxsearchadapter2);
+                }
+            }
         });
-
-
         dialog1.show();
         dialog1.setCanceledOnTouchOutside(true);
 
@@ -1045,12 +1067,13 @@ public class NewShipment extends AppCompatActivity {
             dialog2.dismiss();
     }
 
-    public static void fillEdittext() {
-        boxno.setText(boxnumberslist.get(Integer.parseInt(boxnotag)));
+    public static void fillPoEdittext() {
+        pono.setText(PoNolist.get(Integer.parseInt(ponotag)));
+
     }
 
-    public static void fillEdittext2() {
-        pono.setText(ponumberslist.get(Integer.parseInt(ponotag)));
+    public static void fillBoxEdittext() {
+        boxno.setText(BoxNolist.get(Integer.parseInt(boxnotag)));
     }
 
     public boolean AddInCaseDuplicates(Shipment shipment) {

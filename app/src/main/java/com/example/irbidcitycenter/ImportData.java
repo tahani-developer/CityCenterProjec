@@ -68,8 +68,9 @@ public class ImportData {
     public String ipAddress = "", CONO = "", headerDll = "", link = "";
     public RoomAllData my_dataBase;
     public static String zonetype;
-    public static List<Store> Storelist = new ArrayList<>();
-    public static List<String> BoxNolist = new ArrayList<>();
+    public static ArrayList<Store> Storelist = new ArrayList<>();
+    public static ArrayList<String> BoxNolist = new ArrayList<>();
+    public static ArrayList<String> PoNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
@@ -84,6 +85,12 @@ public class ImportData {
             Toast.makeText(context, "Fill Ip and Company No", Toast.LENGTH_SHORT).show();
         }
 
+    }
+    public void getPoNum(){
+        if(!ipAddress.equals(""))
+            new JSONTask_getAllPoNum().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
     public void getQty() {
@@ -108,6 +115,7 @@ public class ImportData {
     public void getPOdetails() {
         Log.e("getPOdetails","getPOdetails");
         //new JSONTaskGetPOdetails(context,cono,pono).execute();
+        POdetailslist.clear();
         if(!ipAddress.equals(""))
         new JSONTask_getAllPOdetails().execute();
 else
@@ -1134,9 +1142,145 @@ else
             }
         }
 
+    }
 
 
+    private class  JSONTask_getAllPoNum extends AsyncTask<String, String, String> {
 
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+            Log.e("onPreExecute", "onPreExecute");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetAllOPO?CONO=" + CONO.trim();
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("Exception",""+e.getMessage());
+            }
+
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+//                JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String respon) {
+            super.onPostExecute(respon);
+
+            JSONObject jsonObject1 = null;
+
+
+            if (respon != null) {
+                if (respon.length() != 0) {
+                    if (respon.contains("PONO")) {
+                        JSONArray array = null;
+
+
+                        try {
+                            array = new JSONArray(respon);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        if (array.length()>0)for (int i = 0; i < array.length(); i++) {
+                            try {
+                                jsonObject1 = array.getJSONObject(i);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+
+                                PoNolist.add(jsonObject1.getString("PONO"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+        }
 
     }
 }
