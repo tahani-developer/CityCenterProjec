@@ -310,23 +310,28 @@ public class Login extends AppCompatActivity {
     private boolean existCoNo(int flag ) {
            // ipAddress=my_dataBase.settingDao().getIpAddress().trim();
         String  CONO="";
-        if(flag==1)
-        {
-            CONO=my_dataBase.settingDao().getCono();
-        }else {
-            if(flag==2)
-              CONO=my_dataBase.settingDao().getIpAddress();
-        }
-
-        Log.e("CONO",""+CONO);
-        if(CONO!=null)
-        {
-            if(CONO.length()!=0)
+        try {
+            if(flag==1)
             {
-                return true;
+                CONO=my_dataBase.settingDao().getCono();
+            }else {
+                if(flag==2)
+                    CONO=my_dataBase.settingDao().getIpAddress();
             }
 
+            Log.e("CONO",""+CONO);
+            if(CONO!=null)
+            {
+                if(CONO.length()!=0)
+                {
+                    return true;
+                }
+
+            }
+        }catch (Exception e){
+            return  false;
         }
+
 
             return  false;
 
