@@ -7,6 +7,7 @@
     <string name="about">About</string>
     <string name="signout">signout</string>
     <string name="export">Export</string>
+    <string name="required">required</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
     <string name="settings_ip">Settings Ip</string>
@@ -32,10 +33,10 @@
     <string name="ZoneCode">Zone Code</string>
     <string name="itemCode">Item Code</string>
     <string name="Poqty">PoQty</string>
-    <string name="notvaildqty">There is no quantity enough</string>
+   <string name="notvaildqty">There is no quantity enough</string>
     <string name="reqired_filled">*Reqired</string>
     <string name="savedSuccsesfule">Saved Succsesfule</string>
-    <string name="barcodevalidate">this item does not exists in this PO</string>
+
     <string name="barcodeexists">invalid itemcode</string>
     <string name="boxnovalidate">boxNO does not exists in this PO</string>
     <string name="pono">PoNo</string>
@@ -58,22 +59,24 @@
     <string name="yes">yes</string>
     <string name="no">No</string>
     <string-array name="fromSpinner">
-            <item>1</item>
-            <item>2</item>
-            <item>3</item>
-            <item>4</item>
+            <item>1aaa</item>
+            <item>2bb</item>
+            <item>3cc</item>
+            <item>4dd</item>
         </string-array>
 
 
         <string-array name="toSpinner">
-            <item>1</item>
-            <item>2</item>
-            <item>3</item>
-            <item>4</item>
+            <item>aaa</item>
+            <item>2bbb</item>
+            <item>3ccc</item>
+            <item>4dd</item>
         </string-array>
     <string name="Arabic">ar</string>
     <string name="ZoneName">Zone Name</string>
     <string name="confirm_title">Confirm</string>
+    <string name="boxconfirm">
+This box is not available in this PO, do you want to add it? </string>
     <string name="messageExit">Are You Sure To Exit ?</string>
     <string name="messageExit2">You will lose data, Are You Sure To Exit ?</string>
     <string name="ok">OK</string>
@@ -83,7 +86,7 @@
     <string name="clearAllData">Clear All Data??</string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
-    <string name="version">v 1.1</string>
+    <string name="version">v 1.2</string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
     <string name="Login">Login</string>

@@ -18,9 +18,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_marginLeft="4dp"
-            android:text='Are you sure you want to
-            \n delete this entry?'
-            android:textSize="25sp"
+            android:text='@string/delete'
+            android:textSize="22sp"
             android:textColor="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,8 +50,8 @@
         <Button
             android:id="@+id/ok"
 
-            android:text="yes"
-            android:layout_width="match_parent"
+            android:text="@string/yes"
+            android:layout_width="wrap_content"
             android:layout_weight="2"
             android:layout_height="match_parent"
             android:background="@drawable/done_button"
@@ -67,7 +66,7 @@
             android:elevation="3dp"
             android:textColor="@color/red"
             android:textSize="14sp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_weight="2"
             android:layout_height="match_parent"
             android:layout_margin="2dp"

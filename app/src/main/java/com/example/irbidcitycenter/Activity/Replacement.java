@@ -3,6 +3,7 @@ package com.example.irbidcitycenter.Activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompatSideChannelService;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,7 +75,7 @@ public class Replacement extends AppCompatActivity {
     String From, To, Zone, Itemcode, Qty;
     ReplacementModel replacement;
     ReplacementModel replacementModel;
-    ReplacementAdapter adapter;
+    static ReplacementAdapter adapter;
     FloatingActionButton add;
     RecyclerView replacmentRecycler;
     public static final int REQUEST_Camera_Barcode = 1;
@@ -89,48 +90,64 @@ public class Replacement extends AppCompatActivity {
         setContentView(R.layout.activity_replacement);
         init();
         getStors();
-        fromSpinner.setSelection(0);
-        toSpinner.setSelection(1);
-        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code her
 
-                if(toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem()))
-                {
-                    showSweetDialog(Replacement.this, 3,getResources().getString(R.string.samestore), "");
-                    if(fromSpinner.getSelectedItemPosition()!=1) toSpinner.setSelection(1);
-                }
-            }
+        //testcode
+/*ReplacementModel replacementModel=new ReplacementModel();
+        replacementModel.setRecQty("1");
+        replacementModel.setFrom("1234");
+        replacementModel.setTo("122222222222");
+        replacementModel.setItemcode("tttttttttt");
+        replacementModel.setQty("1");
+        replacementModel.setZone("fffff");
+        for (int i=0;i<50;i++)
+      replacementlist.add(replacementModel);
+        fillAdapter();*/
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
 
-        });
-        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code her
 
-                if(toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem()))
-                {
-                    showSweetDialog(Replacement.this, 3,getResources().getString(R.string.samestore), "");
-                    if(toSpinner.getSelectedItemPosition()!=0)fromSpinner.setSelection(0);
-                    //else
-                    //   fromSP.setSelection(1);
 
-                }
-            }
+ try {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
+     fromSpinner.setSelection(0);
+     toSpinner.setSelection(1);
+     toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+         @Override
+         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+             // your code her
 
-        });
+             if (toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem())) {
+                 showSweetDialog(Replacement.this, 3, getResources().getString(R.string.samestore), "");
+                 if (fromSpinner.getSelectedItemPosition() != 1) toSpinner.setSelection(1);
+             }
+         }
 
+         @Override
+         public void onNothingSelected(AdapterView<?> parentView) {
+             // your code here
+         }
+
+     });
+     fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+         @Override
+         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+             // your code her
+
+             if (toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem())) {
+                 showSweetDialog(Replacement.this, 3, getResources().getString(R.string.samestore), "");
+                 if (toSpinner.getSelectedItemPosition() != 0) fromSpinner.setSelection(0);
+                 //else
+                 //   fromSP.setSelection(1);
+
+             }
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parentView) {
+             // your code here
+         }
+
+     });
+ }catch (Exception e){}
 
         zone.requestFocus();
         itemcode.setEnabled(false);
@@ -224,17 +241,20 @@ public class Replacement extends AppCompatActivity {
 
                 if (convertToEnglish(replacementlist.get(i).getZone()).equals(convertToEnglish(replacement.getZone()))
                         && convertToEnglish(replacementlist.get(i).getItemcode()).equals(convertToEnglish(replacement.getItemcode()))) {
-                    int sum=Integer.parseInt(replacementlist.get(i).getRecQty()) + Integer.parseInt(recqty.getText().toString().trim());
+                    int sum=Integer.parseInt(replacementlist.get(i).getRecQty()) + Integer.parseInt("1");
                     Log.e("aaasum ",sum+"");
-                    if(checkQtyValidate(String.valueOf(sum))) {
+                    if(checkQtyValidate(String.valueOf(sum)))
+                    {
                         replacementlist.get(i).setRecQty((sum+""));
                      if(adapter!=null)adapter.notifyDataSetChanged();
                         flag = true;
                     }
                     else
-                    showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                    {
+                        //showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+
                     flag = true;
-                    break;
+                    break;}
 
 
                 } else
@@ -272,11 +292,17 @@ public class Replacement extends AppCompatActivity {
     }
 
     public void exportData() {
-        for (int i = 0; i < replacementlist.size(); i++) {
-            replacementlist.get(i).setFrom(replacementlist.get(i).getFrom().substring(0, replacementlist.get(i).getFrom().indexOf(" ")));
-            replacementlist.get(i).setTo(replacementlist.get(i).getTo().substring(0, replacementlist.get(i).getTo().indexOf(" ")));
+        try {
+            for (int i = 0; i < replacementlist.size(); i++) {
+                replacementlist.get(i).setFrom(replacementlist.get(i).getFrom().substring(0, replacementlist.get(i).getFrom().indexOf(" ")));
+                replacementlist.get(i).setTo(replacementlist.get(i).getTo().substring(0, replacementlist.get(i).getTo().indexOf(" ")));
+            }
+            exportData.exportReplacementList(replacementlist);
+        }catch (Exception e){
+
+            // test
         }
-        exportData.exportReplacementList(replacementlist);
+
     }
 
     private void init() {
@@ -299,10 +325,39 @@ public class Replacement extends AppCompatActivity {
         save = findViewById(R.id.save);
         respon = findViewById(R.id.respons);
         qtyrespons = findViewById(R.id.qtyrespon);
-        recqty.setOnEditorActionListener(onEditAction);
+      //  recqty.setOnEditorActionListener(onEditAction);
         itemcode.setOnEditorActionListener(onEditAction);
-        zone.setOnEditorActionListener(onEditAction);
+   zone.setOnEditorActionListener(onEditAction);
         generalMethod = new GeneralMethod(Replacement.this);
+
+
+       zone.setOnKeyListener(onKeyListener);
+        itemcode.setOnKeyListener(onKeyListener);
+/*
+        zone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().equals(""))
+                searchZone(zone.getText().toString().trim());
+            }
+        });*/
+
+
+
+
+
+
+
         //importData.getAllZones();
         respon.addTextChangedListener(new TextWatcher() {
             @Override
@@ -390,9 +445,9 @@ public class Replacement extends AppCompatActivity {
                         saveData(1);
                         saved = true;
                         {
-                            replacementlist.clear();
-                            fillAdapter();
-                            adapter.notifyDataSetChanged();
+//                            replacementlist.clear();
+//                            fillAdapter();
+//                            adapter.notifyDataSetChanged();
                         }
                     } else if (editable.toString().trim().equals("not")) {
                         saved = true;
@@ -418,9 +473,25 @@ public class Replacement extends AppCompatActivity {
                 if (editable.toString().length() != 0) {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
-                    { recqty.setEnabled(true);
-                        Log.e("aaaaaaaaaaaa","111111");
-                    recqty.requestFocus();}
+                    {     Log.e("if","ifffffff");
+                        recqty.setEnabled(true);
+
+                        filldata();
+                        save.setEnabled(true);
+                        zone.setText("");
+                        itemcode.setText("");
+                        recqty.setText("1");
+                        zone.setEnabled(true);
+                        zone.requestFocus();
+                        itemcode.setEnabled(false);
+                        recqty.setEnabled(false);
+
+
+
+
+
+
+                    }
                     else
                     {
                         showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
@@ -516,6 +587,31 @@ public class Replacement extends AppCompatActivity {
         }
     }
 
+
+
+    EditText.OnKeyListener onKeyListener=new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            if (i != KeyEvent.KEYCODE_ENTER) {
+                { if (keyEvent.getAction() == KeyEvent.ACTION_UP)
+            switch (view.getId()) {
+                case R.id.zoneedt:
+                 //   Log.e( "zoneedt ",keyEvent.getAction()+"");
+            searchZone(zone.getText().toString().trim());
+            break;
+                case R.id.itemcodeedt:
+                    Log.e( "itemcodeedt ",keyEvent.getAction()+"");
+                    zone.setEnabled(false);
+                    importData.getQty();
+                    break;
+        }  return true;
+                }}
+                return false;
+
+    }};
+
+
+
     EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -524,6 +620,7 @@ public class Replacement extends AppCompatActivity {
                 switch (textView.getId()) {
                     case R.id.zoneedt:
                         searchZone(zone.getText().toString().trim());
+
                         break;
 
                     case R.id.itemcodeedt:
@@ -534,11 +631,12 @@ public class Replacement extends AppCompatActivity {
                     case R.id.qtyedt: {
 
 
-                       if(Integer.parseInt(recqty.getText().toString())==0)
+                  if(Integer.parseInt(recqty.getText().toString())==0)
                            recqty.setText("1");
 
                             itemcode.setEnabled(false);
-                            if (checkQtyValidate(recqty.getText().toString())) {
+                     //       if (checkQtyValidate(recqty.getText().toString()))
+                       {
                                 filldata();
 //                                Replacement.qty.setText("");
                                 save.setEnabled(true);
@@ -550,8 +648,9 @@ public class Replacement extends AppCompatActivity {
                                 itemcode.setEnabled(false);
                                 recqty.setEnabled(false);
                                 break;
-                            } else
-                                showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                            }
+                            //else
+                          //      showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
 
 
                     }
@@ -572,25 +671,35 @@ public class Replacement extends AppCompatActivity {
         // http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
         importData.getKindItem(itemNo);
     }
-
-    private void searchZone(String codeZone) {
+   /* private boolean searchZone(String codeZone) {
+        Log.e("search", " searchZone1");
+        Log.e("listAllZone", "" + listAllZone.size());
         zone.setError(null);
         for (int i = 0; i < listAllZone.size(); i++) {
             if (listAllZone.get(i).getZoneCode().equals(codeZone)) {
-                indexZone = i;
+                Log.e(" searchZone", " searchZone");
+               return true;
 
+            }
+        }
+   return false; }*/
+    private boolean searchZone(String codeZone) {
+        Log.e("search",codeZone);
+        Log.e("search"," searchZone1");
+        Log.e("listAllZone",""+listAllZone.size());
+        zone.setError(null);
+        for (int i = 0; i < listAllZone.size(); i++) {
+
+            if (listAllZone.get(i).getZoneCode().equals(codeZone)) {
                 itemcode.setEnabled(true);
                 itemcode.requestFocus();
                 zone.setEnabled(false);
-                break;
+                return true;
+
             }
         }
-        if (indexZone == -1) {
-            //zone.setEnabled(false);
-            itemcode.setEnabled(false);
-            zone.setError("Invalid Zone");
-        }
 
+return  true;
 
     }
 
@@ -620,15 +729,19 @@ public class Replacement extends AppCompatActivity {
             replacement.setItemcode(Itemcode);
             replacement.setRecQty(Qty);
             Log.e("replacement","1=="+qty.getText().toString());
-            replacement.setQty(qty.getText().toString());
+            replacement.setQty( listQtyZone.get(0).getQty());
             Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
            //updateQTYOfZone();
             if (AddInCaseDuplicates(replacement)) {
-
+                Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
             } else {
+
+                Log.e("else","AddInCaseDuplicates");
+                Log.e("replacementlist.size", replacementlist.size()+"");
                 replacementlist.add(replacement);
+                Log.e("replacementlist.size", replacementlist.size()+"");
                 fillAdapter();
             }
 
@@ -652,6 +765,7 @@ public class Replacement extends AppCompatActivity {
     }
 
     private void fillAdapter() {
+        Log.e(" fillAdapter"," fillAdapter");
         replacmentRecycler.setLayoutManager(new LinearLayoutManager(Replacement.this));
         adapter = new ReplacementAdapter(replacementlist, Replacement.this);
         replacmentRecycler.setAdapter(adapter);
@@ -719,6 +833,9 @@ public class Replacement extends AppCompatActivity {
 
 
     }
+    public static void updateAdpapter() {
+        adapter.notifyDataSetChanged();
+    }
 
   public  boolean checkQtyValidate(String recqty) {
         Log.e("checkQtyValidate","heckQtyValidate");
@@ -728,19 +845,11 @@ public class Replacement extends AppCompatActivity {
                     && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
                 if (Integer.parseInt(recqty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
                 {
-                    Log.e("checkQtyValidate itemcode",itemcode.getText().toString());
-                    Log.e("checkQtyValidate zone",zone.getText().toString());
-                    Log.e("checkQtyValidate recqty",recqty);
-                    Log.e("checkQtyValidate","heckQtyValidate");
-                    Log.e("checkQtyValidate qty or ",listQtyZone.get(i).getQty());
+
                     return true;
 
               }
                 else {
-                    Log.e("checkQtyValidate itemcode",itemcode.getText().toString());
-                    Log.e("checkQtyValidate zone",zone.getText().toString());
-                    Log.e("checkQtyValidate recqty",recqty);
-                    Log.e("checkQtyValidate","heckQtyValidate");
 
                     return false;
 

@@ -23,6 +23,7 @@ import com.example.irbidcitycenter.Activity.Replacement;
 
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.NewShipment.updateAdpapter;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.itemn;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
@@ -49,7 +50,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.to.setText(list.get(position).getTo());
         holder.zone.setText(list.get(position).getZone());
         holder.itemcode.setText(list.get(position).getItemcode());
-//        Log.e("onBindViewHolder202020",""+list.get(position).getRecQty());
+ Log.e("onBindViewHolder202020",""+list.get(position).getRecQty());
         holder.qty.setText(list.get(position).getRecQty());
         holder.qty.setTag(position);
         holder.rmovetxt.setTag(position);
@@ -106,8 +107,11 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                                 // updateQTYOfZoneinRow(newqty,zone,itemcode);
                                 Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
                             } else
-                                Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty("1");
+                            {Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty("1");
                                 showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
+                                Replacement.updateAdpapter();
+
+                            }
                         }catch (Exception e){}
 
                         //newqty = qty.getText().toString();
@@ -188,6 +192,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                     &&zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
                 if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
                 {
+                    Log.e("checkQtyValidateinRow",listQtyZone.get(i).getQty()+" "+newQty);
                       return true;
 
                 }

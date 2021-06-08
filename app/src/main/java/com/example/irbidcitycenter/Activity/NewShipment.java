@@ -13,7 +13,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.http.DelegatingSSLSession;
+import android.net.http.LoggingEventHandler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -64,7 +66,7 @@ import static com.example.irbidcitycenter.ImportData.PoNolist;
 public class NewShipment extends AppCompatActivity {
     boolean saved=false;
     ExportData exportData;
-    ImportData importData;
+    static ImportData importData;
     public static String boxnotag;
     public static int updateflage = 1;
     public Button next;
@@ -72,7 +74,7 @@ public class NewShipment extends AppCompatActivity {
     public static TextView respon;
     public static TextView boxnorespon;
     public static EditText pono;
-
+    public static int  Flag1=1;
     public static EditText boxno, itemname, PoQTY,poststate;
     public static EditText barcode;
     public TextView barcodescan;
@@ -104,7 +106,7 @@ public class NewShipment extends AppCompatActivity {
     PonoSearchAdapter ponoSearchAdapter, searchponoSearchAdapter;
     public static int position = 1;
     public static final int REQUEST_Camera_Barcode = 1;
-
+    public static String barcodeofrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +115,22 @@ public class NewShipment extends AppCompatActivity {
         my_dataBase = RoomAllData.getInstanceDataBase(NewShipment.this);
         BoxNolist.clear();
         POdetailslist.clear();
-        init();
 
+        init();
+/////////////TESTING CODE
+     /* Shipment  shipment=new Shipment();
+        shipment.setPoNo("1");
+        shipment.setQty("1");
+        shipment.setBarcode("123458997658087");
+        shipment.setBoxNo("box22");
+        shipment.setDiffer("22");
+
+        for (int i=0;i<2;i++)
+            shipmentList.add(shipment);
+        filladapter(shipmentList);*/
         //
+
+
         save.setEnabled(false);
         pono.requestFocus();
         boxno.setEnabled(false);
@@ -127,7 +142,8 @@ public class NewShipment extends AppCompatActivity {
       searchView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          showdailogponumber();
+
+        showdailogponumber();
 
             }
         });
@@ -171,10 +187,11 @@ public class NewShipment extends AppCompatActivity {
 
                 importData.BoxNolist.clear();
                 importData.POdetailslist.clear();
-                shipmentList.clear();
-                adapter.notifyDataSetChanged();
 
-                filladapter(shipmentList);
+             //   shipmentList.clear();
+              //  adapter.notifyDataSetChanged();
+
+             //   filladapter(shipmentList);
 
             }
 
@@ -255,6 +272,87 @@ public class NewShipment extends AppCompatActivity {
         });
 
     }
+    TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            Log.e("keyEvent.getAction()",keyEvent.getAction()+"");
+            if (i != KeyEvent.KEYCODE_ENTER) {
+            { if (keyEvent.getAction() == KeyEvent.ACTION_UP)
+
+            switch (view.getId()) {
+
+                case R.id.poNotxt:
+                    {
+
+                    if (!pono.getText().toString().trim().equals("")) {
+                        getboxData();
+
+                    }
+                    else
+                       pono.requestFocus();
+
+                    break;
+                }
+                case R.id.boxNotxt:
+                    {
+
+                    pono.setEnabled(false);
+                    if(!boxno.getText().toString().trim().equals("")) {
+                        if (checkboxvalidty()) {
+
+
+                            barcode.setEnabled(true);
+                            barcode.requestFocus();
+                            break;
+
+
+                        } else {
+                            barcode.setEnabled(true);
+                            barcode.requestFocus();
+                            showconfirmBoxNoDialog();
+
+
+                        }
+                    }
+                    else
+                        boxno.setError(getResources().getString(R.string.required));
+
+                    break;
+                }
+
+                case R.id.barCodetxt: {
+
+                    boxno.setEnabled(false);
+                    boxno.setEnabled(false);
+                    getPOdetails();
+                //    if(barcode.getText().toString().trim().length()!=0)
+
+             //       else
+                   //     barcode.setError(getResources().getString(R.string.required));
+                    break;
+                  /*  boxno.setEnabled(false);
+                    boxno.setEnabled(false);
+                    Log.e("barcode",barcode.getText().toString()+"\t===="+barcode.getText().toString().trim().length());
+             if(barcode.getText().toString().trim().length()!=0)
+             {
+
+
+    getPOdetails();
+                 break;
+             }
+            else
+            barcode.requestFocus();
+                    break;*/
+
+            }
+
+
+            }}
+            return true;
+            }
+                    return false;
+        }
+    };
 
     //4. actions will done when user bress next key in keyboard
     TextView.OnEditorActionListener onEditAction = new TextView.OnEditorActionListener() {
@@ -262,7 +360,8 @@ public class NewShipment extends AppCompatActivity {
 
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-            //  if (keyEvent.getAction() != KeyEvent.ACTION_UP) {
+           // Log.e("onEditorAction",""+keyEvent.getAction()+"\t"+i);
+              if (i!= KeyEvent.ACTION_UP) {
 
             if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                     || i == EditorInfo.IME_NULL) {
@@ -271,77 +370,91 @@ public class NewShipment extends AppCompatActivity {
 
                         if (!pono.getText().toString().trim().equals("")) {
                             getboxData();
-//                            boxno.setEnabled(true);
-//                            boxno.requestFocus();
-
+                            break;
                         }
-                        //else
-                          //  generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.invalidPONO));
-                        break;
+
                     case R.id.boxNotxt:
-                         pono.setEnabled(false);
-                        if (checkboxvalidty())
-                        { barcode.setEnabled(true);
-                        //barcode.requestFocus();
-                            readBarcode(3);
 
-                        }
-                        else
+                        pono.setEnabled(false);
+                        if (checkboxvalidty()) {
+
+
+
+                            barcode.setEnabled(true);
+                            barcode.requestFocus();
+
+                            break;
+
+                        } else {
+
+                            showconfirmBoxNoDialog();
                             barcode.setEnabled(false);
+                            break;
+                        }
+                    case R.id.barCodetxt: {
+                        boxno.setEnabled(false);
+                        boxno.setEnabled(false);
+                        getPOdetails();
 
                         break;
-                    case R.id.barCodetxt:
+                    }
 
-             {
-                            boxno.setEnabled(false);
+              /*   new Handler().post(new Runnable() {
+                     @Override
+                     public void run() {
+                         boxno.setEnabled(false);
 
-                            getPOdetails();
-                            qty.setEnabled(true);
+                         getPOdetails();
+                         qty.setEnabled(false);
+                         barcode.setText("");
+                         barcode.requestFocus();
 
-                 }
-                                break;
-                                //next.setEnabled(true);
 
+                     }
+                 });**/
 
 
 
                     case R.id.RecQtytxt:
-                        if(qty.getText().toString().equals("0"))qty.setText("1");
-                     if(!checkitemcodevalidty())
-                            generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
-                        else
+                        if (qty.getText().toString().equals("0")) qty.setText("1");
+                        //if(!checkitemcodevalidty())
+                        //   generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodevalidate));
+                        //  else
 
-                        {barcode.setEnabled(false);
-                            filldata();
-                            pono.setEnabled(false);
-                            searchView1.setEnabled(false);
-                            boxno.setEnabled(false);
-                            searchView2.setEnabled(false);
+                    {
+                        barcode.setEnabled(false);
+                        filldata();
+                        pono.setEnabled(false);
+                        searchView1.setEnabled(false);
+                        boxno.setEnabled(false);
+                        searchView2.setEnabled(false);
 
-                            barcodescan.requestFocus();
-                            next.setEnabled(true);
-                            save.setEnabled(true);
-                            barcode.setText("");
-                            qty.setText("1");}
-
-
-                        barcode.setEnabled(true);
-                        barcode.requestFocus();
-
-                        qty.setEnabled(false);
-
-
-                        //clear item data
-                        itemname.setText("");
-                        PoQTY.setText("");
+                        barcodescan.requestFocus();
                         next.setEnabled(true);
+                        save.setEnabled(true);
+                        barcode.setText("");
+                        qty.setText("1");
+                    }
 
-                        break;
+
+                    barcode.setEnabled(true);
+                    // barcode.requestFocus();
+
+                    qty.setEnabled(false);
+
+
+                    //clear item data
+                    itemname.setText("");
+                    PoQTY.setText("");
+                    next.setEnabled(true);
+
+                    break;
 
 
                 }
             }
 
+        }
 
             return true;
         }
@@ -399,6 +512,43 @@ public class NewShipment extends AppCompatActivity {
 
 
     }
+
+
+    private void showconfirmBoxNoDialog() {
+        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.confirm_title))
+                .setContentText(getResources().getString(R.string.boxconfirm))
+                .setConfirmButton(getResources().getString(R.string.yes),
+                        new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                        barcode.setEnabled(true);
+                        barcode.requestFocus();
+                        sweetAlertDialog.dismiss();
+
+
+                    }
+                })
+                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    boxno.setEnabled(true);
+
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .show();
+
+
+    }
+
+
+
+
+
+
     private void getPOdetails() {
 
         barCode = barcode.getText().toString().trim();
@@ -409,7 +559,7 @@ public class NewShipment extends AppCompatActivity {
         exportData.exportShipmentsList(shipmentList);
     }
 
-    private void getboxData() {
+    private static void getboxData() {
         Log.e("newshipment", "getboxData");
         poNo = pono.getText().toString().trim();
         importData.getboxno();
@@ -420,6 +570,8 @@ public class NewShipment extends AppCompatActivity {
 
 
     private void filldata() {
+        Log.e("filldata1","filldata");
+
         Qty =convertToEnglish(qty.getText().toString().trim()) ;
         boxNo = boxno.getText().toString().trim();
 
@@ -435,8 +587,16 @@ public class NewShipment extends AppCompatActivity {
                 if (barCode.toString().trim().equals("")) barcode.setError("required");
 
                 else if (Qty.toString().trim().equals("")) {
-                    qty.setError("required");
-                } else {   // CheckPOnumber();
+
+                }
+
+
+
+
+                else
+
+
+                    {   // CheckPOnumber();
 
 
                     shipment = new Shipment();
@@ -446,11 +606,8 @@ public class NewShipment extends AppCompatActivity {
                     shipment.setQty(Qty);
                     shipment.setIsPosted("0");
                     int qty=Integer.parseInt(Qty);
-                    int differ=getDiff(qty);
-                    if(differ>0)
-                    shipment.setDiffer("+"+differ );
-                    else
-                        shipment.setDiffer(differ+"" );
+
+
                     shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                     shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                     shipment.setPoqty(PoQTY.getText().toString());
@@ -458,13 +615,27 @@ public class NewShipment extends AppCompatActivity {
 
 
                     if (AddInCaseDuplicates(shipment)) {
-                         barcode.requestFocus();
+                        // barcode.requestFocus();
+                        updateRow(shipment.getBarcode(),shipment.getQty());
+                        Log.e("up","up");
 
+                       // updateRow();
 
                     } else {
+                        Log.e("filldata","1111else"+barCode);
+                      int differ=getDiff(qty);
+                        if(differ>0)
+                            shipment.setDiffer("+"+differ );
+                        else
+                            shipment.setDiffer(differ+"" );
+
+                        Log.e("shipment.getDiffer",shipment.getDiffer()+"");
                         shipmentList.add(shipment);
                         updateflage = 1;
                         filladapter(shipmentList);
+
+                      //  saveRow(shipment);
+
 //                        try {
 //                            readBarcode(3);
 //                        }catch (Exception e)
@@ -473,6 +644,7 @@ public class NewShipment extends AppCompatActivity {
 //                        }
 
                     }
+
 
                 }
             }
@@ -514,6 +686,7 @@ public class NewShipment extends AppCompatActivity {
     }*/
 
     private void filladapter(java.util.List<Shipment> shipmentList) {
+        Log.e("filldata","1111elsefilladapter"+barCode);
         recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
         adapter = new ShipmentAdapter(NewShipment.this, shipmentList);
         recyclerView.setAdapter(adapter);
@@ -596,10 +769,17 @@ public class NewShipment extends AppCompatActivity {
         save = findViewById(R.id.save);
         searchView1 = findViewById(R.id.ponoSearch);
         searchView2 = findViewById(R.id.boxnoSearch);
-        qty.setOnEditorActionListener(onEditAction);
-        pono.setOnEditorActionListener(onEditAction);
-        boxno.setOnEditorActionListener(onEditAction);
-        barcode.setOnEditorActionListener(onEditAction);
+
+
+       // qty.setOnEditorActionListener(onEditAction);
+      pono.setOnEditorActionListener(onEditAction);
+       boxno.setOnEditorActionListener(onEditAction);
+     barcode.setOnEditorActionListener(onEditAction);
+
+
+pono.setOnKeyListener(onKeyListener);
+  boxno.setOnKeyListener(onKeyListener);
+barcode.setOnKeyListener(onKeyListener);
         generalMethod = new GeneralMethod(NewShipment.this);
         requestQueue = Volley.newRequestQueue(this);
 
@@ -608,15 +788,117 @@ public class NewShipment extends AppCompatActivity {
 
 
 
+/*pono.setOnKeyListener(new View.OnKeyListener() {
+    @Override
+    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+        Log.e("keyEvent.getAction()",keyEvent.getAction()+"");
+        if (!pono.getText().toString().trim().equals("")) {
+            getboxData();
+
+
+            }
+
+        return true;
+    }
+});
+
+   /*  boxno.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                pono.setEnabled(false);
+                if (checkboxvalidty())
+                {
+                    Log.e("aaa","here");
+                    barcode.setEnabled(true);
+                    //barcode.requestFocus();
+
+                }
+                else
+                    {
+                    Log.e("else","here");
+                    //showconfirmBoxNoDialog();
+                    barcode.setEnabled(false);
+
+                }
+                return false;
+            }
+        });
+
+
+      barcode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                Log.e("onKeybarcode",barcode.getText().toString());
+                Log.e("onKeybarcode  i ",i+"");
+                boxno.setEnabled(false);
+                getPOdetails();
+                return false;
+            }
+
+
+        });
+
+*/
 
 
 
 
 
 
+      /* pono.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().equals("")){}
+                else
+                {
+                    getboxData();
+                }
+
+            }
+        });*/
 
 
 
+    /*    boxno.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().equals("")){}
+                else {
+                    pono.setEnabled(false);
+                    if (checkboxvalidty()) {
+                        barcode.setEnabled(true);
+                        barcode.requestFocus();
+                        //readBarcode(3);
+
+                    } else
+                        barcode.setEnabled(false);
+                }
+            }
+        });
+
+*/
 
 
 
@@ -636,62 +918,46 @@ public class NewShipment extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if(editable.toString().length()!=0)
                 {
-                    if(editable.toString().equals("notexists"))
-                    {
-
-
-                        generalMethod.showSweetDialog(NewShipment.this,3,"This barcode Not Exist","");
-                        qty.setEnabled(false);
-                        respon.setText("");
-                    }
-                    else {
-                        if(editable.toString().equals("invlalid"))
+              if(editable.toString().equals("invlalid"))
                         {
+                            Log.e("afterTextChanged",""+respon.getText().toString());
 
                             generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodeexists));
                             barcode.requestFocus();
                             qty.setEnabled(false);
                         }
-                        else  {
+                   if(editable.toString().equals("ItemOCode"))  {
 
                             try {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
                                 sum= Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
-
-
-                                {barcode.setEnabled(false);
+                                {barcode.setEnabled(true);
                                     filldata();
+                                    respon.setText("");
                                     pono.setEnabled(false);
                                     searchView1.setEnabled(false);
                                     boxno.setEnabled(false);
-
-
-
                                     next.setEnabled(true);
                                     save.setEnabled(true);
-                                    barcode.setText("");
                                     qty.setText("1");
+                                    barcode.setText("");
+                                    //qty.setEnabled(true);
+                                    barcode.requestFocus();
+                                    itemname.setText("");
+                                    PoQTY.setText("");
+
                                 }
-
-
-
-
-
 
                             }catch (NumberFormatException e)
                             {
                                 Log.e("afterTextChanged",""+e.getMessage()+"");
                             }
 
-
-
                         }
-
-
 
                     }
 
-                }
+
 
             }
         });
@@ -713,18 +979,23 @@ public class NewShipment extends AppCompatActivity {
                 if(editable.toString().length()!=0)
                 {
                     if(editable.toString().trim().equals("exported"))
-                    {saveData(1);
+                    {
+                        Log.e("poststate",editable.toString());
+                        saveData(1);
                             saved=true;
-                        importData.BoxNolist.clear();
-                        importData.POdetailslist.clear();
                         shipmentList.clear();
                         adapter.notifyDataSetChanged();
 
                         filladapter(shipmentList);
                     }
                     else  if(editable.toString().trim().equals("not"))
-                    {         saved=true;
+                    {         Log.e("poststate",editable.toString());
+                        saved=true;
                         saveData(0);;
+
+                        shipmentList.clear();
+                        adapter.notifyDataSetChanged();
+                        filladapter(shipmentList);
 
                     }
                 }
@@ -764,7 +1035,7 @@ public class NewShipment extends AppCompatActivity {
         });
 
 
-        barcode.addTextChangedListener(new TextWatcher() {
+       /* barcode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -800,7 +1071,7 @@ public class NewShipment extends AppCompatActivity {
                             //   barcode.setError("");
                             next.setEnabled(true);
                         }*/
-                    barcode.setEnabled(true);
+                  /*  barcode.setEnabled(true);
                     barcode.requestFocus();
 
                     qty.setEnabled(false);
@@ -815,7 +1086,7 @@ public class NewShipment extends AppCompatActivity {
 
                 }
             }
-        });
+        });*/
 
 
     }
@@ -1069,14 +1340,21 @@ public class NewShipment extends AppCompatActivity {
 
     public static void fillPoEdittext() {
         pono.setText(PoNolist.get(Integer.parseInt(ponotag)));
+        getboxData();
+        boxno.setEnabled(true);
+        boxno.requestFocus();
+
 
     }
 
     public static void fillBoxEdittext() {
         boxno.setText(BoxNolist.get(Integer.parseInt(boxnotag)));
+        barcode.setEnabled(true);
+        barcode.requestFocus();
     }
 
     public boolean AddInCaseDuplicates(Shipment shipment) {
+        Log.e("filldata1","AddInCaseDuplicates");
         boolean flag = false;
         if (shipmentList.size() != 0)
             for (int i = 0; i < shipmentList.size(); i++) {
@@ -1084,9 +1362,10 @@ public class NewShipment extends AppCompatActivity {
                 if (convertToEnglish(shipmentList.get(i).getBoxNo()).equals(convertToEnglish(shipment.getBoxNo()))
                         && convertToEnglish(shipmentList.get(i).getBarcode()).equals(convertToEnglish(shipment.getBarcode()))) {
                     shipmentList.get(i).setQty(Integer.parseInt(shipmentList.get(i).getQty()) + Integer.parseInt(Qty) + "");
-                    getDiffinDuplicate(i);
-
-                    //
+                    Log.e("filldata2 dif",shipmentList.get(i).getDiffer());
+                    Flag1=0;
+                    shipmentList.get(i).setDiffer(String.valueOf(Integer.parseInt(shipmentList.get(i).getDiffer())+Integer.parseInt("1")));
+                    Log.e("filldata1 dif",shipmentList.get(i).getDiffer());
                     updateAdpapter();
                     flag = true;
                     break;
@@ -1102,13 +1381,30 @@ public class NewShipment extends AppCompatActivity {
     }
 
     private void getDiffinDuplicate(int i) {
-        int dif=Integer.parseInt(shipmentList.get(i).getDiffer())+Integer.parseInt(Qty);
+       // int dif=Integer.parseInt(shipmentList.get(i).getDiffer())+Integer.parseInt(Qty);
+       /* if(sum>=qty)
+        { Log.e("sum",sum+"");
+            Log.e("qty",qty+"");
+            sum-= qty;
+            return   -sum;
+
+        }
+        else {
+            return Math.abs(sum);
+        }*/
+        int dif;
+        if(Integer.parseInt(shipmentList.get(i).getDiffer())>=Integer.parseInt(shipmentList.get(i).getQty()))
+         dif=-Integer.parseInt(shipmentList.get(i).getDiffer())-Integer.parseInt("1");
+        else
+            dif=Integer.parseInt(shipmentList.get(i).getDiffer())-Integer.parseInt("1");
+        Log.e("getDiffinDuplicate1",dif+"");
         shipmentList.get(i).setDiffer(dif+"");
+        updateAdpapter();
     }
 
 
     private void saveData(int isposted) {
-
+      //  Log.e("poststate",shipmentList.get(0).getBoxNo()+" ");
 
         if(isposted==1)
             for (int i = 0; i < shipmentList.size(); i++)
@@ -1117,12 +1413,25 @@ public class NewShipment extends AppCompatActivity {
         long result[] = my_dataBase.shipmentDao().insertAll(shipmentList);
 
         if (result.length != 0) {
+
             generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule), "");
         }
+        else
+            Log.e("poststate"," not saaave");
 
         //  shipmentList.clear();
 
 
+
+    }
+    private void saveRow(Shipment shipment) {
+
+      my_dataBase.shipmentDao().insert(shipment);
+
+    }
+    private void updateRow(String barcpde,String qty){
+        int g=my_dataBase.shipmentDao(). updateQTY(barcpde,qty);
+        Log.e("updateRow",g+"");
 
     }
 
@@ -1134,11 +1443,13 @@ public class NewShipment extends AppCompatActivity {
 
 
         if (!importData.BoxNolist.contains(convertToEnglish(boxno.getText().toString().trim())))
-        { generalMethod.showSweetDialog(NewShipment.this, 3, "", this.getResources().getString(R.string.boxnovalidate));
+        {
+            Log.e("checkboxvalidty",boxno.getText().toString());
         return false;
     }
        else
-               return true;
+        {    Log.e("checkboxvalidty",boxno.getText().toString());
+            return true;}
 }
 private boolean checkitemcodevalidty() {
         boolean f=false;

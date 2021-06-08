@@ -71,6 +71,7 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
                             NewShipment.ponotag = ponumber.getTag().toString();
                             NewShipment.colsedialog(2);
                             NewShipment.fillPoEdittext();
+
                             dialog.dismiss();
                         }
                     });

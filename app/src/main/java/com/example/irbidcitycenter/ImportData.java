@@ -94,7 +94,7 @@ public class ImportData {
     }
 
     public void getQty() {
-
+        listQtyZone.clear();
             new  JSONTask_getQTYOFZone().execute();
 
     }
@@ -703,7 +703,7 @@ else
 
 
                         posize = POdetailslist.size();
-
+                        NewShipment.respon.setText("ItemOCode");
 
                     }
                     else
@@ -711,11 +711,6 @@ else
                         NewShipment.respon.setText("invlalid");
                     }
                 }
-            }else {
-
-                NewShipment.respon.setText("notexists");
-
-
             }
 
         }
@@ -829,9 +824,7 @@ else
 
                         try {
                             array = new JSONArray(respon);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
 
 
                         if (array.length()>0)for (int i = 0; i < array.length(); i++) {
@@ -853,13 +846,17 @@ else
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
                         }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     else if (respon.contains("No Parameter Found")) {
                         NewShipment.boxnorespon.setText("Not");
                     }
                     }
 
-                }
+                }//nuul
 
         }
 

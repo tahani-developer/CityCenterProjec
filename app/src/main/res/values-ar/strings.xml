@@ -45,12 +45,14 @@
     <string name="Differ">الفرق</string>
     <string name="Arabic">عربي</string>
     <string name="boxnovalidate">الصندوق غير موجود بهذه الطلبية</string>
-    <string name="barcodevalidate">المادة غير موجودة بهذه الطلبية</string>
+    <string name="boxconfirm">
+هذا الصندوق غير موجود بهذه الطلبية، هل تريد أضافته </string>
     <string name="samestore">غير مسموح اختيار نفس المخزن</string>
     <string name="barcodeexists">رقم الماده غير صحيح</string>
     <string name="confirm_title">تأكيد</string>
     <string name="messageExit">هل تريد الخروج؟</string>
     <string name="ok">نعم</string>
+    <string name="required">حقل فارغ</string>
     <string name="warning">تحذير</string>
     <string name="fillYourList">الجدول فارغ!!</string>
     <string name="invaledZero">Invaled Zero</string>
@@ -64,4 +66,6 @@
     <string name="messageExit2">سوف تفقد المعلومات، هل تريد الخروج؟</string>
     <string name="errorsaving">لم يتم الحفظ</string>
     <string name="searchhere">أبحث هنا</string>
+
+    <string name="no">لا</string>
 </resources>

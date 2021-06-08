@@ -16,6 +16,9 @@ import com.example.irbidcitycenter.Models.ZoneModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.irbidcitycenter.Activity.NewShipment.barcodeofrow;
+
 @Dao
 public interface ShipmentDao {
 
@@ -24,7 +27,7 @@ public interface ShipmentDao {
     @Insert
     void insert(Shipment shipment);
     @Update
-    void update(Shipment shipment);
+    int update(Shipment shipment);
     @Delete
     void delete(Shipment shipment);
 
@@ -40,4 +43,7 @@ public interface ShipmentDao {
 
     @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateShipmentPosted();
+
+    @Query("UPDATE SHIPMENT_TABLE SET  QTY = :qty WHERE BARECODE= :barcode")
+    int updateQTY(String barcode, String qty);
 }

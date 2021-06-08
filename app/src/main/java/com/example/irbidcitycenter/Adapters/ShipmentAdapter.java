@@ -24,6 +24,7 @@ import com.example.irbidcitycenter.Models.Shipment;
 
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.NewShipment.Flag1;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.updateAdpapter;
 
@@ -101,13 +102,15 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                         try {
                             oldqty = NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
                             olddif = NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
-
                             sum += Integer.parseInt(oldqty);
                             newqty = qtytxt.getText().toString();
                             Log.e("newqty", newqty);
                             NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
-                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (sum - Integer.parseInt(newqty))));
-                            sum -= Integer.parseInt(newqty);
+
+                            Log.e("filldataadapter", NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                            NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (Integer.parseInt(NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoqty()) - Integer.parseInt(newqty))));
+                            Log.e("fillataadapter", NewShipment.shipmentList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                            //sum -= Integer.parseInt(newqty);
                             //  PoQTY.setText(sum+"");
                             updateAdpapter();
                         } catch (Exception e) {

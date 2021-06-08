@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:entries="@array/fromSpinner" />
+                 />
 
             <TextView
                 android:id="@+id/textview2"
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:entries="@array/toSpinner" />
+               />
 
 
         </LinearLayout>
@@ -390,15 +390,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_weight=".6"
-            android:layout_height="490dp">
+            android:layout_weight="9"
+            android:layout_height="match_parent">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:fillViewport="true">
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/replacmentRec"
                     android:layout_width="match_parent"
