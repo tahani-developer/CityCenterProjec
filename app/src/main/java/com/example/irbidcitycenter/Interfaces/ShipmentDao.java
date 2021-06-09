@@ -46,4 +46,8 @@ public interface ShipmentDao {
 
     @Query("UPDATE SHIPMENT_TABLE SET  QTY = :qty WHERE BARECODE= :barcode")
     int updateQTY(String barcode, String qty);
+
+
+    @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box")
+    LiveData<List<Shipment>> getShipments(String barcode,String po,String box);
 }

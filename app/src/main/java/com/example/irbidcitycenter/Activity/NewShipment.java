@@ -93,6 +93,7 @@ public class NewShipment extends AppCompatActivity {
     FloatingActionButton add;
     ImageView searchView1, searchView2;
     int parceQty;
+    int pos;
     public static ShipmentAdapter adapter;
     BoxnoSearchAdapter boxnoSearchAdapter;
     public static ArrayList<Shipment> shipmentList = new ArrayList<>();
@@ -357,52 +358,57 @@ public class NewShipment extends AppCompatActivity {
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.poNotxt:
+                    {
 
                         if (!pono.getText().toString().trim().equals("")) {
                             getboxData();
-                            break;
-                        }
 
+                        }
+                        else
+                            pono.requestFocus();
+
+                        break;
+                    }
                     case R.id.boxNotxt:
-
+                    {
+                        Log.e("",barcode.getText().toString());
                         pono.setEnabled(false);
-                        if (checkboxvalidty()) {
+                        if(!boxno.getText().toString().trim().equals("")) {
+                            if (checkboxvalidty()) {
 
 
+                                barcode.setEnabled(true);
+                                barcode.requestFocus();
+                                break;
 
-                            barcode.setEnabled(true);
-                            barcode.requestFocus();
 
-                            break;
+                            } else {
 
-                        } else {
+                                showconfirmBoxNoDialog();
 
-                            showconfirmBoxNoDialog();
-                            barcode.setEnabled(false);
-                            break;
+
+                            }
                         }
-                    case R.id.barCodetxt: {
-                        boxno.setEnabled(false);
-                        boxno.setEnabled(false);
-                        getPOdetails();
+                        else
+                            boxno.requestFocus();
+                        // boxno.setError(getResources().getString(R.string.required));
 
                         break;
                     }
 
-              /*   new Handler().post(new Runnable() {
-                     @Override
-                     public void run() {
-                         boxno.setEnabled(false);
+                    case R.id.barCodetxt: {
 
-                         getPOdetails();
-                         qty.setEnabled(false);
-                         barcode.setText("");
-                         barcode.requestFocus();
+                        if(barcode.getText().toString().trim().length()!=0)
 
+                        {     boxno.setEnabled(false);
+                            boxno.setEnabled(false);
+                            getPOdetails();}
+                        else
 
-                     }
-                 });**/
+                            barcode.requestFocus();
+                        break;
 
+                    }
 
 
                     case R.id.RecQtytxt:
@@ -559,6 +565,47 @@ public class NewShipment extends AppCompatActivity {
 
     }
 
+    private void CheckShipmentObject(){
+        //check obj is in local list
+        if(CheckIsExistsIN(shipment))
+        {shipmentList.get(pos).setQty(Integer.parseInt(shipmentList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
+        Flag1=0;
+        shipmentList.get(pos).setDiffer(String.valueOf(Integer.parseInt(shipmentList.get(pos).getDiffer())+Integer.parseInt("1")));
+        updateAdpapter();}
+        else{
+        CheckIsExistsINDB();
+        }
+    }
+
+    private void CheckIsExistsINDB() {
+       // my_dataBase.shipmentDao().getShipments();
+    }
+
+    private boolean CheckIsExistsIN(Shipment shipment) {
+
+            Log.e("CheckIsExists",shipment.getBoxNo());
+            boolean flag = false;
+            if (shipmentList.size() != 0)
+                for (int i = 0; i < shipmentList.size(); i++) {
+
+                    if (convertToEnglish(shipmentList.get(i).getBoxNo()).equals(convertToEnglish(shipment.getBoxNo()))
+                            && convertToEnglish(shipmentList.get(i).getBarcode()).equals(convertToEnglish(shipment.getBarcode()))
+                            && convertToEnglish(shipmentList.get(i).getPoNo()).equals(convertToEnglish(shipment.getPoNo())
+                    )) {
+                        pos=i;
+                        flag = true;
+                        break;
+
+                    } else {
+                        flag = false;
+                        continue;
+                    }
+                }
+
+            return flag;
+
+
+    }
 
     private void filldata() {
         Log.e("filldata1", "filldata");
@@ -623,7 +670,7 @@ public class NewShipment extends AppCompatActivity {
             shipmentList.add(shipment);
             updateflage = 1;
             filladapter(shipmentList);
-            saveRow(shipment);
+            //saveRow(shipment);
         }
 
 
