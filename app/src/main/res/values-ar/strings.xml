@@ -21,6 +21,7 @@
     <string name="server_ip">server_ip</string>
     <string name="settings_ip">settings_ip</string>
     <string name="IP_PORT">IP_PORT</string>
+    <string name="Items">عدد المواد</string>
     <string name="ZoneCode">رقم المنطقة</string>
     <string name="setting">الإعدادات</string>
     <string name="signout">تسجيل خروج</string>
@@ -66,6 +67,7 @@
     <string name="messageExit2">سوف تفقد المعلومات، هل تريد الخروج؟</string>
     <string name="errorsaving">لم يتم الحفظ</string>
     <string name="searchhere">أبحث هنا</string>
-
+    <string name="boxsnumber">عدد الصناديق</string>
+    <string name= "lastBox">معلومات أخر صندوق:  </string>
     <string name="no">لا</string>
 </resources>
