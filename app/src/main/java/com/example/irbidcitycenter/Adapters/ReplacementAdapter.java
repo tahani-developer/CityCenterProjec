@@ -206,7 +206,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
             }
         }
 
-        return false; }
+        return false;
+    }
 
     /*private void updateQTYOfZoneinRow(String newQty, String itemco,String zonecode) {
         String d="";
