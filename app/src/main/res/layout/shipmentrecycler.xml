@@ -62,7 +62,7 @@
             android:maxLines="1"
             android:padding="0dp"
             android:textColor="@color/colorPrimary"
-            android:text="differ"
+            android:text=""
             android:textSize="15sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

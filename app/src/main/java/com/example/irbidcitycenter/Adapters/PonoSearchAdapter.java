@@ -73,6 +73,7 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
                             NewShipment.fillPoEdittext();
 
                             dialog.dismiss();
+
                         }
                     });
                     dialog.show();

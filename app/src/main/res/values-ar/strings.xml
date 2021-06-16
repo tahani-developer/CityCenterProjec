@@ -70,4 +70,9 @@
     <string name="boxsnumber">عدد الصناديق</string>
     <string name= "lastBox">معلومات أخر صندوق:  </string>
     <string name="no">لا</string>
+    <string name="fillpo">املأ حقل رقم الطلبية</string>
+    <string name="nobox">لا يوجد صناديق لهذه الطلبية</string>
+    <string name="nopo">لا يوجد طلبيات مخزنة</string>
+    <string name="barcodeconfirm">
+هذه المادة غير موجودة بهذه الطلبية، هل تريد أضافتها؟ </string>
 </resources>

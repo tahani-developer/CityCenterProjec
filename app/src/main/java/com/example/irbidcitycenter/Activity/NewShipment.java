@@ -70,10 +70,12 @@ import static com.example.irbidcitycenter.ImportData.PoNolist;
 
 public class NewShipment extends AppCompatActivity {
     boolean saved=false;
+    Shipment newshipment;
     ExportData exportData;
     static ImportData importData;
     public static String boxnotag;
     public static int updateflage = 1;
+  public static  int  CheckFlag =0;
     public Button next;
     public Button save;
     public static TextView respon;
@@ -107,7 +109,7 @@ public class NewShipment extends AppCompatActivity {
     public static ArrayList<Shipment> localList = new ArrayList<>();
     public static List<Shipment> POlist = new ArrayList<>();
     public static List<String> numBOx = new ArrayList<>();
-    public ArrayList<String> searchBoxList = new ArrayList<>();
+    public static ArrayList<String> searchBoxList = new ArrayList<>();
 
     RequestQueue requestQueue;
     PO po;
@@ -159,16 +161,39 @@ public class NewShipment extends AppCompatActivity {
                 searchBoxList.clear();
                 boxno.setText("");
                 barcode.setText("");
-        showdailogponumber();
+                if(PoNolist.size()!=0)
+                { showdailogponumber();
+               }
+                else
+                Toast.makeText(NewShipment.this, getResources().getString(R.string.nopo), Toast.LENGTH_LONG).show();
 
 
             }
+
         });
     
         searchView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showdailogboxnumber();
+                //remove redundant boxs
+                searchBoxList.clear();
+             if(!pono.getText().toString().equals("")) {
+                 Set<String> set = new HashSet<String>();
+
+                 for (int i = 0; i < BoxNolist.size(); i++) {
+                     Log.e("inputif", BoxNolist.size() + "");
+                     set.add(BoxNolist.get(i));
+                 }
+                 searchBoxList.addAll(set);
+
+                 if (searchBoxList.size() != 0)
+                     showdailogboxnumber();
+                 else
+                     Toast.makeText(NewShipment.this, getResources().getString(R.string.nobox), Toast.LENGTH_LONG).show();
+
+             }
+             else
+                 Toast.makeText(NewShipment.this, getResources().getString(R.string.fillpo), Toast.LENGTH_LONG).show();
             }});
 
 
@@ -304,7 +329,7 @@ public class NewShipment extends AppCompatActivity {
                    try {
 
                        poshipmentsList.clear();
-                       fillPOinfo(pono.getText().toString().trim());
+                     //  fillPOinfo(pono.getText().toString().trim());
 
                        Shipment shipment ;
                        shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
@@ -394,7 +419,7 @@ public class NewShipment extends AppCompatActivity {
                             try {
 
                                 poshipmentsList.clear();
-                                fillPOinfo(pono.getText().toString().trim());
+                                //fillPOinfo(pono.getText().toString().trim());
 
                                 Shipment shipment ;
                                 shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
@@ -622,13 +647,16 @@ public class NewShipment extends AppCompatActivity {
             localList.get(pos).setQty(Integer.parseInt(localList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
             localList.get(pos).setDiffer(String.valueOf(Integer.parseInt(localList.get(pos).getDiffer())+Integer.parseInt("1")));
         updateAdpapter();
+        barcode.setText("");
             updateRow(localList.get(pos).getBarcode(),localList.get(pos).getPoNo(),localList.get(pos).getBoxNo(), localList.get(pos).getQty(),localList.get(pos).getDiffer());
+
         }
         else {
 
             ArrayList<Shipment> List = new ArrayList<>();
         if(CheckIsExistsINDB(shipment))
         {
+
             //show item in rec
             list.get(0).setQty(String.valueOf(Integer.parseInt(list.get(0).getQty()) + Integer.parseInt("1")));
             list.get(0).setDiffer( String.valueOf(Integer.parseInt( list.get(0).getDiffer())+Integer.parseInt("1")));
@@ -636,30 +664,80 @@ public class NewShipment extends AppCompatActivity {
             filladapter(localList);
             //localList.add();
             localList.get(pos).setQty(Integer.parseInt(localList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
+
+            Log.e("",localList.get(pos).getQty()+"");
             localList.get(pos).setDiffer(String.valueOf(Integer.parseInt(localList.get(pos).getDiffer())+Integer.parseInt("1")));
 
             updateRow(shipment.getBarcode(), shipment.getPoNo(), shipment.getBoxNo(), shipment.getQty(),shipment.getDiffer());
             Log.e("if","true");
-
+            barcode.setText("");
         }
-        else{
+        else {
             Log.e("if","false");
              localList.clear();
 
             saveRow(shipment);
             localList.add(shipment);
             filladapter(localList);
+
         }
         }
 
     }
 
+    private boolean CheckNewShipmentObject(Shipment shipment){
+        Log.e("CheckNew,CheckIsExistsINLocalList","CheckNewShipmentObject");
+        //check obj is in local list
+        if(CheckIsExistsINLocalList(shipment.getBarcode(),shipment.getBoxNo(),shipment.getPoNo()))
+        {
+
+            localList.get(pos).setQty(Integer.parseInt(localList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
+            updateAdpapter();
+            updateRow(localList.get(pos).getBarcode(),localList.get(pos).getPoNo(),localList.get(pos).getBoxNo(), localList.get(pos).getQty(),"");
+
+            barcode.setText("");
+            return true;
+        }
+        else {
+
+            ArrayList<Shipment> List = new ArrayList<>();
+            if(CheckIsExistsINDB(shipment))
+            {
+                localList.add(list.get(0));
+                filladapter(localList);
+                list.get(0).setQty(String.valueOf(Integer.parseInt(list.get(0).getQty()) + Integer.parseInt("1")));
+                Log.e("CheckIsExistsINDB","true");
+                barcode.setText("");
+                barcode.requestFocus();
+                //show item in rec
+               /* list.get(0).setQty(String.valueOf(Integer.parseInt(list.get(0).getQty()) + Integer.parseInt("1")));
+                list.get(0).setDiffer("");
+                localList.add(list.get(0));
+                filladapter(localList);
+                //localList.add();
+                localList.get(pos).setQty(Integer.parseInt(localList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
+
+                Log.e("",localList.get(pos).getQty()+"");
+                localList.get(pos).setDiffer(String.valueOf(Integer.parseInt(localList.get(pos).getDiffer())+Integer.parseInt("1")));
+
+                updateRow(shipment.getBarcode(), shipment.getPoNo(), shipment.getBoxNo(), shipment.getQty(),shipment.getDiffer());
+               */ Log.e("if","true");
+                return true;
+            }
+
+        }
+        return false;
+    }
     private  boolean CheckIsExistsINDB(Shipment shipment) {
         Log.e("CheckIsExistsINDB","CheckIsExistsINDB");
 
        list =my_dataBase.shipmentDao().getShipments(shipment.getBarcode(),shipment.getPoNo(),shipment.getBoxNo());
    if(list.size()>0)
+   { localList.clear();
        return true;
+
+   }
+
    else
        return false;
 
@@ -866,7 +944,7 @@ public class NewShipment extends AppCompatActivity {
            POlist =my_dataBase.shipmentDao().getPOShipments(s);
            currentpo.setText(POlist.get(0).getPoNo());
 
-           filladapter( POlist);
+     //      filladapter( POlist);
 
            ///
            for(int i=0;i<POlist.size();i++) {
@@ -896,7 +974,7 @@ public class NewShipment extends AppCompatActivity {
 
     private void init() {
 
-
+        localList.clear();
         exportData = new ExportData(NewShipment.this);
         importData = new ImportData(NewShipment.this);
         poststate=findViewById(R.id.poststate);
@@ -954,9 +1032,18 @@ barcode.setOnKeyListener(onKeyListener);
                         {
                             Log.e("respon:afterTextChanged",""+respon.getText().toString());
 
-                            generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodeexists));
+                            /*generalMethod.showSweetDialog(NewShipment.this, 3, "", NewShipment.this.getResources().getString(R.string.barcodeexists));
                             barcode.setText("");
-                            barcode.requestFocus();
+                            barcode.requestFocus();*/
+
+                            Qty = "1";
+                            newshipment = new Shipment();
+                            newshipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
+                            newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
+                            newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
+                              if(CheckNewShipmentObject(newshipment)==false)
+                              showConfirmBarcodeDailog();
+                            barcode.setText("");
 
                         }
                    if(editable.toString().equals("ItemOCode"))  {
@@ -974,8 +1061,6 @@ barcode.setOnKeyListener(onKeyListener);
                                     shipment.setQty( Qty );
                                     shipment.setIsPosted("0");
                                     int qty = Integer.parseInt(Qty);
-
-
                                     shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                                     shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                                     shipment.setPoqty(PoQTY.getText().toString());
@@ -985,11 +1070,8 @@ barcode.setOnKeyListener(onKeyListener);
                                         shipment.setDiffer("+" + differ);
                                     else
                                         shipment.setDiffer(differ + "");
+                                    barcode.setText("");
                                     CheckShipmentObject(shipment);
-
-
-
-                             //filldata();
                                     respon.setText("");
                                     pono.setEnabled(false);
                                     searchView1.setEnabled(false);
@@ -997,7 +1079,7 @@ barcode.setOnKeyListener(onKeyListener);
                                     next.setEnabled(true);
                                     save.setEnabled(true);
                                     //qty.setText("1");
-                                    barcode.setText("");
+
                                     //qty.setEnabled(true);
                                     barcode.requestFocus();
                                     itemname.setText("");
@@ -1078,16 +1160,73 @@ barcode.setOnKeyListener(onKeyListener);
                         NewShipment.pono.setError("Invalid");
                         NewShipment.pono.setText("");
 
+
                     }else {
                         if (boxnorespon.getText().equals("BOXNO")) {
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
+
                         }
                     }
 
                 }
             }
         });
+pono.addTextChangedListener(new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+       if(editable.length()!=0)
+        fillPOinfo(pono.getText().toString().trim());
+    }
+});
+    }
+
+    private void showConfirmBarcodeDailog() {
+        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.confirm_title))
+                .setContentText(getResources().getString(R.string.barcodeconfirm))
+                .setConfirmButton(getResources().getString(R.string.yes),
+                        new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                newshipment.setQty("1");
+                                newshipment.setPoqty("1");
+                                newshipment.setDiffer("");
+                                newshipment.setIsPosted("0");
+                                newshipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
+                                newshipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
+                                CheckFlag=1;
+                                localList.clear();
+
+                                Log.e("newshipmentobj",newshipment.toString());
+                                localList.add(newshipment);
+                                filladapter(localList);
+                                saveRow(newshipment);
+                                sweetAlertDialog.dismiss();
+
+                            }
+                        })
+                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                         barcode.setText("");
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .show();
+
 
     }
 
@@ -1205,6 +1344,7 @@ barcode.setOnKeyListener(onKeyListener);
         recyclerView1 = dialog2.findViewById(R.id.listview1);
         editText = dialog2.findViewById(R.id.search_edt);
 
+
         recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
         ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, PoNolist );
         recyclerView1.setAdapter(ponoSearchAdapter);
@@ -1262,9 +1402,9 @@ barcode.setOnKeyListener(onKeyListener);
 
     void showdailogboxnumber() {
 
-        for(int i=0;i<BoxNolist .size();i++)
-            searchBoxList.add(  BoxNolist.get(i));
 
+
+        Log.e("setlist",searchBoxList.size()+"");
         dialog1 = new Dialog(NewShipment.this);
         dialog1.setCancelable(false);
         dialog1.setContentView(R.layout.box_dialog_listview);
@@ -1326,6 +1466,7 @@ barcode.setOnKeyListener(onKeyListener);
 
                     boxsearchadapter2 = new BoxnoSearchAdapter(NewShipment.this, searcharrayAdapter);
                     recyclerView1.setAdapter( boxsearchadapter2);
+
                 }
             }
         });
@@ -1343,6 +1484,7 @@ barcode.setOnKeyListener(onKeyListener);
 
     public static void fillPoEdittext() {
         pono.setText(PoNolist.get(Integer.parseInt(ponotag)));
+
         getboxData();
         boxno.setEnabled(true);
         boxno.requestFocus();
@@ -1351,7 +1493,7 @@ barcode.setOnKeyListener(onKeyListener);
     }
 
     public static void fillBoxEdittext() {
-        boxno.setText(BoxNolist.get(Integer.parseInt(boxnotag)));
+        boxno.setText(searchBoxList.get(Integer.parseInt(boxnotag)));
         barcode.setEnabled(true);
         barcode.requestFocus();
     }
@@ -1458,5 +1600,15 @@ private boolean checkitemcodevalidty() {
 
 
    return  f; }
+
+
+
+ public boolean isnew(){
+
+        return true;
+    }
+
+
+
 
 }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.NewShipment.CheckFlag;
 import static com.example.irbidcitycenter.Activity.NewShipment.Flag1;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.localList;
@@ -55,14 +57,13 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
         holder.ponotxt.setText(list.get(position).getPoNo());
         holder.barcodetxt.setText(list.get(position).getBarcode());
         holder.boxnotxt.setText(list.get(position).getBoxNo());
-        Log.e("getqty",list.get(position).getQty());
         holder.qtytxt.setText(list.get(position).getQty());
-
-       holder.diff.setText(list.get(position).getDiffer());
+            holder.diff.setText(list.get(position).getDiffer());
         holder.rmovetxt.setTag(position);
         holder.qtytxt.setTag(position);
         newqty = list.get(position).getQty();
         oldqty = list.get(position).getQty();
+
     }
 
     public void removeItem(int position) {
@@ -107,23 +108,33 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                 public void afterTextChanged(Editable editable) {
                     if (editable.toString().length() != 0) {
                         try {
-                            oldqty = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
-                            olddif = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
-                            sum += Integer.parseInt(oldqty);
-                            newqty =convertToEnglish( qtytxt.getText().toString());
-                            Log.e("newqty", newqty);
-                            localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
+                            newqty = convertToEnglish(qtytxt.getText().toString());
+                            if(CheckFlag==0) {
+                                oldqty = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
+                                olddif = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
+                                sum += Integer.parseInt(oldqty);
 
-                            Log.e("filldataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
-                            localList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (Integer.parseInt(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoqty()) - Integer.parseInt(newqty))));
-                            Log.e("fillataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
-                            my_dataBase.shipmentDao(). updateQTY(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoNo(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBoxNo(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                                Log.e("newqty", newqty);
+                                localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
 
-                            updateAdpapter();
+                                Log.e("filldataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                                localList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (Integer.parseInt(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoqty()) - Integer.parseInt(newqty))));
+                                Log.e("fillataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                                my_dataBase.shipmentDao().updateQTY(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoNo(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBoxNo(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+
+                                updateAdpapter();
+
+                            }
+
+
+                        else {
+                                localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty( newqty);
+                            }
+
                         } catch (Exception e) {
                         }
                     }
