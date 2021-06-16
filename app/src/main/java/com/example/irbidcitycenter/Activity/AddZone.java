@@ -125,8 +125,11 @@ public class AddZone extends AppCompatActivity {
 
 
                             else {
-                                   editZoneCode.setText("");
-                                editZoneCode.setError("Invalid Zone");
+//                                   editZoneCode.setText("");
+//                                editZoneCode.setError("Invalid Zone");
+                                   editItemCode.setText("");
+                                   editItemCode.setError("Invalid Item");
+                                   editItemCode.requestFocus();
 
                             }
 
@@ -230,6 +233,7 @@ public class AddZone extends AppCompatActivity {
                        Log.e("here","here");
                         generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
                         itemKintText.setText("");
+                        editItemCode.setText("");
                     }
                     else {
                         validateKind=false;
@@ -283,6 +287,7 @@ public class AddZone extends AppCompatActivity {
             {
                 itemKintText.setText("");
                 addRow();
+                validItem=false;
             }
 //            editQty.requestFocus();
         }
@@ -362,6 +367,7 @@ public class AddZone extends AppCompatActivity {
     }
 
     private void searchZone(String codeZone) {
+        indexZone=-1;
         editZoneCode.setError(null);
         for(int i=0;i<listAllZone.size();i++)
         {
@@ -415,11 +421,13 @@ public class AddZone extends AppCompatActivity {
                         else {
                             listZone.add(itemZone);
                         }
+                        editItemCode.setText("");
                         editItemCode.setEnabled(true);
                         editItemCode.requestFocus();
 
                         fillAdapter(listZone);
                         clearData();
+
 
                     }
 
@@ -471,6 +479,7 @@ public class AddZone extends AppCompatActivity {
 //        editZoneCode.setText("");
         editItemCode.requestFocus();
         itemName.setText("");
+
     }
     public  static  void clearAllScreenZon(){
 
@@ -480,6 +489,7 @@ public class AddZone extends AppCompatActivity {
         editZoneCode.setEnabled(true);
         editZoneCode.requestFocus();
         zoneName.setText("");
+
     }
 
     public void ScanCode(View view) {
@@ -582,6 +592,7 @@ public class AddZone extends AppCompatActivity {
         fillAdapter(listZone);
 
 
+
     }
    public void exportData(){
        exportData.exportZoneList(listZone,1);
@@ -647,11 +658,17 @@ public class AddZone extends AppCompatActivity {
                 .show();
     }
 
-    @Override
-    public void onBackPressed() {
-        showExitDialog();
-    }
-
+//    @Override
+//    public void onBackPressed() {
+////        showExitDialog();
+////        finish();
+//        super.onBackPressed();
+//    }
+@Override
+public void onBackPressed() {
+    super.onBackPressed();
+    System.exit(0);
+}
     public void showZoneDialog(View view) {
         if(view.getId()==R.id.zoneSearch)
         {
@@ -757,6 +774,7 @@ public class AddZone extends AppCompatActivity {
                            clearAllScreenZon();
                            fillAdapter(listZone);
                            fillData(i);
+
 
                        }
                    }).setCancelButton(getResources().getString(R.string.cancel), new SweetAlertDialog.OnSweetClickListener() {
