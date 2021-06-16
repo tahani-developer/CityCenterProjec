@@ -343,11 +343,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="4.5"
+            android:layout_weight="7"
             android:elevation="2dp"
             android:gravity="center"
             android:orientation="vertical">
-
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -439,15 +438,239 @@
                 </androidx.core.widget.NestedScrollView>
             </LinearLayout>
 
+
+
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_weight="7"
             android:gravity="center">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="@drawable/border"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="1dp"
+                    android:gravity="center"
+                    android:padding="1dp"
+                    android:text="@string/pono"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp"
+                    />
+                <EditText
+                    android:id="@+id/currentpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:enabled="false"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/boxsnumber"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/currentbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:enabled="false"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/Items"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/itemcount"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:visibility="invisible"
+                    android:textSize="14sp" />
+            </TableRow>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:gravity="center"
+                    android:text="@string/lastBox"
+                    >
+
+                </TextView>
+            </LinearLayout>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="@drawable/border"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/boxnum"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/LASTbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:enabled="false"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="1dp"
+                    android:gravity="center"
+                    android:padding="1dp"
+                    android:text="@string/pono"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp"
+                    />
+                <EditText
+                    android:id="@+id/LASTpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:enabled="false"
+                    android:padding="3dp"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/Items"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/itemcount2"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/back_border_edit"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:visibility="invisible"
+                    android:textSize="14sp" />
+            </TableRow>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+              android:visibility="invisible"
+                    android:textSize="14sp" />
             <Button
                 android:id="@+id/cancel"
 
@@ -467,6 +690,15 @@
                 android:textStyle="bold"
 
                 />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:visibility="invisible"
+                    android:textSize="14sp" />
 
             <Button
                 android:id="@+id/save"
@@ -484,8 +716,17 @@
                 android:textColor="@color/dark_blue_3"
                 android:textSize="16sp"
                 android:textStyle="bold"
-
                 />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:visibility="invisible"
+                    android:textSize="14sp" />
+        </LinearLayout>
         </LinearLayout>
         </LinearLayout>
 </RelativeLayout>

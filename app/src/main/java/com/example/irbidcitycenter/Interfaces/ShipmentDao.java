@@ -36,7 +36,7 @@ public interface ShipmentDao {
     void deleteALL();
 
     @Query ("select * from SHIPMENT_TABLE")
-    LiveData<List<Shipment>> getallShipment();
+   List<Shipment>getallShipment();
 
     @Query("SELECT * FROM SHIPMENT_TABLE where ISPOSTED = :s")
    List<Shipment> getUnpostedShipment(String s);
@@ -44,6 +44,29 @@ public interface ShipmentDao {
     @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateShipmentPosted();
 
-    @Query("UPDATE SHIPMENT_TABLE SET  QTY = :qty WHERE BARECODE= :barcode")
-    int updateQTY(String barcode, String qty);
+    @Query("UPDATE SHIPMENT_TABLE SET  QTY = :qty ,Differ= :dif WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'" )
+    int updateQTY(String barcode,String po,String box, String qty,String dif);
+
+
+    @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
+   List<Shipment> getShipments(String barcode,String po,String box);
+
+
+    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0' AND PONO= :po")
+ Shipment getlastShipment(String po);
+
+    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0'")
+    Shipment getlastbox();
+
+    @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
+    List<Shipment> getPOShipments(String po);
+
+    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
+   int getsumofqty(String po);
+    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po AND ISPOSTED='0'")
+    int getsumofboxitemsqty(String po,String box);
+
+    @Query("Delete from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
+    void deleteshipment(String barcode,String po,String box);
+
 }

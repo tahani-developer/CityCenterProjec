@@ -32,6 +32,7 @@ import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.Shipment;
+import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 import com.example.irbidcitycenter.ScanActivity;
@@ -82,7 +83,7 @@ public class Replacement extends AppCompatActivity {
 
     List<String> spinnerArray = new ArrayList<>();
     public static ArrayList<ReplacementModel> replacementlist = new ArrayList<>();
-
+    public static ArrayList<Store> Storelistt = new ArrayList<>();
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,12 @@ public class Replacement extends AppCompatActivity {
         init();
         getStors();
 
+
+        if(Storelistt.size()==0) {
+            itemcode.setEnabled(false);
+            zone.setEnabled(false);
+
+        }
         //testcode
 /*ReplacementModel replacementModel=new ReplacementModel();
         replacementModel.setRecQty("1");
@@ -449,6 +456,9 @@ public class Replacement extends AppCompatActivity {
                     } else if (editable.toString().trim().equals("not")) {
                         saved = true;
                         saveData(0);
+                        replacementlist.clear();
+                        fillAdapter();
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -473,7 +483,12 @@ public class Replacement extends AppCompatActivity {
                     {     Log.e("if","ifffffff");
                         recqty.setEnabled(true);
 
-                        filldata();
+                        try {
+                            filldata();
+                        }
+                        catch (Exception e){
+                            Log.e("Exception",e.getMessage());
+                        }
                         save.setEnabled(true);
                         zone.setText("");
                         itemcode.setText("");
@@ -494,6 +509,7 @@ public class Replacement extends AppCompatActivity {
                         showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
                         recqty.setEnabled(false);
                         Log.e("bbbbb","2222");
+                        itemcode.setText("");
                         itemcode.requestFocus();
 
                     }
@@ -593,13 +609,26 @@ public class Replacement extends AppCompatActivity {
                 { if (keyEvent.getAction() == KeyEvent.ACTION_UP)
             switch (view.getId()) {
                 case R.id.zoneedt:
-                 //   Log.e( "zoneedt ",keyEvent.getAction()+"");
-            searchZone(zone.getText().toString().trim());
+                    if(!zone.getText().toString().equals(""))
+                        if(searchZone(zone.getText().toString().trim()))
+                        {
+                            Log.e("zone",zone.getText().toString());
+                        }
+                        else {
+                            zone.setError("Invalid");
+                            Log.e("elsezone",zone.getText().toString());
+                            zone.setText("");}
+                    else
+                        zone.requestFocus();
             break;
                 case R.id.itemcodeedt:
-                    Log.e( "itemcodeedt ",keyEvent.getAction()+"");
+
+                  if(!itemcode.getText().toString().equals(""))
+                  {     Log.e( "itemcodeedt ",keyEvent.getAction()+"");
                     zone.setEnabled(false);
-                    importData.getQty();
+                    importData.getQty();}
+                  else
+                      itemcode.requestFocus();
                     break;
         }  return true;
                 }}
@@ -616,13 +645,28 @@ public class Replacement extends AppCompatActivity {
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.zoneedt:
-                        searchZone(zone.getText().toString().trim());
+                        if(!zone.getText().toString().equals(""))
+                           if(searchZone(zone.getText().toString().trim()))
+                           {
+
+                           }
+                        else {
+                            zone.setError("Invalid");
+                            Log.e("","");
+                               zone.setText("");}
+                        else
+                            zone.requestFocus();
 
                         break;
 
                     case R.id.itemcodeedt:
-                        zone.setEnabled(false);
-                        importData.getQty();
+
+                        if(!itemcode.getText().toString().equals(""))
+                        {     Log.e( "itemcodeedt ",keyEvent.getAction()+"");
+                            zone.setEnabled(false);
+                            importData.getQty();}
+                        else
+                            itemcode.requestFocus();
                         break;
 
                     case R.id.qtyedt: {
@@ -696,7 +740,7 @@ public class Replacement extends AppCompatActivity {
             }
         }
 
-return  true;
+return  false;
 
     }
 

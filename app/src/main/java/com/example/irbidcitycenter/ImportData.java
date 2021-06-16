@@ -107,6 +107,7 @@ public class ImportData {
 
     public void getboxno() {
         Log.e("ingetboxno","ingetboxno");
+        BoxNolist.clear();
         if(!ipAddress.equals(""))
         new JSONTask_getAllPOboxNO().execute();
         else
@@ -696,6 +697,7 @@ else
 
                         NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
                         itemname.setText(POdetailslist.get(0).getItemname());
+                        Log.e("itemname",itemname.getText().toString());
                         PoQTY.setText(POdetailslist.get(0).getPoqty());
                         poqty = POdetailslist.get(0).getPoqty();
                         //
@@ -736,7 +738,7 @@ else
 
                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetBOXNO?CONO=" + CONO.trim() + "&PONO=" + convertToEnglish(poNo.trim());
 
-                    Log.e("link", "" + link);
+                    Log.e("boxlink", "" + link);
                 }
             } catch (Exception e) {
                 Log.e("Exception",""+e.getMessage());

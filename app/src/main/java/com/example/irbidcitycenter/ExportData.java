@@ -290,7 +290,7 @@ public class ExportData {
 //        my_dataBase.replacementDao().updateReplacmentPosted();
     }
 
-    public void exportShipmentsList(ArrayList<Shipment> listShipment) {
+    public void exportShipmentsList(List<Shipment> listShipment) {
         Log.e("exportShipmentsList","exportShipmentsList");
         getShipmentObject(listShipment);
         pdshipmant = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
@@ -303,7 +303,7 @@ public class ExportData {
     }
 
 
-    private void getShipmentObject(ArrayList<Shipment> listShipment) {
+    private void getShipmentObject(List<Shipment> listShipment) {
         Log.e("getShipmentObject","getShipmentObject");
         jsonArrayShipment = new JSONArray();
         for (int i = 0; i < listShipment.size(); i++)
@@ -326,10 +326,10 @@ public class ExportData {
         private String JsonResponse = null;
         private HttpURLConnection urlConnection = null;
         private BufferedReader reader = null;
-        ArrayList<Shipment> shipmentList=new ArrayList<>();
+           List<Shipment> shipmentList=new ArrayList<>();
 
 
-        public JSONTask_AddShipments(ArrayList<Shipment> shipmentList) {
+        public JSONTask_AddShipments(List<Shipment> shipmentList) {
             this.shipmentList = shipmentList;
         }
 
