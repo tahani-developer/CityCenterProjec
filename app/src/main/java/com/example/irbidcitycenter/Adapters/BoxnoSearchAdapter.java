@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,9 @@ import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.R;
 
 import java.util.ArrayList;
+
+import static com.example.irbidcitycenter.Activity.NewShipment.dialog1;
+import static com.example.irbidcitycenter.Activity.NewShipment.dialog2;
 
 public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter.SearchViewHolder >{
     private ArrayList<String> list;
@@ -63,7 +67,14 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
                     final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.confirm_pono_insearch);
-
+                    Button cancel=dialog.findViewById(R.id.cancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                            dialog1.dismiss();
+                        }
+                    });
 
                    dialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
                        @Override

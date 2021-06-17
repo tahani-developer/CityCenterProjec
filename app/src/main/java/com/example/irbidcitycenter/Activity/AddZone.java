@@ -166,6 +166,72 @@ public class AddZone extends AppCompatActivity {
 //                }
 //           return false; }
 //        });
+    editItemCode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i != KeyEvent.KEYCODE_ENTER) {
+                    {
+                        if (keyEvent.getAction() == KeyEvent.ACTION_UP)
+
+                        {
+                            if(!editItemCode.getText().toString().equals(""))
+
+
+                            {
+                                Log.e("editItemCode",editItemCode.getText().toString());
+
+                               if(indexZone!=-1)
+                            {
+                                Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
+                                if(itemKintText.getText().toString().equals("")&&validateKind==false)
+                                {
+                                    validateItemKind(editItemCode.getText().toString().trim());
+                                }
+                            }
+
+
+
+                            else {
+//                                   editZoneCode.setText("");
+//                                editZoneCode.setError("Invalid Zone");
+                                   editItemCode.setText("");
+                                   editItemCode.setError("Invalid Item");
+                                   editItemCode.requestFocus();
+
+                            }
+
+                    }
+                else
+                            { editItemCode.requestFocus();
+                                Log.e("elseeditZoneCode",editZoneCode.getText().toString());
+                            }
+
+                        return false;
+            } }}
+            return true;}
+        });
+
+        editZoneCode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i != KeyEvent.KEYCODE_ENTER) {
+                    {
+                        if (keyEvent.getAction() == KeyEvent.ACTION_UP){
+
+                            if(editZoneCode.getText().length()!=0) {
+                                searchZone(editZoneCode.getText().toString().trim());
+                                Log.e("editZoneCode",editZoneCode.getText().toString());
+                            }
+                            else
+                            { editZoneCode.requestFocus();
+                            Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
+                    }
+                    }
+
+                    return true;
+                }
+           return false; }
+        });
 
 //        editItemCode.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -234,6 +300,7 @@ public class AddZone extends AppCompatActivity {
                        Log.e("here","here");
                         generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
                         itemKintText.setText("");
+                        editItemCode.setText("");
                     }
                     else {
                         validateKind=false;
@@ -360,6 +427,7 @@ public class AddZone extends AppCompatActivity {
             {
                 itemKintText.setText("");
                 addRow();
+                validItem=false;
             }
 //            editQty.requestFocus();
         }
@@ -439,6 +507,7 @@ public class AddZone extends AppCompatActivity {
     }
 
     private void searchZone(String codeZone) {
+        indexZone=-1;
         editZoneCode.setError(null);
         for(int i=0;i<listAllZone.size();i++)
         {
@@ -492,11 +561,13 @@ public class AddZone extends AppCompatActivity {
                         else {
                             listZone.add(itemZone);
                         }
+                        editItemCode.setText("");
                         editItemCode.setEnabled(true);
                         editItemCode.requestFocus();
 
                         fillAdapter(listZone);
                         clearData();
+
 
                     }
 
@@ -548,6 +619,7 @@ public class AddZone extends AppCompatActivity {
 //        editZoneCode.setText("");
         editItemCode.requestFocus();
         itemName.setText("");
+
     }
     public  static  void clearAllScreenZon(){
 
@@ -557,6 +629,7 @@ public class AddZone extends AppCompatActivity {
         editZoneCode.setEnabled(true);
         editZoneCode.requestFocus();
         zoneName.setText("");
+
     }
 
     public void ScanCode(View view) {
@@ -659,6 +732,7 @@ public class AddZone extends AppCompatActivity {
         fillAdapter(listZone);
 
 
+
     }
    public void exportData(){
        exportData.exportZoneList(listZone,1);
@@ -724,11 +798,17 @@ public class AddZone extends AppCompatActivity {
                 .show();
     }
 
-    @Override
-    public void onBackPressed() {
-        showExitDialog();
-    }
-
+//    @Override
+//    public void onBackPressed() {
+////        showExitDialog();
+////        finish();
+//        super.onBackPressed();
+//    }
+@Override
+public void onBackPressed() {
+    super.onBackPressed();
+    System.exit(0);
+}
     public void showZoneDialog(View view) {
         if(view.getId()==R.id.zoneSearch)
         {
@@ -834,6 +914,7 @@ public class AddZone extends AppCompatActivity {
                            clearAllScreenZon();
                            fillAdapter(listZone);
                            fillData(i);
+
 
                        }
                    }).setCancelButton(getResources().getString(R.string.cancel), new SweetAlertDialog.OnSweetClickListener() {

@@ -300,6 +300,9 @@ else
 
 
             }
+            else {
+                itemKintText.setText("ErrorNet");
+            }
         }
     }
 

@@ -182,6 +182,7 @@ public class NewShipment extends AppCompatActivity {
 
                  for (int i = 0; i < BoxNolist.size(); i++) {
                      Log.e("inputif", BoxNolist.size() + "");
+                     if(!BoxNolist.get(i).equals(""))
                      set.add(BoxNolist.get(i));
                  }
                  searchBoxList.addAll(set);
