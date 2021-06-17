@@ -55,6 +55,8 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
+import static com.example.irbidcitycenter.Activity.NewShipment.barCode;
+import static com.example.irbidcitycenter.Activity.NewShipment.barcode;
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
@@ -375,6 +377,8 @@ public class AddZone extends AppCompatActivity {
         else {
             editQty.setEnabled(false);
             generalMethod.showSweetDialog(AddZone.this,0,"Item Kind Not Match To Zone Type","");
+            editItemCode.setText("");
+
         }
         itemKintText.setText("");
     }
@@ -397,6 +401,7 @@ public class AddZone extends AppCompatActivity {
                             { editZoneCode.requestFocus();
                                 Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
 
+
                             break;
                         case R.id.editItemCode:
                             if(!editItemCode.getText().toString().equals(""))
@@ -416,8 +421,14 @@ public class AddZone extends AppCompatActivity {
 
 
 
-                                else {editZoneCode.setError("Invalid Zone");
-                                    editZoneCode.setText("");}
+                                else {
+//                                   editZoneCode.setText("");
+//                                editZoneCode.setError("Invalid Zone");
+                                    editItemCode.setText("");
+                                    editItemCode.setError("Invalid Item");
+                                    editItemCode.requestFocus();
+
+                                }
 
                             }
                             else
@@ -747,8 +758,9 @@ public class AddZone extends AppCompatActivity {
 //    }
 @Override
 public void onBackPressed() {
-    super.onBackPressed();
-    System.exit(0);
+    showExitDialog();
+//    super.onBackPressed();
+//    System.exit(0);
 }
     public void showZoneDialog(View view) {
         if(view.getId()==R.id.zoneSearch)
