@@ -72,6 +72,7 @@
             android:background="@drawable/cancel_button"
             android:padding="8dp"
             android:text="Cancel"
+            android:visibility="gone"
             android:textColor="@color/red" />
     </LinearLayout>
 

@@ -86,4 +86,5 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="nopo">No Po exists</string>
     <string name="fillpo">fill po field</string>
     <string name="nobox">No Boxs for this Po</string>
+    <string name="alertPoSearch">Are you sure you want to select this entry?</string>
 </resources>

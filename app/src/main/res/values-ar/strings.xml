@@ -58,6 +58,7 @@
     <string name="fillYourList">الجدول فارغ!!</string>
     <string name="invaledZero">Invaled Zero</string>
     <string name="clearAllData">مسح جميع البيانات؟؟</string>
+    <string name="alertPoSearch">هل انت متأكد من خيارك؟</string>
     <string name="Qty">الكمية</string>
     <string name="selectCompany">اختيار شركة</string>
     <string name="ComName">اسم الشركة</string>
