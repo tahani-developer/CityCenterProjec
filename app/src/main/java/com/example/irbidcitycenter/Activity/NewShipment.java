@@ -311,10 +311,20 @@ public class NewShipment extends AppCompatActivity {
         });
 
     }
-    TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
+   TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+
             Log.e("keyEvent.getAction()",keyEvent.getAction()+"");
+
+
+            if (i == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+
+
+            }
+
             if (i != KeyEvent.KEYCODE_ENTER) {
             {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP)
@@ -390,6 +400,7 @@ public class NewShipment extends AppCompatActivity {
 
 
             }
+
 
 
             }}
@@ -528,9 +539,11 @@ public class NewShipment extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        showExitDialog();
+     showExitDialog();
+
 
     }
+
 
     private void showExitDialog() {
         new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
@@ -1044,7 +1057,7 @@ barcode.setOnKeyListener(onKeyListener);
                               if(CheckNewShipmentObject(newshipment)==false)
                               showConfirmBarcodeDailog();
                             barcode.setText("");
-
+                            save.setEnabled(true);
                         }
                    if(editable.toString().equals("ItemOCode"))  {
 

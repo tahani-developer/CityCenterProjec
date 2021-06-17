@@ -38,6 +38,7 @@ import com.example.irbidcitycenter.Adapters.ZoneAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -99,69 +100,72 @@ public class AddZone extends AppCompatActivity {
         editZoneCode = findViewById(R.id.editZoneCode);
         editItemCode = findViewById(R.id.editItemCode);
       editItemCode.setOnEditorActionListener(onEditAction);
-    editItemCode.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (i != KeyEvent.KEYCODE_ENTER) {
-                    {
-                        if (keyEvent.getAction() == KeyEvent.ACTION_UP)
-
-                        {
-                            if(!editItemCode.getText().toString().equals(""))
-
-
-                            {
-                                Log.e("editItemCode",editItemCode.getText().toString());
-
-                               if(indexZone!=-1)
-                            {
-                                Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
-                                if(itemKintText.getText().toString().equals("")&&validateKind==false)
-                                {
-                                    validateItemKind(editItemCode.getText().toString().trim());
-                                }
-                            }
-
-
-
-                            else {
-                                   editZoneCode.setText("");
-                                editZoneCode.setError("Invalid Zone");
-
-                            }
-
-                    }
-                else
-                            { editItemCode.requestFocus();
-                                Log.e("elseeditZoneCode",editZoneCode.getText().toString());
-                            }
-
-                        return false;
-            } }}
-            return true;}
-        });
-
-        editZoneCode.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (i != KeyEvent.KEYCODE_ENTER) {
-                    {
-                        if (keyEvent.getAction() == KeyEvent.ACTION_UP){
-
-                            if(editZoneCode.getText().length()!=0) {
-                                searchZone(editZoneCode.getText().toString().trim());
-                                Log.e("editZoneCode",editZoneCode.getText().toString());
-                            }
-                            else
-                            { editZoneCode.requestFocus();
-                            Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
-                    }
-                    }
-
-                    return true;
-                }
-           return false; }
-        });
+        editItemCode.setOnKeyListener(onKeyListener);
+        editZoneCode.setOnKeyListener(onKeyListener);
+// editItemCode.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (i != KeyEvent.KEYCODE_ENTER) {
+//                    {
+//                        if (keyEvent.getAction() == KeyEvent.ACTION_UP)
+//
+//                        {
+//                            if(!editItemCode.getText().toString().equals(""))
+//
+//
+//                            {
+//                                Log.e("editItemCode",editItemCode.getText().toString());
+//
+//                               if(indexZone!=-1)
+//                            {
+//                                Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
+//                                if(itemKintText.getText().toString().equals("")&&validateKind==false)
+//                                {
+//                                    validateItemKind(editItemCode.getText().toString().trim());
+//                                }
+//                            }
+//
+//
+//
+//                            else {
+//                                   editZoneCode.setText("");
+//                                editZoneCode.setError("Invalid Zone");
+//
+//                            }
+//
+//                    }
+//                else
+//                            { editItemCode.requestFocus();
+//                                Log.e("elseeditZoneCode",editZoneCode.getText().toString());
+//                            }
+//
+//                        return false;
+//            } }}
+//            return true;}
+//        });
+//
+//        editZoneCode.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//
+//                if (i != KeyEvent.KEYCODE_ENTER) {
+//                    {
+//                        if (keyEvent.getAction() == KeyEvent.ACTION_UP){
+//
+//                            if(editZoneCode.getText().length()!=0) {
+//                                searchZone(editZoneCode.getText().toString().trim());
+//                                Log.e("editZoneCode",editZoneCode.getText().toString());
+//                            }
+//                            else
+//                            { editZoneCode.requestFocus();
+//                            Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
+//                    }
+//                    }
+//
+//                    return true;
+//                }
+//           return false; }
+//        });
 
 //        editItemCode.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -269,7 +273,80 @@ public class AddZone extends AppCompatActivity {
             }
         });
     }
+    TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
+
+            Log.e("keyEvent.getAction()",keyEvent.getAction()+"");
+
+
+            if (i == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+
+
+            }
+            if (i != KeyEvent.KEYCODE_ENTER) {
+                {
+                    if (keyEvent.getAction() == KeyEvent.ACTION_UP)
+
+                        switch (view.getId()) {
+
+                            case R.id.editZoneCode:
+                            {
+                                if(editZoneCode.getText().length()!=0) {
+                                    searchZone(editZoneCode.getText().toString().trim());
+                                    Log.e("editZoneCode",editZoneCode.getText().toString());
+                                }
+                                else
+                                { editZoneCode.requestFocus();
+                                    Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
+
+
+
+                                break;
+                            }
+                            case R.id.editItemCode:
+                            {
+                                if(!editItemCode.getText().toString().equals(""))
+
+
+                                {
+                                    Log.e("editItemCode",editItemCode.getText().toString());
+
+                                    if(indexZone!=-1)
+                                    {
+                                        Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
+                                        if(itemKintText.getText().toString().equals("")&&validateKind==false)
+                                        {
+                                            validateItemKind(editItemCode.getText().toString().trim());
+                                        }
+                                    }
+
+
+
+                                    else {
+                                        editZoneCode.setText("");
+                                        editZoneCode.setError("Invalid Zone");
+
+                                    }
+
+                                }
+                                else
+                                { editItemCode.requestFocus();
+                                    Log.e("elseeditZoneCode",editZoneCode.getText().toString());
+                                }
+                                break;
+                            }
+
+
+
+                        }}
+                return true;
+            }
+            return false;
+        }
+    };
     private void compareItemKind(String itemTypa) {
         validItem=false;
         if(listAllZone.get(indexZone).getZONETYPE().equals(itemTypa))
