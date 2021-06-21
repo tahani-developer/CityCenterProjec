@@ -76,6 +76,7 @@ public class AddZone extends AppCompatActivity {
     public  static String itemKind="";
     public  int indexZone=-1,updatedIndex=-1;
     ExportData exportData;
+    int index;
     public static boolean validItem=false,validateKind=false;
 
 
@@ -244,7 +245,7 @@ public class AddZone extends AppCompatActivity {
                     else {
                         validateKind=false;
                         Log.e("afterTextChanged",""+editable.toString());
-                        compareItemKind(editable.toString().trim());
+                        compareItemKind(itemKintText.getText().toString().trim());
                     }
 
                 }
@@ -279,6 +280,31 @@ public class AddZone extends AppCompatActivity {
             }
         });
     }
+
+
+public boolean exists (String bar){
+    Log.e("exists ","exists ");
+
+    //ayah edit
+    for (int x = 0; x < listZone.size(); x++)
+            if (listZone.get(x).getItemCode().equals(bar))
+                {
+
+
+                   index=x;
+
+                   return true;
+
+
+                }
+
+
+    return false;
+}
+
+
+    //
+
     TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -315,33 +341,39 @@ public class AddZone extends AppCompatActivity {
                             }
                             case R.id.editItemCode:
                             {
-                                if(!editItemCode.getText().toString().equals(""))
+
+                                if(!editItemCode.getText().toString().equals("")) {
 
 
-                                {
-                                    Log.e("editItemCode",editItemCode.getText().toString());
+                                  if(  exists (editItemCode.getText().toString())) {
+                                      Log.e("exists ","true");
+                                      listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
+                                      editItemCode.setText("");
+                                      adapter.notifyDataSetChanged();
+                                  }
 
-                                    if(indexZone!=-1)
+                                  else
+
+
                                     {
-                                        Log.e("itemKintText",""+itemKintText.getText().toString()+"\t"+validateKind);
-                                        if(itemKintText.getText().toString().equals("")&&validateKind==false)
-                                        {
-                                            validateItemKind(editItemCode.getText().toString().trim());
-                                        }
-                                    }
+                                        {   Log.e("editItemCode", editItemCode.getText().toString());
 
-
-
-                                    else {
+                                        if (indexZone != -1) {
+                                            Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
+                                            if (itemKintText.getText().toString().equals("") && validateKind == false) {
+                                                validateItemKind(editItemCode.getText().toString().trim());
+                                            }
+                                        } else {
 //                                   editZoneCode.setText("");
 //                                editZoneCode.setError("Invalid Zone");
-                                        editItemCode.setText("");
-                                        editItemCode.setError("Invalid Item");
-                                        editItemCode.requestFocus();
+                                            editItemCode.setText("");
+                                            editItemCode.setError("Invalid Item");
+                                            editItemCode.requestFocus();
 
-                                    }
+                                        }}
 
-                                }
+                                    }}
+
                                 else
                                 { editItemCode.requestFocus();
                                     Log.e("elseeditZoneCode",editZoneCode.getText().toString());
@@ -359,7 +391,7 @@ public class AddZone extends AppCompatActivity {
     };
     private void compareItemKind(String itemTypa) {
         validItem=false;
-        if(listAllZone.get(indexZone).getZONETYPE().equals(itemTypa))
+        if(listAllZone.get(indexZone).getZONETYPE().trim().equals(itemTypa))
         {
             validItem=true;
             itemName.setText(itemKind);
@@ -368,9 +400,10 @@ public class AddZone extends AppCompatActivity {
             editQty.setText("1");
             if(validItem)
             {
-                itemKintText.setText("");
+
                 addRow();
                 validItem=false;
+                itemKintText.setText("");
             }
 //            editQty.requestFocus();
         }
@@ -501,18 +534,27 @@ public class AddZone extends AppCompatActivity {
                         itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
                         itemZone.setZONETYPE(zonetype);
-                        itemZone.setItemName(itemName.getText().toString());
+                        itemZone.setItemName(itemName.getText().toString().trim());
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
-                        if(itemCodeExist(convertToEnglish(editItemCode.getText().toString().trim())))
+
+
+                  ///ayah edit
+                      /*  if(itemCodeExist(convertToEnglish(editItemCode.getText().toString().trim())))
                         {
                             updateListZones(itemZone,updatedIndex);
 
                         }
                         else {
                             listZone.add(itemZone);
-                        }
+                        }*/
+                        listZone.add(itemZone);
+
+
+                        //
+
+
                         editItemCode.setText("");
                         editItemCode.setEnabled(true);
                         editItemCode.requestFocus();
@@ -546,7 +588,8 @@ public class AddZone extends AppCompatActivity {
     private boolean itemCodeExist(String itemCode) {
         for(int i=0;i<listZone.size();i++)
         {
-            if(convertToEnglish(listZone.get(i).getItemCode()).equals(convertToEnglish(itemCode.trim())))
+            Log.e("itemCodeExist",""+listZone.get(i).getItemCode()+"\t"+itemCode.trim());
+            if((listZone.get(i).getItemCode().trim()).equals(itemCode.trim()))
             {
                 updatedIndex=i;
                 Log.e("itemCodeExist",""+updatedIndex);
