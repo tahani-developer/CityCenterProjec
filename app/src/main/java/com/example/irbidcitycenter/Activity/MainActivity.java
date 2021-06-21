@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public  String SET_qtyup;
     public appSettings settings;
     ExportData exportData;
-
+    public static boolean exportFromMainAct=false;
     public static int setflage=-1;
     public static String COMPANYNO;
     private Animation animation;
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 ImportData importData;
     public RoomAllData my_dataBase;
     List<appSettings> appSettings;
-
+    public static TextView sh_res,zo_res,re_res;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +75,7 @@ ImportData importData;
 
 
     private void initial() {
-        importData=new ImportData(MainActivity.this);
+        importData = new ImportData(MainActivity.this);
         drawerLayout = findViewById(R.id.main_drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         setupDrawerContent(navigationView);
@@ -83,18 +86,61 @@ ImportData importData;
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        zoneLinear=findViewById(R.id.zoneLinear);
+        zoneLinear = findViewById(R.id.zoneLinear);
         zoneLinear.setOnClickListener(onClickListener);
-        shipmentlinear=findViewById(R.id.hipmentlinear);
+        shipmentlinear = findViewById(R.id.hipmentlinear);
         shipmentlinear.setOnClickListener(onClickListener);
-        replacmentlinear=findViewById(R.id.Replacmentlinear);
+        replacmentlinear = findViewById(R.id.Replacmentlinear);
         replacmentlinear.setOnClickListener(onClickListener);
-        exportData=new ExportData(MainActivity.this);
+        exportData = new ExportData(MainActivity.this);
+        sh_res = findViewById(R.id.shipmentsrespon);
 
+        re_res = findViewById(R.id.replashmentssrespon);
 
+        sh_res.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().length()!=0) {
+                    if (editable.toString().trim().equals("exported")) {
+                        my_dataBase.shipmentDao().updateShipmentPosted();
+                    }
+                }
+            }
+        });
+
+        re_res.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().length()!=0) {
+                    if (editable.toString().trim().equals("exported")) {
+                        my_dataBase.replacementDao().updateReplashmentPosted();
+
+                    }    }
+            }
+        });
     }
+
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -149,9 +195,11 @@ ImportData importData;
                 openSettingDialog();
             }
             break;
-            case R.id.menu_export:
+            case R.id.menu_export: {
+                exportFromMainAct=true;
                 exportAllData();
 
+            }
             break;
 
         }

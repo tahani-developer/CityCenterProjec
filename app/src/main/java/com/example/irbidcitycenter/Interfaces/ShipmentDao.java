@@ -50,7 +50,8 @@ public interface ShipmentDao {
 
     @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
    List<Shipment> getShipments(String barcode,String po,String box);
-
+    @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box")
+    List<Shipment> getNEWShipments(String barcode,String po,String box);
 
     @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0' AND PONO= :po")
  Shipment getlastShipment(String po);

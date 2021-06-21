@@ -86,7 +86,24 @@
                             android:text="Falcons Soft"
                             android:fontFamily="serif"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
+                        <TextView
+                            android:id="@+id/shipmentsrespon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                          />
+                        <TextView
+                            android:id="@+id/replashmentssrespon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/zonesrespon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            />
                     </LinearLayout>
                     <!--Add cardview contents-->
 
