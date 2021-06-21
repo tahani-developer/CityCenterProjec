@@ -36,4 +36,8 @@ public interface ReplacementDao {
 
     @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateReplacmentPosted();
+
+    @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
+    void updateReplashmentPosted();
+
 }

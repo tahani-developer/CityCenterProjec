@@ -38,6 +38,10 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.exportStateText;
+import static com.example.irbidcitycenter.Activity.MainActivity.exportFromMainAct;
+import static com.example.irbidcitycenter.Activity.MainActivity.re_res;
+import static com.example.irbidcitycenter.Activity.MainActivity.sh_res;
+import static com.example.irbidcitycenter.Activity.MainActivity.zo_res;
 import static com.example.irbidcitycenter.Activity.NewShipment.poststate;
 import static com.example.irbidcitycenter.Activity.Replacement.poststateRE;
 
@@ -251,7 +255,11 @@ public class ExportData {
                 {
                     if(typeExportZone==1)
                     {
+
                         exportStateText.setText("exported");
+
+
+
                     }
                     else {
                         if(typeExportZone==2)
@@ -266,7 +274,9 @@ public class ExportData {
 
                 }else {
                     if(typeExportZone==1) {
-                        exportStateText.setText("not");
+                     exportStateText.setText("not");
+
+
                     }
 
                 }
@@ -275,7 +285,7 @@ public class ExportData {
 
             } else {  if(typeExportZone==1) {
                 try {
-                    exportStateText.setText("not");
+                    if( !exportFromMainAct)     exportStateText.setText("not");
                 }catch (Exception e){}
 
             }
@@ -417,14 +427,17 @@ public class ExportData {
 
 
                     {
-                        poststate.setText("exported");
+                        if( !exportFromMainAct)  poststate.setText("exported");
+                        else
+                            sh_res.setText("exported");
                     }
 
                     else
 
                         {
-                            poststate.setText("not");
-
+                            if( !exportFromMainAct)  poststate.setText("not");
+                            else
+                                sh_res.setText("not");
                         }
                     }
 
@@ -532,14 +545,18 @@ public class ExportData {
 
 
               {
-                  poststateRE.setText("exported");
+                  if( !exportFromMainAct)   poststateRE.setText("exported");
+                  else
+                      re_res.setText("exported");
+
               }
 
               else
 
               {
-                  poststateRE.setText("not");
-
+                  if( !exportFromMainAct) poststateRE.setText("not");
+                  else
+                      re_res.setText("not");
               }
           }
 

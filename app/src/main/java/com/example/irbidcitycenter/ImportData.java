@@ -74,7 +74,7 @@ public class ImportData {
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
-
+    public static String  barcode="";
 
     public ImportData(Context context) {
         this.context = context;
@@ -270,7 +270,7 @@ else
                             requestDetail.setZONETYPE(infoDetail.get("ITEMTYPE").toString());
                             requestDetail.setZoneCode(infoDetail.get("ITEMCODE").toString());
                             requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
-
+                           barcode= infoDetail.get("ITEMCODE").toString();
                         }
                         itemKind=requestDetail.getZONENAME();
                         zonetype=requestDetail.getZONETYPE();
@@ -1130,6 +1130,7 @@ else
 
                     }
                     qtyrespons.setText("QTY");
+
                     Log.e("qtyrespons",qtyrespons.getText().toString()+d);
                     Replacement.qty.setText(d);
                     Log.e("qtyrespons",qtyrespons.getText().toString()+d);

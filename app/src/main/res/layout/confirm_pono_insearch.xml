@@ -41,9 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-
             android:layout_marginBottom="2dp"
-
             android:textSize="15sp"
             android:textColor="@color/dark_blue_3"
             android:background="@drawable/done_button"
@@ -58,12 +56,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-
             android:layout_marginBottom="2dp"
-
             android:textSize="15sp"
             android:text="@string/cancel"
-
             android:textColor="@color/red"
             android:background="@drawable/cancel_button"
             app:layout_constraintStart_toStartOf="parent"

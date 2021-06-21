@@ -91,13 +91,16 @@ public class Replacement extends AppCompatActivity {
         setContentView(R.layout.activity_replacement);
         init();
         getStors();
+        zone.requestFocus();
+        itemcode.setEnabled(false);
+        recqty.setEnabled(false);
+        save.setEnabled(false);
 
-
-        if(Storelistt.size()==0) {
+      /*  if(Storelistt.size()==0) {
             itemcode.setEnabled(false);
             zone.setEnabled(false);
 
-        }
+        }*/
         //testcode
 /*ReplacementModel replacementModel=new ReplacementModel();
         replacementModel.setRecQty("1");
@@ -156,10 +159,7 @@ public class Replacement extends AppCompatActivity {
      });
  }catch (Exception e){}
 
-        zone.requestFocus();
-        itemcode.setEnabled(false);
-        recqty.setEnabled(false);
-        save.setEnabled(false);
+
         my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
 
 
@@ -485,6 +485,7 @@ public class Replacement extends AppCompatActivity {
 
                         try {
                             filldata();
+                            Replacement.qty.setText("");
                         }
                         catch (Exception e){
                             Log.e("Exception",e.getMessage());
@@ -602,13 +603,23 @@ public class Replacement extends AppCompatActivity {
 
 
 
-    EditText.OnKeyListener onKeyListener=new View.OnKeyListener() {
+    TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            Log.e("keyEvent.getAction()",keyEvent.getAction()+"");
+
+
+            if (i == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+
+            }
+
             if (i != KeyEvent.KEYCODE_ENTER) {
+
                 { if (keyEvent.getAction() == KeyEvent.ACTION_UP)
             switch (view.getId()) {
                 case R.id.zoneedt:
+                    Log.e("ZONEHERE",zone.getText().toString()+"");
                     if(!zone.getText().toString().equals(""))
                         if(searchZone(zone.getText().toString().trim()))
                         {
@@ -785,7 +796,7 @@ return  false;
                 Log.e("replacementlist.size", replacementlist.size()+"");
                 fillAdapter();
             }
-
+            Replacement.qty.setText("");
 
         }
 

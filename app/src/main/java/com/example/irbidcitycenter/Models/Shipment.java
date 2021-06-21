@@ -37,7 +37,16 @@ public  class Shipment {
 
     String Differ ;
 
+    @ColumnInfo(name = "IsNew")
+    String IsNew;
 
+    public String getIsNew() {
+        return IsNew;
+    }
+
+    public void setIsNew(String isNew) {
+        IsNew = isNew;
+    }
 
     public String getDiffer() {
         return Differ;

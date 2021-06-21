@@ -107,8 +107,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                                 // updateQTYOfZoneinRow(newqty,zone,itemcode);
                                 Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
                             } else
-                                Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty("1");
-                            notifyDataSetChanged();
+
                             {Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty("1");
                                 showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
                                 Replacement.updateAdpapter();

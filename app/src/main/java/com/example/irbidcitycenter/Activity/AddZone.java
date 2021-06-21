@@ -60,6 +60,7 @@ import static com.example.irbidcitycenter.Activity.NewShipment.barcode;
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
+import static com.example.irbidcitycenter.ImportData.listQtyZone;
 import static com.example.irbidcitycenter.ImportData.zonetype;
 
 public class AddZone extends AppCompatActivity {
@@ -86,7 +87,7 @@ public class AddZone extends AppCompatActivity {
         setContentView(R.layout.activity_add_zone);
 
         initial();
-
+        editQty.setEnabled(false);
        /* ZoneModel zoneModel=new ZoneModel();
         zoneModel.setZoneCode("gg");
         zoneModel.setQty("33");
@@ -206,7 +207,7 @@ public class AddZone extends AppCompatActivity {
         itemName= findViewById(R.id.itemName);
         itemKintText= findViewById(R.id.itemKintText);
         exportStateText= findViewById(R.id.exportStateText);
-        editQty.setOnEditorActionListener(onEditAction);
+       // editQty.setOnEditorActionListener(onEditAction);
         listZone = new ArrayList<>();
 
         recycleZone = findViewById(R.id.recycleZone);
@@ -240,6 +241,7 @@ public class AddZone extends AppCompatActivity {
                         generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
                         itemKintText.setText("");
                         editItemCode.setText("");
+
                     }
                     else {
                         validateKind=false;
@@ -364,7 +366,7 @@ public class AddZone extends AppCompatActivity {
             validItem=true;
             itemName.setText(itemKind);
             editItemCode.setEnabled(false);
-            editQty.setEnabled(true);
+            //editQty.setEnabled(true);
             editQty.setText("1");
             if(validItem)
             {
@@ -498,6 +500,7 @@ public class AddZone extends AppCompatActivity {
                         ZoneModel itemZone = new ZoneModel();
                         itemZone.setZoneCode(editZoneCode.getText().toString().trim());
                         itemZone.setItemCode(editItemCode.getText().toString().trim());
+                        itemZone.setItemCode( importData.barcode);
                         itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
                         itemZone.setZONETYPE(zonetype);
@@ -567,7 +570,7 @@ public class AddZone extends AppCompatActivity {
 
     public static void clearData() {
         editItemCode.setText("");
-        editQty.setText("");
+
 //        editZoneCode.setText("");
         editItemCode.requestFocus();
         itemName.setText("");
