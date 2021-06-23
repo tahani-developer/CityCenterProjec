@@ -111,8 +111,15 @@ ImportData importData;
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.toString().length()!=0) {
-                    if (editable.toString().trim().equals("exported")) {
-                        my_dataBase.shipmentDao().updateShipmentPosted();
+                    Log.e("sh_res",sh_res.getText().toString());
+                    if (sh_res.getText().toString().trim().equals("exported")) {
+                        Log.e("sh_res","true");
+                       int x= my_dataBase.shipmentDao().updateShipmentPosted();
+                        Log.e("vlauOFX",x+"");
+                    }
+                    else
+                    {
+                        Log.e("sh_res","false");
                     }
                 }
             }
@@ -132,7 +139,7 @@ ImportData importData;
             @Override
             public void afterTextChanged(Editable editable) {
                 if(editable.toString().length()!=0) {
-                    if (editable.toString().trim().equals("exported")) {
+                    if (  re_res.getText().toString().trim().equals("exported")) {
                         my_dataBase.replacementDao().updateReplashmentPosted();
 
                     }    }

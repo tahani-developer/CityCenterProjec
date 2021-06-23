@@ -25,7 +25,7 @@ public  class Shipment {
     String ShipmentDate;
     @ColumnInfo(name = "SHIPMENTTIME")
     String ShipmentTime;
-    @ColumnInfo(name = "QTY")
+    @ColumnInfo(name = "QTY" ,defaultValue = "1")
     String Qty;
     @ColumnInfo(name = "ISPOSTED" ,defaultValue = "0")
     String IsPosted;

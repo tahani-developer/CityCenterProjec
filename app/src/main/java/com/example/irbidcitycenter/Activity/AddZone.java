@@ -59,6 +59,7 @@ import static com.example.irbidcitycenter.Activity.NewShipment.barCode;
 import static com.example.irbidcitycenter.Activity.NewShipment.barcode;
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
+import static com.example.irbidcitycenter.ImportData.item_name;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 import static com.example.irbidcitycenter.ImportData.zonetype;
@@ -537,7 +538,8 @@ public boolean exists (String bar){
                         itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
                         itemZone.setZONETYPE(zonetype);
-                        itemZone.setItemName(itemName.getText().toString().trim());
+                        //itemZone.setItemName(item_name);
+                        itemZone.setZONENAME(zoneName.getText().toString());
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));

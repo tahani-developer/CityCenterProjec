@@ -63,6 +63,7 @@ public class ImportData {
     public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
     public static int posize;
     public static String itemn;
+    public static String item_name="";
     public static String poqty;
     private Context context;
     public String ipAddress = "", CONO = "", headerDll = "", link = "";
@@ -553,6 +554,7 @@ else
                             itemZone.setZoneCode(result.getString("ZONENO"));
                             itemZone.setZONENAME(result.getString("ZONENAME"));
                             itemZone.setZONETYPE(result.getString("ZONETYPE"));
+
                             listAllZone.add(itemZone);
                         } catch (JSONException e) {
                             e.printStackTrace();
