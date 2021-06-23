@@ -256,7 +256,7 @@ public class Replacement extends AppCompatActivity {
                     }
                     else
                     {
-                        //showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                        showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
 
                     flag = true;
                     break;}
@@ -788,6 +788,8 @@ return  false;
            //updateQTYOfZone();
             if (AddInCaseDuplicates(replacement)) {
                 Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
+
+
             } else {
 
                 Log.e("else","AddInCaseDuplicates");

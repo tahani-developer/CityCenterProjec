@@ -42,14 +42,14 @@ public interface ShipmentDao {
    List<Shipment> getUnpostedShipment(String s);
 
     @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
-    void updateShipmentPosted();
+    int updateShipmentPosted();
 
     @Query("UPDATE SHIPMENT_TABLE SET  QTY = :qty ,Differ= :dif WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'" )
     int updateQTY(String barcode,String po,String box, String qty,String dif);
 
 
     @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
-   List<Shipment> getShipments(String barcode,String po,String box);
+   Shipment getShipments(String barcode,String po,String box);
     @Query ("select * from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box")
     List<Shipment> getNEWShipments(String barcode,String po,String box);
 

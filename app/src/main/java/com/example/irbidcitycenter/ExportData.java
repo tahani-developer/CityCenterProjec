@@ -414,12 +414,9 @@ public class ExportData {
         protected void onPostExecute(final String result) {
             super.onPostExecute(result);
 //            progressDialog.dismiss();
-            Log.e("onPostExecute",""+result);
+            Log.e("JSONTask_AddShipmentsonPostExecute",""+result);
             pdshipmant.dismissWithAnimation();
-            if(listAllReplacment.size()!=0)
-            {
-                exportReplacementList(listAllReplacment);
-            }
+
 
 
             if (result != null && !result.equals("")) {
@@ -439,7 +436,10 @@ public class ExportData {
                             else
                                 sh_res.setText("not");
                         }
-                    }
+                if(listAllReplacment.size()!=0)
+                {
+                    exportReplacementList(listAllReplacment);
+                }   }
 
 
 
@@ -537,7 +537,7 @@ public class ExportData {
       protected void onPostExecute(final String result) {
           super.onPostExecute(result);
 //            progressDialog.dismiss();
-          Log.e("onPostExecute",""+result);
+          Log.e("JSONTask_AddReplacmentonPostExecute",""+result);
           pdRepla.dismissWithAnimation();
 
           if (result != null && !result.equals("")) {

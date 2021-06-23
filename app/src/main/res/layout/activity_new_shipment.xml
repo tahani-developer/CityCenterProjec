@@ -280,7 +280,7 @@
                     android:background="@drawable/back_border_edit"
                     android:inputType="text"
                     android:maxLines="1"
-
+                    android:enabled="false"
                     android:padding="3dp"
                     android:gravity="center"
                     android:textColor="@color/dark_blue_3"
@@ -305,7 +305,7 @@
                     android:background="@drawable/back_border_edit"
                     android:inputType="text"
                     android:maxLines="1"
-
+                    android:enabled="false"
                     android:padding="3dp"
                     android:gravity="center"
                     android:textColor="@color/dark_blue_3"
@@ -678,7 +678,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="3dp"
-                android:layout_marginRight="55dp"
+
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/cancel_button"
                 android:elevation="5dp"
@@ -706,7 +706,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
+
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/done_button"
                 android:elevation="5dp"

@@ -40,6 +40,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
     public static String newqty, oldqty,olddif;
     public static int sum ;
     public RoomAllData my_dataBase;
+
     public ShipmentAdapter(Context shipment, List<Shipment> list) {
         this.list = list;
         this.shipment = shipment;
@@ -68,7 +69,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
     public void removeItem(int position) {
 
-        my_dataBase = RoomAllData.getInstanceDataBase(shipment);
+
         my_dataBase.shipmentDao().deleteshipment( list.get(position).getBarcode(),list.get(position).getPoNo(),list.get(position).getBoxNo());
         list.remove(position);
         notifyItemRemoved(position);
@@ -87,7 +88,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
         public ShipmentViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            my_dataBase = RoomAllData.getInstanceDataBase(shipment);
             ponotxt = itemView.findViewById(R.id.pono);
             boxnotxt = itemView.findViewById(R.id.boxno);
             barcodetxt = itemView.findViewById(R.id.barcode);
@@ -113,26 +114,38 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                                 oldqty = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
                                 olddif = localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
                                 sum += Integer.parseInt(oldqty);
-
                                 Log.e("newqty", newqty);
                                 localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
-
-                                Log.e("filldataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                                Log.e("qtyvlau", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty());
+                                Log.e("befordifferentvalue", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
                                 localList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1 * (Integer.parseInt(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoqty()) - Integer.parseInt(newqty))));
-                                Log.e("fillataadapter", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
-                                my_dataBase.shipmentDao().updateQTY(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
+                                Log.e("afterdifferentvalue", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
+                                updateAdpapter();
+
+                              my_dataBase.shipmentDao().updateQTY(
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
                                         localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoNo(),
                                         localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBoxNo(),
                                         localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),
                                         localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
 
-                                updateAdpapter();
+
 
                             }
 
 
                         else {
+
                                 localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty( newqty);
+                                Log.e("elsetextlistner", localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty());
+                                updateAdpapter();
+                               my_dataBase.shipmentDao().updateQTY(
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoNo(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBoxNo(),
+                                        localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),
+                                        "1");
+
                             }
 
                         } catch (Exception e) {
@@ -191,36 +204,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
 
         }
 
-        EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
-                        || i == EditorInfo.IME_NULL) {
-                    switch (textView.getId()) {
-                        case R.id.tbl_qty:
 
-                            oldqty =NewShipment.localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty();
-                            olddif =NewShipment.localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer();
-                            Log.e("oldqty", oldqty);
-                            sum+=Integer.parseInt(oldqty);
-                            newqty = qtytxt.getText().toString();
-                            Log.e("newqty",  newqty);
-                            NewShipment.localList.get(Integer.parseInt(qtytxt.getTag().toString())).setQty(newqty);
-                            NewShipment.localList.get(Integer.parseInt(qtytxt.getTag().toString())).setDiffer(String.valueOf(-1*(sum-Integer.parseInt(newqty))));
-                            sum-=Integer.parseInt(newqty);
-                            my_dataBase.shipmentDao(). updateQTY(localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBarcode(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getPoNo(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getBoxNo(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getQty(),
-                                    localList.get(Integer.parseInt(qtytxt.getTag().toString())).getDiffer());
-                            updateAdpapter();
-                    }
-
-                }
-
-                return true;
-            }
-        };
 
     }
 
