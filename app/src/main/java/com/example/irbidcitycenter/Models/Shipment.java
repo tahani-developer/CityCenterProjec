@@ -157,6 +157,7 @@ public  class Shipment {
             obj.put("ISPOSTED", IsPosted);
             obj.put("ITEMNAME", Itemname);
             obj.put("POQTY", Poqty);
+            obj.put("IsNew",IsNew);
 
 
 
