@@ -134,7 +134,7 @@ public class NewShipment extends AppCompatActivity {
 
         init();
         fillLastBoxinfo();
-my_dataBase.shipmentDao().deleteALL();
+//my_dataBase.shipmentDao().deleteALL();
    // shipmentsList=my_dataBase.shipmentDao().getallShipment();
      //   filladapter(shipmentsList);
 /////////////TESTING CODE
@@ -337,26 +337,30 @@ my_dataBase.shipmentDao().deleteALL();
                 case R.id.poNotxt:
                     {
 
-                    if (!pono.getText().toString().trim().equals("")) {
+                        if (!pono.getText().toString().trim().equals("")) {
 
-                   try {
+                            try {
 
-                       poshipmentsList.clear();
-                       Shipment shipment ;
-                       shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
-                       if(shipment!=null){
-                           localList.add(shipment);
+                                poshipmentsList.clear();
+                                Shipment shipment ;
+                                Log.e("localListsize", localList.size()+"");
+                                shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
+                               
+                                if(shipment!=null){
+                                    localList.add(shipment);
+                                    Log.e("shipments", shipment.toString());
+                                    filladapter(localList);}
+                                getboxData();
 
-                       Log.e("shipments", shipment.toString());
-                       filladapter(localList);}
-                       getboxData();
+                            } catch (Exception e) {
+                                Log.e("Exception", e.getMessage());
+                            }
+                        } else
+                            pono.requestFocus();
 
-                   }catch (Exception e){
-                       Log.e("Exception",e.getMessage());
-                   }
-                    }
-                    else
-                       pono.requestFocus();
+
+
+
 
                     break;
                 }
@@ -664,7 +668,7 @@ my_dataBase.shipmentDao().deleteALL();
         {
             Log.e("CheckShipmentObject","CheckIsExistsINLocalList");
             localList.get(pos).setQty(Integer.parseInt(localList.get(pos).getQty()) + Integer.parseInt(Qty) + "");
-            localList.get(pos).setDiffer(String.valueOf(Integer.parseInt(localList.get(pos).getDiffer())+Integer.parseInt("1")));
+           if(localList.get(pos).getIsNew().equals("0")) localList.get(pos).setDiffer(String.valueOf(Integer.parseInt(localList.get(pos).getDiffer())+Integer.parseInt("1")));
         updateAdpapter();
 
             updateRow(localList.get(pos).getBarcode(),localList.get(pos).getPoNo(),localList.get(pos).getBoxNo(), localList.get(pos).getQty(),localList.get(pos).getDiffer());
@@ -1108,7 +1112,9 @@ barcode.setOnKeyListener(onKeyListener);
                             newshipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
                             newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
                             newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
-                              if(CheckNewShipmentObject(newshipment)==false&&!barcode.getText().equals("")) {
+                              if(CheckNewShipmentObject(newshipment)==false
+                                      &&!barcode.getText().equals("")
+                              &&barcode.getText().toString().trim().length()<=20) {
                                   Log.e("barcodehere",barcode.getText().toString());
                                   showConfirmBarcodeDailog();
 
@@ -1275,6 +1281,22 @@ pono.addTextChangedListener(new TextWatcher() {
     public void afterTextChanged(Editable editable) {
        if(editable.length()!=0)
         fillPOinfo(pono.getText().toString().trim());
+
+
+
+       /* try {
+
+
+            Shipment shipment ;
+            shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
+            if(shipment!=null){
+                localList.add(shipment);
+                filladapter(localList);}
+        } catch (Exception e) {
+        }*/
+
+
+
     }
 });
     }
