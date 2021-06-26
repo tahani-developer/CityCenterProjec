@@ -421,14 +421,11 @@ public class ExportData {
 
             if (result != null && !result.equals("")) {
                 if(result.contains("Saved Successfully"))
-
-
                     {
                         if( !exportFromMainAct)  poststate.setText("exported");
                         else
                             sh_res.setText("exported");
                     }
-
                     else
 
                         {
@@ -440,7 +437,11 @@ public class ExportData {
                 {
                     exportReplacementList(listAllReplacment);
                 }   }
-
+else{
+                if( !exportFromMainAct)  poststate.setText("not");
+                else
+                    sh_res.setText("not");
+            }
 
 
 
@@ -558,7 +559,12 @@ public class ExportData {
                   else
                       re_res.setText("not");
               }
+          }else {
+              if( !exportFromMainAct) poststateRE.setText("not");
+              else
+                  re_res.setText("not");
           }
+
 
       }
 

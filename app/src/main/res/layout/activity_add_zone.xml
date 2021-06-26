@@ -69,6 +69,7 @@
                     <TextView
                         android:id="@+id/scanZoneCode"
                         android:layout_width="0dp"
+                        android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:elevation="2dp"
@@ -192,6 +193,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:elevation="2dp"
+                        android:visibility="gone"
                         android:gravity="center"
                         android:inputType="text"
                         android:padding="3dp"
@@ -310,7 +312,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0.5"
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"

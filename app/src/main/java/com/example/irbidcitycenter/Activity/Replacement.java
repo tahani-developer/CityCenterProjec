@@ -55,6 +55,7 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.AddZone.validItem;
+import static com.example.irbidcitycenter.ImportData.barcode;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
@@ -179,7 +180,9 @@ public class Replacement extends AppCompatActivity {
                     zone.setEnabled(true);
                     zone.requestFocus();
                 }
-
+           zone.setText("");
+               itemcode.setText("");
+               qty.setText("");
             }
         });
 
@@ -673,7 +676,7 @@ public class Replacement extends AppCompatActivity {
                     case R.id.itemcodeedt:
 
                         if(!itemcode.getText().toString().equals(""))
-                        {     Log.e( "itemcodeedt ",keyEvent.getAction()+"");
+                        {
                             zone.setEnabled(false);
                             importData.getQty();}
                         else

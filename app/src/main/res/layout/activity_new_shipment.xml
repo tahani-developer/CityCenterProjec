@@ -489,7 +489,7 @@
 
                     android:elevation="2dp"
                     android:gravity="center"
-                    android:padding="3dp"
+                    android:padding="1dp"
                     android:text="@string/boxsnumber"
                     android:textColor="@color/dark_blue_3"
                     android:textSize="14sp" />
@@ -514,7 +514,7 @@
                     android:layout_weight="1"
                     android:elevation="2dp"
                     android:gravity="center"
-                    android:padding="3dp"
+                    android:padding="1dp"
                     android:text="@string/Items"
                     android:textColor="@color/dark_blue_3"
                     android:textSize="14sp" />
@@ -574,7 +574,7 @@
 
                     android:elevation="2dp"
                     android:gravity="center"
-                    android:padding="3dp"
+                    android:padding="1dp"
                     android:text="@string/boxnum"
                     android:textColor="@color/dark_blue_3"
                     android:textSize="14sp" />
@@ -614,7 +614,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:enabled="false"
-                    android:padding="3dp"
+                    android:padding="1dp"
                     android:gravity="center"
                     android:textColor="@color/dark_blue_3"
                     android:textSize="14sp" />
@@ -640,7 +640,7 @@
                     android:background="@drawable/back_border_edit"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:padding="3dp"
+                    android:padding="1dp"
                     android:enabled="false"
                     android:gravity="center"
                     android:textColor="@color/dark_blue_3"

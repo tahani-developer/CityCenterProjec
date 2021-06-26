@@ -59,8 +59,8 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.qty.setEnabled(true);
     }
     public void removeItem(int position) {
-        list.remove(position);
-        notifyItemRemoved(position);
+        if(position<list.size()){list.remove(position);
+        notifyItemRemoved(position);}
     }
 
     @Override
@@ -100,18 +100,25 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                 public void afterTextChanged(Editable editable) {
                     if (editable.toString().length() != 0) {
                         try {
+                            int pos=Integer.parseInt(qty.getTag().toString());
                             newqty=editable.toString();
-                            String zone = Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
-                            String itemcode = Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).getItemcode();
+                            if(!newqty.trim().equals("0"))
+                            {   String zone = Replacement.replacementlist.get(pos).getZone();
+                            String itemcode = Replacement.replacementlist.get(pos).getItemcode();
                             if (checkQtyValidateinRow(newqty, itemcode, zone)) {
                                 // updateQTYOfZoneinRow(newqty,zone,itemcode);
-                                Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
+                                Replacement.replacementlist.get(pos).setRecQty(newqty);
                             } else
 
-                            {Replacement.replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty("1");
+                            { Replacement.replacementlist.get(pos).setRecQty( Replacement.replacementlist.get(pos).getRecQty());
                                 showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
                                 Replacement.updateAdpapter();
 
+                            }}else
+                            {
+                                Replacement.replacementlist.get(pos).setRecQty( Replacement.replacementlist.get(pos).getRecQty());
+                                Replacement.updateAdpapter();
+                                showSweetDialog(context, 3, "", context.getResources().getString(R.string.qtyerror3));
                             }
                         }catch (Exception e){}
 
@@ -139,7 +146,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                         public void onClick(View view) {
                             removeItem(Integer.parseInt(tag));
                             dialog.dismiss();
-
+                            Log.e("removeItemposition",Integer.parseInt(tag)+"");
                         }
                     });
                     dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {

@@ -69,5 +69,6 @@ public interface ShipmentDao {
 
     @Query("Delete from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
     void deleteshipment(String barcode,String po,String box);
-
+    @Query ("select BOXNO from SHIPMENT_TABLE")
+    List<String>getboxes();
 }

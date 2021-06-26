@@ -24,6 +24,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -70,7 +71,11 @@ public class Login extends AppCompatActivity {
     public  static   TextView getListCom,selectedCompany;
     public   String selectedCom="", cono="",coYear="";;
     GeneralMethod generalMethod;
-
+TextView settings;
+    public String COMPANYNO;
+    public appSettings setting;
+    List<appSettings> appSettings;
+    public  String SET_qtyup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +91,13 @@ public class Login extends AppCompatActivity {
         username = findViewById(R.id.username_input);
         password = findViewById(R.id.pass);
         importData=new ImportData(Login.this);
-
+        settings=findViewById(R.id.setting);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSettingDialog();
+            }
+        });
 
         username=findViewById(R.id.username_input);
         password=findViewById(R.id.pass);
@@ -337,5 +348,82 @@ public class Login extends AppCompatActivity {
 
 
         }
+    private void openSettingDialog() {
+        final Dialog dialog = new Dialog(Login.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.ip_setting_dialog);
+        dialog.show();
 
+
+        final EditText ip= dialog.findViewById(R.id.ipEditText);
+        final EditText conNO= dialog.findViewById(R.id.cono);
+        final EditText years=dialog.findViewById(R.id.storeNo_edit);
+        final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
+        final EditText usernum= dialog.findViewById(R.id.usernumber);
+       // usernum.setText(SET_userNO);
+
+        getDataZone();
+        if(appSettings.size()!=0) {
+
+            ip.setText(appSettings.get(0).getIP());
+            conNO.setText(appSettings.get(0).getCompanyNum());
+            COMPANYNO=appSettings.get(0).getCompanyNum();
+            years.setText(appSettings.get(0).getYears());
+            if (appSettings.get(0).getUpdateQTY().equals("1"))
+                qtyUP.setChecked(true);
+        }
+        //****************************
+        dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                deletesettings();
+                final String SET_IP=ip.getText().toString();
+                final String SET_conNO=conNO.getText().toString();
+                COMPANYNO=conNO.getText().toString();
+                final String SET_years=years.getText().toString();
+                //usernum.setText(SET_userNO);
+
+                if(qtyUP.isChecked())
+                    SET_qtyup="1";
+                else
+                    SET_qtyup="0";
+
+                setting = new appSettings();
+                setting.setIP(SET_IP);
+                setting.setCompanyNum(SET_conNO);
+                setting.setUpdateQTY(SET_years);
+                setting.setYears(SET_qtyup);
+                setting.setUserNumber("");
+                saveData(setting);
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.cancelBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+    private void getDataZone() {
+        appSettings=new ArrayList();
+        try {
+            appSettings=my_dataBase.settingDao().getallsetting();
+        }
+        catch (Exception e){}
+    }
+    private void deletesettings(){
+        if(appSettings.size()!=0)
+            my_dataBase.settingDao().deleteALL();
+    }
+    private void saveData(appSettings settings) {
+
+        my_dataBase.settingDao().insert(settings);
+
+        generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+
+    }
 }

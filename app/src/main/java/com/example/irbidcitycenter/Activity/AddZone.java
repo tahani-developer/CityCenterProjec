@@ -78,6 +78,7 @@ public class AddZone extends AppCompatActivity {
     public  static String itemKind="";
     public  int indexZone=-1,updatedIndex=-1;
     ExportData exportData;
+    ListView listZones;
     int index;
     public static boolean validItem=false,validateKind=false;
 
@@ -246,9 +247,16 @@ public class AddZone extends AppCompatActivity {
 
                     }
                     else {
-                        validateKind=false;
-                        Log.e("afterTextChanged",""+editable.toString());
-                        compareItemKind(itemKintText.getText().toString().trim());
+                        if(editable.toString().equals("ErrorNet"))
+                        {
+                            generalMethod.showSweetDialog(AddZone.this,3,"No Internet Connection","");
+                        }
+                        else {
+                            validateKind=false;
+                            Log.e("afterTextChanged",""+editable.toString());
+                            compareItemKind(itemKintText.getText().toString().trim());
+                        }
+
                     }
 
                 }
@@ -394,6 +402,7 @@ public boolean exists (String bar){
     };
     private void compareItemKind(String itemTypa) {
         validItem=false;
+        if(listAllZone.size()>0){
         if(listAllZone.get(indexZone).getZONETYPE().trim().equals(itemTypa))
         {
             validItem=true;
@@ -415,7 +424,7 @@ public boolean exists (String bar){
             generalMethod.showSweetDialog(AddZone.this,0,"Item Kind Not Match To Zone Type","");
             editItemCode.setText("");
 
-        }
+        }}
         itemKintText.setText("");
     }
 
@@ -538,7 +547,7 @@ public boolean exists (String bar){
                         itemZone.setQty(editQty.getText().toString().trim());
                         itemZone.setIsPostd("0");
                         itemZone.setZONETYPE(zonetype);
-                        //itemZone.setItemName(item_name);
+                      itemZone.setItemName(itemName.getText().toString());
                         itemZone.setZONENAME(zoneName.getText().toString());
                         itemZone.setStoreNo("6");
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
@@ -831,57 +840,88 @@ public void onBackPressed() {
         final Dialog dialog = new Dialog(context1);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.zone_search);
+        dialog.setContentView(R.layout.dialog_zone_search);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
         LinearLayout headerComp2=dialog.findViewById(R.id.headerComp2);
-        headerComp2.setVisibility(View.GONE);
+        ArrayList<ZoneModel> searchlistAllZone = new ArrayList<>();
+
         ArrayList<String> nameOfEngi=new ArrayList<>();
-        final ListView listZones = dialog.findViewById(R.id.listViewEngineering);
+        listZones = dialog.findViewById(R.id.listViewEngineering);
 
         final int[] rowZone = new int[1];
         final String[] selectedZon= new String[1];
         if( listAllZone.size()!=0)
         {
+            nameOfEngi.clear();
             for(int i=0;i<listAllZone.size();i++)
             {
 //                nameOfEngi.add("tahani");
+                searchlistAllZone.add(listAllZone.get(i));
                 nameOfEngi.add(listAllZone.get(i).getZoneCode());
             }
             Log.e("nameOfEngi",""+nameOfEngi.size());
+            fillAdapterSearch(nameOfEngi);
 
 //                    simple_list_item_1 simple_list_item_activated_1
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                    (AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    /// Get the Item from ListView
-                    View view = super.getView(position, convertView, parent);
 
-                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-
-                    // Set the text size 25 dip for ListView each item
-                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                    tv.setTextColor(getResources().getColor(R.color.text_color));
-
-                    // Return the view
-                    return view;
-                }
-            };
-//            ArrayAdapter<String> itemsAdapter =
-//                    new ArrayAdapter<String>(AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi);
-            listZones.setAdapter(arrayAdapter);
         }
+        headerComp2.setVisibility(View.GONE);
+        EditText searchZoneText=dialog.findViewById(R.id.searchZoneText);
+
+        searchZoneText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(searchZoneText.getText().toString().trim().length()!=0)
+                { nameOfEngi.clear();
+                    searchlistAllZone.clear();
+                    for(int i=0;i<listAllZone.size();i++)
+                    {
+
+                        if(listAllZone.get(i).getZoneCode().toLowerCase().trim().contains(searchZoneText.getText().toString().toLowerCase().trim()))
+                        {
+                            nameOfEngi.add(listAllZone.get(i).getZoneCode());
+                            searchlistAllZone.add(listAllZone.get(i));
+                        }
+
+
+                    }
+                    Log.e("nameOfEngi","search"+nameOfEngi.size());
+                    fillAdapterSearch(nameOfEngi);
+                }
+
+
+            }
+        });
+
+
         listZones.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 rowZone[0] =position;
+
                 listZones.requestFocusFromTouch();
                 listZones.setSelection(position);
-                selectedZon[0] =listAllZone.get(position).getZoneCode();
+                if(searchlistAllZone.size()!=0)
+                {
+                    selectedZon[0] =searchlistAllZone.get(position).getZoneCode();
+                }else {
+                    selectedZon[0] =listAllZone.get(position).getZoneCode();
+                }
+
                 Log.e("nameOfEngi",""+selectedZon[0]);
 
             }
@@ -902,7 +942,25 @@ public void onBackPressed() {
         dialog.show();
 
     }
-   void setZone(int i){
+
+    private void fillAdapterSearch(ArrayList<String> nameOfEngi) {
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                (AddZone.this, android.R.layout.simple_list_item_1, nameOfEngi) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                /// Get the Item from ListView
+                View view = super.getView(position, convertView, parent);
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                tv.setTextColor(getResources().getColor(R.color.text_color));
+
+                return view;
+            }
+        };
+        listZones.setAdapter(arrayAdapter);
+    }
+
+    void setZone(int i){
        if(!editZoneCode.getText().toString().trim().equals(""))
        {
            new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)

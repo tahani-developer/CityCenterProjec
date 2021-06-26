@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,17 +80,34 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
                 @Override
                 public void afterTextChanged(Editable editable) {
                     String position="";
+                    int index=0;
                     try {
                         position=qty.getTag().toString();
+                        index=Integer.parseInt(position);
                     }catch (Exception e){
 
                     }
 
                     if((editable.toString().trim().length()!=0)&&(!position.toString().trim().equals("")))
                     {
-                        if(generalMethod.validateNotZero(qty))
-                        updateQtyList(editable.toString().trim(),position);
+                        if(!qty.getText().toString().trim().equals("0") &&Integer.parseInt(qty.getText().toString().trim())!=0)
+                        {
+
+                            updateQtyList(editable.toString().trim(),position);
+                        }
+
+                        else {
+                            Toast.makeText(context, "Invalid Zero", Toast.LENGTH_SHORT).show();
+                            list.get(index).getQty();
+                            qty.setText(list.get(index).getQty());
+                            updateQtyList(list.get(index).getQty(),position);
+                        }
+
                     }
+//                    else
+//                    {
+//                        updateQtyList("old",position);
+//                    }
 
                 }
             });
@@ -136,6 +154,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     }
 
     private void updateQtyList(String qtyValue,String index) {
+
         newqty=qtyValue;
         int in=Integer.parseInt(index);
         list.get(in).setQty(newqty);

@@ -78,11 +78,11 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
 
-    <string name="version">v 1.3</string>
+    <string name="version">v 1.4</string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
     <string name="Login">Login</string>
-
+    <string name="qtyerror3">not valid quantity </string>
     <string name="nopo">No Po exists</string>
     <string name="fillpo">fill po field</string>
     <string name="nobox">No Boxs for this Po</string>

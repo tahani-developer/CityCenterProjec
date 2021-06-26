@@ -76,4 +76,5 @@
     <string name="nopo">لا يوجد طلبيات مخزنة</string>
     <string name="barcodeconfirm">
 هذه المادة غير موجودة بهذه الطلبية، هل تريد أضافتها؟ </string>
+    <string name="qtyerror3">كمية غير صحيحة  </string>
 </resources>
