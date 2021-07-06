@@ -15,6 +15,16 @@ import java.util.List;
 public  class Shipment {
     @PrimaryKey(autoGenerate = true)
      int SERIAL;
+
+    @ColumnInfo(name = "UserNO")
+    String UserNO;
+    public String getUserNO() {
+        return UserNO;
+    }
+
+    public void setUserNO(String userNO) {
+        UserNO = userNO;
+    }
     @ColumnInfo(name = "PONO")
     String PoNo;
     @ColumnInfo(name = "BOXNO")
@@ -39,6 +49,8 @@ public  class Shipment {
 
     @ColumnInfo(name = "IsNew")
     String IsNew;
+
+
 
     public String getIsNew() {
         return IsNew;

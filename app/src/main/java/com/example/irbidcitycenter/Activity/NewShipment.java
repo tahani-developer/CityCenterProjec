@@ -216,7 +216,7 @@ public class NewShipment extends AppCompatActivity {
 
                 localList.clear();
                 shipmentsList.clear();
-                adapter.notifyDataSetChanged();
+               if(adapter!=null) adapter.notifyDataSetChanged();
                     pono.setText("");
                     pono.setEnabled(true);
                     pono.requestFocus();
@@ -272,7 +272,7 @@ public class NewShipment extends AppCompatActivity {
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
 
 
-
+                                if (localList.size() != 0) {
                                 new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                                         .setTitleText(getResources().getString(R.string.confirm_title))
                                         .setContentText(getResources().getString(R.string.messageExit2))
@@ -280,15 +280,14 @@ public class NewShipment extends AppCompatActivity {
                                             @Override
                                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                                 sweetAlertDialog.dismissWithAnimation();
-                             if (localList.size() != 0) {
-                                 localList.clear();
-                                  filladapter( localList);
 
-                              }
+                                                localList.clear();
+                                                filladapter(localList);
 
-                             Intent intent =new Intent(NewShipment.this,MainActivity.class);
-                             startActivity(intent);
-                              finish();
+
+                                                Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
 
                                             }
                                         })
@@ -300,7 +299,14 @@ public class NewShipment extends AppCompatActivity {
                                         })
                                         .show();
 
-                            }
+                            } else{
+                                    sweetAlertDialog.dismiss();
+                                    Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }}
+
                         })
                         .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
@@ -393,8 +399,7 @@ public class NewShipment extends AppCompatActivity {
                               shipment.setBoxNo(boxno.getText().toString().trim());
                               shipment.setBarcode(barcode.getText().toString().trim());
                               CheckShipmentObject(shipment);
-
-
+                              next.setEnabled(true);
                               boxno.setEnabled(false);
                               boxno.setEnabled(false);
                               // getPOdetails();
@@ -529,40 +534,46 @@ public class NewShipment extends AppCompatActivity {
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
 
 
+                        if (localList.size() != 0) {
+                            new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.messageExit2))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismissWithAnimation();
 
-                        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText(getResources().getString(R.string.confirm_title))
-                                .setContentText(getResources().getString(R.string.messageExit2))
-                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        sweetAlertDialog.dismissWithAnimation();
-                                 // if (localList.size() != 0)
-                                       {
-                                       //     localList.clear();
-                                        //    filladapter(localList);
+                                            localList.clear();
+                                            filladapter(localList);
+
+
+                                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
 
                                         }
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
 
-                                        Intent intent =new Intent(NewShipment.this,MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                        } else{
+                            sweetAlertDialog.dismiss();
+                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
 
-                                    }
-                                })
-                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        sweetAlertDialog.dismiss();
-                                    }
-                                })
-                                .show();
+                        }}
 
-                    }
                 })
                 .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        barcode.setEnabled(true);
                         sweetAlertDialog.dismiss();
                     }
                 })
@@ -1089,6 +1100,7 @@ barcode.setOnKeyListener(onKeyListener);
                             newshipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
                             newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
                             newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
+                            newshipment.setUserNO(getusernum());
                               if(CheckNewShipmentObject(newshipment)==false
                                       &&!barcode.getText().equals("")
                               &&barcode.getText().toString().trim().length()<=20) {
@@ -1129,6 +1141,7 @@ barcode.setOnKeyListener(onKeyListener);
                                     shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                                     shipment.setPoqty(PoQTY.getText().toString());
                                     shipment.setItemname(itemname.getText().toString());
+                                    shipment.setUserNO(getusernum());
                                     long differ = getDiff(qty);
                                     if (differ > 0)
                                         shipment.setDiffer("+" + differ);
@@ -1194,8 +1207,9 @@ barcode.setOnKeyListener(onKeyListener);
                             saved=true;
                         my_dataBase.shipmentDao().updateShipmentPosted();
                       localList.clear();
-                        adapter.notifyDataSetChanged();
+
                         filladapter(localList);
+                        if(adapter!=null)adapter.notifyDataSetChanged();
                     }
                     else  if(editable.toString().trim().equals("not"))
                     {
@@ -1203,8 +1217,9 @@ barcode.setOnKeyListener(onKeyListener);
                         Log.e("poststate",editable.toString());
                         saved=true;
                         localList.clear();
-                        adapter.notifyDataSetChanged();
+
                         filladapter(localList);
+                        if(adapter!=null)adapter.notifyDataSetChanged();
 
                     }
                 }
@@ -1279,6 +1294,10 @@ pono.addTextChangedListener(new TextWatcher() {
 
     }
 });
+    }
+
+    private String getusernum() {
+        return "";
     }
 
     private void showConfirmBarcodeDailog() {
@@ -1665,6 +1684,7 @@ pono.addTextChangedListener(new TextWatcher() {
         Log.e("updateRow",g+"");
 
     }
+
 
     public static void updateAdpapter() {
 

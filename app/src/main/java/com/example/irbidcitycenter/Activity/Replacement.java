@@ -3,9 +3,7 @@ package com.example.irbidcitycenter.Activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompatSideChannelService;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +30,6 @@ import android.widget.Toast;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -43,7 +41,6 @@ import com.google.zxing.integration.android.IntentResult;
 import com.example.irbidcitycenter.Adapters.ReplacementAdapter;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +58,7 @@ import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 public class Replacement extends AppCompatActivity {
     boolean saved = false;
+    int position;
     public static TextView respon,qtyrespons;
     GeneralMethod generalMethod;
     Spinner fromSpinner, toSpinner;
@@ -71,10 +69,10 @@ public class Replacement extends AppCompatActivity {
     public static TextView qty;
     EditText recqty;
     Button save;
-    //public static boolean validItem=false,validateKind=false;
     public int indexZone = -1;
     public RoomAllData my_dataBase;
     String From, To, Zone, Itemcode, Qty;
+    String FromNo, ToNo;
     ReplacementModel replacement;
     ReplacementModel replacementModel;
     static ReplacementAdapter adapter;
@@ -84,6 +82,7 @@ public class Replacement extends AppCompatActivity {
 
     List<String> spinnerArray = new ArrayList<>();
     public static ArrayList<ReplacementModel> replacementlist = new ArrayList<>();
+    public List<ReplacementModel> UnPostedreplacementlist = new ArrayList<>();
     public static ArrayList<Store> Storelistt = new ArrayList<>();
     @SuppressLint("WrongViewCast")
     @Override
@@ -92,11 +91,13 @@ public class Replacement extends AppCompatActivity {
         setContentView(R.layout.activity_replacement);
         init();
         getStors();
+        zone.setEnabled(true);
         zone.requestFocus();
         itemcode.setEnabled(false);
         recqty.setEnabled(false);
         save.setEnabled(false);
-
+        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
+//my_dataBase.replacementDao().deleteALL();
       /*  if(Storelistt.size()==0) {
             itemcode.setEnabled(false);
             zone.setEnabled(false);
@@ -161,7 +162,7 @@ public class Replacement extends AppCompatActivity {
  }catch (Exception e){}
 
 
-        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
+
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -171,15 +172,16 @@ public class Replacement extends AppCompatActivity {
                 // for (int i=0; i<replacementlist.size();i++)
                 //     model.insert(replacementlist.get(i));
 
-                if (replacementlist.size() > 0) {
+                /*if (replacementlist.size() > 0) {
                     for (int i = 0; i < replacementlist.size(); i++) {
                         replacementlist.get(i).setItemcode(convertToEnglish(replacementlist.get(i).getItemcode()));
                         replacementlist.get(i).setQty(convertToEnglish(replacementlist.get(i).getQty()));
-                    }
+                    }*/
+                UnPostedreplacementlist=my_dataBase.replacementDao().getallReplacement();
                     exportData();
                     zone.setEnabled(true);
                     zone.requestFocus();
-                }
+
            zone.setText("");
                itemcode.setText("");
                qty.setText("");
@@ -197,35 +199,34 @@ public class Replacement extends AppCompatActivity {
                         .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                if (replacementlist.size() > 0) {
+
+                                    new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText(getResources().getString(R.string.confirm_title))
+                                            .setContentText(getResources().getString(R.string.messageExit2))
+                                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
 
 
-                                new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText(getResources().getString(R.string.confirm_title))
-                                        .setContentText(getResources().getString(R.string.messageExit2))
-                                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                                sweetAlertDialog.dismissWithAnimation();
-                                                if (replacementlist.size() > 0) {
                                                     replacementlist.clear();
                                                     adapter.notifyDataSetChanged();
-
-
+                                                    sweetAlertDialog.dismissWithAnimation();
+                                                    finish();
                                                 }
-                                                Intent intent = new Intent(Replacement.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        })
-                                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                sweetAlertDialog.dismiss();
-                                            }
-                                        }).show();
-
+                                            })
+                                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismiss();
+                                                }
+                                            }).show();
+                                }
+                                else
+                                {
+                                    sweetAlertDialog.dismiss();
+                                    finish();
+                                }
                             }
                         }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
@@ -242,28 +243,20 @@ public class Replacement extends AppCompatActivity {
     }
 
 
-    public boolean AddInCaseDuplicates(ReplacementModel replacement) {
+    public boolean CaseDuplicates(ReplacementModel replacement) {
         boolean flag = false;
         if (replacementlist.size() != 0)
             for (int i = 0; i < replacementlist.size(); i++) {
 
-                if (convertToEnglish(replacementlist.get(i).getZone()).equals(convertToEnglish(replacement.getZone()))
-                        && convertToEnglish(replacementlist.get(i).getItemcode()).equals(convertToEnglish(replacement.getItemcode()))) {
-                    int sum=Integer.parseInt(replacementlist.get(i).getRecQty()) + Integer.parseInt("1");
-                    Log.e("aaasum ",sum+"");
-                    if(checkQtyValidate(String.valueOf(sum)))
-                    {
-                        replacementlist.get(i).setRecQty((sum+""));
-                     if(adapter!=null)adapter.notifyDataSetChanged();
-                        flag = true;
-                    }
-                    else
-                    {
-                        showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+                if (convertToEnglish(replacementlist.get(i).getZone()).equals(replacement.getZone())
+                        && convertToEnglish(replacementlist.get(i).getItemcode()).equals(replacement.getItemcode())
+                        &&replacementlist.get(i).getFrom().equals(replacement.getFrom())
+                &&replacementlist.get(i).getTo().equals(replacement.getTo()))
+                {
 
+                   position=i;
                     flag = true;
-                    break;}
-
+                    break;
 
                 } else
                     flag = false;
@@ -281,18 +274,47 @@ public class Replacement extends AppCompatActivity {
     }
 
     private void showExitDialog() {
-        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+        new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText(getResources().getString(R.string.confirm_title))
                 .setContentText(getResources().getString(R.string.messageExit))
-                .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismissWithAnimation();
-                        finish();
+                        if (replacementlist.size() > 0) {
+
+                            new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.messageExit2))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                            replacementlist.clear();
+                                            adapter.notifyDataSetChanged();
+                                            sweetAlertDialog.dismissWithAnimation();
+                                            finish();
+                                        }
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    }).show();
+                        }
+                        else
+                        {
+                            sweetAlertDialog.dismiss();
+                            finish();
+                        }
                     }
-                })
-                .show();
-        replacementlist.clear();;
+                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.dismiss();
+            }
+        }).show();
     }
 
     private void getStors() {
@@ -301,11 +323,8 @@ public class Replacement extends AppCompatActivity {
 
     public void exportData() {
         try {
-            for (int i = 0; i < replacementlist.size(); i++) {
-                replacementlist.get(i).setFrom(replacementlist.get(i).getFrom().substring(0, replacementlist.get(i).getFrom().indexOf(" ")));
-                replacementlist.get(i).setTo(replacementlist.get(i).getTo().substring(0, replacementlist.get(i).getTo().indexOf(" ")));
-            }
-            exportData.exportReplacementList(replacementlist);
+
+            exportData.exportReplacementList(UnPostedreplacementlist);
         }catch (Exception e){
 
             // test
@@ -314,6 +333,7 @@ public class Replacement extends AppCompatActivity {
     }
 
     private void init() {
+        replacementlist.clear();
         poststateRE = findViewById(R.id.poststatRE);
         MainActivity.setflage = 1;
         itemKintText1 = findViewById(R.id.itemKintTextRE);
@@ -341,24 +361,7 @@ public class Replacement extends AppCompatActivity {
 
        zone.setOnKeyListener(onKeyListener);
         itemcode.setOnKeyListener(onKeyListener);
-/*
-        zone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(!editable.toString().equals(""))
-                searchZone(zone.getText().toString().trim());
-            }
-        });*/
 
 
 
@@ -450,18 +453,19 @@ public class Replacement extends AppCompatActivity {
 
                 if (editable.toString().length() != 0) {
                     if (editable.toString().trim().equals("exported")) {
-                        { saveData(1);
+                        { //saveData(1);
+                            my_dataBase.replacementDao().updateReplashmentPosted();
                         saved = true;
-                        replacementlist.clear();
-                        fillAdapter();
-                        adapter.notifyDataSetChanged();
+                    replacementlist.clear();
+                    fillAdapter();
+                      adapter.notifyDataSetChanged();
                         }
                     } else if (editable.toString().trim().equals("not")) {
                         saved = true;
-                        saveData(0);
-                        replacementlist.clear();
-                        fillAdapter();
-                        adapter.notifyDataSetChanged();
+                        //saveData(0);
+                      replacementlist.clear();
+                    fillAdapter();
+                      adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -483,7 +487,7 @@ public class Replacement extends AppCompatActivity {
                 if (editable.toString().length() != 0) {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
-                    {     Log.e("if","ifffffff");
+                    {
                         recqty.setEnabled(true);
 
                         try {
@@ -494,17 +498,16 @@ public class Replacement extends AppCompatActivity {
                             Log.e("Exception",e.getMessage());
                         }
                         save.setEnabled(true);
-                        zone.setText("");
-                        itemcode.setText("");
+
+
                         recqty.setText("1");
-                        zone.setEnabled(true);
-                        zone.requestFocus();
-                        itemcode.setEnabled(false);
+
+
+                        zone.setEnabled(false);
+                        itemcode.setText("");
+                        itemcode.requestFocus();
+
                         recqty.setEnabled(false);
-
-
-
-
 
 
                     }
@@ -512,7 +515,7 @@ public class Replacement extends AppCompatActivity {
                     {
                         showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.existsBARCODE));
                         recqty.setEnabled(false);
-                        Log.e("bbbbb","2222");
+
                         itemcode.setText("");
                         itemcode.requestFocus();
 
@@ -520,51 +523,7 @@ public class Replacement extends AppCompatActivity {
                 }
             }
         });
-/*itemcode.addTextChangedListener(new TextWatcher() {
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-        if (editable.toString().length() != 0) {
-
-            zone.setEnabled(false);
-            importData.getQty();
-            //
-
-
-
-
-            itemcode.setEnabled(false);
-
-            {
-                filldata();
-//                Replacement.qty.setText("");
-                save.setEnabled(true);
-                zone.setText("");
-                itemcode.setText("");
-                recqty.setText("1");
-                zone.setEnabled(true);
-
-                itemcode.setEnabled(false);
-                recqty.setEnabled(false);
-                itemcode.requestFocus();
-            }
-
-
-
-
-
-        }
-    }
-});*/
     }
 
     private void fillSp() {
@@ -638,9 +597,73 @@ public class Replacement extends AppCompatActivity {
                 case R.id.itemcodeedt:
 
                   if(!itemcode.getText().toString().equals(""))
-                  {     Log.e( "itemcodeedt ",keyEvent.getAction()+"");
-                    zone.setEnabled(false);
-                    importData.getQty();}
+                  {
+
+                      Log.e( "itemcodeedt ",itemcode.getText().toString()+"");
+
+                      From = fromSpinner.getSelectedItem().toString();
+                      To = toSpinner.getSelectedItem().toString();
+                      FromNo=From.substring(0,From.indexOf(" "));
+                      ToNo=To.substring(0,To.indexOf(" "));
+                      Zone = convertToEnglish(zone.getText().toString().trim());
+                      Itemcode = convertToEnglish(itemcode.getText().toString().trim());
+
+
+                      replacement = new ReplacementModel();
+                      replacement.setFrom( FromNo);
+                      replacement.setTo(ToNo);
+                      replacement.setZone(Zone);
+                      replacement.setItemcode(Itemcode);
+                      replacement.setFromName(From);
+                      replacement.setToName(To);
+                      zone.setEnabled(false);
+                    ReplacementModel replacementModel=my_dataBase.replacementDao().getReplacement(Itemcode,Zone, FromNo,ToNo);
+                    if(replacementModel!=null) {
+                        if (!CaseDuplicates(replacementModel))
+                            replacementlist.add(replacementModel);
+                        save.setEnabled(true);
+                    }
+
+
+                          if (CaseDuplicates(replacement)) {
+                              Log.e("replacementFrom",replacement.getTo());
+                              Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
+                              //update qty in Duplicate case
+                              int sum=Integer.parseInt(replacementlist.get(position).getRecQty()) + Integer.parseInt("1");
+                              Log.e("aaasum ",sum+"");
+
+                              if(sum<=Integer.parseInt(replacementlist.get(position).getQty()))
+                              {
+                                  replacementlist.get(position).setRecQty((sum+""));
+                                  my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(),replacementlist.get(position).getRecQty());
+
+                                  zone.setEnabled(false);
+                                  itemcode.setText("");
+                                  itemcode.requestFocus();
+                                  fillAdapter();
+                                  Log.e("heree","here2");
+                              }
+                              else
+                              {   showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+
+                                  fillAdapter();
+                                  zone.setEnabled(false);
+                                  itemcode.setText("");
+                                  itemcode.requestFocus();
+                              }
+
+
+                          }
+
+
+                          else
+                          {
+                              Log.e("not in db","not in db");
+                              importData.getQty();
+
+                          }
+                      }
+
                   else
                       itemcode.requestFocus();
                     break;
@@ -652,6 +675,7 @@ public class Replacement extends AppCompatActivity {
 
 
 
+
     EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -659,37 +683,100 @@ public class Replacement extends AppCompatActivity {
                     || i == EditorInfo.IME_NULL) {
                 switch (textView.getId()) {
                     case R.id.zoneedt:
+                        Log.e("ZONEHERE",zone.getText().toString()+"");
                         if(!zone.getText().toString().equals(""))
-                           if(searchZone(zone.getText().toString().trim()))
-                           {
-
-                           }
-                        else {
-                            zone.setError("Invalid");
-                            Log.e("","");
-                               zone.setText("");}
+                            if(searchZone(zone.getText().toString().trim()))
+                            {
+                                Log.e("zone",zone.getText().toString());
+                            }
+                            else {
+                                zone.setError("Invalid");
+                                Log.e("elsezone",zone.getText().toString());
+                                zone.setText("");}
                         else
                             zone.requestFocus();
-
                         break;
-
                     case R.id.itemcodeedt:
 
                         if(!itemcode.getText().toString().equals(""))
                         {
+
+                            Log.e( "itemcodeedt ",itemcode.getText().toString()+"");
+
+                            From = fromSpinner.getSelectedItem().toString();
+                            To = toSpinner.getSelectedItem().toString();
+                            FromNo=From.substring(0,From.indexOf(" "));
+                            ToNo=To.substring(0,To.indexOf(" "));
+                            Zone = convertToEnglish(zone.getText().toString().trim());
+                            Itemcode = convertToEnglish(itemcode.getText().toString().trim());
+
+
+                            replacement = new ReplacementModel();
+                            replacement.setFrom( FromNo);
+                            replacement.setTo(ToNo);
+                            replacement.setZone(Zone);
+                            replacement.setItemcode(Itemcode);
+                            replacement.setFromName(From);
+                            replacement.setToName(To);
                             zone.setEnabled(false);
-                            importData.getQty();}
+                            ReplacementModel replacementModel=my_dataBase.replacementDao().getReplacement(Itemcode,Zone, FromNo,ToNo);
+                            if(replacementModel!=null) {
+                                if (!CaseDuplicates(replacementModel))
+                                    replacementlist.add(replacementModel);
+                                save.setEnabled(true);
+                            }
+
+
+                            if (CaseDuplicates(replacement)) {
+                                Log.e("replacementFrom",replacement.getTo());
+                                Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
+                                //update qty in Duplicate case
+                                int sum=Integer.parseInt(replacementlist.get(position).getRecQty()) + Integer.parseInt("1");
+                                Log.e("aaasum ",sum+"");
+
+                                if(sum<=Integer.parseInt(replacementlist.get(position).getQty()))
+                                {
+                                    replacementlist.get(position).setRecQty((sum+""));
+                                    my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(),replacementlist.get(position).getRecQty());
+                                    zone.setText("");
+                                    zone.setEnabled(true);
+                                    itemcode.setText("");
+                                    zone.requestFocus();
+                                    fillAdapter();
+                                    save.setEnabled(true);
+                                    Log.e("heree","here2");
+                                }
+                                else
+                                {   showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
+
+                                    fillAdapter();
+                                    itemcode.setText("");
+                                    save.setEnabled(true);
+                                }
+
+
+                            }
+
+
+                            else
+                            {
+                                Log.e("not in db","not in db");
+                                importData.getQty();
+                                save.setEnabled(true);
+
+                            }
+                        }
+
                         else
                             itemcode.requestFocus();
                         break;
-
                     case R.id.qtyedt: {
 
 
                   if(Integer.parseInt(recqty.getText().toString())==0)
                            recqty.setText("1");
 
-                            itemcode.setEnabled(false);
+
                      //       if (checkQtyValidate(recqty.getText().toString()))
                        {
                                 filldata();
@@ -700,7 +787,6 @@ public class Replacement extends AppCompatActivity {
                                 recqty.setText("1");
                                 zone.setEnabled(true);
                                 zone.requestFocus();
-                                itemcode.setEnabled(false);
                                 recqty.setEnabled(false);
                                 break;
                             }
@@ -757,16 +843,11 @@ public class Replacement extends AppCompatActivity {
 return  false;
 
     }
-
+    private String getusernum() {
+        return "";
+    }
     private void filldata() {
 
-        From = fromSpinner.getSelectedItem().toString();
-        To = toSpinner.getSelectedItem().toString();
-        // Toast.makeText(Replacement.this, "sssss", Toast.LENGTH_SHORT).show();
-
-
-        Zone = zone.getText().toString().trim();
-        Itemcode = itemcode.getText().toString().trim();
         Qty = recqty.getText().toString().trim();
         if (Zone.toString().trim().equals("")) zone.setError("required");
 
@@ -777,35 +858,29 @@ return  false;
             recqty.setError("required");
         else {
 
-            replacement = new ReplacementModel();
-            replacement.setFrom(From);
-            replacement.setTo(To);
-            replacement.setZone(Zone);
-            replacement.setItemcode(Itemcode);
+
             replacement.setRecQty(Qty);
             Log.e("replacement","1=="+qty.getText().toString());
             replacement.setQty( listQtyZone.get(0).getQty());
             Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
+            replacement.setUserNO(getusernum());
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
-           //updateQTYOfZone();
-            if (AddInCaseDuplicates(replacement)) {
-                Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
-
-
-            } else {
-
-                Log.e("else","AddInCaseDuplicates");
+             Log.e("else","AddInCaseDuplicates");
                 Log.e("replacementlist.size", replacementlist.size()+"");
                 replacementlist.add(replacement);
-                Log.e("replacementlist.size", replacementlist.size()+"");
+                Log.e("replacementlist.size", replacementlist.size()+""+replacementlist.get(0).getFrom());
                 fillAdapter();
+               SaveRow(replacement);
             }
-            Replacement.qty.setText("");
-
-        }
 
 
+
+
+    }
+
+    private void SaveRow(ReplacementModel replacement) {
+        my_dataBase.replacementDao().insert(replacement);
     }
 
     private void updateQTYOfZone() {

@@ -59,7 +59,7 @@
                         android:background="@drawable/back_border_edit"
                         android:inputType="text"
                         android:maxLines="1"
-
+                        android:textCursorDrawable="@color/red"
                         android:padding="3dp"
                         android:gravity="center"
                         android:textColor="@color/dark_blue_3"
@@ -182,7 +182,7 @@
                         android:maxLines="1"
                         android:inputType="text"
 
-
+                        android:textCursorDrawable="@color/red"
                         android:padding="3dp"
                         android:gravity="center"
                         android:textColor="@color/dark_blue_3"
@@ -240,7 +240,6 @@
                         android:layout_marginRight="5dp"
                         android:layout_height="25dp"
                         android:background="@drawable/back_without_border"
-
                         android:elevation="2dp"
                         android:padding="3dp"
                         android:gravity="center"
@@ -290,7 +289,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_height="match_parent"
                         android:background="@drawable/back_border_edit"
-
+                        android:textCursorDrawable="@color/red"
                         android:maxLines="1"
                         android:inputType="number"
                         android:padding="3dp"
@@ -414,51 +413,71 @@
                     </androidx.core.widget.NestedScrollView>
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
-                android:layout_height="match_parent"
-                android:layout_weight="5"
                 android:layout_width="match_parent"
-                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:layout_gravity="center">
+                android:layout_weight="5"
+                android:gravity="center">
 
 
                 <Button
                     android:id="@+id/save"
-                    android:layout_height="35dp"
                     android:layout_width="wrap_content"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/save"
                     android:layout_margin="10dp"
-
-                    android:onClick="saveData"
-                    android:elevation="5dp"
-                    android:textStyle="bold"
-                    android:padding="5dp"
                     android:layout_marginBottom="3dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/dark_blue_3"
                     android:background="@drawable/done_button"
-                    />
+                    android:layout_weight="1"
+                    android:elevation="5dp"
+                    android:gravity="center"
+                    android:onClick="saveData"
+                    android:padding="5dp"
+                    android:text="@string/save"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <Button
                     android:id="@+id/cancel_btn"
-                    android:layout_height="35dp"
                     android:layout_width="wrap_content"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="3dp"
-                    android:gravity="center"
-                    android:text="@string/cancel"
-                    android:elevation="5dp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="3dp"
-                    android:padding="3dp"
-                    android:onClick="exitAddZone"
                     android:layout_marginRight="55dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/red"
+                    android:layout_marginBottom="3dp"
                     android:background="@drawable/cancel_button"
-
+                    android:elevation="5dp"
+                    android:gravity="center"
+                    android:onClick="exitAddZone"
+                    android:padding="3dp"
+                    android:text="@string/cancel"
+                    android:textColor="@color/red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    />
+                <Button
+                    android:id="@+id/delete_btn"
+                    android:background="@drawable/delete_button"
+                    android:text="@string/deletebut"
+                    android:textColor="@color/dark_blue_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="55dp"
+                    android:layout_marginBottom="3dp"
+                    android:elevation="5dp"
+                    android:gravity="center"
+                    android:onClick="exitAddZone"
+                    android:padding="3dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
                     />
             </LinearLayout>
 

@@ -47,7 +47,7 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
     public int getItemCount() {
 
             return list.size();
-    }
+}
 
 
     static class SearchViewHolder extends RecyclerView.ViewHolder{

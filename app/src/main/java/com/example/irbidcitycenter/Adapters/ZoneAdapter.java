@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
+import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     Context context;
     String newqty;
     GeneralMethod generalMethod;
+    public RoomAllData my_dataBase;
     public ZoneAdapter(Context context, List<ZoneModel> list) {
         this.list = list;
         this.context = context;
@@ -49,6 +51,8 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         holder.qty.setTag(position);
     }
     public void removeItem(int position) {
+
+        my_dataBase.zoneDao().deletezone(list.get(position).getItemCode());
         list.remove(position);
         notifyItemRemoved(position);
     }
@@ -62,7 +66,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
       public EditText qty;
         public ZoneViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            my_dataBase = RoomAllData.getInstanceDataBase(context);
             zoneCode=itemView.findViewById(R.id.zoneCode);
             itemCode=itemView.findViewById(R.id.itemCode);
             qty=itemView.findViewById(R.id.qtyZone);
@@ -94,13 +98,16 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
                         {
 
                             updateQtyList(editable.toString().trim(),position);
+                            updateQtyOfRow(list.get(index).getItemCode(),list.get(index).getQty());
                         }
 
                         else {
+
                             Toast.makeText(context, "Invalid Zero", Toast.LENGTH_SHORT).show();
                             list.get(index).getQty();
                             qty.setText(list.get(index).getQty());
                             updateQtyList(list.get(index).getQty(),position);
+
                         }
 
                     }
@@ -143,11 +150,6 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
                 }
             });
-
-
-
-
-
         }
 
 
@@ -159,6 +161,8 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         int in=Integer.parseInt(index);
         list.get(in).setQty(newqty);
         listZone.get(in).setQty(newqty);
-
+    }
+    private void updateQtyOfRow(String barecode,String Qty){
+        my_dataBase.zoneDao().updateQTY(barecode,Qty);
     }
 }

@@ -21,6 +21,15 @@ public class ZoneModel {
     private   String itemCode;
 
 
+    @ColumnInfo(name = "UserNO")
+    String UserNO;
+    public String getUserNO() {
+        return UserNO;
+    }
+
+    public void setUserNO(String userNO) {
+        UserNO = userNO;
+    }
 
     @ColumnInfo(name = "QTYZONE")
     private   String qty;

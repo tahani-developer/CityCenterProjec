@@ -79,7 +79,7 @@ public class ExportData {
 
 
     }
-    public void exportReplacementList(ArrayList<ReplacementModel>replacementlist) {
+    public void exportReplacementList(List<ReplacementModel>replacementlist) {
         getReplacmentObject(replacementlist);
         pdRepla = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdRepla.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -89,7 +89,7 @@ public class ExportData {
 
         new JSONTask_AddReplacment(replacementlist).execute();
     }
-    private void  getReplacmentObject(ArrayList<ReplacementModel>replacementlist) {
+    private void  getReplacmentObject(List<ReplacementModel>replacementlist) {
         jsonArrayReplacement = new JSONArray();
         for (int i = 0; i < replacementlist.size(); i++)
         {
@@ -460,9 +460,9 @@ else{
   public class  JSONTask_AddReplacment extends AsyncTask<String, String, String> {
       private String JsonResponse = null;
 
-      ArrayList<ReplacementModel> replacementList=new ArrayList<>();
+     List<ReplacementModel> replacementList=new ArrayList<>();
 
-      public JSONTask_AddReplacment(ArrayList<ReplacementModel> replacementList) {
+      public JSONTask_AddReplacment(List<ReplacementModel> replacementList) {
           this.replacementList = replacementList;
       }
 

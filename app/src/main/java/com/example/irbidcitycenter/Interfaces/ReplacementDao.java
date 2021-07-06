@@ -22,22 +22,27 @@ public interface ReplacementDao {
     @Update
     void update( ReplacementModel replacementModel);
     @Delete
-    void delete( ReplacementModel replacementModel);
+    int delete( ReplacementModel replacementModel);
 
 
     @Query("Delete from REPLACEMENT_TABLE")
     void deleteALL();
 
-    @Query ("select * from REPLACEMENT_TABLE")
-    LiveData<List<ReplacementModel>> getallReplacement();
+    @Query ("select * from REPLACEMENT_TABLE WHERE ISPOSTED='0'")
+    List<ReplacementModel>getallReplacement();
 
     @Query("SELECT * FROM REPLACEMENT_TABLE where ISPOSTED = :s")
     List<ReplacementModel> getUnpostedReplacement(String s);
 
+
     @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
-    void updateReplacmentPosted();
-
-    @Query("UPDATE SHIPMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateReplashmentPosted();
+    @Query("UPDATE REPLACEMENT_TABLE SET RECQTY = :qty WHERE ITEMCODE= :barcode AND ISPOSTED='0'" )
+    int updateQTY(String barcode,String qty);
 
+    @Query("DELETE FROM REPLACEMENT_TABLE WHERE ITEMCODE= :barcode AND FROMSTORE= :FrSt AND TOSTORE= :ToSt AND ISPOSTED='0'")
+    int  deleteReplacement(String barcode,String FrSt,String ToSt);
+
+    @Query("SELECT * FROM REPLACEMENT_TABLE WHERE ITEMCODE = :s AND FROMSTORE= :FrSt AND TOSTORE= :ToSt AND ZONECODE= :Zone AND ISPOSTED='0'")
+    ReplacementModel getReplacement(String s,String Zone,String FrSt,String ToSt);
 }

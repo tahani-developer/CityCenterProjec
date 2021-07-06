@@ -357,12 +357,60 @@ TextView settings;
 
 
         final EditText ip= dialog.findViewById(R.id.ipEditText);
+        final TextView editip= dialog.findViewById(R.id.editip);
+       // ip.setEnabled(false);
         final EditText conNO= dialog.findViewById(R.id.cono);
         final EditText years=dialog.findViewById(R.id.storeNo_edit);
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
        // usernum.setText(SET_userNO);
 
+        ip.setEnabled(false);
+        conNO.setEnabled(false);
+        years.setEnabled(false);
+        usernum.setEnabled(false);
+        editip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog1 = new Dialog(Login.this);
+                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog1.setCancelable(false);
+                dialog1.setContentView(R.layout.passworddailog);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog1.getWindow().getAttributes());
+                ip.setEnabled(true);
+                lp.gravity = Gravity.CENTER;
+                dialog1.getWindow().setAttributes(lp);
+
+
+                EditText editText=dialog1.findViewById(R.id.passwordd);
+                Button donebutton=dialog1.findViewById(R.id.done);
+                Button cancelbutton=dialog1.findViewById(R.id.cancel);
+                donebutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(editText.getText().toString().trim().equals("304555"))
+                        {
+                            ip.setEnabled(true);
+                            dialog1.dismiss();
+                        }
+                    }
+                });
+                cancelbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ip.setEnabled(false);
+                        dialog1.dismiss();
+                    }
+                });
+
+
+
+
+
+                dialog1.show();
+            }
+        });
         getDataZone();
         if(appSettings.size()!=0) {
 
@@ -373,6 +421,8 @@ TextView settings;
             if (appSettings.get(0).getUpdateQTY().equals("1"))
                 qtyUP.setChecked(true);
         }
+
+
         //****************************
         dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
 
@@ -426,4 +476,5 @@ TextView settings;
         generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
 
     }
+
 }

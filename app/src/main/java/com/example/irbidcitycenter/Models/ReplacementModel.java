@@ -11,6 +11,16 @@ import org.json.JSONObject;
 
 @Entity(tableName = "REPLACEMENT_TABLE")
 public  class ReplacementModel {
+
+    @ColumnInfo(name = "UserNO")
+    String UserNO;
+    public String getUserNO() {
+        return UserNO;
+    }
+
+    public void setUserNO(String userNO) {
+        UserNO = userNO;
+    }
     @ColumnInfo(name = "FROMSTORE")
     String From;
     @ColumnInfo(name = "TOSTORE")
@@ -44,6 +54,25 @@ public  class ReplacementModel {
         Zone = zone;
         Itemcode = itemcode;
         Qty = qty;
+    }
+    String ToName;
+
+    String FromName;
+
+    public String getToName() {
+        return ToName;
+    }
+
+    public void setToName(String toName) {
+        ToName = toName;
+    }
+
+    public String getFromName() {
+        return FromName;
+    }
+
+    public void setFromName(String fromName) {
+        FromName = fromName;
     }
 
     public String getIsPosted() {

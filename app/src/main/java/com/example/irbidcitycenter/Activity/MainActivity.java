@@ -14,11 +14,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -243,12 +246,58 @@ ImportData importData;
 
 
         final EditText ip= dialog.findViewById(R.id.ipEditText);
+        final TextView editip= dialog.findViewById(R.id.editip);
         final EditText conNO= dialog.findViewById(R.id.cono);
         final EditText years=dialog.findViewById(R.id.storeNo_edit);
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
         usernum.setText(SET_userNO);
+        ip.setEnabled(false);
+        conNO.setEnabled(false);
+        years.setEnabled(false);
+        usernum.setEnabled(false);
+        editip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog1 = new Dialog(MainActivity.this);
+                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog1.setCancelable(false);
+                dialog1.setContentView(R.layout.passworddailog);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog1.getWindow().getAttributes());
+                ip.setEnabled(true);
+                lp.gravity = Gravity.CENTER;
+                dialog1.getWindow().setAttributes(lp);
 
+
+                EditText editText=dialog1.findViewById(R.id.passwordd);
+                Button donebutton=dialog1.findViewById(R.id.done);
+                Button cancelbutton=dialog1.findViewById(R.id.cancel);
+                donebutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(editText.getText().toString().trim().equals("304555"))
+                        {
+                            ip.setEnabled(true);
+                            dialog1.dismiss();
+                        }
+                    }
+                });
+                cancelbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ip.setEnabled(false);
+                        dialog1.dismiss();
+                    }
+                });
+
+
+
+
+
+                dialog1.show();
+            }
+        });
         getDataZone();
         if(appSettings.size()!=0) {
 

@@ -29,7 +29,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password">Invalid Password</string>
     <string name="login_failed">"Login failed"</string>
     <string name="ZoneCode">Zone Code</string>
     <string name="itemCode">Item Code</string>
@@ -45,6 +45,7 @@
     <string name="boxnum">BoxNo</string>
     <string name="barcode">BareCode</string>
     <string name="from">From</string>
+    <string name="enter_password">Enter Password</string>
     <string name="to">TO</string>
     <string name="nextBox">Next Box</string>
     <string name="login">login</string>
@@ -54,10 +55,13 @@
     <string name="invalidPONO" >in valid PO number</string>
     <string name="existsBARCODE" >BareCode not exists</string>
     <string name="Itemname" >Item name</string>
+    <string name="app_done">Done</string>
     <string name="Differ" >Differ</string>
 <string name="confirm">Are you sure you want to select this entry?</string>
     <string name="delete">Are you sure you want to
             \n delete this entry?</string>
+    <string name="delete3"> Qty is 1, Are you sure you want to
+            \n delete this item</string>
     <string name="yes">yes</string>
     <string name="no">No</string>
     <string name= "lastBox">Last Box Info:  </string>
@@ -69,7 +73,7 @@ This box is not available in this PO, do you want to add it? </string>
     <string name="barcodeconfirm">
 This barcode is not available in this PO, do you want to add it? </string>
     <string name="messageExit">Are You Sure To Exit ?</string>
-    <string name="messageExit2">You will lose data, Are You Sure To Exit ?</string>
+    <string name="messageExit2">all data saved locally, Are You Sure To Exit ?</string>
     <string name="ok">OK</string>
     <string name="warning">Warning</string>
     <string name="fillYourList">Fill Your List !!</string>
@@ -77,7 +81,7 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="clearAllData">Clear All Data??</string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
-
+    <string name="edit"> Edit Ip Address</string>
     <string name="version">v 1.4</string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
@@ -86,5 +90,17 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="nopo">No Po exists</string>
     <string name="fillpo">fill po field</string>
     <string name="nobox">No Boxs for this Po</string>
+    <string name="deletebut"> delete </string>
+    <string name="deleteitemt">Delete Item </string>
+    <string name="delete1">Delete </string>
+    <string name="reduceqty">Reduce QTY Of Item </string>
+    <string name="deletezone"> Delete Zone </string>
+    <string name="oldqty">  Old Qty </string>
+    <string name="deleteitemt2">Delete This Item </string>
+    <string name="back">  Back </string>
+    <string name="enter"> Enter </string>
+    <string name="NODATA">  No deleted data to recover </string>
+    <string name="dataRet"> DATA Returned</string>
+    <string name="returndata"> Do you want to undo the deletion process? </string>
     <string name="alertPoSearch">Are you sure you want to select this entry?</string>
 </resources>

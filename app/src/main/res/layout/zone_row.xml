@@ -48,6 +48,7 @@
             android:textSize="15sp"
             android:layout_weight="1"
             android:gravity="center"
+            android:enabled="false"
             />
         <TextView
             android:id="@+id/remove"
@@ -57,6 +58,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="15sp"
+            android:visibility="invisible"
             android:textColor="@color/colorPrimary"
             android:drawableEnd="@drawable/ic_baseline_close_24"
            />
