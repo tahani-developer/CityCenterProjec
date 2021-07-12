@@ -161,4 +161,15 @@ public class ZoneModel {
         }
         return obj;
     }
+
+
+    String deletedflage;
+
+    public String getDeletedflage() {
+        return deletedflage;
+    }
+
+    public void setDeletedflage(String deletedflage) {
+        this.deletedflage = deletedflage;
+    }
 }

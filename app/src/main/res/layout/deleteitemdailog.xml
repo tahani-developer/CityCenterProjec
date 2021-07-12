@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:layout_width="330dp"
-    android:layout_height="300dp"
+    android:layout_height="320dp"
     android:layout_gravity="center"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="6dp"
-
+        android:layout_height="25dp"
         android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/close_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:drawableEnd="@drawable/ic_baseline_clear_24"/>
     </LinearLayout>
 
 
@@ -182,6 +192,11 @@
 
         </TableRow>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -262,13 +277,13 @@
 
         <Button
 
-            android:id="@+id/DD_dialogcancel"
+            android:id="@+id/DD_dialogsave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_weight="1.2"
             android:background="@drawable/done_button"
-            android:text="@string/back"
+            android:text="@string/save"
             android:textAllCaps="false"
             android:textColor="@color/dark_blue_3"
             android:textSize="12sp" />
@@ -305,5 +320,11 @@
             android:textColor="@color/red"
             android:background="@drawable/cancel_button"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:orientation="horizontal">
     </LinearLayout>
 </LinearLayout>

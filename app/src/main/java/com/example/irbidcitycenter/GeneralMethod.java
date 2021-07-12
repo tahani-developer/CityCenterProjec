@@ -121,9 +121,12 @@ public class GeneralMethod {
 
         final EditText ip= dialog.findViewById(R.id.ipEditText);
         final EditText conNO= dialog.findViewById(R.id.cono);
+        conNO.setEnabled(false);
         final EditText years=dialog.findViewById(R.id.storeNo_edit);
+        years.setEnabled(false);
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
+        usernum.setEnabled(false);
        // usernum.setText(SET_userNO);
         appSettingsList=new ArrayList<>();
 

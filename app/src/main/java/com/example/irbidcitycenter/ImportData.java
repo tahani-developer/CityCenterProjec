@@ -1131,10 +1131,11 @@ else
 
 
                     }
+                    Replacement.qty.setText(d);
                     qtyrespons.setText("QTY");
 
                     Log.e("qtyrespons",qtyrespons.getText().toString()+d);
-                    Replacement.qty.setText(d);
+
                     Log.e("qtyrespons",qtyrespons.getText().toString()+d);
                     }
                 else {

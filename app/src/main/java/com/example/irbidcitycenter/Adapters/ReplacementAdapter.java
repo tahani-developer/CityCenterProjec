@@ -76,7 +76,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
     class replacementViewHolder extends RecyclerView.ViewHolder{
           TextView from,to,zone,itemcode ,rmovetxt,itemqty;;
-          EditText qty;
+          TextView qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);

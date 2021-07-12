@@ -209,13 +209,20 @@ public class NewShipment extends AppCompatActivity {
             public void onClick(View view) {
 
 
+if(localList.size()!=0) {
+    shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
+    Log.e("shipmentsListsize", shipmentsList.size() + "");
+    exportData(shipmentsList);
 
-               shipmentsList=my_dataBase.shipmentDao().getUnpostedShipment("0");
-               Log.e("shipmentsListsize",shipmentsList.size()+"");
-               exportData(shipmentsList);
+    localList.clear();
+    shipmentsList.clear();
+}
+else
+{
 
-                localList.clear();
-                shipmentsList.clear();
+        generalMethod.showSweetDialog(NewShipment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+
+}
                if(adapter!=null) adapter.notifyDataSetChanged();
                     pono.setText("");
                     pono.setEnabled(true);

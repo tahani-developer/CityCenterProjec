@@ -71,8 +71,8 @@ public interface ZoneDao {
     @Query("DELETE FROM ZONETABLE WHERE ZONECODE= :barcode AND ISPOSTED='0'")
     public int  deletezonedata(String barcode);
 
-    @Query("SELECT * FROM ZONETABLE WHERE ITEMCODE= :barcode AND ISPOSTED='0'")
-    public ZoneModel  getzone(String barcode);
+    @Query("SELECT * FROM ZONETABLE WHERE ZONECODE= :zonebare AND ITEMCODE= :itembarcode AND ISPOSTED='0'")
+    public ZoneModel  getzone(String zonebare ,String itembarcode);
 
 
 

@@ -60,6 +60,8 @@
 <string name="confirm">Are you sure you want to select this entry?</string>
     <string name="delete">Are you sure you want to
             \n delete this entry?</string>
+    <string name="deletezone1">Are you sure you want to
+            \n delete this zone?</string>
     <string name="delete3"> Qty is 1, Are you sure you want to
             \n delete this item</string>
     <string name="yes">yes</string>
@@ -99,8 +101,12 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="deleteitemt2">Delete This Item </string>
     <string name="back">  Back </string>
     <string name="enter"> Enter </string>
+    <string name="deleted"> Deleted successfully</string>
+    <string name="nextZone"> next Zone </string>
     <string name="NODATA">  No deleted data to recover </string>
     <string name="dataRet"> DATA Returned</string>
     <string name="returndata"> Do you want to undo the deletion process? </string>
     <string name="alertPoSearch">Are you sure you want to select this entry?</string>
+    <string name="deleteitem"> Are you sure you want to
+            \n delete this item</string>
 </resources>

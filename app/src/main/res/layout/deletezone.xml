@@ -5,24 +5,29 @@
     android:layout_height="200dp"
     android:layout_gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/BACK"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:drawableStart="@drawable/ic_baseline_clear_24"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_weight="1.8"
-            android:elevation="2dp"
-            android:gravity="left"
-            android:inputType="text"
-            android:padding="1dp"
-            android:text="@string/ZoneCode"
-            android:textColor="@color/dark_blue_3"
-            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/ZoneCode"
@@ -31,10 +36,11 @@
             android:background="@drawable/back_border_edit"
             android:inputType="text"
             android:maxLines="1"
+            android:hint="@string/ZoneCode"
             android:textCursorDrawable="@color/red"
             android:textColor="@color/dark_blue_3"
             android:textSize="14sp"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             />
         <TextView
             android:id="@+id/zoneSearch"
@@ -208,21 +214,8 @@
             android:gravity="center"
             android:textColor="@color/red"
             android:background="@drawable/cancel_button"/>
-        <TextView
 
-            android:layout_height="match_parent"
-            android:layout_width="10dp"
-            />
-        <Button
-            android:id="@+id/BACK"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:text="@string/back"
-            android:gravity="center"
-            android:textColor="@color/dark_blue_3"
-            android:background="@drawable/done_button"/>
+
         <TextView
 
             android:layout_height="match_parent"

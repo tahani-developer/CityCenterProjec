@@ -427,17 +427,20 @@
                     android:id="@+id/save"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
+                    android:text="@string/save"
+                    android:textColor="@color/dark_blue_3"
+                    android:background="@drawable/done_button"
+                    android:onClick="saveData"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="3dp"
-                    android:background="@drawable/done_button"
+
                     android:layout_weight="1"
                     android:elevation="5dp"
                     android:gravity="center"
-                    android:onClick="saveData"
+
                     android:padding="5dp"
-                    android:text="@string/save"
-                    android:textColor="@color/dark_blue_3"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -445,20 +448,28 @@
                     android:id="@+id/cancel_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:layout_gravity="center"
+
                     android:layout_marginTop="3dp"
                     android:layout_marginRight="55dp"
-                    android:layout_marginBottom="3dp"
+
                     android:background="@drawable/cancel_button"
+                    android:onClick="exitAddZone"
+                    android:text="@string/back"
+                    android:textColor="@color/red"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_weight="1"
                     android:elevation="5dp"
                     android:gravity="center"
-                    android:onClick="exitAddZone"
-                    android:padding="3dp"
-                    android:text="@string/cancel"
-                    android:textColor="@color/red"
+
+                    android:padding="5dp"
+
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_weight="1"
+
+
+
                     />
                 <Button
                     android:id="@+id/delete_btn"
@@ -467,17 +478,18 @@
                     android:textColor="@color/dark_blue_3"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:layout_gravity="center"
                     android:layout_marginTop="3dp"
-                    android:layout_marginRight="55dp"
+                    android:onClick="exitAddZone"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:layout_marginBottom="3dp"
+                    android:layout_weight="1"
                     android:elevation="5dp"
                     android:gravity="center"
-                    android:onClick="exitAddZone"
-                    android:padding="3dp"
+                    android:padding="5dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_weight="1"
+
                     />
             </LinearLayout>
 
