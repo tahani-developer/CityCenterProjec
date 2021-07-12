@@ -211,6 +211,7 @@ TextView settings;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
          appSettings settings;
+        importData=new ImportData(Login.this);
         ArrayList<String> nameOfEngi=new ArrayList<>();
         final ListView listCompany = dialog.findViewById(R.id.listViewEngineering);
         importData.getCompanyInfo();
@@ -366,7 +367,7 @@ TextView settings;
        // usernum.setText(SET_userNO);
 
         ip.setEnabled(false);
-        conNO.setEnabled(false);
+       // conNO.setEnabled(false);
         years.setEnabled(false);
         usernum.setEnabled(false);
         editip.setOnClickListener(new View.OnClickListener() {
