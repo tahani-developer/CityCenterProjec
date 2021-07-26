@@ -51,6 +51,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -195,7 +196,8 @@ TextView settings;
             if(existCoNo(2))
             showCompany(Login.this);
             else {
-                generalMethod.openSettingDialog();
+                openSettingDialog();
+                //generalMethod.openSettingDialog();
             }
         }
     }
@@ -364,12 +366,14 @@ TextView settings;
         final EditText years=dialog.findViewById(R.id.storeNo_edit);
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
+        final EditText deviceId= dialog.findViewById(R.id.deviceId);
+
        // usernum.setText(SET_userNO);
 
         ip.setEnabled(false);
        // conNO.setEnabled(false);
-        years.setEnabled(false);
-        usernum.setEnabled(false);
+      //  years.setEnabled(false);
+      //  usernum.setEnabled(false);
         editip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -419,6 +423,12 @@ TextView settings;
             conNO.setText(appSettings.get(0).getCompanyNum());
             COMPANYNO=appSettings.get(0).getCompanyNum();
             years.setText(appSettings.get(0).getYears());
+            try {
+                deviceId.setText(appSettings.get(0).getDeviceId());
+            }catch ( Exception e){
+                Log.e("deviceId",""+e.getMessage());
+            }
+
             if (appSettings.get(0).getUpdateQTY().equals("1"))
                 qtyUP.setChecked(true);
         }
@@ -434,6 +444,7 @@ TextView settings;
                 final String SET_conNO=conNO.getText().toString();
                 COMPANYNO=conNO.getText().toString();
                 final String SET_years=years.getText().toString();
+                String device_Id=deviceId.getText().toString().trim();
                 //usernum.setText(SET_userNO);
 
                 if(qtyUP.isChecked())
@@ -447,6 +458,8 @@ TextView settings;
                 setting.setUpdateQTY(SET_years);
                 setting.setYears(SET_qtyup);
                 setting.setUserNumber("");
+                setting.setDeviceId(device_Id);
+                Log.e("setting","=="+setting.getDeviceId());
                 saveData(setting);
                 dialog.dismiss();
             }
@@ -477,5 +490,8 @@ TextView settings;
         generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
 
     }
+
+
+
 
 }

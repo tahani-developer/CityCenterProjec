@@ -38,6 +38,7 @@ import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ReplashmentLogs;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.ZoneModel;
+import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 import com.example.irbidcitycenter.ScanActivity;
@@ -73,6 +74,8 @@ public class Replacement extends AppCompatActivity {
     ImportData importData;
     public static EditText itemKintText1, poststateRE, DZRE_ZONEcode;
     public static EditText zone, itemcode;
+    public static TextView qty;
+    public  String deviceId="";
     public static TextView qty, DZRE_zonecodeshow, DZRE_qtyshow;
     public static  List<ReplacementModel> DB_replist=new ArrayList<>();;
     public static  List<ReplacementModel> DB_replistcopy=new ArrayList<>();
@@ -91,6 +94,8 @@ public class Replacement extends AppCompatActivity {
     FloatingActionButton add;
     RecyclerView replacmentRecycler;
     public static final int REQUEST_Camera_Barcode = 1;
+    List<com.example.irbidcitycenter.Models.appSettings> appSettings;
+
    List<ReplacementModel>deleted_DBzone;
     private Dialog authenticationdialog;
     List<String> spinnerArray = new ArrayList<>();
@@ -121,6 +126,7 @@ public class Replacement extends AppCompatActivity {
         itemcode.setEnabled(false);
         recqty.setEnabled(false);
         save.setEnabled(false);
+
         my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         UserNo=my_dataBase.settingDao().getUserNo();
 //my_dataBase.replacementDao().deleteALL();
@@ -1211,6 +1217,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
     }
 
     private void init() {
+        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         replacementlist.clear();
         poststateRE = findViewById(R.id.poststatRE);
         MainActivity.setflage = 1;
@@ -1220,7 +1227,11 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         listAllZone.clear();
         importData.getAllZones();
         listQtyZone.clear();
-
+        appSettings=new ArrayList();
+        try {
+            appSettings=my_dataBase.settingDao().getallsetting();
+        }
+        catch (Exception e){}
         fromSpinner = findViewById(R.id.fromspinner);
         toSpinner = findViewById(R.id.tospinner);
         zone = findViewById(R.id.zoneedt);
@@ -1404,6 +1415,14 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
             }
         });
 
+        if(appSettings.size()!=0)
+        {
+            deviceId=  appSettings.get(0).getDeviceId();
+            Log.e("appSettings","+"+deviceId);
+
+        }
+
+
     }
 
     private void fillSp() {
@@ -1497,6 +1516,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                       replacement.setItemcode(Itemcode);
                       replacement.setFromName(From);
                       replacement.setToName(To);
+                      replacement.setDeviceId(deviceId);
 
                       zone.setEnabled(false);
                     ReplacementModel replacementModel=my_dataBase.replacementDao().getReplacement(Itemcode,Zone, FromNo,ToNo);
@@ -1600,6 +1620,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             replacement.setItemcode(Itemcode);
                             replacement.setFromName(From);
                             replacement.setToName(To);
+                            replacement.setDeviceId(deviceId);
                             zone.setEnabled(false);
                             ReplacementModel replacementModel=my_dataBase.replacementDao().getReplacement(Itemcode,Zone, FromNo,ToNo);
                             if(replacementModel!=null) {
@@ -1620,21 +1641,20 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                 {
                                     replacementlist.get(position).setRecQty((sum+""));
                                     my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(),replacementlist.get(position).getRecQty());
-                                    zone.setText("");
-                                    zone.setEnabled(true);
+
+                                    zone.setEnabled(false);
                                     itemcode.setText("");
-                                    zone.requestFocus();
-                                   qty.setText(replacementlist.get(position).getQty());
+                                    itemcode.requestFocus();
                                     fillAdapter();
-                                    save.setEnabled(true);
                                     Log.e("heree","here2");
                                 }
                                 else
                                 {   showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
-                                    qty.setText(replacementlist.get(position).getQty());
+
                                     fillAdapter();
+                                    zone.setEnabled(false);
                                     itemcode.setText("");
-                                    save.setEnabled(true);
+                                    itemcode.requestFocus();
                                 }
 
 
@@ -1645,7 +1665,6 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             {
                                 Log.e("not in db","not in db");
                                 importData.getQty();
-                                save.setEnabled(true);
 
                             }
                         }
@@ -1749,6 +1768,7 @@ return  false;
             Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
             replacement.setUserNO(getusernum());
+            replacement.setDeviceId(deviceId);
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
              Log.e("else","AddInCaseDuplicates");
                 Log.e("replacementlist.size", replacementlist.size()+"");
@@ -1764,6 +1784,7 @@ return  false;
     }
 
     private void SaveRow(ReplacementModel replacement) {
+        Log.e("SaveRow","replacement"+replacement.getDeviceId());
         my_dataBase.replacementDao().insert(replacement);
     }
 

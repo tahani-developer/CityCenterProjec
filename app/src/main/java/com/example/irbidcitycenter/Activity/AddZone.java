@@ -453,7 +453,7 @@ public boolean exists (String zonecode,String itemcode){
 
 
                                             {
-                                                Log.e("editItemCode", editItemCode.getText().toString());
+                                                //Log.e("editItemCode", editItemCode.getText().toString());
 
                                                 if (indexZone != -1) {
                                                     Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
@@ -1180,8 +1180,8 @@ public void onBackPressed() {
 
     }
 
-    private void updateQtyOfRow(String barecode,String Qty,String zone ){
-        my_dataBase.zoneDao().updateQTY(barecode,Qty, zone);
+    private void updateQtyOfRow(String barecode,String Qty,String zone) {
+        my_dataBase.zoneDao().updateQTY(barecode, Qty, zone);
     }
     private void  OpenDeleteDailog(){
 

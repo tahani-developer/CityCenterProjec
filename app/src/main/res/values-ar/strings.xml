@@ -99,4 +99,5 @@
     <string name="deletepo">حذف طلبية</string>
     <string name="deletebox">حذف صندوق</string>
     <string name="store">رقم المخزن </string>
+    <string name="fill_setting">Fill Setting</string>
 </resources>

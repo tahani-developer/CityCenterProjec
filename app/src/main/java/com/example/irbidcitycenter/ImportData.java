@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,8 @@ public class ImportData {
     public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
     public static String  barcode="";
+    public  JSONArray jsonArrayPo;
+    public  JSONObject stringNoObject;
 
     public ImportData(Context context) {
         this.context = context;
@@ -169,6 +172,155 @@ else
         }
     }
 
+    public void updatePoClosed(String poNumber) {
+        getJsnStr(poNumber);
+       new JSONTask_UpdatePoClose(poNumber).execute();
+    }
+
+    private void getJsnStr(String poNumber) {
+
+            jsonArrayPo = new JSONArray();
+            JSONObject object=new JSONObject();
+        try {
+            object.put("PONO",poNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        jsonArrayPo.put(object);
+
+
+            try {
+                stringNoObject=new JSONObject();
+                stringNoObject.put("JSN",jsonArrayPo);
+                Log.e("vouchersObject",""+jsonArrayPo.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+    }
+
+    public class JSONTask_UpdatePoClose extends AsyncTask<String, String, String> {
+
+        private String poNo = "", JsonResponse;
+
+        public JSONTask_UpdatePoClose(String po) {
+            this.poNo = po;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/UPDATEPO" ;
+                    Log.e("linkUpdatePo", "" + link);
+                }
+            } catch (Exception e) {
+                //progressDialog.dismiss();
+                Toast.makeText(context, R.string.fill_setting, Toast.LENGTH_SHORT).show();
+
+            }
+
+
+
+                //*************************************
+                String ipAddress = "",JsonResponse="";
+                Log.e("UPDATEPO", "JsonResponseEXPORTDROPPRICE");
+
+
+                try {
+                    HttpClient client = new DefaultHttpClient();
+                    HttpPost request = new HttpPost();
+                    try {
+                        request.setURI(new URI(link));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                    nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
+                    nameValuePairs.add(new BasicNameValuePair("JSONSTR", stringNoObject.toString().trim()));
+                     Log.e("nameValuePairs","JSONSTR"+stringNoObject.toString().trim());
+
+
+                    request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+
+
+                    HttpResponse response = client.execute(request);
+
+
+                    BufferedReader in = new BufferedReader(new
+                            InputStreamReader(response.getEntity().getContent()));
+
+                    StringBuffer sb = new StringBuffer("");
+                    String line = "";
+
+                    while ((line = in.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    in.close();
+
+
+                    JsonResponse = sb.toString();
+                    Log.e("JsonResponse", "ExporVoucher" + JsonResponse);
+
+
+
+                return JsonResponse;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                return null;
+            }
+            return JsonResponse;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.e("onPostExecute",""+result.toString());
+            if (result != null) {
+
+
+
+
+
+            }
+
+        }
+    }
     public class JSONTask_getItemKind extends AsyncTask<String, String, String> {
 
         private String itemNo = "", JsonResponse;

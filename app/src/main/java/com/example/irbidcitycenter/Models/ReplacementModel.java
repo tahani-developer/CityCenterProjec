@@ -35,6 +35,17 @@ public  class ReplacementModel {
     String ReplacementDate;
     @ColumnInfo(name = "QTY")
     String Qty;
+    @ColumnInfo(name = "DEVICEID")
+    String deviceId;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     public String getRecQty() {
         return recQty;
     }
@@ -149,6 +160,7 @@ public  class ReplacementModel {
             obj.put("ZONE", Zone);
             obj.put("ITEMCODE", Itemcode);
             obj.put("QTY", Qty);
+            obj.put("DEVICEID", deviceId);
 
 
 

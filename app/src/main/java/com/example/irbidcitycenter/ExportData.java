@@ -385,6 +385,7 @@ public class ExportData {
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
                 nameValuePairs.add(new BasicNameValuePair("JSONSTR", ShipmentObject.toString().trim()));
+                Log.e("URL_TO_HIT222",""+ ShipmentObject.toString());
                 request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = client.execute(request);
 

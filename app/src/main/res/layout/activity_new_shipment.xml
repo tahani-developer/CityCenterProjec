@@ -79,7 +79,18 @@
                     tools:layout_editor_absoluteY="70dp">
 
                 </ImageView>
+                <ImageView
+                    android:id="@+id/ponoClose"
+                    android:layout_width="60dp"
 
+                    android:visibility="gone"
+                    android:layout_height="20dp"
+                    android:gravity="top"
+                    app:srcCompat="@drawable/ic_block_black_24dp"
+                    tools:layout_editor_absoluteX="300dp"
+                    tools:layout_editor_absoluteY="70dp">
+
+                </ImageView>
 
 
             </LinearLayout>

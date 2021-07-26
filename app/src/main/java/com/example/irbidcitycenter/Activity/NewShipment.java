@@ -100,7 +100,7 @@ public class NewShipment extends AppCompatActivity {
     String POnumselected, BOXnumselected;
     RecyclerView recyclerView;
     FloatingActionButton add;
-    ImageView searchView1, searchView2;
+    ImageView searchView1, searchView2,ponoClose;
     int parceQty;
     int pos;
     public static ShipmentAdapter adapter;
@@ -389,10 +389,10 @@ else
            @Override
            public void onClick(View view) {
                authenticDailog(3);
-             
+
            }
        });
-        
+
     }
     private void authenticDailog(int enterflage) {
 
@@ -423,7 +423,7 @@ else
                     if(enterflage==1)
                        openDeleteItemDailog();
                     else  if(enterflage==2)   openDeleteBoxDailog();
-                      
+
 else
                     if(enterflage==3)   openDeletePoDailog();
 
@@ -448,8 +448,8 @@ else
             }
         });
         authenticationdialog.show();
-        
-        
+
+
     }
 
     private void openDeletePoDailog() {
@@ -2197,6 +2197,21 @@ else
         save = findViewById(R.id.save);
         searchView1 = findViewById(R.id.ponoSearch);
         searchView2 = findViewById(R.id.boxnoSearch);
+        ponoClose= findViewById(R.id.ponoClose);
+       // ponoClose.setVisibility(View.GONE);
+        ponoClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!pono.getText().toString().equals(""))
+                {
+                    updatePo(pono.getText().toString().trim());
+
+
+                }else {
+                    pono.setError(getResources().getString(R.string.reqired_filled));
+                }
+            }
+        });
 
         currentpo= findViewById(R.id.currentpo);
           currentbox= findViewById(R.id.currentbox);
@@ -2438,6 +2453,15 @@ pono.addTextChangedListener(new TextWatcher() {
 });
     }
 
+    private void updatePo(String poNumber) {
+        importData.updatePoClosed(poNumber);
+
+
+    }
+
+    private String getusernum() {
+        return "";
+    }
 
     private void showConfirmBarcodeDailog() {
         if(!barcode.getText().equals("")) {

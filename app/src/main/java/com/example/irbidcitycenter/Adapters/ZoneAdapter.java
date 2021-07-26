@@ -162,7 +162,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         list.get(in).setQty(newqty);
         listZone.get(in).setQty(newqty);
     }
-    private void updateQtyOfRow(String barecode,String Qty,String zonecode){
-        my_dataBase.zoneDao().updateQTY(barecode,Qty, zonecode);
+    private void updateQtyOfRow(String barecode,String Qty,String zone){
+        my_dataBase.zoneDao().updateQTY(barecode,Qty,zone);
     }
 }
