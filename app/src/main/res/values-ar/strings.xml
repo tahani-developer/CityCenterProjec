@@ -96,4 +96,5 @@
     <string name="returndata"> هل تريد التراجع عن عملية الحذف ؟ </string>
     <string name="deletezone1">هل أنت متأكد من حذف هذه المنطقة؟</string>
     <string name="deleteitem">هل تريد حذف هذه المادة?</string>
+    <string name="fill_setting">Fill Setting</string>
 </resources>

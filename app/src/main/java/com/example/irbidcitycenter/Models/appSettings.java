@@ -18,18 +18,29 @@ String UpdateQTY;
     @ColumnInfo(name = "USERNO")
 String userNumber;
     @PrimaryKey(autoGenerate = true)
-    public
-    int SERIALZONE;
+    public    int SERIALZONE;
+
+    @ColumnInfo(name = "DEVICEID")
+    String deviceId;
     public appSettings(String IP, String companyNum, String years, String updateQTY, String userNumber) {
         this.IP = IP;
         CompanyNum = companyNum;
         this.years = years;
         UpdateQTY = updateQTY;
         this.userNumber = userNumber;
+
     }
 
     public appSettings() {
 
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getIP() {

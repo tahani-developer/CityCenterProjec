@@ -98,7 +98,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
                         {
 
                             updateQtyList(editable.toString().trim(),position);
-                            updateQtyOfRow(list.get(index).getItemCode(),list.get(index).getQty());
+                            updateQtyOfRow(list.get(index).getItemCode(),list.get(index).getQty(),list.get(index).getZoneCode());
                         }
 
                         else {
@@ -162,7 +162,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         list.get(in).setQty(newqty);
         listZone.get(in).setQty(newqty);
     }
-    private void updateQtyOfRow(String barecode,String Qty){
-        my_dataBase.zoneDao().updateQTY(barecode,Qty);
+    private void updateQtyOfRow(String barecode,String Qty,String zone){
+        my_dataBase.zoneDao().updateQTY(barecode,Qty,zone);
     }
 }

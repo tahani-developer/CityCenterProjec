@@ -442,7 +442,7 @@ public boolean exists (String zonecode,String itemcode){
                                         {
                                             Log.e("exists ", "true");
                                             listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty());
+                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
                                             editItemCode.setText("");
                                           fillAdapter(listZone);
 
@@ -451,7 +451,7 @@ public boolean exists (String zonecode,String itemcode){
 
 
                                             {
-                                                Log.e("editItemCode", editItemCode.getText().toString());
+                                                //Log.e("editItemCode", editItemCode.getText().toString());
 
                                                 if (indexZone != -1) {
                                                     Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
@@ -552,7 +552,7 @@ public boolean exists (String zonecode,String itemcode){
                                 if (exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString())) {
                                     Log.e("exists ", "true");
                                     listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                    updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty());
+                                    updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
                                     editItemCode.setText("");
                                     fillAdapter(listZone);
 
@@ -1177,8 +1177,8 @@ public void onBackPressed() {
 
     }
 
-    private void updateQtyOfRow(String barecode,String Qty){
-        my_dataBase.zoneDao().updateQTY(barecode,Qty);
+    private void updateQtyOfRow(String barecode,String Qty,String zone){
+        my_dataBase.zoneDao().updateQTY(barecode,Qty,zone);
     }
     private void  OpenDeleteDailog(){
 

@@ -251,11 +251,13 @@ ImportData importData;
         final EditText years=dialog.findViewById(R.id.storeNo_edit);
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
+        final EditText deviceId= dialog.findViewById(R.id.deviceId);
         usernum.setText(SET_userNO);
         ip.setEnabled(false);
         conNO.setEnabled(false);
         years.setEnabled(false);
         usernum.setEnabled(false);
+
         editip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -307,6 +309,12 @@ ImportData importData;
             years.setText(appSettings.get(0).getYears());
             if (appSettings.get(0).getUpdateQTY().equals("1"))
                 qtyUP.setChecked(true);
+
+            try {
+                deviceId.setText(appSettings.get(0).getDeviceId());
+            }catch ( Exception e){
+                Log.e("deviceId",""+e.getMessage());
+            }
         }
         //****************************
         dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
@@ -317,6 +325,7 @@ ImportData importData;
                 final String SET_IP=ip.getText().toString();
                 final String SET_conNO=conNO.getText().toString();
                 COMPANYNO=conNO.getText().toString();
+                String device_Id=deviceId.getText().toString().trim();
                 final String SET_years=years.getText().toString();
                 usernum.setText(SET_userNO);
 
@@ -331,6 +340,7 @@ ImportData importData;
                 settings.setUpdateQTY(SET_years);
                 settings.setYears(SET_qtyup);
                 settings.setUserNumber(SET_userNO);
+                settings.setDeviceId(device_Id);
                 saveData(settings);
                 dialog.dismiss();
             }
