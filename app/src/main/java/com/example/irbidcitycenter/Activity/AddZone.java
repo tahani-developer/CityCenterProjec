@@ -38,6 +38,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -103,7 +104,7 @@ public class AddZone extends AppCompatActivity {
     public static int flage3=0;
     private String preQTY;
     public int pos_item_inreducelist;
-
+    public String UserNo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +112,7 @@ public class AddZone extends AppCompatActivity {
 
         initial();
         editQty.setEnabled(false);
+      UserNo=my_dataBase.settingDao().getUserNo();
    //my_dataBase.zoneDao().deleteAll();
        /* ZoneModel zoneModel=new ZoneModel();
         zoneModel.setZoneCode("C03D");
@@ -442,7 +444,7 @@ public boolean exists (String zonecode,String itemcode){
                                         {
                                             Log.e("exists ", "true");
                                             listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty());
+                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
                                             editItemCode.setText("");
                                           fillAdapter(listZone);
 
@@ -552,7 +554,7 @@ public boolean exists (String zonecode,String itemcode){
                                 if (exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString())) {
                                     Log.e("exists ", "true");
                                     listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                    updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty());
+                                    updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
                                     editItemCode.setText("");
                                     fillAdapter(listZone);
 
@@ -644,6 +646,7 @@ public boolean exists (String zonecode,String itemcode){
                       itemZone.setItemName(itemName.getText().toString());
                         itemZone.setZONENAME(zoneName.getText().toString());
                         itemZone.setStoreNo("6");
+                        itemZone.setUserNO(UserNo);
                         itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
                         itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
                         itemZone.setStoreNo(getusernum());
@@ -1177,8 +1180,8 @@ public void onBackPressed() {
 
     }
 
-    private void updateQtyOfRow(String barecode,String Qty){
-        my_dataBase.zoneDao().updateQTY(barecode,Qty);
+    private void updateQtyOfRow(String barecode,String Qty,String zone ){
+        my_dataBase.zoneDao().updateQTY(barecode,Qty, zone);
     }
     private void  OpenDeleteDailog(){
 
@@ -1828,7 +1831,6 @@ private void openDeleteitemDailog() {
                                     {
 
 
-                                        preint3();
 
                                         if(Exists(zones2.get(ind).getZoneCode(),zones2.get(ind).getItemCode()))
                                         {
@@ -1876,11 +1878,23 @@ private void openDeleteitemDailog() {
                                             .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                                                 @Override
                                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-                                                    zones2.get(ind).setDeletedflage("1");
-                                                    ReducedItemlist.add(zones2.get(ind));
-                                                    zones2.remove(ind);
-
+                                                    if( ReducedItemlist.size()>0)
+                                                    {
+                                                        if(Exists(zones2.get(ind).getZoneCode(),zones2.get(ind).getItemCode()))
+                                                        { zones2.get(ind).setDeletedflage("1");
+                                                        ReducedItemlist.get(pos_item_inreducelist).setQty("0");}
+                                                        else
+                                                        {
+                                                            ReducedItemlist.add(zones2.get(ind));
+                                                            ReducedItemlist.get(pos_item_inreducelist).setQty("0");
+                                                        }
+                                                    }
+                                                    else
+                                                        {
+                                                        zones2.get(ind).setDeletedflage("1");
+                                                        ReducedItemlist.add(zones2.get(ind));
+                                                        zones2.remove(ind);
+                                                    }
 
                                                     cleardataOfDailog();
                                                     sweetAlertDialog.dismiss();
@@ -2194,36 +2208,27 @@ private void openDeleteitemDailog() {
 
 
                                             {
-                                                if (deletedZonsList.size() == 0)
+                                                if (deletedZonsList.size() == 0) {
                                                     deletedZonsList = my_dataBase.zoneDao().getzoneRows(zonebarecode.getText().toString().trim());
-                                                else
+                                                }
+                                                else {
                                                     deletedZonsList.addAll(my_dataBase.zoneDao().getzoneRows(zonebarecode.getText().toString().trim()));
-                                                int c = my_dataBase.zoneDao().deletezonedata(zonebarecode.getText().toString().trim());
+
+                                                }
+
+
                                                 zones.remove(zonebarecode.getText().toString().trim());
 
                                                 zonecode1.setText("");
                                                 qty1.setText("");
                                                 zonename1.setText("");
-                                                Toast.makeText(AddZone.this, R.string.deleted, Toast.LENGTH_SHORT).show();
 
 
-                                                if (listZone != null) {
-                                                    Log.e("istZone", "" + listZone.size());
-                                                    if (listZone.size() > 0) {
-                                                        Log.e("istZone1", "" + listZone.get(0).getZoneCode());
-                                                        Log.e("zonebarecode", "" + zonebarecode.getText().toString().trim());
 
-                                                        if (listZone.get(0).getZoneCode().equals(zonebarecode.getText().toString().trim())) {
 
-                                                            listZone.clear();
-                                                            Log.e("here2", "here2");
-                                                            if (adapter != null)
-                                                                adapter.notifyDataSetChanged();
-                                                        }
-                                                    }
-                                                }
                                                 zonebarecode.setText("");
-                                                sweetAlertDialog.dismiss();       }
+                                                sweetAlertDialog.dismiss();
+                                               }
                                         }
 
                                     })
@@ -2245,7 +2250,62 @@ private void openDeleteitemDailog() {
 ///
             }
         });
+        dialog. findViewById(R.id.DZ_dialogsave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (deletedZonsList.size()>0) {
+                    for (int i = 0; i < deletedZonsList.size(); i++) {
+                        int c = my_dataBase.zoneDao().deletezonedata(deletedZonsList.get(i).getZoneCode());
+                    }
 
+                    for (int i = 0; i < deletedZonsList.size(); i++) {
+
+                        ZoneLogs zoneLogs = new ZoneLogs();
+                        zoneLogs.setZoneCode(deletedZonsList.get(i).getZoneCode());
+                        zoneLogs.setItemCode(deletedZonsList.get(i).getItemCode());
+                        zoneLogs.setUserNO(UserNo);
+                        zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
+                        zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
+                        zoneLogs.setPreqty(deletedZonsList.get(i).getQty());
+                        zoneLogs.setNewqty("0");
+                        my_dataBase.zoneLogsDao().insert(zoneLogs);
+
+
+                    }
+                    if (listZone != null) {
+                        Log.e("istZone", "" + listZone.size());
+                        if (listZone.size() > 0) {
+                            Log.e("istZone1", "" + listZone.get(0).getZoneCode());
+                            Log.e("zonebarecode", "" + zonebarecode.getText().toString().trim());
+                            for (int i = 0; i < deletedZonsList.size(); i++) {
+                                if (listZone.get(0).getZoneCode().equals(deletedZonsList.get(i).getZoneCode())) {
+
+                                    listZone.clear();
+                                    break;
+                                }
+                                Log.e("here2", "here2");
+                                if (adapter != null)
+                                    adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                    deletedZonsList.clear();
+
+                    Toast.makeText(AddZone.this, R.string.deleted, Toast.LENGTH_SHORT).show();
+                    authenticationdialog.dismiss();
+                    dialog.dismiss();
+                }
+                else{
+                    Toast.makeText(AddZone.this,"NO data changed",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    authenticationdialog.dismiss();
+
+                }
+            }
+
+
+
+        });
         cancelbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2291,22 +2351,46 @@ private void openDeleteitemDailog() {
         dialog.show();
     }
 void doupdate(){
-    preint3();
+
     int z=6,x=9 ;
     Log.e("doupdatesize",ReducedItemlist.size()+"");
     if(ReducedItemlist.size()>0)
-    { for(int i=0;i<ReducedItemlist.size();i++)
-    {
+    { for(int i=0;i<ReducedItemlist.size();i++) {
 
-             if (ReducedItemlist.get(i).getDeletedflage()!=null&&ReducedItemlist.get(i).getDeletedflage().equals("1"))
-             {
-          z=  my_dataBase.zoneDao().deleteITEM(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode());
-        Log.e("doupdatez=",z+"");}
+        if (ReducedItemlist.get(i).getDeletedflage() != null && ReducedItemlist.get(i).getDeletedflage().equals("1")) {
 
 
-         else {
+            ZoneLogs zoneLogs = new ZoneLogs();
+            zoneLogs.setZoneCode(ReducedItemlist.get(i).getZoneCode());
+            zoneLogs.setItemCode(ReducedItemlist.get(i).getItemCode());
+            zoneLogs.setUserNO(UserNo);
+            zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
+            zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
+            zoneLogs.setNewqty("0");
+            zoneLogs.setPreqty(getpreQty(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode()));
+            my_dataBase.zoneLogsDao().insert(zoneLogs);
+
+
+        z = my_dataBase.zoneDao().deleteITEM(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode());
+            Log.e("doupdatez=", z + "");
+    }  else {
              x=  my_dataBase.zoneDao().updateQTYreduced(ReducedItemlist.get(i).getItemCode(), ReducedItemlist.get(i).getQty(), ReducedItemlist.get(i).getZoneCode());
              Log.e("doupdateelse=",x+"");
+
+
+            ZoneLogs zoneLogs = new ZoneLogs();
+            zoneLogs.setZoneCode(ReducedItemlist.get(i).getZoneCode());
+            zoneLogs.setItemCode(ReducedItemlist.get(i).getItemCode());
+            zoneLogs.setUserNO(UserNo);
+            zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
+            zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
+            zoneLogs.setNewqty(ReducedItemlist.get(i).getQty());
+            zoneLogs.setPreqty(getpreQty(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode()));
+            my_dataBase.zoneLogsDao().insert(zoneLogs);
+
+
+
+
 
          } }
         checkLocalList();

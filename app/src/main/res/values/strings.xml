@@ -109,4 +109,7 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="alertPoSearch">Are you sure you want to select this entry?</string>
     <string name="deleteitem"> Are you sure you want to
             \n delete this item</string>
+    <string name="deletepo">Delete Po</string>
+    <string name="deletebox">Delete Box</string>
+    <string name="store">Store</string>
 </resources>

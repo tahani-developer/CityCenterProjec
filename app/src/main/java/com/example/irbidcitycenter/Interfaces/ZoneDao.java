@@ -29,8 +29,8 @@ public interface ZoneDao {
     @Query("DELETE FROM ZONETABLE")
     void deleteAll();
 
- @Query("UPDATE ZONETABLE SET QTYZONE = :qty WHERE ITEMCODE= :barcode AND ISPOSTED='0'" )
- int updateQTY(String barcode,String qty);
+ @Query("UPDATE ZONETABLE SET QTYZONE = :qty WHERE ITEMCODE= :barcode AND ISPOSTED='0' AND ZONECODE= :zonecode" )
+ int updateQTY(String barcode,String qty,String zonecode);
 
 
     @Query("UPDATE ZONETABLE SET QTYZONE = :qty WHERE ZONECODE= :ZONEbarcode AND ITEMCODE= :barcode AND ISPOSTED='0'" )
@@ -99,7 +99,8 @@ public interface ZoneDao {
 
     @Query("DELETE FROM ZONETABLE WHERE ZONECODE= :barcode AND ITEMCODE= :itemcode AND ISPOSTED='0'")
     public int  deleteITEM(String barcode,String itemcode);
-
+    @Query("UPDATE ZONETABLE SET QTYZONE= :qty ,UserNO= :USERNUM, deletedflage='1' WHERE ZONECODE= :barcode AND ITEMCODE= :itemcode AND ISPOSTED='0'")
+    public int UpdateItemStatus(String barcode,String qty, String itemcode, String USERNUM);
 
 
 

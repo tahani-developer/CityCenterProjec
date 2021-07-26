@@ -438,30 +438,52 @@
 
         <Button
             android:id="@+id/save"
+            android:background="@drawable/done_button"
+            android:text="@string/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_margin="3dp"
             android:layout_weight="0"
-            android:background="@drawable/done_button"
+
             android:gravity="center"
-            android:text="@string/save"
+
             android:textAllCaps="false"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/Re_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="0"
             android:background="@drawable/cancel_button"
             android:elevation="15dp"
-            android:gravity="center"
             android:padding="5dp"
+            android:layout_margin="3dp"
             android:text="@string/back"
             android:textColor="@color/red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="0"
+            android:gravity="center"
             android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+
+            />
+        <Button
+            android:id="@+id/Re_delete"
+            android:layout_gravity="center"
+            android:background="@drawable/delete_button"
+            android:text="@string/deletebut"
+            android:textColor="@color/dark_blue_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:elevation="15dp"
+            android:padding="5dp"
+            />
+
     </LinearLayout>
 </LinearLayout>

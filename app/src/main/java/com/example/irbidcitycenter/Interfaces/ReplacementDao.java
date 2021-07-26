@@ -30,7 +30,8 @@ public interface ReplacementDao {
 
     @Query ("select * from REPLACEMENT_TABLE WHERE ISPOSTED='0'")
     List<ReplacementModel>getallReplacement();
-
+    @Query ("select * from REPLACEMENT_TABLE WHERE ISPOSTED='0'AND ZONECODE= :Zone")
+    List<ReplacementModel>getzoneReplacement(String Zone);
     @Query("SELECT * FROM REPLACEMENT_TABLE where ISPOSTED = :s")
     List<ReplacementModel> getUnpostedReplacement(String s);
 
@@ -45,4 +46,13 @@ public interface ReplacementDao {
 
     @Query("SELECT * FROM REPLACEMENT_TABLE WHERE ITEMCODE = :s AND FROMSTORE= :FrSt AND TOSTORE= :ToSt AND ZONECODE= :Zone AND ISPOSTED='0'")
     ReplacementModel getReplacement(String s,String Zone,String FrSt,String ToSt);
+
+    @Query("Delete from REPLACEMENT_TABLE WHERE TOSTORE= :ToSt AND ZONECODE= :Zone ")
+   int deletezone(String Zone,String ToSt);
+
+    @Query("DELETE FROM REPLACEMENT_TABLE WHERE ITEMCODE= :itemcode AND ZONECODE= :zonecode AND TOSTORE= :ToSt AND ISPOSTED='0'")
+    int  deleteDbReplacement(String zonecode,String itemcode,String ToSt);
+    @Query("UPDATE REPLACEMENT_TABLE SET RECQTY = :qty WHERE  ITEMCODE= :itemcode AND ZONECODE= :zonecode AND TOSTORE= :ToSt AND ISPOSTED='0'" )
+    int updateDBQTY(String qty,String zonecode,String itemcode,String ToSt);
+
 }

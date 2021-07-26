@@ -10,10 +10,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.irbidcitycenter.Activity.AddZone;
+import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
+
+import static com.example.irbidcitycenter.Activity.AddZone.flage3;
+
+import static com.example.irbidcitycenter.Activity.AddZone.searchdialog;
+import static com.example.irbidcitycenter.Activity.Replacement.DIRE_itemcode;
+import static com.example.irbidcitycenter.Activity.Replacement.DIRE_itemcodeshow;
+import static com.example.irbidcitycenter.Activity.Replacement.DIRE_qtyshow;
+import static com.example.irbidcitycenter.Activity.Replacement.DIRE_zoneshow;
+import static com.example.irbidcitycenter.Activity.Replacement.DZRE_ZONEcode;
+import static com.example.irbidcitycenter.Activity.Replacement.DZRE_delete;
+import static com.example.irbidcitycenter.Activity.Replacement.DZRE_zonecodeshow;
+import static com.example.irbidcitycenter.Activity.Replacement.Re_searchdialog;
+import static com.example.irbidcitycenter.Activity.Replacement.getqtyofDBzone;
 
 public class ZoneSearchDBAdapter extends BaseAdapter {
     private Context context; //context
@@ -58,7 +72,7 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(AddZone.flage3==0) {
+                if(flage3==0) {
 
 
 
@@ -78,12 +92,13 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                         String zoneNam = my_dataBase.zoneDao().GetNameOfZone(items.get(position));
                             AddZone.zonename1.setText(zoneNam);
 
+                        AddZone.searchdialog.dismiss();
                     } catch (Exception e) {
 
                     }
                 }
 
-                else
+                else   if(flage3==6)
                 {
 
                     AddZone.DDzoneEDT.setText(items.get(position));
@@ -95,12 +110,31 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                     AddZone.DDitemcode.setEnabled(true);
                     AddZone.DDitemcode.requestFocus();
 
+                    AddZone.searchdialog.dismiss();
 
                 }
+                else   if(flage3==4)
+                {
+                    DZRE_ZONEcode.setText(items.get(position));
+                    DZRE_zonecodeshow.setText(DZRE_ZONEcode.getText().toString().trim());
+                    getqtyofDBzone();
 
+                    DZRE_delete.setEnabled(true);
+                    Re_searchdialog.dismiss();
+                }
 
+                else     if(flage3==5)
+                {
+                    Replacement.DIRE_ZONEcode.setText(items.get(position));
+                    DIRE_qtyshow.setText("");
+                    DIRE_zoneshow.setText("");
+                    DIRE_itemcodeshow.setText("");
+                    DIRE_itemcode.setText("");
+                    DIRE_itemcode.setEnabled(true);
+                    DIRE_itemcode.requestFocus();
+                    Re_searchdialog.dismiss();
+                }
 
-               AddZone.searchdialog.dismiss();
 
             }
         });
