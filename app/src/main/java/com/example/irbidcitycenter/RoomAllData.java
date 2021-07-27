@@ -11,15 +11,23 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.irbidcitycenter.Interfaces.ReplacementDao;
+import com.example.irbidcitycenter.Interfaces.ReplashmentLogsDao;
 import com.example.irbidcitycenter.Interfaces.SettingDao;
 import com.example.irbidcitycenter.Interfaces.ShipmentDao;
+import com.example.irbidcitycenter.Interfaces.ShipmentLogsDao;
 import com.example.irbidcitycenter.Interfaces.ZoneDao;
+
+import com.example.irbidcitycenter.Interfaces.ZoneLogsDao;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.ReplashmentLogs;
 import com.example.irbidcitycenter.Models.Shipment;
+import com.example.irbidcitycenter.Models.ShipmentLogs;
+import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class}, version = 21,exportSchema = false)
+
+@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class}, version = 22,exportSchema = false)
 public abstract class RoomAllData extends RoomDatabase  {
     private  static  RoomAllData database;
     public  static  String dataBaseName="DBRoomIrbidCenter";
@@ -27,6 +35,9 @@ public abstract class RoomAllData extends RoomDatabase  {
     public abstract ShipmentDao shipmentDao();
     public abstract ReplacementDao replacementDao();
     public abstract SettingDao settingDao();
+    public abstract ZoneLogsDao zoneLogsDao();
+    public abstract ShipmentLogsDao shipmentLogsDao();
+    public abstract ReplashmentLogsDao replashmentLogsDao();
     static final Migration MIGRATION_1_2 = new Migration(19, 21) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
@@ -39,7 +50,7 @@ public abstract class RoomAllData extends RoomDatabase  {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(),
                     RoomAllData.class,dataBaseName)
-                    .addMigrations(MIGRATION_1_2)
+            //        .addMigrations(MIGRATION_1_2)
                     .allowMainThreadQueries()
                      .fallbackToDestructiveMigration()
                     .build();

@@ -92,7 +92,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
 
 
-    qty.addTextChangedListener(new TextWatcher() {
+   /* qty.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -145,7 +145,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                         //newqty = qty.getText().toString();
 
                     }
-                }});
+                }});*/
 
 
 
