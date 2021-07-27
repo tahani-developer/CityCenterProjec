@@ -26,8 +26,8 @@ import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.appSettings;
 
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class}, version = 21,exportSchema = false)
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class}, version = 21,exportSchema = false)
+
+@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class}, version = 22,exportSchema = false)
 public abstract class RoomAllData extends RoomDatabase  {
     private  static  RoomAllData database;
     public  static  String dataBaseName="DBRoomIrbidCenter";
@@ -50,7 +50,7 @@ public abstract class RoomAllData extends RoomDatabase  {
         if (database == null) {
             database = Room.databaseBuilder(context.getApplicationContext(),
                     RoomAllData.class,dataBaseName)
-                    .addMigrations(MIGRATION_1_2)
+            //        .addMigrations(MIGRATION_1_2)
                     .allowMainThreadQueries()
                      .fallbackToDestructiveMigration()
                     .build();

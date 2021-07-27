@@ -871,6 +871,9 @@ else
                     }
                 }
             }
+            else{
+                NewShipment.respon.setText("Nointernet");
+            }
 
         }
 
@@ -1297,6 +1300,9 @@ else
 
                 }
 
+            }
+            else {
+                qtyrespons.setText("nodata");
             }
         }
 

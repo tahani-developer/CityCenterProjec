@@ -111,6 +111,9 @@ This barcode is not available in this PO, do you want to add it? </string>
             \n delete this item</string>
     <string name="fill_setting">Fill Setting</string>
     <string name="deletepo">Delete Po</string>
+    <string name="deletepo1">Are you sure you want to
+            \n delete this po</string>
     <string name="deletebox">Delete Box</string>
     <string name="store">Store</string>
+    <string name="sumQty">Sum of Qty</string>
 </resources>

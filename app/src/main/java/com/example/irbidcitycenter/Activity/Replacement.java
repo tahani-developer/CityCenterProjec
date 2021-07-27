@@ -76,7 +76,7 @@ public class Replacement extends AppCompatActivity {
     public static EditText zone, itemcode;
     public static TextView qty;
     public  String deviceId="";
-    public static TextView qty, DZRE_zonecodeshow, DZRE_qtyshow;
+    public static TextView DZRE_zonecodeshow, DZRE_qtyshow;
     public static  List<ReplacementModel> DB_replist=new ArrayList<>();;
     public static  List<ReplacementModel> DB_replistcopy=new ArrayList<>();
     public static  List<ReplacementModel> reducedqtyitemlist=new ArrayList<>();
@@ -112,6 +112,7 @@ public class Replacement extends AppCompatActivity {
     DIRE_qtyshow ;
     List<String>DB_store;
   List<String>DB_zone;
+    EditText UsNa;
     public static EditText   DIRE_ZONEcode, DIRE_itemcode;
     @SuppressLint("WrongViewCast")
     @Override
@@ -347,7 +348,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
         Button button= authenticationdialog.findViewById(R.id.authentic);
         TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
-        EditText UsNa= authenticationdialog.findViewById(R.id.username);
+      UsNa= authenticationdialog.findViewById(R.id.username);
         UsNa.requestFocus();
 
         EditText pass= authenticationdialog.findViewById(R.id.pass);
@@ -550,6 +551,9 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             .setContentText(getResources().getString(R.string.returndata)).setConfirmButton(R.string.yes, new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            DB_replist.clear();
+                            DB_replist=my_dataBase.replacementDao().getallReplacement();
+
                 deleted_DBzone.clear();
                 DZRE_ZONEcode.setText("");
                 DZRE_zonecodeshow.setText("");
@@ -626,7 +630,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         for(int x=0;x< DB_replist.size();x++)
             if(DB_replist.get(x).getTo().equals(spinner.getSelectedItem().toString())&&
                     DB_replist.get(x).getZone().equals(DZRE_ZONEcode.getText().toString().trim()) )
-                sum+=Integer.parseInt(DB_replist.get(x).getQty());
+                sum+=Integer.parseInt(DB_replist.get(x).getRecQty());
         DZRE_qtyshow.setText(sum+"");
     }
 
@@ -838,8 +842,10 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                                     DB_replist.get( indexDBitem ).setRecQty("0");
-
-
+                                                    DIRE_preQTY.setText("1");
+                                                    DIRE_qtyshow.setText("1");
+                                                    DIRE_zoneshow.setText(DIRE_ZONEcode.getText().toString().trim());
+                                                    DIRE_itemcodeshow.setText(DIRE_itemcode.getText().toString().trim());
 
                                                     if(isExistsInReducedlist())
                                                         reducedqtyitemlist.get( indexOfReduceditem ).setRecQty("0");
@@ -973,6 +979,9 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                             DIRE_qtyshow.setText("");
                                             DIRE_zoneshow.setText("");
                                             DIRE_itemcodeshow.setText("");
+                                            DB_replist.clear();
+                                            DB_replist=my_dataBase.replacementDao().getallReplacement();
+
 
 
                                         }
@@ -1004,7 +1013,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
             replashmentLogs.setItemCode(reducedqtyitemlist.get(i).getItemcode());
             replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             replashmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
-            replashmentLogs.setUserNO(UserNo);
+            replashmentLogs.setUserNO( UsNa.getText().toString());
             my_dataBase.replashmentLogsDao().insert(replashmentLogs);
         }
     }
@@ -1019,7 +1028,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
             replashmentLogs.setItemCode(deleted_DBzone.get(i).getItemcode());
             replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             replashmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
-            replashmentLogs.setUserNO(UserNo);
+            replashmentLogs.setUserNO(UsNa.getText().toString());
             my_dataBase.replashmentLogsDao().insert(replashmentLogs);
         }
 

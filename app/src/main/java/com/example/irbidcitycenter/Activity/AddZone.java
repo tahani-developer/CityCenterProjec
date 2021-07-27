@@ -82,6 +82,7 @@ public class AddZone extends AppCompatActivity {
     EditText zonecode;
     Dialog authenticationdialog;
     ListView listView;
+    EditText UsNa;
     String x;
     String selectedValue;
     public static EditText zonebarecode;
@@ -2263,7 +2264,7 @@ private void openDeleteitemDailog() {
                         ZoneLogs zoneLogs = new ZoneLogs();
                         zoneLogs.setZoneCode(deletedZonsList.get(i).getZoneCode());
                         zoneLogs.setItemCode(deletedZonsList.get(i).getItemCode());
-                        zoneLogs.setUserNO(UserNo);
+                        zoneLogs.setUserNO(  UsNa.getText().toString());
                         zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
                         zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
                         zoneLogs.setPreqty(deletedZonsList.get(i).getQty());
@@ -2363,7 +2364,7 @@ void doupdate(){
             ZoneLogs zoneLogs = new ZoneLogs();
             zoneLogs.setZoneCode(ReducedItemlist.get(i).getZoneCode());
             zoneLogs.setItemCode(ReducedItemlist.get(i).getItemCode());
-            zoneLogs.setUserNO(UserNo);
+            zoneLogs.setUserNO(UsNa.getText().toString());
             zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
             zoneLogs.setNewqty("0");
@@ -2381,7 +2382,7 @@ void doupdate(){
             ZoneLogs zoneLogs = new ZoneLogs();
             zoneLogs.setZoneCode(ReducedItemlist.get(i).getZoneCode());
             zoneLogs.setItemCode(ReducedItemlist.get(i).getItemCode());
-            zoneLogs.setUserNO(UserNo);
+            zoneLogs.setUserNO(UsNa.getText().toString());
             zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
             zoneLogs.setNewqty(ReducedItemlist.get(i).getQty());
@@ -2479,7 +2480,7 @@ private void checkLocalList(){
 
         Button button= authenticationdialog.findViewById(R.id.authentic);
         TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
-        EditText UsNa= authenticationdialog.findViewById(R.id.username);
+        UsNa= authenticationdialog.findViewById(R.id.username);
         UsNa.requestFocus();
 
         EditText pass= authenticationdialog.findViewById(R.id.pass);
