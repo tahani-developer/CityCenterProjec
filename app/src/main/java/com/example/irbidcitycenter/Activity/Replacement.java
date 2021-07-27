@@ -755,6 +755,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             if(replacementModel!=null) {
                                 if (!CaseDuplicates(replacementModel))
                                     replacementlist.add(replacementModel);
+                                Log.e("here","here");
                                 save.setEnabled(true);
                             }
 
