@@ -159,7 +159,7 @@ public  class ReplacementModel {
             obj.put("TOSTR", To);
             obj.put("ZONE", Zone);
             obj.put("ITEMCODE", Itemcode);
-            obj.put("QTY", Qty);
+            obj.put("QTY", recQty);
             obj.put("DEVICEID", deviceId);
 
 

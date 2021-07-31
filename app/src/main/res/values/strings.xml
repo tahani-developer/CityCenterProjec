@@ -34,7 +34,7 @@
     <string name="ZoneCode">Zone Code</string>
     <string name="itemCode">Item Code</string>
     <string name="Poqty">PoQty</string>
-   <string name="notvaildqty">There is no quantity enough</string>
+   <string name="notvaildqty">There is no enough quantity </string>
     <string name="reqired_filled">*Reqired</string>
     <string name="savedSuccsesfule">Saved Succsesfule</string>
 

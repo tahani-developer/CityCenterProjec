@@ -65,6 +65,7 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.BoxNolist;
 import static com.example.irbidcitycenter.ImportData.POdetailslist;
 import static com.example.irbidcitycenter.ImportData.PoNolist;
+import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 
 public class NewShipment extends AppCompatActivity {
@@ -153,7 +154,8 @@ public class NewShipment extends AppCompatActivity {
         Log.e("usenumber", UserNo);
         init();
         fillLastBoxinfo();
-//     my_dataBase.shipmentDao().deleteALL();
+
+// my_dataBase.shipmentDao().deleteALL();
    // shipmentsList=my_dataBase.shipmentDao().getallShipment();
      //   filladapter(shipmentsList);
 /////////////TESTING CODE
@@ -1164,12 +1166,12 @@ else
                          shipmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
                          shipmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
                          shipmentLogs.setUserNO(UsNa.getText().toString());
-
+                         Log.e("UsNa",UsNa.getText().toString()+"");
                          my_dataBase.shipmentLogsDao().insert(shipmentLogs);
                      } else {
                          my_dataBase.shipmentDao().updateQTY(reducedshipmentsList.get(i).getBarcode()
                                  , reducedshipmentsList.get(i).getPoNo(), reducedshipmentsList.get(i).getBoxNo(), reducedshipmentsList.get(i).getQty(), reducedshipmentsList.get(i).getDiffer());
-
+                         Log.e("CASE2","CASE2");
 
                          ShipmentLogs shipmentLogs = new ShipmentLogs();
                          shipmentLogs.setPoNo(reducedshipmentsList.get(i).getPoNo());
@@ -1181,8 +1183,8 @@ else
                          shipmentLogs.setItemCode(reducedshipmentsList.get(i).getBarcode());
                          shipmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
                          shipmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
-                         shipmentLogs.setUserNO(UserNo);
-
+                         shipmentLogs.setUserNO(UsNa.getText().toString());
+                         Log.e("UsNa2",UsNa.getText().toString()+"");
                          my_dataBase.shipmentLogsDao().insert(shipmentLogs);
 
 
@@ -1525,7 +1527,6 @@ else
 
 
                         } else {
-
                             showconfirmBoxNoDialog();
 
 
@@ -1869,42 +1870,29 @@ else
     private boolean CheckNewShipmentObject(Shipment shipment){
 
 
-        {
-try{
+         boolean fl=false;
+        try{
             ArrayList<Shipment> List = new ArrayList<>();
-            Log.e("CheckNewIsExistsINDB1","="+(CheckNewIsExistsINDB(shipment)));
+
             if(CheckNewIsExistsINDB(shipment))
             {
+                Log.e("CheckIsExistsINDB","getIsPosted==="+list.get(0).getIsPosted());
 
-                if(list.get(0).getIsPosted().equals("1"))
-                {
-                    list.get(0). setPoNo(convertToEnglish(pono.getText().toString().trim()));
-                    list.get(0).setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
-                    list.get(0).setBarcode(convertToEnglish(barcode.getText().toString().trim()));
-                    list.get(0).setQty("1");
-                    list.get(0).setPoqty("1");
-                    list.get(0).setDiffer("");
-                    list.get(0).setIsPosted("0");
-                    list.get(0).setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
-                    list.get(0).setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
-                    list.get(0).setIsNew("1");
-                }
-else
-                {
-                    list.get(0).setQty(String.valueOf(Long.parseLong(list.get(0).getQty()) + Integer.parseInt("1")));
-                }
-                Log.e("CheckNewIsExistsINDB2","="+list.get(0).getBoxNo());
-                localList.add(list.get(0));
-                filladapter(localList);
-                Log.e("CheckIsExistsINDB","true");
-            //    barcode.setText("");
-              //  barcode.requestFocus();
-                return true;
+               fl=true;
+
+
             }
+            else{
 
-        }      catch(Exception e){Log.e("Exception",e.getMessage());}}
+                fl=false;
+                Log.e("CheckIsExistsINDB2","true4");
+            }
+            Log.e("CheckIsExistsINDB","fl==="+fl);
+        }
+        catch(Exception e)
+        {Log.e("Exception",e.getMessage());}
 
-        return false;
+        return fl;
     }
     private  boolean CheckIsExistsINDB(Shipment shipment) {
         Log.e("CheckIsExistsINDB","CheckIsExistsINDB");
@@ -2181,7 +2169,9 @@ else
                Log.e("inputif",numBOx.size()+"");
                set.add(numBOx.get(i));
            }
-
+           for (String s1 : set) {
+               Log.e("setcontent",s1);
+           }
 
            currentbox.setText(set.size()+"");
            int sum=my_dataBase.shipmentDao().getsumofqty(s);
@@ -2282,6 +2272,7 @@ barcode.setOnKeyListener(onKeyListener);
                             newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
                             newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
                             newshipment.setUserNO(UserNo);
+                         //   Log.e("sss:",CheckNewShipmentObject(newshipment)+"");
                               if(CheckNewShipmentObject(newshipment)==false
                                       &&!barcode.getText().equals("")
                               &&barcode.getText().toString().trim().length()<=20) {
@@ -2294,6 +2285,61 @@ barcode.setOnKeyListener(onKeyListener);
                            barcode.setEnabled(true);
                             barcode.requestFocus();
 
+
+
+
+                                  if(list.get(0).getIsPosted().trim().equals("1"))
+                                  {
+                                    /*  list.get(0). setPoNo(convertToEnglish(pono.getText().toString().trim()));
+                                      list.get(0).setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
+                                      list.get(0).setBarcode(convertToEnglish(barcode.getText().toString().trim()));*/
+
+
+                                      list.get(0).setPoqty("1");
+                                      list.get(0).setDiffer("");
+
+                                      list.get(0).setQty("1");
+                                      list.get(0).setIsPosted("0");
+                                      list.get(0).setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
+                                      list.get(0).setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
+                                      list.get(0).setIsNew("1");
+                                      list.get(0).setUserNO(UserNo);
+                                      list.get(0).setItemname("");
+
+                                      Shipment newShipment=new Shipment();
+                                      newShipment .setPoNo(list.get(0).getPoNo());
+                                      newShipment.setBoxNo(list.get(0).getBoxNo());
+                                      newShipment .setBarcode(list.get(0).getBarcode());
+                                      newShipment .setPoqty("1");
+                                      newShipment .setDiffer("");
+                                      newShipment .setQty("1");
+                                      newShipment .setIsPosted("0");
+                                      newShipment .setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
+                                      newShipment .setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
+                                      newShipment .setIsNew("1");
+                                      newShipment .setUserNO(UserNo);
+                                      newShipment .setItemname("");
+                                      localList.add(  newShipment);
+                                      filladapter(localList);
+                                      Log.e("CheckIsExistsINDB2","true2");
+                                      my_dataBase.shipmentDao().insert( newShipment);
+                                  }
+                                  else
+                                  {
+
+
+                                      list.get(0).setQty(String.valueOf(Long.parseLong(list.get(0).getQty()) + Integer.parseInt("1")));
+                                      localList.add(list.get(0));
+                                      Log.e("CheckIsExistsINDB2","true3");
+                                      updateRow(list.get(0).getBarcode(),list.get(0).getPoNo(),list.get(0).getBoxNo(),list.get(0).getQty(),"0");
+                                      filladapter(localList);
+
+                                  }
+
+
+
+
+
                               }
                            save.setEnabled(true);
                           //  barcode.setText("");
@@ -2304,53 +2350,61 @@ barcode.setOnKeyListener(onKeyListener);
 
                             try {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
-                                sum= Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
+                                if(Integer.parseInt(POdetailslist.get(0).getPoqty())>0) {
+                                    sum = Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
+                                    {
+
+
+                                        Shipment shipment = new Shipment();
+                                        CheckFlag = 0;
+                                        shipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
+                                        shipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
+                                        shipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
+                                        Qty = "1";
+                                        shipment.setQty(Qty);
+                                        shipment.setIsPosted("0");
+                                        int qty = Integer.parseInt(Qty);
+                                        shipment.setIsNew("0");
+                                        shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
+                                        shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
+                                        shipment.setPoqty(PoQTY.getText().toString());
+                                        shipment.setItemname(itemname.getText().toString());
+                                        shipment.setUserNO(UserNo);
+                                        long differ = getDiff(qty);
+                                        if (differ > 0)
+                                            shipment.setDiffer("+" + differ);
+                                        else
+                                            shipment.setDiffer(differ + "");
+
+
+                                        respon.setText("");
+                                        pono.setEnabled(false);
+
+                                        boxno.setEnabled(false);
+                                        next.setEnabled(true);
+                                        save.setEnabled(true);
+
+
+                                        itemname.setText("");
+                                        PoQTY.setText("");
+                                        localList.clear();
+                                        saveRow(shipment);
+                                        localList.add(shipment);
+                                        filladapter(localList);
+                                        barcode.setText("");
+                                        barcode.setEnabled(true);
+                                        barcode.requestFocus();
+
+
+                                    }
+                                }
+                                else
                                 {
+                                    Toast.makeText(NewShipment.this,getResources().getString(R.string.notvaildqty),Toast.LENGTH_SHORT).show();
 
-
-                                    Shipment shipment = new Shipment();
-                                    CheckFlag =0;
-                                    shipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
-                                    shipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
-                                    shipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
-                                    Qty = "1";
-                                    shipment.setQty( Qty );
-                                    shipment.setIsPosted("0");
-                                    int qty = Integer.parseInt(Qty);
-                                    shipment.setIsNew("0");
-                                    shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
-                                    shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
-                                    shipment.setPoqty(PoQTY.getText().toString());
-                                    shipment.setItemname(itemname.getText().toString());
-                                    shipment.setUserNO(UserNo);
-                                    long differ = getDiff(qty);
-                                    if (differ > 0)
-                                        shipment.setDiffer("+" + differ);
-                                    else
-                                        shipment.setDiffer(differ + "");
-
-
-
-
-                                    respon.setText("");
-                                    pono.setEnabled(false);
-
-                                    boxno.setEnabled(false);
-                                    next.setEnabled(true);
-                                    save.setEnabled(true);
-
-
-                                    itemname.setText("");
-                                    PoQTY.setText("");
-                                    localList.clear();
-                                    saveRow(shipment);
-                                    localList.add(shipment);
-                                    filladapter(localList);
                                     barcode.setText("");
                                     barcode.setEnabled(true);
                                     barcode.requestFocus();
-
-
                                 }
 
                             }catch (NumberFormatException e)
@@ -2400,6 +2454,16 @@ barcode.setOnKeyListener(onKeyListener);
 
                         Log.e("poststate",editable.toString());
                         saved=true;
+                        localList.clear();
+
+                        filladapter(localList);
+                        if(adapter!=null)adapter.notifyDataSetChanged();
+
+                    }
+                    else
+                    {
+
+
                         localList.clear();
 
                         filladapter(localList);

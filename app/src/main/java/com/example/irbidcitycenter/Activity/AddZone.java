@@ -52,6 +52,7 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.ImportData.listAllZone;
+import static com.example.irbidcitycenter.ImportData.listQtyZone;
 import static com.example.irbidcitycenter.ImportData.zonetype;
 
 public class AddZone extends AppCompatActivity {
@@ -114,7 +115,7 @@ public class AddZone extends AppCompatActivity {
         initial();
         editQty.setEnabled(false);
       UserNo=my_dataBase.settingDao().getUserNo();
-   //my_dataBase.zoneDao().deleteAll();
+//my_dataBase.zoneDao().deleteAll();
        /* ZoneModel zoneModel=new ZoneModel();
         zoneModel.setZoneCode("C03D");
         zoneModel.setQty("33");
@@ -352,6 +353,7 @@ public class AddZone extends AppCompatActivity {
                 {
                     if(editable.toString().trim().equals("exported"))
                     {
+
                         //saveDataLocaky(1);
                         updateRowsPosted();
                         listZone.clear();
@@ -361,6 +363,10 @@ public class AddZone extends AppCompatActivity {
                     else  if(editable.toString().trim().equals("not"))
                     {
                         //saveDataLocaky(0);
+                        listZone.clear();
+                        if(adapter!=null)  adapter.notifyDataSetChanged();
+                    }
+                    else{
                         listZone.clear();
                         if(adapter!=null)  adapter.notifyDataSetChanged();
                     }
@@ -2268,6 +2274,9 @@ private void openDeleteitemDailog() {
                         zoneLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
                         zoneLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
                         zoneLogs.setPreqty(deletedZonsList.get(i).getQty());
+                        zoneLogs.setZONENAME(deletedZonsList.get(i).getZONENAME());
+                        zoneLogs.setZONETYPE(deletedZonsList.get(i).getZONETYPE());
+                        zoneLogs.setStoreNo(deletedZonsList.get(i).getStoreNo());
                         zoneLogs.setNewqty("0");
                         my_dataBase.zoneLogsDao().insert(zoneLogs);
 
