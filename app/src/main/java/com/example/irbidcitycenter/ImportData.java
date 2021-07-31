@@ -825,7 +825,7 @@ else
         @Override
         protected void onPostExecute(String array) {
             super.onPostExecute(array);
-
+Log.e("shiparray",array);
             JSONObject jsonObject1 = null;
 
             if (array != null) {
@@ -852,7 +852,7 @@ else
                         }
 
 
-                        NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
+                        //NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
                         itemname.setText(POdetailslist.get(0).getItemname());
                         Log.e("itemname",itemname.getText().toString());
                         PoQTY.setText(POdetailslist.get(0).getPoqty());
@@ -1260,6 +1260,7 @@ else
             super.onPostExecute(array);
            String d="";
             JSONObject jsonObject1 = null;
+
             if (array != null) {
                 if (array.contains("QTY")) {
 

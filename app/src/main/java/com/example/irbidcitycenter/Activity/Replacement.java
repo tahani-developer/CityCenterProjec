@@ -981,7 +981,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                             DIRE_itemcodeshow.setText("");
                                             DB_replist.clear();
                                             DB_replist=my_dataBase.replacementDao().getallReplacement();
-
+                                            sweetAlertDialog.dismiss();
 
 
                                         }
@@ -1367,6 +1367,11 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     fillAdapter();
                       adapter.notifyDataSetChanged();
                     }
+                    else{
+                        replacementlist.clear();
+                        fillAdapter();
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -1388,26 +1393,29 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
                     {
-                        recqty.setEnabled(true);
+                        if(Integer.parseInt(listQtyZone.get(0).getQty())>0) {
+                            try {
+                                filldata();
+                                Replacement.qty.setText("");
+                            } catch (Exception e) {
+                                Log.e("Exception", e.getMessage());
+                            }
+                            save.setEnabled(true);
+                            recqty.setText("1");
 
-                        try {
-                            filldata();
-                           Replacement.qty.setText("");
+
+                            zone.setEnabled(false);
+                            itemcode.setText("");
+                            itemcode.requestFocus();
+
+                            recqty.setEnabled(false);
+                        }else
+                        {
+                            Toast.makeText(Replacement.this,getResources().getString(R.string.notvaildqty),Toast.LENGTH_SHORT).show();
+                            itemcode.setText("");
+                            itemcode.requestFocus();
                         }
-                        catch (Exception e){
-                            Log.e("Exception",e.getMessage());
-                        }
-                        save.setEnabled(true);
 
-
-                        recqty.setText("1");
-
-
-                        zone.setEnabled(false);
-                        itemcode.setText("");
-                        itemcode.requestFocus();
-
-                        recqty.setEnabled(false);
 
 
                     }
