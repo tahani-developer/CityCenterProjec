@@ -867,6 +867,11 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                                     sweetAlertDialog.dismiss();
+                                                    DIRE_preQTY.setText("1");
+                                                    DIRE_qtyshow.setText("1");
+                                                    DIRE_zoneshow.setText(DIRE_ZONEcode.getText().toString().trim());
+                                                    DIRE_itemcodeshow.setText(DIRE_itemcode.getText().toString().trim());
+
                                                 }
                                             })
                                             .show();

@@ -1872,6 +1872,7 @@ else
         {
 try{
             ArrayList<Shipment> List = new ArrayList<>();
+            Log.e("CheckNewIsExistsINDB1","="+(CheckNewIsExistsINDB(shipment)));
             if(CheckNewIsExistsINDB(shipment))
             {
 
@@ -1892,6 +1893,7 @@ else
                 {
                     list.get(0).setQty(String.valueOf(Long.parseLong(list.get(0).getQty()) + Integer.parseInt("1")));
                 }
+                Log.e("CheckNewIsExistsINDB2","="+list.get(0).getBoxNo());
                 localList.add(list.get(0));
                 filladapter(localList);
                 Log.e("CheckIsExistsINDB","true");

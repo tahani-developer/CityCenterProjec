@@ -56,7 +56,7 @@ public interface ShipmentDao {
     @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0' AND PONO= :po")
  Shipment getlastShipment(String po);
 
-    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0'")
+    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE)")
     Shipment getlastbox();
 
     @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
@@ -64,7 +64,7 @@ public interface ShipmentDao {
 
     @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
    int getsumofqty(String po);
-    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po AND ISPOSTED='0'")
+    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po")
     int getsumofboxitemsqty(String po,String box);
 
     @Query("Delete from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
