@@ -1156,7 +1156,6 @@ else
              if( reducedshipmentsList.size()>0) {
                  for (int i = 0; i < reducedshipmentsList.size(); i++)
                      if (reducedshipmentsList.get(i).getQty().equals("0")) {
-                         Log.e("CASE1","CASE1");
                          my_dataBase.shipmentDao().deleteshipment(reducedshipmentsList.get(i).getBarcode()
                                  , reducedshipmentsList.get(i).getPoNo(), reducedshipmentsList.get(i).getBoxNo());
                          ShipmentLogs shipmentLogs = new ShipmentLogs();
@@ -1724,8 +1723,8 @@ else
 
                         } else{
                             sweetAlertDialog.dismiss();
-                          /*  Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                            startActivity(intent);*/
+                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                            startActivity(intent);
                             finish();
 
                         }}
@@ -1916,8 +1915,9 @@ else
     }
     private  boolean CheckNewIsExistsINDB(Shipment shipment) {
         Log.e("CheckIsExistsINDB","CheckIsExistsINDB");
-        Log.e("CheckIsExistsINDB44",shipment.getBoxNo()+shipment.getBarcode()+shipment.getPoNo());
+
         list =my_dataBase.shipmentDao().getNEWShipments(shipment.getBarcode(),shipment.getPoNo(),shipment.getBoxNo());
+
         Log.e("CheckIsExists",""+list.size());
         if(list.size()>0)
         {
