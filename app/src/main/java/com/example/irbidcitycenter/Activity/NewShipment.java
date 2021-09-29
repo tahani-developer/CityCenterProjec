@@ -142,7 +142,8 @@ public class NewShipment extends AppCompatActivity {
     public String UserNo;
     public static int dailogNum=9;
     public static Dialog deleteBoxdialog;
-
+    public  String deviceId="";
+    List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +151,7 @@ public class NewShipment extends AppCompatActivity {
         my_dataBase = RoomAllData.getInstanceDataBase(NewShipment.this);
         BoxNolist.clear();
         POdetailslist.clear();
+
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e("usenumber", UserNo);
         init();
@@ -281,8 +283,8 @@ else
 
                 searchView2.setEnabled(true);
                 localList.clear();
-                adapter.notifyDataSetChanged();
-                //
+if(adapter!=null)           adapter.notifyDataSetChanged();
+
 
             }
         });
@@ -598,7 +600,7 @@ else
                     my_dataBase.shipmentDao().deletePO(deletedPOList.get(i));
                     fillLastBoxinfo();
                     clearPOinfo();
-                }
+                    Toast.makeText(NewShipment.this,"Done",Toast.LENGTH_LONG).show();    }
                 else
                     Toast.makeText(NewShipment.this,"NO data changed",Toast.LENGTH_SHORT).show();
                 DS_poediteshow.setText("");
@@ -772,7 +774,7 @@ else
                         if(! Dbsh_poedit.getText().toString().trim().equals(""))
                         {
                             for(int x=0; x<BbShip_list.size();x++)
-                                if(BbShip_list.get(x).getPoNo().contains( Dbsh_poedit.getText().toString().trim())){
+                                if(BbShip_list.get(x).getPoNo().equals( Dbsh_poedit.getText().toString().trim())){
                                     Db_boxedit.setEnabled(true);
                                     Db_boxedit.requestFocus();
                                     break;
@@ -872,6 +874,7 @@ else
                    deletedBoxes.clear();
                    fillLastBoxinfo();
                    clearPOinfo();
+                   Toast.makeText(NewShipment.this,"Done",Toast.LENGTH_LONG).show();
                }
                else
                { Toast.makeText(NewShipment.this,"NO data changed",Toast.LENGTH_SHORT).show();
@@ -1194,6 +1197,7 @@ else
                  reducedshipmentsList.clear();
                  deleteitemdialog.dismiss();
                  authenticationdialog.dismiss();
+                 Toast.makeText(NewShipment.this,"Done",Toast.LENGTH_LONG).show();
                  fillLastBoxinfo();
                  clearPOinfo();
              }
@@ -1704,8 +1708,8 @@ else
                                             filladapter(localList);
 
 
-                                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                                            startActivity(intent);
+                                          /*  Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                            startActivity(intent);*/
                                             finish();
 
                                         }
@@ -1720,8 +1724,8 @@ else
 
                         } else{
                             sweetAlertDialog.dismiss();
-                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                            startActivity(intent);
+                          /*  Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                            startActivity(intent);*/
                             finish();
 
                         }}
@@ -1914,7 +1918,7 @@ else
         Log.e("CheckIsExistsINDB","CheckIsExistsINDB");
         Log.e("CheckIsExistsINDB44",shipment.getBoxNo()+shipment.getBarcode()+shipment.getPoNo());
         list =my_dataBase.shipmentDao().getNEWShipments(shipment.getBarcode(),shipment.getPoNo(),shipment.getBoxNo());
-        Log.e("CheckIsExistsINDBlistsize",""+list.size());
+        Log.e("CheckIsExists",""+list.size());
         if(list.size()>0)
         {
             localList.clear();
@@ -2227,7 +2231,17 @@ else
                 }
             }
         });
+        try {
+            appSettings=my_dataBase.settingDao().getallsetting();
+        }
+        catch (Exception e){}
 
+        if(appSettings.size()!=0)
+        {
+            deviceId=  appSettings.get(0).getDeviceId();
+            Log.e("appSettings","+"+deviceId);
+
+        }
         currentpo= findViewById(R.id.currentpo);
           currentbox= findViewById(R.id.currentbox);
           itemscounts= findViewById(R.id.itemcount);
@@ -2312,6 +2326,7 @@ barcode.setOnKeyListener(onKeyListener);
                                       newShipment.setBoxNo(list.get(0).getBoxNo());
                                       newShipment .setBarcode(list.get(0).getBarcode());
                                       newShipment .setPoqty("1");
+                                      newShipment.setDeviceId(deviceId);
                                       newShipment .setDiffer("");
                                       newShipment .setQty("1");
                                       newShipment .setIsPosted("0");
@@ -2366,6 +2381,7 @@ barcode.setOnKeyListener(onKeyListener);
                                         shipment.setIsPosted("0");
                                         int qty = Integer.parseInt(Qty);
                                         shipment.setIsNew("0");
+                                        shipment.setDeviceId(deviceId);
                                         shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                                         shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                                         shipment.setPoqty(PoQTY.getText().toString());

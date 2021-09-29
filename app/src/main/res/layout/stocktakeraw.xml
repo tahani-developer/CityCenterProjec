@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="top"
+        android:padding="3dp">
+
+
+        <TextView
+            android:id="@+id/ROW_store"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/ROW_Zone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:gravity="center"
+
+            android:textColor="@color/dark_blue_3"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/ROW_itemCode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+
+            android:gravity="center"
+
+            android:textColor="@color/dark_blue_3"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/ROW_recQty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="15sp" />
+        <CheckBox
+            android:id="@+id/updateqty_chk"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="15sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="330dp"
+    android:layout_height="320dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/ZR_DIclose_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:drawableEnd="@drawable/ic_baseline_clear_24"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+
+
+        <EditText
+            android:id="@+id/ZRDI_ZONEcode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_edit"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:hint="@string/ZoneCode"
+            android:textCursorDrawable="@color/red"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/ZRDI_zoneSearch"
+
+            android:onClick="showZoneDialog"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:gravity="top|left">
+
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+
+        android:orientation="horizontal">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+
+
+        <EditText
+            android:id="@+id/ZRDI_itemcode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_edit"
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:hint="@string/itemCode"
+            android:textCursorDrawable="@color/red"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+
+        android:orientation="horizontal">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:textColor="@color/red"
+
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="50dp"
+            android:textColor="@color/red"
+            android:text="@string/oldqty"
+            android:layout_height="match_parent"/>
+
+
+        <TextView
+            android:id="@+id/ZRDI_preQTY"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_edit"
+            android:inputType="text"
+            android:enabled="false"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+
+            />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+
+        android:orientation="horizontal">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_dark"
+            android:gravity="bottom"
+            android:padding="3dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/itemCode"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/Qty"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="@string/Zone"
+                android:textSize="15sp" />
+
+
+
+
+
+        </TableRow>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"
+        android:orientation="horizontal">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_dark"
+            android:gravity="bottom"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/ZRDI_itemcodeshow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/darkblue_"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/ZRDI_qtyshow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/white"
+                android:textColor="@color/darkblue_"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/ZRDI_zoneshow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/white"
+                android:textColor="@color/darkblue_"
+                android:textSize="15sp" />
+
+
+
+
+
+        </TableRow>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+
+            android:id="@+id/ZRDI_dialogsave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_weight="1.2"
+            android:background="@drawable/done_button"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="12sp" />
+        <TextView
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            />
+        <Button
+
+            android:id="@+id/ZRDI_deleteitem"
+            android:text="@string/deleteitemt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_weight="1.2"
+            android:background="@drawable/cancel_button"
+            android:textAllCaps="false"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            />
+        <Button
+            android:id="@+id/ZRDI_cancel"
+            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:layout_gravity="center"
+            android:text="@string/cancel"
+            android:gravity="center"
+            android:textColor="@color/red"
+            android:background="@drawable/cancel_button"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:orientation="horizontal">
+    </LinearLayout>
+</LinearLayout>

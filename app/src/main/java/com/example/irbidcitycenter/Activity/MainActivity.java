@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.http.DelegatingSSLSession;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,13 +27,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Shipment;
+import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.ZoneModel;
+import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
 import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -41,6 +45,8 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     public static String SET_userNO;
     private Toolbar toolbar;
-    LinearLayout zoneLinear,shipmentlinear,replacmentlinear;
+    LinearLayout zoneLinear,shipmentlinear,replacmentlinear,stocktakelinear,zoneReplacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
     ExportData exportData;
@@ -63,6 +69,8 @@ ImportData importData;
     public RoomAllData my_dataBase;
     List<appSettings> appSettings;
     public static TextView sh_res,zo_res,re_res;
+    public static TextView itemrespons,    exportrespon,exportZonReprespon;
+public static    int   activityflage=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,9 +86,14 @@ ImportData importData;
 
 
     private void initial() {
+        exportZonReprespon=findViewById(R.id.exportZonReprespon);
+        exportrespon=findViewById(R.id.stocksrespon);
+        itemrespons=findViewById(R.id.ST_itemrespons);
         importData = new ImportData(MainActivity.this);
         drawerLayout = findViewById(R.id.main_drawerLayout);
         navigationView = findViewById(R.id.nav_view);
+        stocktakelinear=findViewById(R.id.Stocktakelinear);
+        zoneReplacmentlinear=findViewById(R.id.zoneReplacmentlinear);
         setupDrawerContent(navigationView);
         toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -93,13 +106,99 @@ ImportData importData;
         zoneLinear.setOnClickListener(onClickListener);
         shipmentlinear = findViewById(R.id.hipmentlinear);
         shipmentlinear.setOnClickListener(onClickListener);
+        stocktakelinear .setOnClickListener(onClickListener);
+        zoneReplacmentlinear.setOnClickListener(onClickListener);
         replacmentlinear = findViewById(R.id.Replacmentlinear);
         replacmentlinear.setOnClickListener(onClickListener);
         exportData = new ExportData(MainActivity.this);
         sh_res = findViewById(R.id.shipmentsrespon);
 
         re_res = findViewById(R.id.replashmentssrespon);
+        exportZonReprespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().trim().equals("exported")) {
+                        my_dataBase.zoneReplashmentDao().setposted();
+
+
+                    } else {
+
+
+                    }
+
+        }}});
+        exportrespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().trim().equals("exported")) {
+                        my_dataBase.stocktakeDao().setposted("1");
+                       // showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                       // stocktakelist.clear();
+                        //stocktakeAdapter.notifyDataSetChanged();
+
+
+                    } else {
+                        // savedata("0");
+
+                    }
+            }}
+        });
+        itemrespons.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().equals("ItemOCode")) {
+                        Log.e("herea","aaaaa");
+                        my_dataBase.itemDao().insertAll(AllImportItemlist);
+                        Toast.makeText(MainActivity.this,"gat all data",Toast.LENGTH_SHORT).show();
+
+
+                    }
+                    else     if (editable.toString().equals("nodata")) {
+
+
+                    }
+
+
+
+                }
+            }
+        });
         sh_res.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -122,6 +221,7 @@ ImportData importData;
                     }
                     else
                     {
+                        Toast.makeText(MainActivity.this,"No Internet",Toast.LENGTH_SHORT).show();
                         Log.e("sh_res","false");
                     }
                 }
@@ -174,6 +274,16 @@ ImportData importData;
                    Intent intent3 =new Intent(MainActivity.this,Replacement.class);
                    startActivity(intent3);
                    break;
+               case R.id.Stocktakelinear:
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   stocktakelinear.startAnimation(animation);
+                   Intent intent4 =new Intent(MainActivity.this, Stoketake.class);
+                   startActivity(intent4);
+                   break;
+               case R.id.zoneReplacmentlinear:
+                   Intent intent5 =new Intent(MainActivity.this, ZoneReplacment.class);
+                   startActivity(intent5);
+                   break;
            }
         }
     };
@@ -211,29 +321,43 @@ ImportData importData;
 
             }
             break;
+            case R.id.menu_import: {
+                getAllItems();
+                break;
+            }
+                case R.id.Reports: {
+                  /*  Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
+                    startActivity(intent);*/
+                    break;
 
+            }
         }
 
 
         return true;
 
     }
-
+    private void getAllItems() {
+        importData.getAllItems();
+    }
     private void exportAllData() {
         List<ZoneModel> listZon=new ArrayList();
         ArrayList<Shipment> newShipmentList=new ArrayList();
         ArrayList<ReplacementModel> replacementList=new ArrayList();
+        List<StocktakeModel> StoktakeList=new ArrayList();
+        List<ZoneReplashmentModel>zoneReplacmentList=new ArrayList<>();
         List<Shipment> listShipment;
         List<ReplacementModel>listReplasment;
-
+      activityflage=1;
         listZon=my_dataBase.zoneDao().getUnpostedZone("0");
         listShipment=my_dataBase.shipmentDao().getUnpostedShipment("0");
         listReplasment=my_dataBase.replacementDao().getUnpostedReplacement("0");
-
+        StoktakeList=my_dataBase.stocktakeDao().getall();
+        zoneReplacmentList=my_dataBase.zoneReplashmentDao().getAllZonesUnposted();
         newShipmentList=(ArrayList<Shipment>) listShipment;
 
         replacementList=(ArrayList<ReplacementModel>)listReplasment ;
-        exportData.exportAllUnposted(listZon,newShipmentList,replacementList);
+        exportData.exportAllUnposted(listZon,newShipmentList,replacementList,  StoktakeList,zoneReplacmentList);
 
     }
 
@@ -261,44 +385,49 @@ ImportData importData;
         editip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog1 = new Dialog(MainActivity.this);
-                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog1.setCancelable(false);
-                dialog1.setContentView(R.layout.passworddailog);
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(dialog1.getWindow().getAttributes());
-                ip.setEnabled(true);
-                lp.gravity = Gravity.CENTER;
-                dialog1.getWindow().setAttributes(lp);
+                Log.e("ipgetText",ip.getText().toString());
+                if (!ip.getText().toString().equals("")) {
+                    final Dialog dialog1 = new Dialog(MainActivity.this);
+                    dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setCancelable(false);
+                    dialog1.setContentView(R.layout.passworddailog);
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(dialog1.getWindow().getAttributes());
+                    ip.setEnabled(true);
+                    lp.gravity = Gravity.CENTER;
+                    dialog1.getWindow().setAttributes(lp);
 
 
-                EditText editText=dialog1.findViewById(R.id.passwordd);
-                Button donebutton=dialog1.findViewById(R.id.done);
-                Button cancelbutton=dialog1.findViewById(R.id.cancel);
-                donebutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(editText.getText().toString().trim().equals("304555"))
-                        {
-                            ip.setEnabled(true);
+                    EditText editText = dialog1.findViewById(R.id.passwordd);
+                    Button donebutton = dialog1.findViewById(R.id.done);
+                    Button cancelbutton = dialog1.findViewById(R.id.cancel);
+                    donebutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (editText.getText().toString().trim().equals("304555")) {
+                                ip.setEnabled(true);
+                                dialog1.dismiss();
+                            }
+                        }
+                    });
+                    cancelbutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ip.setEnabled(false);
                             dialog1.dismiss();
                         }
-                    }
-                });
-                cancelbutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ip.setEnabled(false);
-                        dialog1.dismiss();
-                    }
-                });
+                    });
 
 
+                    dialog1.show();
+                }
+                else{
+                    Log.e("dd","dd");
+                    ip.setEnabled(true);
+                    ip.requestFocus();
 
+                }  }
 
-
-                dialog1.show();
-            }
         });
         getDataZone();
         if(appSettings.size()!=0) {
@@ -339,8 +468,9 @@ ImportData importData;
                 settings.setCompanyNum(SET_conNO);
                 settings.setUpdateQTY(SET_years);
                 settings.setYears(SET_qtyup);
-                settings.setUserNumber(SET_userNO);
+                settings.setUserNumber(usernum.getText().toString());
                 settings.setDeviceId(device_Id);
+
                 saveData(settings);
                 dialog.dismiss();
             }

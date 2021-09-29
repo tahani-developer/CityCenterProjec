@@ -12,7 +12,7 @@
     <color name="layer7">#F3F8F8F7</color>
     <color name="yelow">#fad80a</color>
     <color name="red">#e1161f</color>
-
+    <color name="add_button">#25383C</color>
     <color name="orange">#F0B005</color>
     <color name="purble1">#B4B798EE</color>
     <color name="purble0">#304EF3</color>
@@ -29,4 +29,6 @@
     <color name="text_color">#25383C</color>
     <color name="white_two">#85E4DCDC</color>
     <color name="darkOrange2">#D8FFEB3B</color>
+
+
 </resources>

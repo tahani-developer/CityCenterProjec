@@ -51,6 +51,17 @@ public class ZoneModel {
     @ColumnInfo(name = "ZONETYPE")
     private  String ZONETYPE;
 
+    @ColumnInfo(name = "DEVICEID")
+    String deviceId;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     public String getItemName() {
         return ItemName;
     }
@@ -154,7 +165,7 @@ public class ZoneModel {
             obj.put("QTY", qty);
             obj.put("TRDATE", zoneDate);
             obj.put("TRTIME", zoneTime);
-
+            obj.put("DEVICEID", deviceId);
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");

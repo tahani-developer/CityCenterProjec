@@ -14,8 +14,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Activity.Stoketake;
+import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
@@ -48,6 +51,7 @@ import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.Login.getListCom;
+import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
@@ -57,6 +61,13 @@ import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
 
 import static com.example.irbidcitycenter.Activity.Replacement.qtyrespons;
 import static com.example.irbidcitycenter.Activity.Replacement.zone;
+
+import static com.example.irbidcitycenter.Activity.Stoketake.AllstocktakeDBlist;
+
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.RZ_itemcode;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_respon;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromZoneRepActivity;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromzone;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 
 
@@ -70,13 +81,14 @@ public class ImportData {
     public String ipAddress = "", CONO = "", headerDll = "", link = "";
     public RoomAllData my_dataBase;
     public static String zonetype;
-    public static ArrayList<Store> Storelist = new ArrayList<>();
+    public static List<Store> Storelist = new ArrayList<>();
     public static ArrayList<String> BoxNolist = new ArrayList<>();
     public static ArrayList<String> PoNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
     public static String  barcode="";
+    public static List<AllItems> AllImportItemlist = new ArrayList<>();
     public  JSONArray jsonArrayPo;
     public  JSONObject stringNoObject;
 
@@ -96,7 +108,13 @@ public class ImportData {
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
-
+    public void getAllItems(){
+        AllstocktakeDBlist.clear();
+        if(!ipAddress.equals(""))
+            new  JSONTask_getAllItems().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+    }
     public void getQty() {
         listQtyZone.clear();
             new  JSONTask_getQTYOFZone().execute();
@@ -348,7 +366,7 @@ else
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-
+Log.e("Exception===",e.getMessage());
             }
 
             try {
@@ -721,9 +739,6 @@ else
 
 
 
-
-
-
     /////////
     private class JSONTask_getAllPOdetails extends AsyncTask<String, String, String> {
 
@@ -825,7 +840,7 @@ else
         @Override
         protected void onPostExecute(String array) {
             super.onPostExecute(array);
-Log.e("shiparray",array);
+
             JSONObject jsonObject1 = null;
 
             if (array != null) {
@@ -1138,7 +1153,9 @@ Log.e("shiparray",array);
 
                                         Storelist.add(store);
                                     }
-                                    Replacement.respon.setText("fill");
+                              if( Replacement.actvityflage==1)      Replacement.respon.setText("fill");
+                              else
+                                  Stoketake.respone.setText("fill");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -1151,8 +1168,8 @@ Log.e("shiparray",array);
                     }
                 } else {
 
-                    Replacement.respon.setText("nodata");
-
+                    if( Replacement.actvityflage==1)     Replacement.respon.setText("nodata");
+                   else  Stoketake.respone.setText("fill");
 
                 }
             }
@@ -1181,7 +1198,11 @@ Log.e("shiparray",array);
                 if (!ipAddress.equals("")) {
                     // http://10.0.0.22:8082/GetZoneDatInfo?CONO=290&ZONENO=6&ITEMCODE=6253349404082
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetZoneDatInfo?CONO=" + CONO.trim()+"&ZONENO="+zone.getText().toString().trim()+"&ITEMCODE="+itemcode.getText().toString().trim();
+                    if(fromZoneRepActivity==0)    link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetZoneDatInfo?CONO=" + CONO.trim()+"&ZONENO="+zone.getText().toString().trim()+"&ITEMCODE="+itemcode.getText().toString().trim();
+                else
+                        link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetZoneDatInfo?CONO=" + CONO.trim()+"&ZONENO="+fromzone.getText().toString().trim()+"&ITEMCODE="+RZ_itemcode.getText().toString().trim();
+
+
                     //    link ="http://10.0.0.22:8082/GetZoneDatInfo?CONO=304&ZONENO=C03D&ITEMCODE=8058578435856";
                     Log.e("link", "" + link);
                 }
@@ -1287,23 +1308,34 @@ Log.e("shiparray",array);
 
 
                     }
-                    Replacement.qty.setText(d);
-                    qtyrespons.setText("QTY");
+               if(fromZoneRepActivity==0)   {  Replacement.qty.setText(d);
+                    qtyrespons.setText("QTY");}
+               else
+               {
+                   ZR_respon.setText("QTY");
+               }
 
-                    Log.e("qtyrespons",qtyrespons.getText().toString()+d);
 
-                    Log.e("qtyrespons",qtyrespons.getText().toString()+d);
                     }
                 else {
 
-                    qtyrespons.setText("nodata");
+                    if(fromZoneRepActivity==0)   {   qtyrespons.setText("nodata");}
 
+                    else
+                    {
+                        ZR_respon.setText("nodata");
+                    }
 
                 }
 
             }
             else {
-                qtyrespons.setText("nodata");
+                if(fromZoneRepActivity==0)
+                    qtyrespons.setText("nodata");
+                else
+                {
+                    ZR_respon.setText("nodata");
+                }
             }
         }
 
@@ -1448,6 +1480,152 @@ Log.e("shiparray",array);
         }
 
     }
+    private class  JSONTask_getAllItems extends AsyncTask<String, String, String> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+            Log.e("onPreExecute", "onPreExecute");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetAllItems?CONO=" + CONO.trim();
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("Exception",""+e.getMessage());
+            }
+
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+//                JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String respon) {
+            super.onPostExecute(respon);
+            String d="";
+            JSONObject jsonObject1 = null;
+
+            if (respon != null) {
+                if (respon.contains("ItemOCode")) {
+
+                    if (respon.length() != 0) {
+                        try {
+
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(respon);
+
+                            for (int i = 0; i < requestArray.length(); i++) {
+
+                               AllItems allItems= new  AllItems ();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                allItems.setItemOcode(jsonObject1.getString("ItemOCode"));
+                                allItems.setItemName(jsonObject1.getString("ItemNameA"));
+                             AllImportItemlist.add(allItems);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    itemrespons.setText("ItemOCode");
+
+                    Log.e("itemrespons",itemrespons.getText().toString()+d);
+
+                    Log.e("itemrespons",itemrespons.getText().toString()+d);
+                }
+                else {
+
+                    itemrespons.setText("nodata");
+
+
+                }
+
+            }
+            else {
+                itemrespons.setText("nodata");
+            }
+        }
+
+
+    }
+
 }
 
 

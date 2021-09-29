@@ -86,4 +86,7 @@ public interface ShipmentDao {
     int deleteBox(String po,String box);
     @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
     List<Shipment> getBoxsShipments(String po,String box);
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :date")
+    List<Shipment> getdateshipments(String date);
+
 }

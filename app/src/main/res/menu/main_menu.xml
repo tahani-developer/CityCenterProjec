@@ -20,6 +20,19 @@
             android:icon="@drawable/ic_arrow_export_black_24dp"
             />
 
+        <item
+            android:id="@+id/menu_import"
+            android:title="@string/Import"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_baseline_arrow_downward_24"
+            />
+        <item
+            android:id="@+id/Reports"
+            android:title="@string/Reports"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_baseline_description_24"
+            />
+
 
 
     </group>

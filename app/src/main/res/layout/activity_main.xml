@@ -93,6 +93,18 @@
                             android:visibility="gone"
                           />
                         <TextView
+                            android:id="@+id/stocksrespon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/ST_itemrespons"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:visibility="gone" />
+                        <TextView
                             android:id="@+id/replashmentssrespon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -299,7 +311,132 @@
         </LinearLayout>
 
 
+        <LinearLayout
 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+
+                android:id="@+id/zoneReplacmentlinear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/back_white_container"
+                android:elevation="3dp"
+
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/orange"
+                    android:clickable="true"
+
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+
+                    android:layout_marginRight="5dp"
+                    android:background="@color/dark_blue_3" />
+
+                <TextView
+                    android:id="@+id/textView_tr25"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="@string/ZoneReplacement"
+                    android:textColor="@color/colorblue_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+
+                android:id="@+id/Stocktakelinear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/back_white_container"
+                android:elevation="3dp"
+
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/main_green_color"
+                    android:clickable="true"
+
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+
+                    android:layout_marginRight="5dp"
+                    android:background="@color/dark_blue_3" />
+
+                <TextView
+                    android:id="@+id/textView_tr24"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="@string/StockTake"
+                    android:textColor="@color/colorblue_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/exportZonReprespon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                   android:visibility="gone" />
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
     </LinearLayout>
 
 

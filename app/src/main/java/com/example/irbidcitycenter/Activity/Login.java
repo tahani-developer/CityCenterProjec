@@ -1,19 +1,27 @@
 package com.example.irbidcitycenter.Activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -81,6 +89,27 @@ TextView settings;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        KeyguardManager.KeyguardLock lock = ((KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock(KEYGUARD_SERVICE);
+        PowerManager powerManager = ((PowerManager) getSystemService(Context.POWER_SERVICE));
+        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wake = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+
+        lock.disableKeyguard();
+        wake.acquire();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+
+
+
+
+
+
+
         colorLinear = findViewById(R.id.colorLinear);
         mainLinearAnim = findViewById(R.id.mainLinearAnim);
         imgInner = (LinearLayout) findViewById(R.id.colorLinear);
@@ -131,6 +160,91 @@ TextView settings;
             }
         });
 
+    }
+    // <category android:name="android.intent.category.HOME" />
+    //                <category android:name="android.intent.category.DEFAULT" />
+
+
+  /*  @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode==KeyEvent.KEYCODE_BACK || keyCode==KeyEvent.KEYCODE_HOME||keyCode==KeyEvent.KEYCODE_SWITCH_CHARSET){
+            openUthenticationDialog();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    protected void onPause() {
+       super.onPause();
+
+      ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }*/
+
+
+    private void openUthenticationDialog() {
+        final Dialog dialog1 = new Dialog(Login.this);
+        dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog1.setCancelable(false);
+        dialog1.setContentView(R.layout.passworddailog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog1.getWindow().getAttributes());
+
+        lp.gravity = Gravity.CENTER;
+        dialog1.getWindow().setAttributes(lp);
+
+
+        EditText editText = dialog1.findViewById(R.id.passwordd);
+        Button donebutton = dialog1.findViewById(R.id.done);
+        Button cancelbutton = dialog1.findViewById(R.id.cancel);
+        donebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (editText.getText().toString().trim().equals("304555")) {
+                    moveTaskToBack(true);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(1);
+                    dialog1.dismiss();
+                }
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                dialog1.dismiss();
+            }
+        });
+
+
+        dialog1.show();
+      /*  AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Exit Application?");
+        alertDialogBuilder
+                .setMessage("Click yes to exit!")
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                moveTaskToBack(true);
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                System.exit(1);
+                            }
+                        })
+
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();*/
     }
 
     private void setImageLoop() {
@@ -377,6 +491,8 @@ TextView settings;
         editip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!ip.getText().toString().equals("")) {
                 final Dialog dialog1 = new Dialog(Login.this);
                 dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog1.setCancelable(false);
@@ -414,7 +530,12 @@ TextView settings;
 
 
                 dialog1.show();
-            }
+            }else {
+                    Log.e("dd","dd");
+                    ip.setEnabled(true);
+                    ip.requestFocus();
+                }}
+
         });
         getDataZone();
         if(appSettings.size()!=0) {
@@ -457,7 +578,7 @@ TextView settings;
                 setting.setCompanyNum(SET_conNO);
                 setting.setUpdateQTY(SET_years);
                 setting.setYears(SET_qtyup);
-                setting.setUserNumber("");
+                setting.setUserNumber(usernum.getText().toString().trim());
                 setting.setDeviceId(device_Id);
                 Log.e("setting","=="+setting.getDeviceId());
                 saveData(setting);

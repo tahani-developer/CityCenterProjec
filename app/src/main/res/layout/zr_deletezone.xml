@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="340dp"
+    android:layout_height="250dp"
+    android:layout_gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/BACK"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:drawableStart="@drawable/ic_baseline_clear_24"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/ZR_DZzonecode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_edit"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_margin="3dp"
+            android:hint="@string/ZoneCode"
+            android:textCursorDrawable="@color/red"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="14sp"
+            android:layout_weight=".5"
+            />
+        <TextView
+            android:id="@+id/ZR_DZsearch"
+
+            android:onClick="showZoneDialog"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1.9"
+            android:gravity="top">
+
+        </TextView>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:padding="2dp"
+        android:layout_margin="5dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1.8"
+        android:orientation="horizontal">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/back_border_dark"
+            android:gravity="bottom"
+            android:padding="3dp">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="@string/Zone"
+                android:textSize="15sp" />
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/Qty"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+
+        </TableRow>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"
+        android:padding="2dp"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <TableRow
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_dark"
+            android:gravity="bottom"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/ZR_DZzonebarecodehow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/darkblue_"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/ZR_DZqtyshow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/white"
+                android:textColor="@color/darkblue_"
+                android:textSize="15sp" />
+
+
+
+        </TableRow>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            />
+        <Button
+            android:id="@+id/ZR_DZdeltebutton"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:layout_gravity="center"
+            android:text="@string/delete1"
+            android:gravity="center"
+            android:textColor="@color/dark_blue_3"
+            android:background="@drawable/done_button"
+            />
+        <TextView
+
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            />
+
+        <Button
+
+            android:id="@+id/ZR_DZsavebutton"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@drawable/done_button"
+            android:text="@string/save"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_blue_3"
+            android:textSize="12sp" />
+
+
+        <TextView
+
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            />
+
+        <Button
+            android:id="@+id/ZR_DZcancelbutton"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:text="@string/cancel"
+            android:gravity="center"
+            android:textColor="@color/red"
+            android:background="@drawable/cancel_button"/>
+
+    </LinearLayout>
+</LinearLayout>

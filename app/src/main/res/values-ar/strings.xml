@@ -66,7 +66,7 @@
     <string name="selectCompany">اختيار شركة</string>
     <string name="ComName">اسم الشركة</string>
     <string name="COYear">السنة</string>
-    <string name="Login">تسجيل الدخول</string>
+
     <string name="itemqty">كمية المادة</string>
     <string name="messageExit2">تم حفظ البيانات، هل تريد الخروج؟</string>
     <string name="errorsaving">لم يتم الحفظ</string>
@@ -99,7 +99,26 @@
     <string name="deletepo">حذف طلبية</string>
     <string name="deletebox">حذف صندوق</string>
     <string name="store"> المخزن </string>
+    <string name="store2"> المخزن</string>
     <string name="fill_setting">Fill Setting</string>
     <string name="deletepo1">هل تريد حذف هذه الطلبيه</string>
     <string name="sumQty">مجموع الكميات</string>
+    <string name="zoneqty">zone Qty</string>
+    <string name="scanedqty">Scaned Qty</string>
+    <string name="storeqty">store Qty</string>
+    <string name="StockTake">StockTake</string>
+    <string name="Itemkind">نوع المادة</string>
+    <string name="saleprice">Sale Price</string>
+    <string name="aviqty">AVI Qty</string>
+    <string name="search1">search by ItemCode or ItemName</string>
+    <string name="total_qty">Total_Qty</string>
+    <string name="IsNew">IsNew</string>
+    <string name="date">التاريخ</string>
+    <string name="preview">اظهار</string>
+    <string name="Reports">التقارير</string>
+    <string name="frmoZone">from Zone</string>
+    <string name="ToZone">To Zone</string>
+    <string name="ZoneReplacement"> ZoneReplacement</string>
+    <string name="msg">للتحويل إلى الزونات الأخرى</string>
+    <string name="notvaildqty2">  لا توجد كمية كافية في </string>
 </resources>

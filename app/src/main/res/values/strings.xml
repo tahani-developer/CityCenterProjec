@@ -31,10 +31,11 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="ZoneCode">Zone Code</string>
+        <string name="ZoneCode">Zone Code</string>
     <string name="itemCode">Item Code</string>
     <string name="Poqty">PoQty</string>
-   <string name="notvaildqty">There is no enough quantity </string>
+    <string name="notvaildqty">There is no enough quantity </string>
+    <string name="notvaildqty2">There is no enough quantity in </string>
     <string name="reqired_filled">*Reqired</string>
     <string name="savedSuccsesfule">Saved Succsesfule</string>
 
@@ -49,15 +50,15 @@
     <string name="to">TO</string>
     <string name="nextBox">Next Box</string>
     <string name="login">login</string>
-    <string name="Import" >Import</string>
-    <string name="finish" >Finish</string>
-    <string name="recQty" >recQty</string>
-    <string name="invalidPONO" >in valid PO number</string>
-    <string name="existsBARCODE" >BareCode not exists</string>
-    <string name="Itemname" >Item name</string>
+    <string name="Import">Import</string>
+    <string name="finish">Finish</string>
+    <string name="recQty">recQty</string>
+    <string name="invalidPONO">in valid PO number</string>
+    <string name="existsBARCODE">BareCode not exists</string>
+    <string name="Itemname">Item name</string>
     <string name="app_done">Done</string>
-    <string name="Differ" >Differ</string>
-<string name="confirm">Are you sure you want to select this entry?</string>
+    <string name="Differ">Differ</string>
+    <string name="confirm">Are you sure you want to select this entry?</string>
     <string name="delete">Are you sure you want to
             \n delete this entry?</string>
     <string name="deletezone1">Are you sure you want to
@@ -66,7 +67,7 @@
             \n delete this item</string>
     <string name="yes">yes</string>
     <string name="no">No</string>
-    <string name= "lastBox">Last Box Info:  </string>
+    <string name="lastBox">Last Box Info:  </string>
     <string name="Arabic">ar</string>
     <string name="ZoneName">Zone Name</string>
     <string name="confirm_title">Confirm</string>
@@ -115,5 +116,23 @@ This barcode is not available in this PO, do you want to add it? </string>
             \n delete this po</string>
     <string name="deletebox">Delete Box</string>
     <string name="store">TO Store</string>
+    <string name="store2">Store</string>
     <string name="sumQty">Sum of Qty</string>
+    <string name="zoneqty">zone Qty</string>
+    <string name="scanedqty">Scaned Qty</string>
+    <string name="storeqty">store Qty</string>
+    <string name="StockTake">StockTake</string>
+    <string name="Itemkind">Item Kind</string>
+    <string name="saleprice">Sale Price</string>
+    <string name="aviqty">AVI Qty</string>
+    <string name="search1">search by ItemCode or ItemName</string>
+    <string name="total_qty">Total_Qty</string>
+    <string name="IsNew">IsNew</string>
+    <string name="date">Date</string>
+    <string name="preview">Preview</string>
+    <string name="frmoZone">from Zone</string>
+    <string name="ToZone">To Zone</string>
+    <string name="ZoneReplacement"> ZoneReplenishment</string>
+    <string name="Reports">Reports</string>
+    <string name="msg">To Transfer to other zones</string>
 </resources>

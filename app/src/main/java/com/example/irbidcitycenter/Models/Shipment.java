@@ -51,7 +51,16 @@ public  class Shipment {
     String IsNew;
 
 
+    @ColumnInfo(name = "DEVICEID")
+    String deviceId;
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
     public String getIsNew() {
         return IsNew;
     }
@@ -170,7 +179,7 @@ public  class Shipment {
             obj.put("ITEMNAME", Itemname);
             obj.put("POQTY", Poqty);
             obj.put("IsNew",IsNew);
-
+            obj.put("DEVICEID", deviceId);
 
 
 

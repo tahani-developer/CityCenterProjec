@@ -66,6 +66,7 @@ import static com.example.irbidcitycenter.Activity.AddZone.flage3;
 public class Replacement extends AppCompatActivity {
     boolean saved = false;
     int position;
+    public static  int actvityflage=1;
     public String UserNo;
     public static TextView respon,qtyrespons;
     GeneralMethod generalMethod;
@@ -114,13 +115,30 @@ public class Replacement extends AppCompatActivity {
   List<String>DB_zone;
     EditText UsNa;
     public static EditText   DIRE_ZONEcode, DIRE_itemcode;
+
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
         init();
-        getStors();
+        Storelist.clear();
+        Storelist=  my_dataBase.storeDao().getall();
+
+       if(Storelist.size()>0) {
+           Log.e("sss","sss");
+           for (int i = 0; i < Storelist.size(); i++) {
+               spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+           }
+           fillSp();
+       }
+
+      else
+     if( Storelist.size()==0)
+          {getStors();
+           Log.e("sss4","sss4");}
 
         zone.setEnabled(true);
         zone.requestFocus();
@@ -217,6 +235,8 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fromSpinner.setEnabled(true);
+                toSpinner.setEnabled(true);
 
                 // for (int i=0; i<replacementlist.size();i++)
                 //     model.insert(replacementlist.get(i));
@@ -498,6 +518,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         my_dataBase.replacementDao().deletezone(deleted_DBzone.get(i).getZone(), deleted_DBzone.get(i).getTo());
                     authenticationdialog.dismiss();
                     dialog.dismiss();
+                    Toast.makeText(Replacement.this,"Done",Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(Replacement.this,"NO data changed",Toast.LENGTH_LONG).show();
                 }
@@ -830,6 +851,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                     reducedqtyitemlist.get( indexOfReduceditem ).setRecQty( sumqty+"");
                                     else
                                         reducedqtyitemlist.add( DB_replist.get(indexDBitem));
+
                                     DIRE_itemcode.setText("");
                                     DIRE_itemcode.requestFocus();
                                 }
@@ -900,7 +922,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         else
                             my_dataBase.replacementDao().updateDBQTY(reducedqtyitemlist.get(i).getRecQty(), reducedqtyitemlist.get(i).getZone(), reducedqtyitemlist.get(i).getItemcode(), reducedqtyitemlist.get(i).getTo());
                     }
-                }
+                    Toast.makeText(Replacement.this,"Done",Toast.LENGTH_LONG).show();   }
                 else{
                     Toast.makeText(Replacement.this,"NO data changed",Toast.LENGTH_SHORT).show();
                 }
@@ -996,7 +1018,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                             })
                                                     .show();
                 else
-                    Toast.makeText(Replacement.this,"No Data",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Replacement.this,getResources().getString(R.string.NODATA),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -1211,6 +1233,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
     }
 
     private void getStors() {
+        actvityflage=1;
         importData.getStore();
     }
 
@@ -1226,6 +1249,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
     }
 
     private void init() {
+
         my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         replacementlist.clear();
         poststateRE = findViewById(R.id.poststatRE);
@@ -1289,14 +1313,13 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     } else {
                         if (editable.toString().equals("fill")) {
                             for (int i = 0; i < Storelist.size(); i++)
-                                spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                            {   spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                            my_dataBase.storeDao().insert(Storelist.get(i));}
                         }
                         fillSp();
 
                         zone.requestFocus();
                         Log.e("afterTextChanged", "" + editable.toString());
-
-
 
                     }
 
@@ -1333,8 +1356,6 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
             }
         });
-
-
         poststateRE.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -1393,10 +1414,15 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
                     {
-                        if(Integer.parseInt(listQtyZone.get(0).getQty())>0) {
+                       if(Integer.parseInt(listQtyZone.get(0).getQty())>0)
+                        {
                             try {
+
+
                                 filldata();
                                 Replacement.qty.setText("");
+
+
                             } catch (Exception e) {
                                 Log.e("Exception", e.getMessage());
                             }
@@ -1409,7 +1435,8 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             itemcode.requestFocus();
 
                             recqty.setEnabled(false);
-                        }else
+                        }
+                        else
                         {
                             Toast.makeText(Replacement.this,getResources().getString(R.string.notvaildqty),Toast.LENGTH_SHORT).show();
                             itemcode.setText("");
@@ -1449,7 +1476,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         fromSpinner.setAdapter(adapter);
         toSpinner.setAdapter(adapter);
         toSpinner.setSelection(1);
-
+        Log.e("sss1","sss1");
     }
 
     private void compareItemKind(String itemKind) {
@@ -1516,6 +1543,9 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                   if(!itemcode.getText().toString().equals(""))
                   {
 
+
+                      fromSpinner.setEnabled(false);
+                      toSpinner.setEnabled(false);
                       Log.e( "itemcodeedt ",itemcode.getText().toString()+"");
 
                       From = fromSpinner.getSelectedItem().toString();
@@ -1578,6 +1608,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                           else
                           {
                               Log.e("not in db","not in db");
+                              ZoneReplacment.fromZoneRepActivity=0;
                               importData.getQty();
 
                           }
@@ -1615,81 +1646,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         else
                             zone.requestFocus();
                         break;
-                    case R.id.itemcodeedt:
 
-                        if(!itemcode.getText().toString().equals(""))
-                        {
-
-                            Log.e( "itemcodeedt ",itemcode.getText().toString()+"");
-
-                            From = fromSpinner.getSelectedItem().toString();
-                            To = toSpinner.getSelectedItem().toString();
-                            FromNo=From.substring(0,From.indexOf(" "));
-                            ToNo=To.substring(0,To.indexOf(" "));
-                            Zone = convertToEnglish(zone.getText().toString().trim());
-                            Itemcode = convertToEnglish(itemcode.getText().toString().trim());
-
-
-                            replacement = new ReplacementModel();
-                            replacement.setFrom( FromNo);
-                            replacement.setTo(ToNo);
-                            replacement.setZone(Zone);
-                            replacement.setItemcode(Itemcode);
-                            replacement.setFromName(From);
-                            replacement.setToName(To);
-                            replacement.setDeviceId(deviceId);
-                            zone.setEnabled(false);
-                            ReplacementModel replacementModel=my_dataBase.replacementDao().getReplacement(Itemcode,Zone, FromNo,ToNo);
-                            if(replacementModel!=null) {
-                                if (!CaseDuplicates(replacementModel))
-                                    replacementlist.add(replacementModel);
-                                Log.e("here","here");
-                                save.setEnabled(true);
-                            }
-
-
-                            if (CaseDuplicates(replacement)) {
-                                Log.e("replacementFrom",replacement.getTo());
-                                Log.e("AddInCaseDuplicates","AddInCaseDuplicates");
-                                //update qty in Duplicate case
-                                int sum=Integer.parseInt(replacementlist.get(position).getRecQty()) + Integer.parseInt("1");
-                                Log.e("aaasum ",sum+"");
-
-                                if(sum<=Integer.parseInt(replacementlist.get(position).getQty()))
-                                {
-                                    replacementlist.get(position).setRecQty((sum+""));
-                                    my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(),replacementlist.get(position).getRecQty());
-
-                                    zone.setEnabled(false);
-                                    itemcode.setText("");
-                                    itemcode.requestFocus();
-                                    fillAdapter();
-                                    Log.e("heree","here2");
-                                }
-                                else
-                                {   showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
-
-                                    fillAdapter();
-                                    zone.setEnabled(false);
-                                    itemcode.setText("");
-                                    itemcode.requestFocus();
-                                }
-
-
-                            }
-
-
-                            else
-                            {
-                                Log.e("not in db","not in db");
-                                importData.getQty();
-
-                            }
-                        }
-
-                        else
-                            itemcode.requestFocus();
-                        break;
                     case R.id.qtyedt: {
 
 

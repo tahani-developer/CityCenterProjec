@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.irbidcitycenter.Activity.AddZone;
 import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Activity.Stoketake;
+import com.example.irbidcitycenter.Activity.ZoneReplacment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
@@ -28,6 +30,23 @@ import static com.example.irbidcitycenter.Activity.Replacement.DZRE_delete;
 import static com.example.irbidcitycenter.Activity.Replacement.DZRE_zonecodeshow;
 import static com.example.irbidcitycenter.Activity.Replacement.Re_searchdialog;
 import static com.example.irbidcitycenter.Activity.Replacement.getqtyofDBzone;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_delete;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_itemcode;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_itemcodeshow;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_qtyshow;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_qtyshows;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_searchdialog;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_zonecodeshow;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_zoneshow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_ZONEcode;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_itemcode;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_itemcodeshow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_preQTY;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_qtyshow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZRDI_zoneshow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_DZqtyshow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_DZzonebarecodehow;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_DZzonecode;
 
 public class ZoneSearchDBAdapter extends BaseAdapter {
     private Context context; //context
@@ -133,10 +152,49 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                     DIRE_itemcode.setEnabled(true);
                     DIRE_itemcode.requestFocus();
                     Re_searchdialog.dismiss();
+                } else     if(flage3==7)
+                {
+                    Stoketake.ST_ZONEcode.setText(items.get(position));
+                    ST_zonecodeshow.setText(items.get(position));
+                    Stoketake.getqtyofDBzone();
+                    ST_delete.setEnabled(true);
+                    ST_searchdialog.dismiss();
                 }
+                else  if(flage3==8){
+                    Stoketake.ST_ZONEcod.setText(items.get(position));
+                    ST_qtyshows.setText("");
+                    ST_zoneshow.setText("");
+                    ST_itemcodeshow.setText("");
+                    ST_itemcode.setText("");
+                    ST_itemcode.setEnabled(true);
+                    ST_itemcode.requestFocus();
+                    ST_searchdialog.dismiss();
+                }
+                else  if(flage3==9){
+                    ZR_DZzonecode.setText(items.get(position));
+                    //set zone barecode
+                    ZR_DZzonebarecodehow.setText(  ZR_DZzonecode.getText().toString());
 
+                    //set qty of zone
+                    int sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
+                    ZR_DZqtyshow.setText(sumqty + "");
+                    ZoneReplacment.searchdialog .dismiss();
 
+                }
+                else  if(flage3==10){
+                    ZRDI_ZONEcode.setText(items.get(position));
+                    ZRDI_itemcode.setText("");
+                    ZRDI_itemcode.setEnabled(true);
+                    ZRDI_itemcode.requestFocus();
+                    ZRDI_preQTY.setText("");
+                    ZRDI_itemcodeshow.setText("");
+                    ZRDI_zoneshow.setText("");
+                    ZRDI_qtyshow.setText("");
+                    ZoneReplacment.searchdialog.dismiss();
+                }
             }
+
+
         });
         //sets the text for item name and item description from the current item object
         textViewItemName.setText(currentItem);
