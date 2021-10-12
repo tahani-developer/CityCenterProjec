@@ -421,7 +421,7 @@ Button AddZonesave;
                 {
                     if(editable.toString().trim().equals("exported"))
                     {
-
+                        showSweetDialog(AddZone.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
                         //saveDataLocaky(1);
                         showSweetDialog(AddZone.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
                         updateRowsPosted();
