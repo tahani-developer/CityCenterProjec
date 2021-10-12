@@ -33,6 +33,7 @@ import static com.example.irbidcitycenter.Activity.Replacement.getqtyofDBzone;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_delete;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_itemcode;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_itemcodeshow;
+import static com.example.irbidcitycenter.Activity.Stoketake.ST_preQTY;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_qtyshow;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_qtyshows;
 import static com.example.irbidcitycenter.Activity.Stoketake.ST_searchdialog;
@@ -163,6 +164,7 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                 else  if(flage3==8){
                     Stoketake.ST_ZONEcod.setText(items.get(position));
                     ST_qtyshows.setText("");
+                    ST_preQTY.setText("");
                     ST_zoneshow.setText("");
                     ST_itemcodeshow.setText("");
                     ST_itemcode.setText("");

@@ -4,9 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="locale">
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -325,15 +322,44 @@
 
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                    </TextView>
+                    <Button
+
+                        android:id="@+id/AD_nextZone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:layout_weight="3"
+                        android:background="@drawable/back_border_edit"
+                        android:text="@string/nextZone"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="12sp" />
+
+
+
+                </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/total_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:layout_gravity="center"
+                android:layout_weight="2.4"
 
                 android:elevation="2dp"
                 android:gravity="center"
@@ -405,13 +431,15 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recycleZone"
                             android:layout_width="match_parent"
-                            android:padding="5dp"
+                            android:layout_height="match_parent"
                             android:background="@drawable/background_container"
-                            android:layout_height="match_parent" >
+                            android:padding="5dp">
 
                         </androidx.recyclerview.widget.RecyclerView>
                     </androidx.core.widget.NestedScrollView>
                 </LinearLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -419,7 +447,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:layout_weight="5"
+                android:layout_weight="5.5"
                 android:gravity="center">
 
 
@@ -427,19 +455,18 @@
                     android:id="@+id/save"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:text="@string/save"
-                    android:textColor="@color/dark_blue_3"
-                    android:background="@drawable/done_button"
-                    android:onClick="saveData"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="3dp"
-
                     android:layout_weight="1"
+                    android:background="@drawable/done_button"
                     android:elevation="5dp"
-                    android:gravity="center"
 
+                    android:gravity="center"
                     android:padding="5dp"
+                    android:text="@string/save"
+
+                    android:textColor="@color/dark_blue_3"
 
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -449,44 +476,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
 
-                    android:layout_marginTop="3dp"
-                    android:layout_marginRight="55dp"
-
-                    android:background="@drawable/cancel_button"
-                    android:onClick="exitAddZone"
-                    android:text="@string/back"
-                    android:textColor="@color/red"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="55dp"
                     android:layout_marginBottom="3dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cancel_button"
                     android:elevation="5dp"
                     android:gravity="center"
-
+                    android:onClick="exitAddZone"
                     android:padding="5dp"
+                    android:text="@string/back"
+
+                    android:textColor="@color/red"
 
                     android:textSize="16sp"
                     android:textStyle="bold"
 
 
-
                     />
+
                 <Button
                     android:id="@+id/delete_btn"
-                    android:background="@drawable/delete_button"
-                    android:text="@string/deletebut"
-                    android:textColor="@color/dark_blue_3"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:layout_marginTop="3dp"
-                    android:onClick="exitAddZone"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
                     android:layout_weight="1"
+                    android:background="@drawable/delete_button"
                     android:elevation="5dp"
                     android:gravity="center"
+                    android:onClick="exitAddZone"
                     android:padding="5dp"
+                    android:text="@string/deletebut"
+                    android:textColor="@color/dark_blue_3"
                     android:textSize="16sp"
                     android:textStyle="bold"
 
@@ -497,6 +524,6 @@
         </LinearLayout>
 
 
-<!--    </ScrollView>-->
+
 
 </RelativeLayout>

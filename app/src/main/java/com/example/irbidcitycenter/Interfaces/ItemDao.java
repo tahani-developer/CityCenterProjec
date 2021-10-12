@@ -18,4 +18,8 @@ public interface ItemDao {
 
     @Query("SELECT * FROM ITEM_TABLE")
     List<AllItems>   getAll();
+
+    @Query("Delete FROM ITEM_TABLE")
+  void deleteall();
+
 }

@@ -30,4 +30,7 @@ public interface StoreDao {
     public  void update(Store store);
     @Query("SELECT * FROM STORE_TABLE")
     List<Store> getall();
+
+    @Query("Delete FROM STORE_TABLE")
+    void deleteall();
 }

@@ -19,6 +19,7 @@ import com.example.irbidcitycenter.Interfaces.ShipmentLogsDao;
 import com.example.irbidcitycenter.Interfaces.StocktakeDao;
 import com.example.irbidcitycenter.Interfaces.StocktakelogsDao;
 import com.example.irbidcitycenter.Interfaces.StoreDao;
+import com.example.irbidcitycenter.Interfaces.UserPermissionsDao;
 import com.example.irbidcitycenter.Interfaces.ZoneDao;
 
 import com.example.irbidcitycenter.Interfaces.ZoneLogsDao;
@@ -32,6 +33,7 @@ import com.example.irbidcitycenter.Models.ShipmentLogs;
 import com.example.irbidcitycenter.Models.StocktakeLogs;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.Store;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneRepLogs;
@@ -39,7 +41,7 @@ import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
 import com.example.irbidcitycenter.Models.appSettings;
 
 
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class, StocktakeModel.class,StocktakeLogs.class, AllItems.class, Store.class, ZoneReplashmentModel.class, ZoneRepLogs.class}, version = 31,exportSchema = false)
+@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class, StocktakeModel.class,StocktakeLogs.class, AllItems.class, Store.class, ZoneReplashmentModel.class, ZoneRepLogs.class, UserPermissions.class}, version = 33,exportSchema = false)
 public abstract class RoomAllData extends RoomDatabase  {
     private  static  RoomAllData database;
     public  static  String dataBaseName="DBRoomIrbidCenter";
@@ -56,6 +58,7 @@ public abstract class RoomAllData extends RoomDatabase  {
     public abstract StoreDao storeDao();
     public abstract ZoneReplashmentDao zoneReplashmentDao();
     public abstract ZoneRepLogsDao zoneRepLogsDao();
+    public abstract UserPermissionsDao userPermissionsDao();
     static final Migration MIGRATION_1_2 = new Migration(19, 21) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {

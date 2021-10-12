@@ -2,7 +2,9 @@ package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,7 +51,7 @@ TextView  SH_date,total_qty_text;
         init();
         myCalendar = Calendar.getInstance();
 
-allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
+allShipmentslist=my_dataBase.shipmentDao().getallShipment();
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
@@ -164,10 +166,12 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
         String searchED=search_edt.getText().toString().trim().toLowerCase();
 
         for (int i = 0; i < allShipmentslist.size(); i++) {
-            if ((allShipmentslist.get(i).getBarcode().startsWith(searchED))
+
+            if ( allShipmentslist.get(i).getShipmentDate().equals(SH_date.getText().toString())
+               && (allShipmentslist.get(i).getBarcode().startsWith(searchED)
                     || (allShipmentslist.get(i).getItemname().toLowerCase().startsWith(searchED))
                     ||(allShipmentslist.get(i).getPoNo().startsWith(searchED))
-            )
+            )  )
                 searchlist.add(allShipmentslist.get(i));
 
 
@@ -181,6 +185,8 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
             }
         else
         { //tableRow.setVisibility(View.GONE);
+
+          //  search_edt.setText("");
          }
 
 
@@ -197,5 +203,15 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
 
         total_qty_text.setText(sum+"");
     }
+    @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
 
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }
     }

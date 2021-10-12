@@ -13,6 +13,13 @@ import java.util.List;
 
 @Entity(tableName = "SHIPMENT_TABLE")
 public  class Shipment {
+
+
+
+
+
+
+
     @PrimaryKey(autoGenerate = true)
      int SERIAL;
 
@@ -179,7 +186,7 @@ public  class Shipment {
             obj.put("ITEMNAME", Itemname);
             obj.put("POQTY", Poqty);
             obj.put("IsNew",IsNew);
-            obj.put("DEVICEID", deviceId);
+               obj.put("DEVICEID", deviceId);
 
 
 

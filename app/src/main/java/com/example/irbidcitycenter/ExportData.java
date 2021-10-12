@@ -102,7 +102,7 @@ public class ExportData {
         getStocktakeObject(Stocktakelist);
         pdstock = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdstock.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdstock.setTitleText(" Start export ");
+        pdstock.setTitleText(" Start export Stock Take ");
         pdstock.setCancelable(false);
         pdstock.show();
 
@@ -380,6 +380,7 @@ public class ExportData {
     }
 
     public void exportShipmentsList(List<Shipment> listShipment) {
+
         Log.e("exportShipmentsList","exportShipmentsList");
         getShipmentObject(listShipment);
         pdshipmant = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +41,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
@@ -81,7 +85,7 @@ public class AddZone extends AppCompatActivity {
     ListView listZones;
     Button delete;
     int index;
-    EditText zonecode;
+
     Dialog authenticationdialog;
     ListView listView;
     EditText UsNa;
@@ -100,7 +104,7 @@ public class AddZone extends AppCompatActivity {
     private int searchflage;
     ArrayList<ZoneModel> searchlistAllZone;
 
-
+Button AddZonesave;
     public  int sumOfQTY;
     private int ind;
 
@@ -110,6 +114,9 @@ public class AddZone extends AppCompatActivity {
     public String UserNo;
     public  String deviceId="";
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
+    private UserPermissions userPermissions;
+    private Animation animation;
+   Button AD_nextZone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +125,7 @@ public class AddZone extends AppCompatActivity {
         initial();
         editQty.setEnabled(false);
       UserNo=my_dataBase.settingDao().getUserNo();
-
+        AD_nextZone.setEnabled(false);
 //my_dataBase.zoneDao().deleteAll();
        /* ZoneModel zoneModel=new ZoneModel();
         zoneModel.setZoneCode("M13F");
@@ -163,13 +170,39 @@ public class AddZone extends AppCompatActivity {
         recycleZone.setAdapter(adapter);
         Log.e("listtest",listtest.size()+"");*/
 
+        AD_nextZone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editZoneCode .setEnabled(true);
+                editZoneCode .setText("");
+                editZoneCode.requestFocus();
 
 
+                zoneName.setText("");
+                editItemCode.setText("");
+                itemName.setText("");
+
+                listZone.clear();
+                fillAdapter(listZone);
+            }
+        });
+        AddZonesave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animation = AnimationUtils.loadAnimation(AddZone.this, R.anim.modal_in);
+                AddZonesave.startAnimation(animation);
+                saveData();
+            }
+        });
 
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
+                animation = AnimationUtils.loadAnimation(AddZone.this, R.anim.modal_in);
+                delete.startAnimation(animation);
+
                 OpenDeleteDailog();
             }
         });
@@ -180,6 +213,9 @@ public class AddZone extends AppCompatActivity {
 
     private void initial() {
         MainActivity.setflage=0;
+        AddZonesave=findViewById(R.id.save);
+        AD_nextZone=findViewById(R.id.AD_nextZone);
+
         generalMethod = new GeneralMethod(AddZone.this);
         editZoneCode = findViewById(R.id.editZoneCode);
         editItemCode = findViewById(R.id.editItemCode);
@@ -338,8 +374,13 @@ public class AddZone extends AppCompatActivity {
                         validateKind=false;
                         editQty.setEnabled(false);
                        Log.e("here","here");
-                        generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
-                        itemKintText.setText("");
+                       try {
+                           generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
+
+                       }catch (Exception e){
+                           Toast.makeText(AddZone.this,"This Item Not Exist",Toast.LENGTH_SHORT).show();
+                       }
+                           itemKintText.setText("");
                         editItemCode.setText("");
 
                     }
@@ -454,7 +495,7 @@ public boolean exists (String zonecode,String itemcode){
                             case R.id.editZoneCode:
                             {
 
-                                if(editZoneCode.getText().length()!=0) {
+                                if(editZoneCode.getText().toString().trim().length()!=0) {
                                     searchZone(editZoneCode.getText().toString().trim());
                                     Log.e("editZoneCode",editZoneCode.getText().toString());
                                 }
@@ -469,58 +510,61 @@ public boolean exists (String zonecode,String itemcode){
                             case R.id.editItemCode:
                             {
 
-                                if(!editItemCode.getText().toString().equals("")) {
-                                    validateKind=false;
-                                ZoneModel zoneModel=existsInDB(editZoneCode.getText().toString().trim(),editItemCode.getText().toString().trim());
-                                    if(zoneModel!=null)
-                                    {if(!exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString()))
-                                        listZone.add(zoneModel);
+                                if(!editItemCode.getText().toString().trim().equals("")) {
+                                    AD_nextZone.setEnabled(true);
+                                    if (editItemCode.getText().toString().length() <= 15) {
+                                        validateKind = false;
+                                        ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(), editItemCode.getText().toString().trim());
+                                        if (zoneModel != null) {
+                                            if (!exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString()))
+                                                listZone.add(zoneModel);
 
-                                        Log.e("case1","case1");
-                                    }
+                                            Log.e("case1", "case1");
+                                        }
 
-                                       if (exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString()))
-                                        {
+                                        if (exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString())) {
                                             Log.e("exists ", "true");
                                             listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
+                                            updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(), listZone.get(index).getZoneCode());
                                             editItemCode.setText("");
-                                          fillAdapter(listZone);
-                                            Log.e("case2","case2");
-                                        } else
+                                            fillAdapter(listZone);
+                                            Log.e("case2", "case2");
+                                        } else {
+                                            //Log.e("editItemCode", editItemCode.getText().toString());
 
-
-
-                                            {
-                                                //Log.e("editItemCode", editItemCode.getText().toString());
-
-                                                if (indexZone != -1) {
-                                                    Log.e("case","case");
-                                                    Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
-                                                    if (itemKintText.getText().toString().equals("") && validateKind == false) {
-                                                        validateItemKind(editItemCode.getText().toString().trim());
-                                                        Log.e("case3","case3");
-                                                    }
-                                                } else {
-                                                    Log.e("case4","case4");
-                                                    editItemCode.setText("");
-                                                    editItemCode.setError("Invalid Item");
-                                                    editItemCode.requestFocus();
-
+                                            if (indexZone != -1) {
+                                                Log.e("case", "case");
+                                                Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
+                                                if (itemKintText.getText().toString().equals("") && validateKind == false) {
+                                                    validateItemKind(editItemCode.getText().toString().trim());
+                                                    Log.e("case3", "case3");
                                                 }
+                                            } else {
+                                                Log.e("case4", "case4");
+                                                editItemCode.setText("");
+                                                editItemCode.setError("Invalid Item");
+                                                editItemCode.requestFocus();
+
                                             }
+                                        }
 
 
-
-
+                                    } else {
+                                        editItemCode.setText("");
+                                        editItemCode.setError("Invalid Item");
+                                        editItemCode.setEnabled(true);
+                                        editItemCode.requestFocus();
+                                    }
                                 }
-                                else
-                                { editItemCode.requestFocus();
-                                    Log.e("elseeditZoneCode",editZoneCode.getText().toString());
+
+                                    else {
+                                        editItemCode.requestFocus();
+                                        Log.e("elseeditZoneCode", editZoneCode.getText().toString());
+                                    }
+
+
                                 }
                                 break;
-                            }
-
 
 
                         }}
@@ -574,66 +618,80 @@ public boolean exists (String zonecode,String itemcode){
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
                         || i == EditorInfo.IME_NULL) {
                     switch (textView.getId()) {
-                        case R.id.editZoneCode: {
+                        case R.id.editZoneCode:
+                        {
 
-                            if (editZoneCode.getText().length() != 0) {
+                            if(editZoneCode.getText().length()!=0) {
                                 searchZone(editZoneCode.getText().toString().trim());
-                                Log.e("editZoneCode", editZoneCode.getText().toString());
-                            } else {
-                                editZoneCode.requestFocus();
-                                Log.e("elseeditZoneCode", editZoneCode.getText().toString());
+                                Log.e("editZoneCode",editZoneCode.getText().toString());
                             }
+                            else
+                            { editZoneCode.requestFocus();
+                                Log.e("elseeditZoneCode",editZoneCode.getText().toString());}
+
 
 
                             break;
                         }
-                        case R.id.editItemCode: {
+                        case R.id.editItemCode:
+                        {
 
-                            if (!editItemCode.getText().toString().equals("")) {
-                                validateKind=false;
-                                ZoneModel zoneModel =existsInDB(editZoneCode.getText().toString().trim(),editItemCode.getText().toString().trim());
-                                if (zoneModel != null) {
-                                    if (!exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString()))
-                                        listZone.add(zoneModel);
-                             Log.e("case1","case1");
+                            if(!editItemCode.getText().toString().equals("")) {
+                                if (editItemCode.getText().toString().length() <= 15) {
+                                    validateKind = false;
+                                    ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(), editItemCode.getText().toString().trim());
+                                    if (zoneModel != null) {
+                                        if (!exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString()))
+                                            listZone.add(zoneModel);
 
-
-                                }
-
-                                if (exists(editZoneCode.getText().toString().trim(),editItemCode.getText().toString())) {
-                                    Log.e("exists ", "true");
-                                    listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
-                                    updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(),listZone.get(index).getZoneCode());
-                                    editItemCode.setText("");
-                                    fillAdapter(listZone);
-                                    Log.e("case2","case2");
-                                } else {
-                                    Log.e("editItemCode", editItemCode.getText().toString());
-
-                                    if (indexZone != -1) {
-                                        Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
-                                        if (itemKintText.getText().toString().equals("") && validateKind == false) {
-                                            validateItemKind(editItemCode.getText().toString().trim());
-
-                                            Log.e("case3","case3");
-                                        }
-                                    } else {
-//
-                                        editItemCode.setText("");
-                                        editItemCode.setError("Invalid Item");
-                                        editItemCode.requestFocus();
-                                        Log.e("case4","case4");
+                                        Log.e("case1", "case1");
                                     }
+
+                                    if (exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString())) {
+                                        Log.e("exists ", "true");
+                                        listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
+                                        updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(), listZone.get(index).getZoneCode());
+                                        editItemCode.setText("");
+                                        fillAdapter(listZone);
+                                        Log.e("case2", "case2");
+                                    } else {
+                                        //Log.e("editItemCode", editItemCode.getText().toString());
+
+                                        if (indexZone != -1) {
+                                            Log.e("case", "case");
+                                            Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
+                                            if (itemKintText.getText().toString().equals("") && validateKind == false) {
+                                                validateItemKind(editItemCode.getText().toString().trim());
+                                                Log.e("case3", "case3");
+                                            }
+                                        } else {
+                                            Log.e("case4", "case4");
+                                            editItemCode.setText("");
+                                            editItemCode.setError("Invalid Item");
+                                            editItemCode.requestFocus();
+
+                                        }
+                                    }
+
+
+                                } else {
+                                    editItemCode.setText("");
+                                    editItemCode.setError("Invalid Item");
+                                    editItemCode.setEnabled(true);
+                                    editItemCode.requestFocus();
                                 }
+                            }
 
-
-                            } else {
+                            else {
                                 editItemCode.requestFocus();
                                 Log.e("elseeditZoneCode", editZoneCode.getText().toString());
-                                Log.e("case5","case5");
                             }
-                            break;
+
+
                         }
+                        break;
+
+
                     }
 
                 }
@@ -645,6 +703,7 @@ public boolean exists (String zonecode,String itemcode){
     private void validateItemKind(String itemNo) {
         validateKind=true;
        // http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
+
        importData.getKindItem(itemNo);
     }
 
@@ -688,46 +747,44 @@ public boolean exists (String zonecode,String itemcode){
                 if (generalMethod.validateNotEmpty(editQty)) {
                     if(generalMethod.validateNotZero(editQty))
                     {
-                        ZoneModel itemZone = new ZoneModel();
-                        itemZone.setZoneCode(editZoneCode.getText().toString().trim());
-                        itemZone.setItemCode(editItemCode.getText().toString().trim());
-                        itemZone.setItemCode( importData.barcode);
-                        itemZone.setQty(editQty.getText().toString().trim());
-                        itemZone.setIsPostd("0");
-                        itemZone.setZONETYPE(zonetype);
-                      itemZone.setItemName(itemName.getText().toString());
-                        itemZone.setZONENAME(zoneName.getText().toString());
-                        itemZone.setDeviceId(deviceId);
-                        itemZone.setStoreNo("6");
-                        itemZone.setUserNO(UserNo);
-                        itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
-                        itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
-                        itemZone.setStoreNo(getusernum());
+                        if (editItemCode.getText().toString().length() <= 15) {
+                            ZoneModel itemZone = new ZoneModel();
+                            itemZone.setZoneCode(editZoneCode.getText().toString().trim());
+                            itemZone.setItemCode(editItemCode.getText().toString().trim());
+                            itemZone.setItemCode(importData.barcode);
+                            itemZone.setQty(editQty.getText().toString().trim());
+                            itemZone.setIsPostd("0");
+                            itemZone.setZONETYPE(zonetype);
+                            itemZone.setItemName(itemName.getText().toString());
+                            itemZone.setZONENAME(zoneName.getText().toString());
+                            itemZone.setDeviceId(deviceId);
+                            itemZone.setStoreNo("6");
+                            itemZone.setUserNO(UserNo);
+                            itemZone.setZoneDate(generalMethod.getCurentTimeDate(1));
+                            itemZone.setZoneTime(generalMethod.getCurentTimeDate(2));
+                            itemZone.setStoreNo(getusernum());
 
-                  ///ayah edit
-                      /*  if(itemCodeExist(convertToEnglish(editItemCode.getText().toString().trim())))
-                        {
-                            updateListZones(itemZone,updatedIndex);
+
+                            listZone.add(itemZone);
+
+                            editItemCode.setText("");
+                            editItemCode.setEnabled(true);
+                            editItemCode.requestFocus();
+
+                            fillAdapter(listZone);
+                            saveRow(itemZone);
+                            clearData();
 
                         }
-                        else {
-                            listZone.add(itemZone);
-                        }*/
-                        listZone.add(itemZone);
+                        else
+                        {
 
+                            editItemCode.setText("");
+                            editItemCode.setError("Invalid Item");
+                            editItemCode.setEnabled(true);
+                            editItemCode.requestFocus();
 
-                        //
-
-
-                        editItemCode.setText("");
-                        editItemCode.setEnabled(true);
-                        editItemCode.requestFocus();
-
-                        fillAdapter(listZone);
-                        saveRow(itemZone);
-                        clearData();
-
-
+                    }
                     }
 
 
@@ -858,13 +915,18 @@ public boolean exists (String zonecode,String itemcode){
         }
     }
 
-    public void saveData(View view) {
-        switch (view.getId()) {
-            case R.id.save:
+    public void saveData() {
+
+
                 if(listZone.size()!=0)
                 {
                     listofZonesUnPosted=my_dataBase.zoneDao().getAllZonesUnposted();
-                exportData();
+
+
+                    for(int i=0;i<  listofZonesUnPosted.size();i++)
+                        if( listofZonesUnPosted.get(i).getDeviceId()==null) listofZonesUnPosted.get(i).setDeviceId(deviceId);
+
+                    exportData();
                 }
                 else {
                     generalMethod.showSweetDialog(AddZone.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
@@ -883,8 +945,8 @@ public boolean exists (String zonecode,String itemcode){
                 }*/
 
 
-                break;
-        }
+
+
     }
 
     private void saveDataLocaky(int isPosted) {
@@ -931,7 +993,8 @@ public boolean exists (String zonecode,String itemcode){
         if(view.getId()==R.id.cancel_btn)
         {
 
-
+            animation = AnimationUtils.loadAnimation(AddZone.this, R.anim.modal_in);
+            findViewById(R.id.cancel_btn).startAnimation(animation);
             new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText(getResources().getString(R.string.confirm_title))
                     .setContentText(getResources().getString(R.string.messageExit))
@@ -1046,6 +1109,7 @@ public void onBackPressed() {
                 showDialogSearch(AddZone.this);
             }
             else {
+                importData=new ImportData(AddZone.this);
                 importData.getAllZones();
             }
 
@@ -1735,7 +1799,7 @@ private void openDeleteitemDailog() {
             if (i != KeyEvent.KEYCODE_ENTER) {
 
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                    if (!DDzoneEDT.getText().toString().equals("")) {
+                    if (!DDzoneEDT.getText().toString().trim().equals("")) {
                         if (isEx())
                         {
                             DDitemcode.setEnabled(true);
@@ -2599,5 +2663,36 @@ List<String> list=new ArrayList<>();
 
         searchdialog.show();
 
+    }
+  /*  @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }*/
+
+    private void CheckPermissitions() {
+        UserNo=my_dataBase.settingDao().getUserNo();
+        userPermissions=new UserPermissions();
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+
+        if( userPermissions!=null) {
+            if (userPermissions.getSHIP_Save().equals("0"))AddZonesave.setVisibility(View.GONE);
+            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
+                delete.setEnabled(true);
+
+
+            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
+                delete.setEnabled(true);
+
+            } else {
+                delete.setEnabled(false);
+            }
+        }
     }
 }

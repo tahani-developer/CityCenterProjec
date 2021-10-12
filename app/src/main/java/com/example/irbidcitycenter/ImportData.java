@@ -1,24 +1,21 @@
 package com.example.irbidcitycenter;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.http.DelegatingSSLSession;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.android.volley.toolbox.StringRequest;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Activity.Stoketake;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.CompanyInfo;
-import com.example.irbidcitycenter.Models.ReplacementModel;
-import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
@@ -46,6 +43,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 
@@ -55,7 +54,6 @@ import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
-import static com.example.irbidcitycenter.Activity.NewShipment.respon;
 import static com.example.irbidcitycenter.Activity.Replacement.itemKintText1;
 import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
 
@@ -64,20 +62,26 @@ import static com.example.irbidcitycenter.Activity.Replacement.zone;
 
 import static com.example.irbidcitycenter.Activity.Stoketake.AllstocktakeDBlist;
 
+import static com.example.irbidcitycenter.Activity.Stoketake.Itemrespons;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.RZ_itemcode;
+import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_itemkind;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_respon;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromZoneRepActivity;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromzone;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
 public class ImportData {
+    SweetAlertDialog pdVoucher;
     public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
+    public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
+    public static ArrayList<ZoneModel> itemdetalis = new ArrayList<>();
     public static int posize;
     public static String itemn;
     public static String item_name="";
     public static String poqty;
-    private Context context;
+    private static Context context;
     public String ipAddress = "", CONO = "", headerDll = "", link = "";
     public RoomAllData my_dataBase;
     public static String zonetype;
@@ -91,6 +95,64 @@ public class ImportData {
     public static List<AllItems> AllImportItemlist = new ArrayList<>();
     public  JSONArray jsonArrayPo;
     public  JSONObject stringNoObject;
+
+//
+
+   static ProgressDialog progressDialog;
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
+    private int max=50;
+
+    private void showProgressDialogWithTitle(String title,String substring) {
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(substring);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+        progressDialog.setMax(100);
+        if(!((Activity) context).isFinishing())
+        {
+            progressDialog.show();
+        }
+
+
+        // Start Process Operation in a background thread
+        new Thread(new Runnable() {
+            public void run() {
+                while (progressStatus < 100) {
+                    try{
+                        // This is mock thread using sleep to show progress
+                        Thread.sleep(200);
+                        progressStatus += 1;
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                    // Change percentage in the progress bar
+                    handler.post(new Runnable() {
+                        public void run() {
+                            progressDialog.setProgress(progressStatus);
+                        }
+                    });
+                }
+
+            }
+        }).start();
+
+    }
+
+    // Method to hide/ dismiss Progress bar
+    public static void hideProgressDialogWithTitle() {
+        Log.e("herea2","aaaaa");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.dismiss();
+        Log.e("herea3","aaaaa");
+
+        //showSweetDialog(context,2,"Done,All data is stored","");
+
+    }
+
+
+
+
 
     public ImportData(Context context) {
         this.context = context;
@@ -109,6 +171,12 @@ public class ImportData {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
     public void getAllItems(){
+
+
+        AllImportItemlist.clear();
+        progressDialog = new ProgressDialog(context);
+        Log.e("context",context.getClass().getName().toString());
+        showProgressDialogWithTitle("Importing Data","Please Wait");
         AllstocktakeDBlist.clear();
         if(!ipAddress.equals(""))
             new  JSONTask_getAllItems().execute();
@@ -163,11 +231,31 @@ else
         }
 
     }
+    public  void getZones(){
+        if(!ipAddress.equals(""))
+        {
+            new JSONTask_getZone().execute();
+        }
+        else {
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
 
+    }
     public void getKindItem(String itemNo) {
         if(!ipAddress.equals(""))
         {
             new JSONTask_getItemKind(itemNo).execute();
+        }
+        else {
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void getKindItem2(String itemNo) {
+        if(!ipAddress.equals(""))
+        {
+            new JSONTask_getItemKind2(itemNo).execute();
         }
         else {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
@@ -625,7 +713,7 @@ Log.e("Exception===",e.getMessage());
         @Override
         protected JSONArray doInBackground(String... params) {
 
-            try {
+           try {
                 if (!ipAddress.equals("")) {
                     //http://localhost:8082/IrGetAllZone?CONO=290
 
@@ -676,7 +764,9 @@ Log.e("Exception===",e.getMessage());
 
 
             }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
-            catch (HttpHostConnectException ex) {
+            catch (HttpHostConnectException ex)
+
+            {
                 ex.printStackTrace();
 //                progressDialog.dismiss();
 
@@ -690,7 +780,10 @@ Log.e("Exception===",e.getMessage());
 
 
                 return null;
-            } catch (Exception e) {
+        }
+         catch (Exception e)
+
+            {
                 e.printStackTrace();
                 Log.e("Exception", "" + e.getMessage());
 //                progressDialog.dismiss();
@@ -1438,7 +1531,7 @@ Log.e("Exception===",e.getMessage());
         @Override
         protected void onPostExecute(String respon) {
             super.onPostExecute(respon);
-
+            max=100;
             JSONObject jsonObject1 = null;
 
 
@@ -1504,6 +1597,16 @@ Log.e("Exception===",e.getMessage());
                 }
             } catch (Exception e) {
                 Log.e("Exception",""+e.getMessage());
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                      //  pdVoucher.dismissWithAnimation();
+                        //hide Progressbar after finishing process
+                        hideProgressDialogWithTitle();
+                        Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
 
 
@@ -1554,7 +1657,7 @@ Log.e("Exception===",e.getMessage());
                 Handler h = new Handler(Looper.getMainLooper());
                 h.post(new Runnable() {
                     public void run() {
-
+                        hideProgressDialogWithTitle();
                         Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -1564,6 +1667,7 @@ Log.e("Exception===",e.getMessage());
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("Exception", "" + e.getMessage());
+                hideProgressDialogWithTitle();
 //                progressDialog.dismiss();
                 return null;
             }
@@ -1578,7 +1682,9 @@ Log.e("Exception===",e.getMessage());
             super.onPostExecute(respon);
             String d="";
             JSONObject jsonObject1 = null;
-
+         //   pdVoucher.dismissWithAnimation();
+            //hide Progressbar after finishing process
+          //  hideProgressDialogWithTitle();
             if (respon != null) {
                 if (respon.contains("ItemOCode")) {
 
@@ -1604,7 +1710,8 @@ Log.e("Exception===",e.getMessage());
 
                     }
 
-                    itemrespons.setText("ItemOCode");
+             if(MainActivity.Items_activityflage==1)       itemrespons.setText("ItemOCode");
+            else        Itemrespons.setText("ItemOCode");
 
                     Log.e("itemrespons",itemrespons.getText().toString()+d);
 
@@ -1612,18 +1719,271 @@ Log.e("Exception===",e.getMessage());
                 }
                 else {
 
-                    itemrespons.setText("nodata");
-
+                    if(MainActivity.Items_activityflage==1)  itemrespons.setText("nodata");
+                    else    Itemrespons.setText("nodata");
 
                 }
 
             }
             else {
-                itemrespons.setText("nodata");
+                if(MainActivity.Items_activityflage==1)    itemrespons.setText("nodata");
+                else    Itemrespons.setText("nodata");
             }
         }
 
 
+    }
+    private class JSONTask_getZone extends AsyncTask<String, String, JSONArray> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    //http://localhost:8082/IrGetAllZone?CONO=290
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetAllZone?CONO=" + CONO.trim();
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                JSONArray parentObject = new JSONArray(finalJson);
+
+                return parentObject;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray array) {
+            super.onPostExecute(array);
+
+            JSONObject result = null;
+
+
+            if (array != null ) {
+                if (array.length() != 0) {
+
+
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            result = array.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        ZoneModel itemZone = new ZoneModel();
+                        try {
+                            itemZone.setZoneCode(result.getString("ZONENO"));
+                            itemZone.setZONENAME(result.getString("ZONENAME"));
+                            itemZone.setZONETYPE(result.getString("ZONETYPE"));
+
+                            Zoneslist.add(itemZone);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+    public class JSONTask_getItemKind2 extends AsyncTask<String, String, String> {
+
+        private String itemNo = "", JsonResponse;
+
+        public JSONTask_getItemKind2(String itemNo) {
+            this.itemNo = itemNo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+convertToEnglish(itemNo.trim());
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("Exception===",e.getMessage());
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+                HttpResponse response = client.execute(request);
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", "itemNo"+finalJson);
+
+
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                if (result.contains("ITEMTYPE")) {
+                    try {
+                        ZoneModel requestDetail=new ZoneModel();
+                        JSONArray requestArray = null;
+                        requestArray =  new JSONArray(result);
+
+
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            JSONObject infoDetail = requestArray.getJSONObject(i);
+                            requestDetail = new ZoneModel();
+                            requestDetail.setZONETYPE(infoDetail.get("ITEMTYPE").toString());
+                            requestDetail.setZoneCode(infoDetail.get("ITEMCODE").toString());
+                            requestDetail.setZONENAME(infoDetail.get("ITEMNAME").toString());
+                            itemdetalis.add( requestDetail);
+                        }
+
+
+                    } catch (JSONException e) {
+//                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+
+                    ZR_itemkind.setText("ITEMTYPE");
+                }
+                else
+                {
+                    ZR_itemkind.setText("NOTEXSISTS");
+                }
+
+
+
+
+
+            }
+            else {
+                ZR_itemkind.setText("NetworkError");
+            }
+        }
     }
 
 }

@@ -31,7 +31,24 @@
             android:title="@string/Reports"
             app:showAsAction="always"
             android:icon="@drawable/ic_baseline_description_24"
-            />
+            >
+            <menu>
+                <item
+                    android:id="@+id/shipmentReports"
+                    android:title="@string/shipmentReport"
+                    app:showAsAction="always"
+                    android:icon="@drawable/ic_baseline_description_24"
+                 />
+                <item
+                    android:id="@+id/StocktakeReport"
+                    android:title="@string/StocktakeReport"
+                    app:showAsAction="always"
+                    android:icon="@drawable/ic_baseline_description_24"
+                    />
+
+            </menu>
+
+        </item>
 
 
 

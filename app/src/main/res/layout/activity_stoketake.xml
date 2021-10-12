@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:scrollbars="vertical"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,6 +21,12 @@
         android:layout_weight="5.6"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/Itemrespons"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone" />
         <TextView
             android:id="@+id/ST_respon"
             android:layout_width="match_parent"
@@ -412,7 +424,8 @@
                 android:layout_margin="1dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:visibility="invisible"
+
+                android:visibility="gone"
                 android:textColor="@color/dark_blue_3"
                 android:textSize="15sp" />
 
@@ -425,7 +438,7 @@
             android:layout_weight=".7">
 
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/stocklist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -580,3 +593,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

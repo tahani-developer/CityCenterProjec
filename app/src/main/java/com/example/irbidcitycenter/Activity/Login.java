@@ -8,9 +8,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.KeyguardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,37 +44,26 @@ import android.widget.Toast;
 
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.ZoneModel;
+import com.example.irbidcitycenter.Interfaces.OnHomePressedListener;
+
+import com.example.irbidcitycenter.Models.HomeWatcher;
+
+
 import com.example.irbidcitycenter.Models.appSettings;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLConnection;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.irbidcitycenter.Activity.AddZone.exportStateText;
-import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Login extends AppCompatActivity {
     EditText username,password;
 
+    boolean activitySwitchFlag = false;
     LinearLayout colorLinear, imgInner, imgOutter;
     FrameLayout mainLinearAnim;
     ImportData importData;
@@ -85,27 +76,91 @@ TextView settings;
     public appSettings setting;
     List<appSettings> appSettings;
     public  String SET_qtyup;
+
+    public boolean isApplicationSentToBackground(final Context context)
+    {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+        if (!tasks.isEmpty()) {
+            ComponentName topActivity = tasks.get(0).topActivity;
+            if (!topActivity.getPackageName().equals(context.getPackageName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
 
+        View decorView = getWindow().getDecorView();
+// Hide both the navigation bar and the status bar.
+// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+// a general rule, you should design your app to hide the status bar whenever you
+// hide the navigation bar.
+
+
+// home key is locked since then
+       // homeKeyLocker.unlock();
+// home key is unlocked since then
+
+
+
+
+
+        //1.THIS IS FOR APP LUNCHE AFTER SCREEN_ON
         KeyguardManager.KeyguardLock lock = ((KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock(KEYGUARD_SERVICE);
         PowerManager powerManager = ((PowerManager) getSystemService(Context.POWER_SERVICE));
         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wake = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
 
         lock.disableKeyguard();
         wake.acquire();
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+     //END OF 1
+
+        //2.THIS IS FOR HOME PRESS CONTROL
+        HomeWatcher mHomeWatcher = new HomeWatcher(this);
+        mHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
+            @Override
+            public void onHomePressed() {
+                Log.e("heeere==","home");
+              //  openUthenticationDialog();
+              /*  Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.example.irbidcitycenter");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);//null pointer check in case package name was not found
+                }*/
+            ;
 
 
 
+
+
+
+
+            }
+            @Override
+            public void onHomeLongPressed() {
+                Log.e("heeere==","LONGhome");
+            }
+        });
+        mHomeWatcher.startWatch();
+
+        //END OF 2
+
+
+
+        //stop notification
+         //Remove title bar
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //Remove notification bar
+      //  this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
 
@@ -161,30 +216,59 @@ TextView settings;
         });
 
     }
-    // <category android:name="android.intent.category.HOME" />
-    //                <category android:name="android.intent.category.DEFAULT" />
+    //
 
+  /* @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.d("tag==", "MYonStop is called");
+        // insert here your instructions
+    }*/
 
-  /*  @Override
+   @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyCode==KeyEvent.KEYCODE_BACK || keyCode==KeyEvent.KEYCODE_HOME||keyCode==KeyEvent.KEYCODE_SWITCH_CHARSET){
-            openUthenticationDialog();
+       // if(keyCode==KeyEvent.KEYCODE_BACK || keyCode==KeyEvent.KEYCODE_HOME||keyCode==KeyEvent.KEYCODE_SWITCH_CHARSET){
+       Log.e("heeere==",keyCode+"");
+       if( keyCode==KeyEvent.KEYCODE_BACK)
+       {
+           Log.e("heeere==","home");
+           activitySwitchFlag = true;
+            //openUthenticationDialog();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
-    @Override
+
+   /* @Override
     protected void onPause() {
-       super.onPause();
+        Log.e("onPause","onPause");
+        super.onPause();
 
       ActivityManager activityManager = (ActivityManager) getApplicationContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
 
+   /*     Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);*/
+
+
+    /*
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.v("TAG", "onPause" );
+        if(activitySwitchFlag)
+            Log.v("TAG", "activity switch");
+        else
+            Log.v("TAG", "home button");
+        activitySwitchFlag = false;
+    }*/
 
     private void openUthenticationDialog() {
         final Dialog dialog1 = new Dialog(Login.this);
@@ -482,7 +566,7 @@ TextView settings;
         final EditText usernum= dialog.findViewById(R.id.usernumber);
         final EditText deviceId= dialog.findViewById(R.id.deviceId);
 
-       // usernum.setText(SET_userNO);
+
 
         ip.setEnabled(false);
        // conNO.setEnabled(false);
@@ -544,6 +628,7 @@ TextView settings;
             conNO.setText(appSettings.get(0).getCompanyNum());
             COMPANYNO=appSettings.get(0).getCompanyNum();
             years.setText(appSettings.get(0).getYears());
+            usernum.setText(appSettings.get(0).getUserNumber());
             try {
                 deviceId.setText(appSettings.get(0).getDeviceId());
             }catch ( Exception e){
@@ -566,7 +651,7 @@ TextView settings;
                 COMPANYNO=conNO.getText().toString();
                 final String SET_years=years.getText().toString();
                 String device_Id=deviceId.getText().toString().trim();
-                //usernum.setText(SET_userNO);
+              //  usernum.setText();
 
                 if(qtyUP.isChecked())
                     SET_qtyup="1";
@@ -576,13 +661,26 @@ TextView settings;
                 setting = new appSettings();
                 setting.setIP(SET_IP);
                 setting.setCompanyNum(SET_conNO);
-                setting.setUpdateQTY(SET_years);
-                setting.setYears(SET_qtyup);
+                setting.setUpdateQTY( SET_qtyup);
+                setting.setYears(SET_years );
                 setting.setUserNumber(usernum.getText().toString().trim());
                 setting.setDeviceId(device_Id);
-                Log.e("setting","=="+setting.getDeviceId());
-                saveData(setting);
+               // Log.e("setting","=="+setting.getDeviceId().toString().trim().length());
+
+
+
+                if(setting.getDeviceId().toString().trim().length()!=0)
+
+                {
+                    saveData(setting);
                 dialog.dismiss();
+
+                }
+                else
+                {    deviceId.setError(getResources().getString(R.string.reqired_filled));
+
+
+                }
             }
         });
         dialog.findViewById(R.id.cancelBtn).setOnClickListener(new View.OnClickListener() {
@@ -605,9 +703,9 @@ TextView settings;
             my_dataBase.settingDao().deleteALL();
     }
     private void saveData(appSettings settings) {
-
+        my_dataBase.settingDao().deleteALL();
         my_dataBase.settingDao().insert(settings);
-
+        my_dataBase.storeDao().deleteall();
         generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
 
     }

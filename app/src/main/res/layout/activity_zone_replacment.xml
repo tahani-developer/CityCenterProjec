@@ -1,12 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activity.ZoneReplacment">
 
+    tools:context=".Activity.ZoneReplacment">
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="5"
+    android:fillViewport="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+
+
+<!--            <ScrollView-->
+<!--                android:layout_width="fill_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight="5"-->
+<!--                android:fillViewport="true">-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,6 +40,16 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+          android:id="@+id/ZR_itemkind"
+                android:visibility="gone"
+
+               />
+
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -206,7 +237,7 @@ android:visibility="gone"
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/recQty"
+                android:text="@string/Qty"
                 android:layout_marginRight="5dp"
                 android:layout_weight="2"
                 android:gravity="center"
@@ -249,7 +280,7 @@ android:visibility="gone"
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="5">
 
             </TextView>
             <TextView
@@ -264,18 +295,75 @@ android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
-                android:layout_weight="5"
+                android:layout_weight="3"
                 android:background="@drawable/back_border_edit"
-                android:text="@string/nextZone"
+                android:text="@string/nextfromZone"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_blue_3"
+                android:textSize="12sp" />
+            <TextView
+
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+              >
+            </TextView>
+            <Button
+
+                android:id="@+id/ZR_nextToZone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_weight="3"
+                android:background="@drawable/back_border_edit"
+                android:text="@string/nexttoZone"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_blue_3"
                 android:textSize="12sp" />
 
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"/>
 
         </LinearLayout>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
 
+
+<!--            android:layout_weight="1"-->
+<!--            android:orientation="horizontal">-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight="1">-->
+
+<!--            </TextView>-->
+<!--            <TextView-->
+<!--                android:id="@+id/ZonRepdatarespon0"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:visibility="gone">-->
+<!--            </TextView>-->
+<!--            <Button-->
+
+<!--                android:id="@+id/ZR_nextZonem"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_gravity="right"-->
+<!--                android:layout_weight="5"-->
+<!--                android:background="@drawable/back_border_edit"-->
+<!--                android:text="@string/nextZone"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/dark_blue_3"-->
+<!--                android:textSize="12sp" />-->
+
+
+
+
+<!--        </LinearLayout>-->
     </LinearLayout>
+<!--            </ScrollView>-->
 
 
     <TableRow
@@ -333,7 +421,7 @@ android:visibility="gone"
             android:layout_margin="2dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/recQty"
+            android:text="@string/aviqty"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
@@ -352,19 +440,20 @@ android:visibility="gone"
             android:orientation="vertical">
 
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/zonelist"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1" >
+                android:layout_weight="1.5" >
 
-            </ListView>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="9"
+                android:layout_weight="10"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -418,7 +507,10 @@ android:visibility="gone"
 
             </LinearLayout>
 
+
         </LinearLayout>
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -1,9 +1,15 @@
 package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,6 +18,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,15 +30,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.irbidcitycenter.Adapters.StocktakeAdapter;
+
+import com.example.irbidcitycenter.Adapters.StocktakeAdapterr;
 import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeLogs;
 import com.example.irbidcitycenter.Models.StocktakeModel;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
@@ -41,7 +53,10 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.example.irbidcitycenter.Activity.AddZone.adapter;
 import static com.example.irbidcitycenter.Activity.AddZone.flage3;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
 import static com.example.irbidcitycenter.ImportData.Storelist;
+import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle;
+import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Stoketake extends AppCompatActivity {
     static Spinner StoreSpinner;
@@ -56,7 +71,7 @@ public class Stoketake extends AppCompatActivity {
     TextView itemname;
     int position;
     static RoomAllData my_dataBase;
-    StocktakeAdapter stocktakeAdapter;
+    StocktakeAdapterr stocktakeAdapter;
     GeneralMethod generalMethod;
     public String UserNo;
     EditText UsNa;
@@ -67,7 +82,7 @@ public class Stoketake extends AppCompatActivity {
     public static List<AllItems> AllstocktakeDBlist = new ArrayList<>();
     public static List<StocktakeModel> stocktakelist = new ArrayList<>();
     public static  List<StocktakeModel> DB_stocktakecopy=new ArrayList<>();
-ListView stockListView;
+RecyclerView stockListView;
     private Dialog authenticationdialog;
     public static  List<StocktakeModel> DB_stocktake=new ArrayList<>();;
     List<String>DB_store;
@@ -90,17 +105,20 @@ ListView stockListView;
  ST_itemcode;
     private int indexOfReduceditem;
 
-public static TextView datarespon ,total_zoneqty_text,total_scanedqty_text,total_storeqty_text;
+public static TextView  Itemrespons,datarespon ,total_zoneqty_text,total_scanedqty_text,total_storeqty_text;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     ExportData exportData;
+    private UserPermissions userPermissions;
+    private Animation animation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stoketake);
         init();
-
-
-  //my_dataBase.stocktakeDao().deleteAll();
+zonecode.requestFocus();
+        itemOcode.setEnabled(false);
+  //my_dataBase.itemDao().deleteall();
 
     saveButton.setEnabled(false);
 
@@ -123,6 +141,7 @@ public static TextView datarespon ,total_zoneqty_text,total_scanedqty_text,total
     else     if( Storelist.size()==0) getStors();
         UserNo = my_dataBase.settingDao().getUserNo();
         AllstocktakeDBlist.clear();
+     //   my_dataBase.itemDao().deleteall();
         AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
         stocktakelist.clear();
    //     itemOcode.setEnabled(false);
@@ -171,12 +190,19 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                         switch (view.getId()) {
                             case R.id.ST_zoneedt:
                                 Log.e("ST_zoneedt","ST_zoneedt");
-                             if (!zonecode.getText().toString().equals("")) {
-
-                                    Log.e("zoneedt",zonecode.getText().toString());
+                             if (!zonecode.getText().toString().trim().equals("")) {
+//                                 if(zoneExists(zonecode.getText().toString()))
+//                                 {
+                                     Log.e("zoneedt",zonecode.getText().toString());
                                     itemOcode.setEnabled(true);
                                     itemOcode.requestFocus();
-                                 getZoneSumQty();
+                                    getZoneSumQty();
+//                                 }
+//                                 else{
+//                                     zonecode.setError("Invalid");
+//                                     zonecode.setText("");
+//                                     zonecode.requestFocus();
+//                                 }
 
                              } else
                                 { zonecode.requestFocus();
@@ -186,21 +212,23 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                             case R.id.ST_itemcodeedt:
 
                                 if (!itemOcode.getText().toString().equals("")) {
-                                    zonecode.setEnabled(false);
-                                    saveButton.setEnabled(true);
-                                    itemname.setText("");
-                                    stocktakelist.clear();
-                                    Log.e("itemcode",itemOcode.getText().toString());
-                                    boolean existsflage = false;
-                                    //local list check
-                                    if (stocktakelist.size() > 0) {
+
+                                    if (itemOcode.getText().toString().length() <= 15) {
+                                        zonecode.setEnabled(false);
+                                        saveButton.setEnabled(true);
+                                        itemname.setText("");
+                                        stocktakelist.clear();
+                                        Log.e("itemcode", itemOcode.getText().toString());
+                                        boolean existsflage = false;
+                                        //local list check
+                                        if (stocktakelist.size() > 0) {
 
 
-                                            if ( ItemExistsLocal()) {
+                                            if (ItemExistsLocal()) {
                                                 int sum = Integer.parseInt(stocktakelist.get(localitempostion).getQty()) + 1;
                                                 stocktakelist.get(localitempostion).setQty(sum + "");
-                                              int z=  my_dataBase.stocktakeDao().IncreasQty(stocktakelist.get(localitempostion).getQty(),stocktakelist.get(localitempostion).getZone(), stocktakelist.get(localitempostion).getItemOcode(),stocktakelist.get(localitempostion).getStore() );
-                                                Log.e("z====",""+z);
+                                                int z = my_dataBase.stocktakeDao().IncreasQty(stocktakelist.get(localitempostion).getQty(), stocktakelist.get(localitempostion).getZone(), stocktakelist.get(localitempostion).getItemOcode(), stocktakelist.get(localitempostion).getStore());
+                                                Log.e("z====", "" + z);
                                                 existsflage = true;
 
                                                 itemOcode.setText("");
@@ -209,21 +237,22 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                                                 getItemsSumQty();
                                                 getZoneSumQty();
                                                 getStoreSumQty();
-                                              if(stocktakeAdapter!=null)  stocktakeAdapter.notifyDataSetChanged();
-                                              else
-                                                  filladapter();
+                                                if (stocktakeAdapter != null)
+                                                    stocktakeAdapter.notifyDataSetChanged();
+                                                else
+                                                    filladapter();
                                                 break;
                                             }
                                             //check database
-                                        else     if (existsflage == false) {
+                                            else if (existsflage == false) {
 
 
-                                                StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj( StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")),zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
+                                                StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                                 if (stocktakeModel != null) {
                                                     Log.e("notnull", "notnull");
-                                                    int sum = Integer.parseInt(stocktakeModel.getQty())+1;
+                                                    int sum = Integer.parseInt(stocktakeModel.getQty()) + 1;
                                                     stocktakeModel.setQty(sum + "");
-                                                    my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(),stocktakeModel.getStore());
+                                                    my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(), stocktakeModel.getStore());
                                                     stocktakelist.add(stocktakeModel);
                                                     stocktakeAdapter.notifyDataSetChanged();
 
@@ -233,30 +262,26 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                                                     getZoneSumQty();
                                                     getStoreSumQty();
                                                 }
-                                            }
-
-                                                       else if(ItemExists()) {
-                                                        filldata();
+                                            } else if (ItemExists()) {
+                                                filldata();
 
                                                 itemOcode.setText("");
                                                 itemOcode.requestFocus();
                                                 break;
+                                            } else {
+                                                itemOcode.setError("Invalid");
+                                                itemOcode.setText("");
                                             }
-                                                    else {
-                                                        itemOcode.setError("Invalid");
-                                                        itemOcode.setText("");
-                                                    }
-                                                }
-                                    else {
+                                        } else {
 
 
                                             Log.e("checkdatabase", "checkdatabase");
-                                            StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")),zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
+                                            StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                             if (stocktakeModel != null) {
                                                 Log.e("notnull", "notnull");
-                                                int sum = Integer.parseInt(stocktakeModel.getQty())+1;
+                                                int sum = Integer.parseInt(stocktakeModel.getQty()) + 1;
                                                 stocktakeModel.setQty(sum + "");
-                                                my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(),stocktakeModel.getStore());
+                                                my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(), stocktakeModel.getStore());
                                                 stocktakelist.add(stocktakeModel);
                                                 itemname.setText(stocktakeModel.getItemName());
                                                 filladapter();
@@ -269,9 +294,9 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                                             }
 
 
-                                        //check AllstocktakeDBlist
-                                     else if (ItemExists()) {
-                                                 filldata();
+                                            //check AllstocktakeDBlist
+                                            else if (ItemExists()) {
+                                                filldata();
 
                                                 itemOcode.setText("");
                                                 itemOcode.requestFocus();
@@ -283,10 +308,15 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
                                         }
 
 
+                                    } else {
+                                        itemOcode.setError("Invalid");
+                                        itemOcode.setText("");
+                                        itemOcode.setEnabled(true);
+                                        itemOcode.requestFocus();
 
-
-
-                                } else
+                                    }
+                                }
+                                else
                                     itemOcode.requestFocus();
                                 break;
                         }
@@ -364,19 +394,42 @@ public static void getItemsSumQty() {
        return flage;
     }*/
     public  boolean ItemExists(){
+
         boolean flage=false;
-        for (int x1 = 0; x1 < AllstocktakeDBlist.size(); x1++) {
-            if ( AllstocktakeDBlist.get(x1).getItemOcode().equals(itemOcode.getText().toString().trim())) {
-                flage=true;
-         itemname.setText(AllstocktakeDBlist.get(x1).getItemName());
-                break;
-            }
-            else {
-                flage=false;
-            }
+        if(AllstocktakeDBlist.size()==0)
+        {
+            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.BUTTON_CONFIRM)
+                    .setTitleText(getResources().getString(R.string.confirm_title))
+                    .setContentText(getResources().getString(R.string.Msg1))
+                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                     importData.getAllItems();
+                            sweetAlertDialog.dismiss();
+                        }
+                    })
+                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+
+                        }
+                    })
+                    .show();
         }
 
-        return flage;
+            for (int x1 = 0; x1 < AllstocktakeDBlist.size(); x1++) {
+                if (AllstocktakeDBlist.get(x1).getItemOcode().equals(itemOcode.getText().toString().trim())) {
+                    flage = true;
+                    itemname.setText(AllstocktakeDBlist.get(x1).getItemName());
+                    break;
+                } else {
+                    flage = false;
+                }
+            }
+
+            return flage;
+
     }
 
 
@@ -389,15 +442,22 @@ public static void getItemsSumQty() {
             switch (id){
 
                 case R.id.ST_save:
+                    animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                    saveButton.startAnimation(animation);
                     Log.e("ST_save","ST_save");
                     MainActivity.activityflage=0;
                     exportdata();
                     clearAll();
+                    saveButton.setEnabled(false);
                     break;
                 case R.id.ST_delete:
+                    animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                    reduiceButton  .startAnimation(animation);
                     OpenDeleteDailog();
                     break;
                 case R.id.ST_nextZone:
+                    animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                    nextzoneButton.startAnimation(animation);
                     zonecode.setEnabled(true);
                     itemname.setText("");
                     itemOcode.setText("");
@@ -406,7 +466,8 @@ public static void getItemsSumQty() {
                   total_zoneqty_text.setText("0");
                     break;
                 case R.id.ST_cancel:
-
+                    animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                    backButton.startAnimation(animation);
                     new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText(getResources().getString(R.string.confirm_title))
                             .setContentText(getResources().getString(R.string.messageExit))
@@ -469,12 +530,170 @@ public static void getItemsSumQty() {
     public void exportdata(){
 Log.e("exportdata"," exportdata");
   List<StocktakeModel> models= my_dataBase.stocktakeDao().getall();
-  Log.e("models",models.size()+"");
+
+
+
+        for(int i=0;i<  models.size();i++)
+            if( models.get(i).getDeviceId()==null) models.get(i).setDeviceId(deviceId);
+
+        Log.e("models",models.size()+"");
         exportData.exportStockTakeList( models);
  // my_dataBase.stocktakeDao().setposted();
 
 }
+
+    EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                    || i == EditorInfo.IME_NULL) {
+                switch (textView.getId()) {
+                    case R.id.ST_zoneedt:
+                        Log.e("ST_zoneedt","ST_zoneedt");
+                        if (!zonecode.getText().toString().trim().equals("")) {
+//                                 if(zoneExists(zonecode.getText().toString()))
+//                                 {
+                            Log.e("zoneedt",zonecode.getText().toString());
+                            itemOcode.setEnabled(true);
+                            itemOcode.requestFocus();
+                            getZoneSumQty();
+//                                 }
+//                                 else{
+//                                     zonecode.setError("Invalid");
+//                                     zonecode.setText("");
+//                                     zonecode.requestFocus();
+//                                 }
+
+                        } else
+                        { zonecode.requestFocus();
+                            Log.e("zoneedt===",zonecode.getText().toString());}
+
+                        break;
+                    case R.id.ST_itemcodeedt:
+
+                        if (!itemOcode.getText().toString().trim().equals("")) {
+
+                            if (itemOcode.getText().toString().length() <= 15) {
+                                zonecode.setEnabled(false);
+                                saveButton.setEnabled(true);
+                                itemname.setText("");
+                                stocktakelist.clear();
+                                Log.e("itemcode", itemOcode.getText().toString());
+                                boolean existsflage = false;
+                                //local list check
+                                if (stocktakelist.size() > 0) {
+
+
+                                    if (ItemExistsLocal()) {
+                                        int sum = Integer.parseInt(stocktakelist.get(localitempostion).getQty()) + 1;
+                                        stocktakelist.get(localitempostion).setQty(sum + "");
+                                        int z = my_dataBase.stocktakeDao().IncreasQty(stocktakelist.get(localitempostion).getQty(), stocktakelist.get(localitempostion).getZone(), stocktakelist.get(localitempostion).getItemOcode(), stocktakelist.get(localitempostion).getStore());
+                                        Log.e("z====", "" + z);
+                                        existsflage = true;
+
+                                        itemOcode.setText("");
+                                        itemOcode.requestFocus();
+
+                                        getItemsSumQty();
+                                        getZoneSumQty();
+                                        getStoreSumQty();
+                                        if (stocktakeAdapter != null)
+                                            stocktakeAdapter.notifyDataSetChanged();
+                                        else
+                                            filladapter();
+                                        break;
+                                    }
+                                    //check database
+                                    else if (existsflage == false) {
+
+
+                                        StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
+                                        if (stocktakeModel != null) {
+                                            Log.e("notnull", "notnull");
+                                            int sum = Integer.parseInt(stocktakeModel.getQty()) + 1;
+                                            stocktakeModel.setQty(sum + "");
+                                            my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(), stocktakeModel.getStore());
+                                            stocktakelist.add(stocktakeModel);
+                                            stocktakeAdapter.notifyDataSetChanged();
+
+                                            itemOcode.setText("");
+                                            itemOcode.requestFocus();
+                                            getItemsSumQty();
+                                            getZoneSumQty();
+                                            getStoreSumQty();
+                                        }
+                                    } else if (ItemExists()) {
+                                        filldata();
+
+                                        itemOcode.setText("");
+                                        itemOcode.requestFocus();
+                                        break;
+                                    } else {
+                                        itemOcode.setError("Invalid");
+                                        itemOcode.setText("");
+                                    }
+                                } else {
+
+
+                                    Log.e("checkdatabase", "checkdatabase");
+                                    StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
+                                    if (stocktakeModel != null) {
+                                        Log.e("notnull", "notnull");
+                                        int sum = Integer.parseInt(stocktakeModel.getQty()) + 1;
+                                        stocktakeModel.setQty(sum + "");
+                                        my_dataBase.stocktakeDao().IncreasQty(stocktakeModel.getQty(), stocktakeModel.getZone(), stocktakeModel.getItemOcode(), stocktakeModel.getStore());
+                                        stocktakelist.add(stocktakeModel);
+                                        itemname.setText(stocktakeModel.getItemName());
+                                        filladapter();
+                                        getItemsSumQty();
+                                        getZoneSumQty();
+                                        getStoreSumQty();
+                                        itemOcode.setText("");
+                                        itemOcode.requestFocus();
+
+                                    }
+
+
+                                    //check AllstocktakeDBlist
+                                    else if (ItemExists()) {
+                                        filldata();
+
+                                        itemOcode.setText("");
+                                        itemOcode.requestFocus();
+                                        break;
+                                    } else {
+                                        itemOcode.setError("Invalid");
+                                        itemOcode.setText("");
+                                    }
+                                }
+
+
+                            } else {
+                                itemOcode.setError("Invalid");
+                                itemOcode.setText("");
+                                itemOcode.setEnabled(true);
+                                itemOcode.requestFocus();
+
+                            }
+                        }
+                        else
+                            itemOcode.requestFocus();
+                        break;
+
+                }
+
+
+
+            }
+
+            return true;
+        }
+    };
+
+
+
     private void init() {
+        MainActivity.Items_activityflage=2;
         stocktakelist.clear();
        exportData=new ExportData(Stoketake.this);
 total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
@@ -494,6 +713,7 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         }
         StoreSpinner = findViewById(R.id.storespinner);
         importData = new ImportData(Stoketake.this);
+       // importData.getAllZones();
         respone = findViewById(R.id.respone3);
         saveButton = findViewById(R.id.ST_save);
         reduiceButton = findViewById(R.id.ST_delete);
@@ -505,6 +725,11 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         generalMethod = new GeneralMethod(Stoketake.this);
         zonecode.setOnKeyListener(onKeyListener);
         itemOcode.setOnKeyListener(onKeyListener);
+
+
+        zonecode.setOnEditorActionListener(onEditAction);
+        itemOcode.setOnEditorActionListener(onEditAction);
+
         itemname=findViewById(R.id.ST_itemname);
         stockListView=findViewById(R.id.stocklist);
         nextzoneButton=findViewById(R.id.ST_nextZone);
@@ -514,8 +739,67 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         importButton.setOnClickListener(onClickListener);
         reduiceButton.setOnClickListener(onClickListener);
         backButton.setOnClickListener(onClickListener);
+        Itemrespons=findViewById(R.id.Itemrespons);
+        Itemrespons.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().equals("ItemOCode")) {
+                        Log.e("herea","aaaaa");
+                        my_dataBase.itemDao().deleteall();
+                        my_dataBase.itemDao().insertAll(AllImportItemlist);
+                        AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
+                        hideProgressDialogWithTitle();
+                        Log.e("herea4","aaaaa");
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                try {
+                                    showSweetDialog(Stoketake.this, 1, "Done,All data is stored", "");
+                                } catch (WindowManager.BadTokenException e) {
+                                    //use a log message
+                                }
+                            }
+                        });
 
 
+                    }
+                    else     if (editable.toString().equals("nodata")) {
+                      //  Toast.makeText(Stoketake.this,"NetWork Error",Toast.LENGTH_SHORT).show();
+                        hideProgressDialogWithTitle();
+                               Handler h = new Handler(Looper.getMainLooper());
+
+                        h.post(new Runnable() {
+                            public void run() {
+                                try {
+                                    showSweetDialog(Stoketake.this, 0, "NetWork Error", "");
+                                }
+                                catch (WindowManager.BadTokenException e) {
+                                    //use a log message
+                                }
+
+
+                           }
+                        });
+
+                    }
+
+
+
+                }
+            }
+        });
         datarespon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -534,16 +818,27 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                 if (editable.toString().length() != 0) {
                     if (editable.toString().trim().equals("exported")) {
                         savedata("1");
-                        showSweetDialog(Stoketake.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                        try {
+
+
+                            showSweetDialog(Stoketake.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                        }       catch (WindowManager.BadTokenException e) {
+                            //use a log message
+                        }
+
+
                         stocktakelist.clear();
                         stocktakeAdapter.notifyDataSetChanged();
-
+                              zonecode.setEnabled(true);
+                        zonecode.requestFocus();
 
                     } else {
                        // savedata("0");
                         Log.e("el==","here");
                         stocktakelist.clear();
                         stocktakeAdapter.notifyDataSetChanged();
+                        zonecode.setEnabled(true);
+                        zonecode.requestFocus();
                     }
                 }
 
@@ -584,6 +879,11 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         });
     }
 
+    private void getDialog() {
+        showSweetDialog(Stoketake.this,2,"Done,All data is stored","");
+
+    }
+
     private void savedata(String poststate) {
         my_dataBase.stocktakeDao().setposted(poststate);
     }
@@ -597,35 +897,59 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
 
     }
 
+    public  boolean zoneExists(String zone){
+        boolean f=false;
+        for(int x=0;x<listAllZone.size();x++)
+            if(listAllZone.get(x).getZoneCode().equals(zone))
+            {f=true;
+                break;}
+        return f;
 
+
+
+    }
     private void filldata() {
         Log.e("filldata","filldata");
-        StocktakeModel stocktakeModel=new StocktakeModel();
-        stocktakeModel.setIsPosted("0");
-        stocktakeModel.setQty("1");
-        stocktakeModel.setDate(generalMethod.getCurentTimeDate(1));
-        stocktakeModel.setTime(generalMethod.getCurentTimeDate(2));
-        stocktakeModel.setUserNO(UserNo);
+        if(!itemOcode.getText().toString().equals("")) {
 
-        stocktakeModel.setStore(   StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")));
-        stocktakeModel.setItemOcode(itemOcode.getText().toString());
-        stocktakeModel.setZone(zonecode.getText().toString());
-        stocktakeModel.setItemName(itemname.getText().toString());
-        stocktakeModel.setDeviceId(deviceId);
-        stocktakelist.add(stocktakeModel);
-        Log.e(" stocktakelist======", stocktakelist.size()+"");
-        my_dataBase.stocktakeDao().insert(stocktakeModel);
+            if (itemOcode.getText().toString().length() <= 15) {
 
-        filladapter();
+                StocktakeModel stocktakeModel = new StocktakeModel();
+                stocktakeModel.setIsPosted("0");
+                stocktakeModel.setQty("1");
+                stocktakeModel.setDate(generalMethod.getCurentTimeDate(1));
+                stocktakeModel.setTime(generalMethod.getCurentTimeDate(2));
+                stocktakeModel.setUserNO(UserNo);
 
-        getItemsSumQty();
-        getZoneSumQty();
-        getStoreSumQty();
+                stocktakeModel.setStore(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")));
+                stocktakeModel.setItemOcode(itemOcode.getText().toString());
+                stocktakeModel.setZone(zonecode.getText().toString());
+                stocktakeModel.setItemName(itemname.getText().toString());
+                stocktakeModel.setDeviceId(deviceId);
+                stocktakelist.add(stocktakeModel);
+                Log.e(" stocktakelist======", stocktakelist.size() + "");
+                my_dataBase.stocktakeDao().insert(stocktakeModel);
 
+                filladapter();
+
+                getItemsSumQty();
+                getZoneSumQty();
+                getStoreSumQty();
+            }
+            else {
+                itemOcode.setError("Invalid");
+                itemOcode.setText("");
+                itemOcode.setEnabled(true);
+                itemOcode.requestFocus();
+
+            }
+        }
     }
 
     private void filladapter() {
-        stocktakeAdapter = new StocktakeAdapter(this, stocktakelist);
+        stockListView.setLayoutManager(new LinearLayoutManager(Stoketake.this));
+
+        stocktakeAdapter = new StocktakeAdapterr(this, stocktakelist);
         stockListView.setAdapter(stocktakeAdapter);
         stocktakeAdapter.notifyDataSetChanged();
     }
@@ -941,6 +1265,8 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                                                 @Override
                                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                                                     sweetAlertDialog.dismiss();
+                                                    ST_itemcode.setText("");
+                                                    ST_preQTY.setText("");
                                                 }
                                             })
                                             .show();
@@ -1036,6 +1362,7 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 sweetAlertDialog.dismiss();
+
                             }
                         })
                         .show();
@@ -1497,5 +1824,35 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
 
         ST_searchdialog.show();
 
+    }
+  /*  @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }*/
+    private void CheckPermissitions() {
+        UserNo=my_dataBase.settingDao().getUserNo();
+        userPermissions=new UserPermissions();
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+
+        if( userPermissions!=null) {
+            if (userPermissions.getSHIP_Save().equals("0"))saveButton.setVisibility(View.GONE);
+            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
+                ST_delete.setEnabled(true);
+
+
+            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
+                ST_delete.setEnabled(true);
+
+            } else {
+                ST_delete.setEnabled(false);
+            }
+        }
     }
 }

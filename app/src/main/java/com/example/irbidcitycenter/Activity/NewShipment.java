@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.http.DelegatingSSLSession;
@@ -21,6 +23,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +45,7 @@ import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.PO;
 import com.example.irbidcitycenter.Models.ShipmentLogs;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 import com.example.irbidcitycenter.ScanActivity;
@@ -143,7 +148,10 @@ public class NewShipment extends AppCompatActivity {
     public static int dailogNum=9;
     public static Dialog deleteBoxdialog;
     public  String deviceId="";
+    Button Ship_delete;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
+    private UserPermissions userPermissions;
+    private Animation animation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,14 +238,18 @@ public class NewShipment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
+                animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
+                save.startAnimation(animation);
 if(localList.size()!=0) {
     shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
     Log.e("shipmentsListsize", shipmentsList.size() + "");
+    for(int i=0;i< shipmentsList.size();i++)
+        if(shipmentsList.get(i).getDeviceId()==null)shipmentsList.get(i).setDeviceId(deviceId);
     exportData(shipmentsList);
 
     localList.clear();
     shipmentsList.clear();
+    next.setEnabled(false);
 }
 else
 {
@@ -270,7 +282,8 @@ else
             @Override
             public void onClick(View view) {
 
-
+                animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
+                next.startAnimation(animation);
                 pono.setEnabled(false);
                 boxno.setText("");
                 boxno.setEnabled(true);
@@ -289,10 +302,14 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
             }
         });
 
+
         //3. cancel button
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
+                findViewById(R.id.cancel).startAnimation(animation);
+
                 new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText(getResources().getString(R.string.confirm_title))
                         .setContentText(getResources().getString(R.string.messageExit))
@@ -350,9 +367,12 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
         });
 
 
-        findViewById(R.id.Ship_delete).setOnClickListener(new View.OnClickListener() {
+        Ship_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
+                Ship_delete.startAnimation(animation);
+
                 OpenDeleteDailog();
             }
         });
@@ -1546,22 +1566,29 @@ else
                 case R.id.barCodetxt: {
                     next.setEnabled(true);
 
-               //  if(FinishProcessFlag==0) {
-                 //     FinishProcessFlag=1;
                    Log.e("barcodeedittxt",barcode.getText().toString());
                     Qty = "1";
                           if (barcode.getText().toString().trim().length() != 0) {
-                              barcode.setEnabled(false);
-                              Shipment shipment = new Shipment();
-                              shipment.setPoNo(pono.getText().toString().trim());
-                              shipment.setUserNO(UserNo);
-                              shipment.setBoxNo(boxno.getText().toString().trim());
-                              shipment.setBarcode(barcode.getText().toString().trim());
-                              CheckShipmentObject(shipment);
 
-                              boxno.setEnabled(false);
-                              boxno.setEnabled(false);
-                              // getPOdetails();
+                              if (barcode.getText().toString().trim().length()<=15) {
+                                  barcode.setEnabled(false);
+                                  Shipment shipment = new Shipment();
+                                  shipment.setPoNo(pono.getText().toString().trim());
+                                  shipment.setUserNO(UserNo);
+                                  shipment.setBoxNo(boxno.getText().toString().trim());
+                                  shipment.setBarcode(barcode.getText().toString().trim());
+                                  CheckShipmentObject(shipment);
+
+                                  boxno.setEnabled(false);
+                                  boxno.setEnabled(false);
+                                  // getPOdetails();
+                              }
+                              else {
+                                  barcode.setError("InValid");
+                                  barcode.setText("");
+                                  barcode.setEnabled(true);
+                                  barcode.requestFocus();
+                              }
                           } else
 
                               barcode.requestFocus();
@@ -1600,7 +1627,7 @@ else
                         if (!pono.getText().toString().trim().equals("")) {
 
                             getboxData();
-
+                            next.setEnabled(false);
 
                         } else
                             pono.requestFocus();
@@ -1613,6 +1640,7 @@ else
                     }
                     case R.id.boxNotxt:
                     {
+                        next.setEnabled(false);
                         Log.e("",barcode.getText().toString());
                         pono.setEnabled(false);
                         if(!boxno.getText().toString().trim().equals("")) {
@@ -1625,7 +1653,6 @@ else
 
 
                             } else {
-
                                 showconfirmBoxNoDialog();
 
 
@@ -1641,23 +1668,29 @@ else
                     case R.id.barCodetxt: {
                         next.setEnabled(true);
 
-                        //  if(FinishProcessFlag==0) {
-                        //     FinishProcessFlag=1;
                         Log.e("barcodeedittxt",barcode.getText().toString());
                         Qty = "1";
                         if (barcode.getText().toString().trim().length() != 0) {
-                            barcode.setEnabled(false);
-                            Shipment shipment = new Shipment();
-                            shipment.setPoNo(pono.getText().toString().trim());
-                            shipment.setUserNO(UserNo);
-                            shipment.setBoxNo(boxno.getText().toString().trim());
-                            shipment.setBarcode(barcode.getText().toString().trim());
-                            CheckShipmentObject(shipment);
 
+                            if (barcode.getText().toString().trim().length()<=15) {
+                                barcode.setEnabled(false);
+                                Shipment shipment = new Shipment();
+                                shipment.setPoNo(pono.getText().toString().trim());
+                                shipment.setUserNO(UserNo);
+                                shipment.setBoxNo(boxno.getText().toString().trim());
+                                shipment.setBarcode(barcode.getText().toString().trim());
+                                CheckShipmentObject(shipment);
 
-                            boxno.setEnabled(false);
-                            boxno.setEnabled(false);
-                            // getPOdetails();
+                                boxno.setEnabled(false);
+                                boxno.setEnabled(false);
+                                // getPOdetails();
+                            }
+                            else {
+                                barcode.setError("InValid");
+                                barcode.setText("");
+                                barcode.setEnabled(true);
+                                barcode.requestFocus();
+                            }
                         } else
 
                             barcode.requestFocus();
@@ -2197,11 +2230,12 @@ else
         }
     }
     private void init() {
-
+        MainActivity.exportFromMainAct=false;
         localList.clear();
         exportData = new ExportData(NewShipment.this);
         importData = new ImportData(NewShipment.this);
         poststate=findViewById(R.id.poststate);
+        Ship_delete=findViewById(R.id.Ship_delete);
         getPoNu();
         next = findViewById(R.id.nextbox);
         boxnorespon = findViewById(R.id.boxnorespon);
@@ -2290,7 +2324,7 @@ barcode.setOnKeyListener(onKeyListener);
                          //   Log.e("sss:",CheckNewShipmentObject(newshipment)+"");
                               if(CheckNewShipmentObject(newshipment)==false
                                       &&!barcode.getText().equals("")
-                              &&barcode.getText().toString().trim().length()<=20) {
+                              &&barcode.getText().toString().trim().length()<=15) {
                                   Log.e("barcodehere",barcode.getText().toString());
                                   showConfirmBarcodeDailog();
 
@@ -2943,5 +2977,34 @@ private boolean checkitemcodevalidty() {
       AllBoxesInDB= my_dataBase.shipmentDao().getboxes();
 
   }
+  /*  @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
 
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }*/
+    private void CheckPermissitions() {
+
+        userPermissions=new UserPermissions();
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+
+        if( userPermissions!=null) {
+            if (userPermissions.getSHIP_Save().equals("0")) save.setVisibility(View.GONE);
+            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
+                Ship_delete.setEnabled(true);
+
+
+            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
+                Ship_delete.setEnabled(true);
+
+            } else {
+                Ship_delete.setEnabled(false);
+            }
+        }
+    }
 }

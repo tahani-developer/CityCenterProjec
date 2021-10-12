@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activity.ShipmentsReport">
-
+    tools:context=".Activity.StockTakeReport">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/SH_date"
+            android:id="@+id/STR_date"
             android:layout_width="115dp"
             android:layout_height="match_parent"
             android:inputType="date"
@@ -46,7 +45,7 @@
 
 
         <Button
-            android:id="@+id/SH_preview"
+            android:id="@+id/STR_preview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -68,32 +67,44 @@
 
 
         <EditText
-            android:id="@+id/search_edt"
+            android:id="@+id/STR_search_edt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_weight="6"
             android:background="@drawable/back_border_edit"
             android:ems="10"
-            android:hint="@string/search1"
-            android:inputType="textPersonName"
-            android:padding="2dp"
             android:drawableEnd="@drawable/ic_search_black_24dp"
             android:drawableRight="@drawable/ic_search_black_24dp"
-            />
+
+            android:hint="@string/search1"
+            android:inputType="textPersonName"
+            android:padding="2dp" />
 
         <TextView
-            android:id="@+id/Search"
+            android:id="@+id/STR_Search"
             android:layout_width="60dp"
             android:layout_height="20dp"
             android:layout_weight="2"
-             android:gravity="top" />
+               android:gravity="top" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="6.5"
         android:orientation="vertical">
+        <HorizontalScrollView
+            android:id="@+id/HorizontalScrollView01"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+
+            android:fillViewport="true"
+
+
+            android:layout_margin="2dp"
+
+            >
 
         <TableRow
             android:layout_width="match_parent"
@@ -112,7 +123,7 @@
 
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/pono"
+                android:text="@string/store2"
 
                 android:textColor="@color/white"
                 android:textSize="10sp"
@@ -135,7 +146,7 @@
                 android:textSize="10sp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/boxnum"
+                android:text="@string/ZoneCode"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -189,25 +200,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textView_cridit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="10sp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/IsNew"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:background="@color/colorblue1"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView_balance"
@@ -220,8 +213,8 @@
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </TableRow>
+        </HorizontalScrollView>
     </LinearLayout>
-        <!--    </LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -229,13 +222,12 @@
         android:orientation="vertical">
 
         <ListView
-            android:id="@+id/SH_reportlist"
+            android:id="@+id/STR_reportlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         </ListView>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -256,7 +248,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/total_qty_text"
+            android:id="@+id/STR_total_qty_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -267,6 +259,4 @@
 
             android:textStyle="bold" />
     </LinearLayout>
-
-
-    </LinearLayout>
+</LinearLayout>

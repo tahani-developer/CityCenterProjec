@@ -1,8 +1,12 @@
 package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +16,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,12 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.ZoneAdapter;
-import com.example.irbidcitycenter.Adapters.ZoneRepAdapter;
+import com.example.irbidcitycenter.Adapters.ZonePerAdapterr;
+
 import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.StocktakeModel;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneRepLogs;
@@ -38,6 +47,8 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.itemdetalis;
+import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 public class ZoneReplacment extends AppCompatActivity {
@@ -46,13 +57,13 @@ TextView FromZoneName,ToZoneName;
     public  static  int   fromZoneRepActivity=1;
   public  static   TextView  ZR_respon;
     public RoomAllData my_dataBase;
-    ListView zonelistview;
+    RecyclerView zonelistview;
     public int    localitempostion;
     private int ind;
-    ZoneRepAdapter zoneRepAdapter;
+    ZonePerAdapterr zoneRepAdapter;
     GeneralMethod generalMethod;
     ImportData importData;
-    Button ZR_nextZone,ZR_back,ZR_Delete,ZR_save;
+    Button ZR_nextZone,   ZR_nexttoZone,ZR_back,ZR_Delete,ZR_save;
     List<ZoneReplashmentModel> DBZoneReps =new ArrayList<>();
     List<ZoneReplashmentModel> LocalZoneReps =new ArrayList<>();
    ListView listView;
@@ -84,6 +95,11 @@ TextView FromZoneName,ToZoneName;
     public static ZoneAdapter adapter;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     private String deviceId="";
+    private UserPermissions userPermissions;
+public static TextView ZR_itemkind;
+    private String tozonetype;
+    private String fromzonetype;
+    private Animation animation;
 
     //
     @Override
@@ -91,12 +107,13 @@ TextView FromZoneName,ToZoneName;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_replacment);
         init();
+        fromzone.requestFocus();
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e(" UserNo==",UserNo+"k");
 //my_dataBase.zoneReplashmentDao().deleteAll();
         RZ_itemcode.setEnabled(false);
         tozone.setEnabled(false);
-
+        ZR_nexttoZone.setEnabled(false);
 
     }
 TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
@@ -113,10 +130,18 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                     switch (view.getId()) {
                         case R.id.fromzoneedt:
                             if (!fromzone.getText().toString().equals("")) {
-                                Log.e("fromzone","fromzone");
+                                 if(zoneExists(fromzone.getText().toString()))
+                                   {
+                                       Log.e("fromzone","fromzone");
                                 fromzone.setEnabled(false);
                                 tozone.setEnabled(true);
                                 tozone.requestFocus();
+                                   }
+                                 else {
+                                     fromzone.setError("Invalid");
+                                     fromzone.setText("");
+                                 }
+
                             } else
                                 fromzone.requestFocus();
                             break;
@@ -125,9 +150,16 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                             if (!tozone.getText().toString().equals(""))
                             {
                                 if (!tozone.getText().toString().equals(fromzone.getText().toString()))
-                                {    RZ_itemcode.setEnabled(true);
+                                {
+
+                                    if(zoneExists(tozone.getText().toString()))
+                                    {    RZ_itemcode.setEnabled(true);
                                 RZ_itemcode.requestFocus();
-                                tozone.setEnabled(false);
+                                tozone.setEnabled(false);}
+                                    else {
+                                        tozone.setError("Invalid");
+                                        tozone.setText("");
+                                    }
 
                                 }
                                 else {
@@ -143,86 +175,91 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
 
                         case R.id.ZR_itemcodeedt:
                             if (!RZ_itemcode.getText().toString().equals("")) {
+                                ZR_nexttoZone.setEnabled(true);
+                                ZR_nextZone.setEnabled(true);
+                                if (RZ_itemcode.getText().toString().length() <= 15) {
 
-                                if (LocalZoneReps.size() > 0) {
-                                    if (ItemExistsLocal()) {
+                                    if (LocalZoneReps.size() > 0) {
+                                        if (ItemExistsLocal()) {
 
 
-                                        if(Integer.parseInt(LocalZoneReps.get(localitempostion).getRecQty())>getQTYOFItem())
-                                        {
-                                            Log.e("case1","case1");
-                                            int x = Integer.parseInt(LocalZoneReps.get(localitempostion).getQty()) + 1;
-                                            LocalZoneReps.get(localitempostion).setQty(x + "");
-                                            my_dataBase.zoneReplashmentDao(). updateqtyReplashment( LocalZoneReps.get(localitempostion).getFromZone(),  LocalZoneReps.get(localitempostion).getToZone(),  LocalZoneReps.get(localitempostion).getItemcode(),x+"");
-                                            filladapter();
-                                            RZ_itemcode.setText("");
-                                            RZ_itemcode.requestFocus();
+                                            if (Integer.parseInt(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
+                                                Log.e("case1", "case1");
+                                                int x = Integer.parseInt(LocalZoneReps.get(localitempostion).getQty()) + 1;
+                                                LocalZoneReps.get(localitempostion).setQty(x + "");
+                                                my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
+                                                filladapter();
+                                                RZ_itemcode.setText("");
+                                                RZ_itemcode.requestFocus();
+                                            } else {
+                                                Log.e("case2", "case2");
+                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                RZ_itemcode.setText("");
+                                                RZ_itemcode.requestFocus();
+                                            }
+
+                                        } else {
+
+                                            ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
+                                            if (replashmentModel != null) {
+                                                if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                    Log.e("case3", "case3");
+                                                    int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                                    replashmentModel.setQty(x + "");
+                                                    my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
+                                                    LocalZoneReps.add(replashmentModel);
+                                                    filladapter();
+                                                    RZ_itemcode.setText("");
+                                                    RZ_itemcode.requestFocus();
+                                                } else {
+                                                    Log.e("case4", "case4");
+                                                    showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                    RZ_itemcode.setText("");
+                                                    RZ_itemcode.requestFocus();
+                                                }
+
+
+                                            } else {
+
+
+                                                //if()
+                                                ZoneReplacment.fromZoneRepActivity = 1;
+                                                importData.getQty();
+                                                Log.e("case5", "case5");
+                                            }
                                         }
-                                        else
-                                        {
-                                            Log.e("case2","case2");
-                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2)+" "+fromzone.getText().toString()+" "+getResources().getString(R.string.msg));
-                                            RZ_itemcode.setText("");
-                                            RZ_itemcode.requestFocus();
-                                        }
-
+                                        RZ_itemcode.requestFocus();
                                     } else {
-
                                         ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                         if (replashmentModel != null) {
-                                            if (Integer.parseInt(replashmentModel.getRecQty()) >getQTYOFItem()) {
-                                                Log.e("case3","case3");
+                                            Log.e("case6", "case6");
+                                            if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
                                                 int x = Integer.parseInt(replashmentModel.getQty()) + 1;
                                                 replashmentModel.setQty(x + "");
-                                                my_dataBase.zoneReplashmentDao(). updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(),x+"");
+                                                my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                                 LocalZoneReps.add(replashmentModel);
                                                 filladapter();
                                                 RZ_itemcode.setText("");
                                                 RZ_itemcode.requestFocus();
                                             } else {
-                                                Log.e("case4","case4");
-                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2)+" "+fromzone.getText().toString()+" "+getResources().getString(R.string.msg));
+                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
                                                 RZ_itemcode.setText("");
                                                 RZ_itemcode.requestFocus();
                                             }
-
-
-
-
                                         } else {
-
-
-                                            //if()
-                                            ZoneReplacment.fromZoneRepActivity=1;
+                                            Log.e("case7", "case7");
+                                            ZoneReplacment.fromZoneRepActivity = 1;
                                             importData.getQty();
-                                            Log.e("case5","case5");
-                                        }
-                                    }
-                                    RZ_itemcode.requestFocus();
-                                } else {
-                                    ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
-                                    if (replashmentModel != null) {
-                                        Log.e("case6","case6");
-                                        if (Integer.parseInt(replashmentModel.getRecQty()) >getQTYOFItem()) {
-                                            int x = Integer.parseInt(replashmentModel.getQty()) + 1;
-                                        replashmentModel.setQty(x + "");
-                                           my_dataBase.zoneReplashmentDao(). updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(),x+"");
-                                        LocalZoneReps.add(replashmentModel);
                                             filladapter();
-                                        RZ_itemcode.setText("");
-                                        RZ_itemcode.requestFocus();}
-                                        else {
-                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2)+" "+fromzone.getText().toString()+" "+getResources().getString(R.string.msg));
-                                            RZ_itemcode.setText("");
-                                            RZ_itemcode.requestFocus();
-                                        }
-                                    } else {
-                                        Log.e("case7","case7");
-                                        ZoneReplacment.fromZoneRepActivity=1;
-                                        importData.getQty();
-                                        filladapter();
 
+                                        }
                                     }
+
+                                } else {
+                                    RZ_itemcode.setError("InValid");
+                                    RZ_itemcode.setEnabled(true);
+                                    RZ_itemcode.setText("");
+                                    RZ_itemcode.requestFocus();
                                 }
                             }
                                else
@@ -241,6 +278,17 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
             return true;    }
         return false;   }
 };
+    public  boolean zoneExists(String zone){
+        boolean f=false;
+    for(int x=0;x<listAllZone.size();x++)
+            if(listAllZone.get(x).getZoneCode().equals(zone))
+            {f=true;
+            break;}
+    return f;
+
+
+
+}
     public  boolean ItemExistsLocal(){
         boolean flage=false;
         for (int x = 0; x < LocalZoneReps.size(); x++) {
@@ -265,6 +313,8 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
             int id=view.getId();
             switch (id){
                 case R.id.ZR_nextZone:
+                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                    ZR_nextZone.startAnimation(animation);
                     LocalZoneReps.clear();
                     filladapter();
                     fromzone.setEnabled(true);
@@ -274,8 +324,18 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                     RZ_itemcode.setText("");
 
             break;
-                case R.id.ZR_back:
+                case R.id.ZR_nextToZone:
+                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                    ZR_nexttoZone.startAnimation(animation);
+                    tozone.setEnabled(true);
+                    tozone.setText("");
+                    tozone.requestFocus();
+                    RZ_itemcode.setText("");
 
+                    break;
+                case R.id.ZR_back:
+                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                    ZR_back.startAnimation(animation);
                     new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText(getResources().getString(R.string.confirm_title))
                             .setContentText(getResources().getString(R.string.messageExit))
@@ -319,12 +379,22 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                     }).show();
                 break;
                 case R.id.ZR_delete:
+                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                    ZR_Delete.startAnimation(animation);
                     OpenDeleteDailog();
                     break;
                 case R.id.ZR_save:
+                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                  ZR_save.startAnimation(animation);
                    if(LocalZoneReps.size()>0) exportdata();
                    else
                        generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+
+                    ZR_save.setEnabled(false);
+                    ZR_nextZone.setEnabled(false);
+                    ZR_nexttoZone.setEnabled(false);
+                    tozone.setEnabled(false);
+                    RZ_itemcode.setEnabled(false);
                     break;
             }
 
@@ -333,22 +403,185 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
     public void exportdata(){
         Log.e("exportdata"," exportdata");
         List<ZoneReplashmentModel> models= my_dataBase.zoneReplashmentDao().getAllZonesUnposted();
+
+
+        for(int i=0;i<  models.size();i++)
+            if( models.get(i).getDeviceId()==null) models.get(i).setDeviceId(deviceId);
+
         Log.e("models",models.size()+"");
         MainActivity.activityflage=0;
         exportData.exportZoneRepList( models);
 
 
     }
+    EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                    || i == EditorInfo.IME_NULL) {
+                switch (textView.getId()) {
+                    case R.id.fromzoneedt:
+                        if (!fromzone.getText().toString().equals("")) {
+                            if(zoneExists(fromzone.getText().toString()))
+                            {
+                                Log.e("fromzone","fromzone");
+                                fromzone.setEnabled(false);
+                                tozone.setEnabled(true);
+                                tozone.requestFocus();
+                            }
+                            else {
+                                fromzone.setError("Invalid");
+                                fromzone.setText("");
+                            }
+
+                        } else
+                            fromzone.requestFocus();
+                        break;
+
+                    case R.id.tozoneedt:
+                        if (!tozone.getText().toString().equals(""))
+                        {
+                            if (!tozone.getText().toString().equals(fromzone.getText().toString()))
+                            {
+
+                                if(zoneExists(tozone.getText().toString()))
+                                {    RZ_itemcode.setEnabled(true);
+                                    RZ_itemcode.requestFocus();
+                                    tozone.setEnabled(false);}
+                                else {
+                                    tozone.setError("Invalid");
+                                    tozone.setText("");
+                                }
+
+                            }
+                            else {
+                                tozone.setError("Same Zone");
+                                tozone.setText("");
+                                tozone.requestFocus();
+                            }
+
+                        } else
+                            tozone.requestFocus();
+                        break;
+
+
+                    case R.id.ZR_itemcodeedt:
+                        if (!RZ_itemcode.getText().toString().equals("")) {
+                            ZR_nexttoZone.setEnabled(true);
+                            ZR_nextZone.setEnabled(true);
+                            if (RZ_itemcode.getText().toString().length() <= 15) {
+                                ZR_nexttoZone.setEnabled(true);
+                                if (LocalZoneReps.size() > 0) {
+                                    if (ItemExistsLocal()) {
+
+
+                                        if (Integer.parseInt(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
+                                            Log.e("case1", "case1");
+                                            int x = Integer.parseInt(LocalZoneReps.get(localitempostion).getQty()) + 1;
+                                            LocalZoneReps.get(localitempostion).setQty(x + "");
+                                            my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
+                                            filladapter();
+                                            RZ_itemcode.setText("");
+                                            RZ_itemcode.requestFocus();
+                                        } else {
+                                            Log.e("case2", "case2");
+                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            RZ_itemcode.setText("");
+                                            RZ_itemcode.requestFocus();
+                                        }
+
+                                    } else {
+
+                                        ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
+                                        if (replashmentModel != null) {
+                                            if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                Log.e("case3", "case3");
+                                                int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                                replashmentModel.setQty(x + "");
+                                                my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
+                                                LocalZoneReps.add(replashmentModel);
+                                                filladapter();
+                                                RZ_itemcode.setText("");
+                                                RZ_itemcode.requestFocus();
+                                            } else {
+                                                Log.e("case4", "case4");
+                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                RZ_itemcode.setText("");
+                                                RZ_itemcode.requestFocus();
+                                            }
+
+
+                                        } else {
+
+
+                                            //if()
+                                            ZoneReplacment.fromZoneRepActivity = 1;
+                                            importData.getQty();
+                                            Log.e("case5", "case5");
+                                        }
+                                    }
+                                    RZ_itemcode.requestFocus();
+                                } else {
+                                    ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
+                                    if (replashmentModel != null) {
+                                        Log.e("case6", "case6");
+                                        if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                            int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                            replashmentModel.setQty(x + "");
+                                            my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
+                                            LocalZoneReps.add(replashmentModel);
+                                            filladapter();
+                                            RZ_itemcode.setText("");
+                                            RZ_itemcode.requestFocus();
+                                        } else {
+                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            RZ_itemcode.setText("");
+                                            RZ_itemcode.requestFocus();
+                                        }
+                                    } else {
+                                        Log.e("case7", "case7");
+                                        ZoneReplacment.fromZoneRepActivity = 1;
+                                        importData.getQty();
+                                        filladapter();
+
+                                    }
+                                }
+
+                            } else {
+                                RZ_itemcode.setError("InValid");
+                                RZ_itemcode.setEnabled(true);
+                                RZ_itemcode.setText("");
+                                RZ_itemcode.requestFocus();
+                            }
+                        }
+                        else
+                            RZ_itemcode.requestFocus();
+                        break;
+                }
+
+
+
+            }
+
+            return true;
+        }
+    };
+
+
     private void init() {
+
         DBZoneReps.clear();
       LocalZoneReps.clear();
+        ZR_itemkind=findViewById(R.id.ZR_itemkind);
         ZonRepdatarespon=findViewById(R.id.ZonRepdatarespon);
         ZR_nextZone=findViewById(R.id.ZR_nextZone);
+        ZR_nexttoZone=findViewById(R.id.ZR_nextToZone);
         ZR_back=findViewById(R.id.ZR_back);
         ZR_Delete=findViewById(R.id.ZR_delete);
         ZR_save=findViewById(R.id.ZR_save);
         importData=new ImportData(ZoneReplacment.this);
         exportData=new ExportData(ZoneReplacment.this);
+        importData.getAllZones();
         generalMethod=new GeneralMethod(ZoneReplacment.this);
         zonelistview=findViewById(R.id.zonelist);
         my_dataBase = RoomAllData.getInstanceDataBase(ZoneReplacment.this);
@@ -361,7 +594,14 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         fromzone.setOnKeyListener(onKeyListener);
         tozone.setOnKeyListener(onKeyListener);
         RZ_itemcode.setOnKeyListener(onKeyListener);
+
+        fromzone.setOnEditorActionListener(onEditAction);
+        tozone.setOnEditorActionListener(onEditAction);
+        RZ_itemcode.setOnEditorActionListener(onEditAction);
+
+
         ZR_nextZone.setOnClickListener(onClickListener);
+        ZR_nexttoZone.setOnClickListener(onClickListener);
         ZR_Delete.setOnClickListener(onClickListener);
         ZR_back.setOnClickListener(onClickListener);
         ZR_save.setOnClickListener(onClickListener);
@@ -376,6 +616,68 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
             Log.e("appSettings","+"+deviceId);
 
         }
+
+
+        ZR_itemkind.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().length() != 0) {
+                if(   ZR_itemkind.getText().toString().equals("ITEMTYPE")){
+
+                    getzonetype();
+try {
+    if( itemdetalis.get(0).getZONETYPE().equals(fromzonetype )&&
+            itemdetalis.get(0).getZONETYPE().equals(tozonetype )) {
+        Log.e("msg", "msg");
+        filldata();
+    }
+    else{
+        generalMethod.showSweetDialog(ZoneReplacment.this,3,"",getResources().getString(R.string.zonetype));
+
+    }
+}catch (Exception e)
+{
+    Log.e("Exception==",e.getMessage());
+}
+                           RZ_itemcode.setText("");
+                            RZ_itemcode.requestFocus();
+
+                }
+                else if(   ZR_itemkind.getText().toString().equals("NetworkError"))
+                {
+                    generalMethod.showSweetDialog(ZoneReplacment.this,3,"No Internet Connection","");
+
+                }
+                else {
+                    generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.existsBARCODE),"");
+
+                }
+            }
+
+
+
+
+            }
+        });
+
+
+
+
+
+
+
+
+
         ZonRepdatarespon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -400,6 +702,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                 fromzone.setText("");
                 tozone.setText("");
                         RZ_itemcode.setText("");
+                        fromzone.setEnabled(true);
                         fromzone.requestFocus();
                     }
                     else {
@@ -409,6 +712,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                         fromzone.setText("");
                         tozone.setText("");
                         RZ_itemcode.setText("");
+
+                        fromzone.setEnabled(true);
+                        fromzone.requestFocus();
                     }
                 }
 
@@ -437,15 +743,15 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                         if(Integer.parseInt(listQtyZone.get(0).getQty())>0)
                         {
                             {   try {
+                                importData.getKindItem2(RZ_itemcode.getText().toString().trim());
 
-                                filldata();
 
                             } catch (Exception e) {
                                 Log.e("Exception", e.getMessage());
                             }
 
-                            RZ_itemcode.setText("");
-                            RZ_itemcode.requestFocus();
+                        /*    RZ_itemcode.setText("");
+                            RZ_itemcode.requestFocus();*/
                         }}
                         else{
 
@@ -471,27 +777,63 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         });
     }
 
+    private void getzonetype() {
+
+
+
+        for(int x=0;x<listAllZone.size();x++)
+            if(listAllZone.get(x).getZoneCode().equals( fromzone.getText().toString().trim())) {
+                fromzonetype = listAllZone.get(x).getZONETYPE();
+                Log.e(" fromzonetype", fromzonetype);
+                break;
+            }
+
+        for(int x=0;x<listAllZone.size();x++)
+            if(listAllZone.get(x).getZoneCode().equals( tozone.getText().toString().trim())) {
+                tozonetype = listAllZone.get(x).getZONETYPE();
+                Log.e(" tozonetype", tozonetype);
+                break;
+            }
+
+    }
+
     private void savedata(String s) {
         my_dataBase.zoneReplashmentDao().setposted();
     }
 
     private void filldata() {
 
-        if(!RZ_itemcode.getText().equals(""))
-        { ZoneReplashmentModel replashmentModel=new ZoneReplashmentModel();
-        replashmentModel.setDate(generalMethod.getCurentTimeDate(1));
-        replashmentModel.setFromZone(fromzone.getText().toString().trim());
-        replashmentModel.setToZone(tozone.getText().toString().trim());
-        replashmentModel.setItemcode(RZ_itemcode.getText().toString().trim());
-        replashmentModel.setTime(generalMethod.getCurentTimeDate(2));
-        replashmentModel.setRecQty(listQtyZone.get(0).getQty());
-        replashmentModel.setIsPosted("0");
-        replashmentModel.setUserNO( UserNo);
-        replashmentModel.setQty("1");
-        replashmentModel.setDeviceId(deviceId);
-        LocalZoneReps.add( replashmentModel);
-        saveRaw(replashmentModel);
-        filladapter();}
+        if (!RZ_itemcode.getText().equals("")) {
+         if(!ItemExistsLocal())
+         {  if (RZ_itemcode.getText().toString().length() <= 15) {
+            ZoneReplashmentModel replashmentModel = new ZoneReplashmentModel();
+            replashmentModel.setDate(generalMethod.getCurentTimeDate(1));
+            replashmentModel.setFromZone(fromzone.getText().toString().trim());
+            replashmentModel.setToZone(tozone.getText().toString().trim());
+            replashmentModel.setItemcode(RZ_itemcode.getText().toString().trim());
+            replashmentModel.setTime(generalMethod.getCurentTimeDate(2));
+            replashmentModel.setRecQty(listQtyZone.get(0).getQty());
+            replashmentModel.setIsPosted("0");
+            replashmentModel.setUserNO(UserNo);
+            replashmentModel.setQty("1");
+            replashmentModel.setDeviceId(deviceId);
+            LocalZoneReps.add(replashmentModel);
+            saveRaw(replashmentModel);
+            filladapter();
+        }else {
+                RZ_itemcode.setError("InValid");
+                RZ_itemcode.setEnabled(true);
+                RZ_itemcode.setText("");
+                RZ_itemcode.requestFocus();
+            }}
+
+         else {
+             RZ_itemcode.setEnabled(true);
+             RZ_itemcode.setText("");
+             RZ_itemcode.requestFocus();
+         }
+    }
+
         else{
             RZ_itemcode.requestFocus();
         }
@@ -502,7 +844,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         my_dataBase.zoneReplashmentDao().insert(replashmentModel);
     }
     private void filladapter(){
-            zoneRepAdapter=new ZoneRepAdapter(ZoneReplacment.this,LocalZoneReps);
+        zonelistview.setLayoutManager(new LinearLayoutManager(ZoneReplacment.this));
+
+        zoneRepAdapter=new ZonePerAdapterr(ZoneReplacment.this,LocalZoneReps);
         zonelistview.setAdapter(zoneRepAdapter);}
     private void  OpenDeleteDailog(){
 
@@ -1507,6 +1851,36 @@ ZRDI_itemcodeshow.setText("");
 int getQTYOFItem(){
       int sum=  my_dataBase.zoneReplashmentDao().getQTYofItem(fromzone.getText().toString(),RZ_itemcode.getText().toString());
         return sum;
+    }
+   /* @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }*/
+    private void CheckPermissitions() {
+        UserNo=my_dataBase.settingDao().getUserNo();
+        userPermissions=new UserPermissions();
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+
+        if( userPermissions!=null) {
+            if (userPermissions.getSHIP_Save().equals("0"))ZR_save.setVisibility(View.GONE);
+            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
+                ZR_Delete.setEnabled(true);
+
+
+            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
+                ZR_Delete.setEnabled(true);
+
+            } else {
+                ZR_Delete.setEnabled(false);
+            }
+        }
     }
 }
 

@@ -8,10 +8,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.http.DelegatingSSLSession;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +31,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +41,7 @@ import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
 import com.example.irbidcitycenter.Models.appSettings;
@@ -47,6 +54,7 @@ import java.util.List;
 
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
+import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -71,21 +79,92 @@ ImportData importData;
     public static TextView sh_res,zo_res,re_res;
     public static TextView itemrespons,    exportrespon,exportZonReprespon;
 public static    int   activityflage=1;
+    private String UserNo;
+    UserPermissions userPermissions;
+  public    static  int Items_activityflage=1;
+    //////
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initial();
 
 
         my_dataBase= RoomAllData.getInstanceDataBase(MainActivity.this);
+        initial();
+
 
 
     }
 
 
 
+    private boolean CheckViewSetting_Permissitions(){
+        userPermissions = new UserPermissions();
+        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
+        if (userPermissions != null) {
+
+
+                if (userPermissions.getSetting_Per().equals("1")) {
+                    return true;
+                } else
+                    return false;
+        }else
+            return false;
+
+    }
+    private boolean CheckSaveSetting_Permissitions(){
+        userPermissions = new UserPermissions();
+        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
+        if (userPermissions != null) {
+
+
+                if ( userPermissions.getSaveSetting_Per().equals("1")) {
+
+                    return true;
+                } else
+                    return false;
+            }else
+                return false;
+    }
+    private boolean CheckImportPermissitions() {
+
+        userPermissions = new UserPermissions();
+        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
+        if (userPermissions != null) {
+            if (userPermissions != null) {
+                if (userPermissions.getExport_Per().equals("0"))
+                    if (userPermissions.getImport_Per().equals("0"))
+                        if (userPermissions.getSetting_Per().equals("0"))
+                            if (userPermissions.getSaveSetting_Per().equals("0")) {
+
+                            }
+
+            }
+        }
+return true;
+    }
+    private boolean CheckExportPermissitions() {
+
+        userPermissions = new UserPermissions();
+        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
+        if (userPermissions != null) {
+                if (userPermissions.getExport_Per().equals("1"))
+
+                    return true;
+                else
+                    return false;
+            }
+        else return false;
+
+
+    }
+
+
     private void initial() {
+
         exportZonReprespon=findViewById(R.id.exportZonReprespon);
         exportrespon=findViewById(R.id.stocksrespon);
         itemrespons=findViewById(R.id.ST_itemrespons);
@@ -132,6 +211,7 @@ public static    int   activityflage=1;
                     if (editable.toString().trim().equals("exported")) {
                         my_dataBase.zoneReplashmentDao().setposted();
 
+                        showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
 
                     } else {
 
@@ -184,13 +264,22 @@ public static    int   activityflage=1;
 
                     if (editable.toString().equals("ItemOCode")) {
                         Log.e("herea","aaaaa");
+                        my_dataBase.itemDao().deleteall();
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
-                        Toast.makeText(MainActivity.this,"gat all data",Toast.LENGTH_SHORT).show();
-
+                        hideProgressDialogWithTitle();
+                 //   Toast.makeText(MainActivity.this,"gat all data",Toast.LENGTH_SHORT).show();
+                      showSweetDialog(MainActivity.this,2,"Done,All data is stored","");
 
                     }
                     else     if (editable.toString().equals("nodata")) {
+                        hideProgressDialogWithTitle();
+                        Handler h = new Handler(Looper.getMainLooper());
 
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(MainActivity.this,0,"NetWork Error","");
+                            }
+                        });
 
                     }
 
@@ -310,25 +399,56 @@ public static    int   activityflage=1;
         Log.e("id", "onNavigationItemSelected " + id);
         switch (id) {
             case R.id.menu_setting: {
-                Log.e("id", "menu_setting " + id);
-                drawerLayout.closeDrawer(navigationView);
-                openSettingDialog();
+
+                //  if(CheckViewSetting_Permissitions())
+                {
+                    Log.e("id", "menu_setting " + id);
+                    drawerLayout.closeDrawer(navigationView);
+                    openSettingDialog();
+                }
+                //  else
+                //      Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
             }
             break;
             case R.id.menu_export: {
-                exportFromMainAct=true;
-                exportAllData();
+                //   if(CheckExportPermissitions()==true)
+                {
+                    exportFromMainAct = true;
+                    exportAllData();
+                }
+//else
+                //  Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
 
             }
             break;
             case R.id.menu_import: {
+                // if(CheckImportPermissitions()==true)
+
+
+
                 getAllItems();
+
+
+
+
+
+
+           //    else
+              //     Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
                 break;
             }
-                case R.id.Reports: {
-                  /*  Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
-                    startActivity(intent);*/
+
+                case R.id.StocktakeReport: {
+                   Intent intent =new Intent(MainActivity.this,StockTakeReport.class);
+                    startActivity(intent);
                     break;
+
+            }
+            case R.id. shipmentReports: {
+                Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
+                startActivity(intent);
+                break;
 
             }
         }
@@ -338,6 +458,7 @@ public static    int   activityflage=1;
 
     }
     private void getAllItems() {
+        importData=new ImportData(MainActivity.this);
         importData.getAllItems();
     }
     private void exportAllData() {
@@ -446,7 +567,17 @@ public static    int   activityflage=1;
             }
         }
         //****************************
-        dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
+
+
+
+
+       Button save=   dialog.findViewById(R.id.saveSetting);
+      //  if(CheckSaveSetting_Permissitions()==true)
+            save.setEnabled(true);
+      //  else save.setEnabled(false);
+
+
+        save.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -466,13 +597,22 @@ public static    int   activityflage=1;
                 settings = new appSettings();
                 settings.setIP(SET_IP);
                 settings.setCompanyNum(SET_conNO);
-                settings.setUpdateQTY(SET_years);
-                settings.setYears(SET_qtyup);
+                settings.setUpdateQTY(SET_qtyup);
+                settings.setYears( SET_years);
                 settings.setUserNumber(usernum.getText().toString());
                 settings.setDeviceId(device_Id);
 
-                saveData(settings);
-                dialog.dismiss();
+                if(settings.getDeviceId().toString().trim().length()==0)
+
+                {
+                    deviceId.setError(getResources().getString(R.string.reqired_filled));
+
+                }
+                else {
+                    saveData(settings);
+                    dialog.dismiss();
+                }
+
             }
         });
         dialog.findViewById(R.id.cancelBtn).setOnClickListener(new View.OnClickListener() {
@@ -507,4 +647,18 @@ public static    int   activityflage=1;
     public void onBackPressed() {
         super.onBackPressed();
     }
+
+
+    @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
+
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }
+
 }

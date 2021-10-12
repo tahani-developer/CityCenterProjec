@@ -2,6 +2,8 @@ package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -77,5 +79,15 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         back.setOnClickListener(onClickListener);
         itemcode.setOnKeyListener(onKeyListener);
     }
+    @Override
+    protected void onPause() {
+        Log.e("onPause","onPause");
+        super.onPause();
 
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        //openUthenticationDialog();
+
+    }
 }

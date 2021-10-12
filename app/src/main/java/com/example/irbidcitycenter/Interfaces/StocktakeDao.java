@@ -55,4 +55,6 @@ long getStoreQty(String Store);
 
     @Query ("select SUM(QTY) from STOCKTAKE_TABLE WHERE ISPOSTED='0'")
     long  getItemQty();
+    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date ")
+    List<StocktakeModel> getdateStoketakes (String date);
 }
