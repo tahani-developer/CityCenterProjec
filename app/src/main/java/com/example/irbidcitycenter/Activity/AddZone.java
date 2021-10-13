@@ -2687,12 +2687,7 @@ List<String> list=new ArrayList<>();
                 delete.setEnabled(true);
 
 
-            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
-                delete.setEnabled(true);
-
-            } else {
-                delete.setEnabled(false);
-            }
+            } 
         }
     }
 }

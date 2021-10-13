@@ -609,7 +609,8 @@ public class ExportData {
             if (result != null && !result.equals("")) {
                 if(result.contains("Saved Successfully"))
                 {
-                    if( listAllZoneRep.size()>0)exportZoneRepList(listAllZoneRep);
+
+                        exportZoneRepList(listAllZoneRep);
                     Log.e("listAllZoneRep",listAllZoneRep.size()+"");
 
                  if(activityflage==0)   datarespon.setText("exported");

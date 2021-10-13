@@ -134,19 +134,12 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
 
 
         }}
-    private boolean CheckUpdateQty_Permissitions(){
-       String UserNo=my_dataBase.settingDao().getUserNo();
-     UserPermissions   userPermissions = new UserPermissions();
+    private boolean CheckUpdateQty_Permissitions() {
+
+
+        String UserNo = my_dataBase.settingDao().getUserNo();
+        UserPermissions userPermissions = new UserPermissions();
         userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        if (userPermissions != null) {
-
-
-            if ( userPermissions.getStockTake_RemotelyDelete().equals("1")) {
-
-                return true;
-            } else
-                return false;
-        }else
-            return false;
+        return true;
     }
 }

@@ -1980,13 +1980,7 @@ return  false;
 
         }
         else
-        if(userPermissions.getSHIP_RemotelyDelete().equals("1")){
-            Re_delete.setEnabled(true);
+        {
 
-        }
-        else {
-            Re_delete.setEnabled(false);
-        }
-
-    }
+    }}
 }
