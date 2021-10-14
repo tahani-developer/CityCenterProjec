@@ -459,6 +459,10 @@ public static void getItemsSumQty() {
 
                }
 
+                    MainActivity.activityflage=2;
+                    exportdata();
+                    clearAll();
+                    saveButton.setEnabled(false);
                     break;
                 case R.id.ST_deletebtn:
                     animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
@@ -831,23 +835,24 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                         savedata("1");
                         try {
 
-
+                            stocktakelist.clear();
+                            filladapter();
                             showSweetDialog(Stoketake.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+
+                            zonecode.setEnabled(true);
+                            zonecode.requestFocus();
                         }       catch (WindowManager.BadTokenException e) {
                             //use a log message
                         }
 
 
-                        stocktakelist.clear();
-                        stocktakeAdapter.notifyDataSetChanged();
-                              zonecode.setEnabled(true);
-                        zonecode.requestFocus();
+
 
                     } else {
                        // savedata("0");
                         Log.e("el==","here");
                         stocktakelist.clear();
-                        stocktakeAdapter.notifyDataSetChanged();
+                        filladapter();
                         zonecode.setEnabled(true);
                         zonecode.requestFocus();
                     }

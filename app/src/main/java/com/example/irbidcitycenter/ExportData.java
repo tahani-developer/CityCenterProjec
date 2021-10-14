@@ -612,34 +612,38 @@ public class ExportData {
                 if(result.contains("Saved Successfully"))
                 {
 
-                        exportZoneRepList(listAllZoneRep);
                     Log.e("listAllZoneRep",listAllZoneRep.size()+"");
 
-                 if(activityflage==0)   datarespon.setText("exported");
-          else
-              exportrespon.setText("exported");
+                 if(activityflage==2)   datarespon.setText("exported");
+          else {
+                     exportrespon.setText("exported");
 
-
+                         exportZoneRepList(listAllZoneRep);
+                 }
 
 
                 }
                 else
 
                 {
-                    if(activityflage==0)
+                    if(activityflage==2)
                     datarespon.setText("not");
-                    else
+                    else {
                         exportrespon.setText("not");
+                        exportZoneRepList(listAllZoneRep);
+                    }
 
                 }
 
             }
             else {
                 Log.e("ellllse","ellse");
-                if(activityflage==0)
+                if(activityflage==2)
                     datarespon.setText("not");
-                else
+                else {
                     exportrespon.setText("not");
+                    exportZoneRepList(listAllZoneRep);
+                }
             }
 
 
