@@ -115,19 +115,10 @@ public static    int   activityflage=1;
             return false;
 
     }
-    private boolean CheckSaveSetting_Permissitions(){
+    private boolean CheckSaveSetting_Permissitions() {
         userPermissions = new UserPermissions();
         userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        if (userPermissions != null) {
-
-
-                if ( userPermissions.getSaveSetting_Per().equals("1")) {
-
-                    return true;
-                } else
-                    return false;
-            }else
-                return false;
+       return true;
     }
     private boolean CheckImportPermissitions() {
 
@@ -137,27 +128,24 @@ public static    int   activityflage=1;
             if (userPermissions != null) {
                 if (userPermissions.getExport_Per().equals("0"))
                     if (userPermissions.getImport_Per().equals("0"))
-                        if (userPermissions.getSetting_Per().equals("0"))
-                            if (userPermissions.getSaveSetting_Per().equals("0")) {
+                        if (userPermissions.getSetting_Per().equals("0")) {
 
-                            }
+                        }
+            }}
+            return true;
 
-            }
-        }
-return true;
     }
     private boolean CheckExportPermissitions() {
 
         userPermissions = new UserPermissions();
         userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
         if (userPermissions != null) {
-                if (userPermissions.getExport_Per().equals("1"))
+            if (userPermissions.getExport_Per().equals("1"))
 
-                    return true;
-                else
-                    return false;
-            }
-        else return false;
+                return true;
+            else
+                return false;
+        } else return false;
 
 
     }

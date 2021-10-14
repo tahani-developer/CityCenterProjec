@@ -9,48 +9,55 @@ import androidx.room.PrimaryKey;
 public class UserPermissions {
     @ColumnInfo(name = "UserNO")
     String UserNO;
+    @ColumnInfo(name = "UserName")
+    String UserName;
+    @ColumnInfo(name = "UserPassword")
+    String UserPassword;
+
     @PrimaryKey(autoGenerate = true)
     int SERIAL;
     @ColumnInfo(name = "Setting_Per")
     String Setting_Per;
-    @ColumnInfo(name = "SaveSetting_Per")
-    String SaveSetting_Per;
+
     @ColumnInfo(name = "Import_Per")
     String Import_Per;
     @ColumnInfo(name = "Export_Per")
     String Export_Per;
-    @ColumnInfo(name = "Exit_Per")
-    String Exit_Per;
+
 
 
 
     @ColumnInfo(name = "SHIP_Save")
     String SHIP_Save;
+    @ColumnInfo(name = "SHIP_Open")
+    String SHIP_Open;
     @ColumnInfo(name = "SHIP_LocalDelete")
     String SHIP_LocalDelete;
-    @ColumnInfo(name = "SHIP_RemotelyDelete")
-    String SHIP_RemotelyDelete;
+
 
     @ColumnInfo(name = "AddZone_Save")
     String AddZone_Save;
+    @ColumnInfo(name = "AddZone_Open")
+    String AddZone_Open;
     @ColumnInfo(name = "AddZone_LocalDelete")
     String AddZone_LocalDelete;
-    @ColumnInfo(name = "AddZone_RemotelyDelete")
-    String AddZone_RemotelyDelete;
+
 
     @ColumnInfo(name = "Rep_Save")
     String Rep_Save;
+    @ColumnInfo(name = "Repe_Open")
+    String Rep_Open;
     @ColumnInfo(name = "Rep_LocalDelete")
     String Rep_LocalDelete;
-    @ColumnInfo(name = "Rep_RemotelyDelete")
-    String Rep_RemotelyDelete;
+
 
     @ColumnInfo(name = "StockTake_Save")
     String StockTake_Save;
+    @ColumnInfo(name = "StockTake_Open")
+    String StockTake_Open;
     @ColumnInfo(name = "StockTake_LocalDelete")
     String StockTake_LocalDelete;
-    @ColumnInfo(name = "StockTake_RemotelyDelete")
-    String StockTake_RemotelyDelete;
+
     @ColumnInfo(name = "StockTake_UpdateQty")
     String StockTake_UpdateQty;
 
@@ -58,14 +65,119 @@ public class UserPermissions {
 
     @ColumnInfo(name = "ZoneRep_Save")
     String ZoneRep_Save;
+    @ColumnInfo(name = "ZoneRep_Open")
+    String ZoneRep_Open;
     @ColumnInfo(name = "ZoneRep_LocalDelete")
     String ZoneRep_LocalDelete;
-    @ColumnInfo(name = "ZoneRep_RemotelyDelete")
-    String ZoneRep_RemotelyDelete;
+
     @ColumnInfo(name = "ZoneRep_UpdateQty")
     String ZoneRep_UpdateQty;
+    @ColumnInfo(name = "CONO")
+    String  CONO;
 
+    @ColumnInfo(name = "UserActive")
+    String UserActive;
+    @ColumnInfo(name = "MasterUser")
+    String MasterUser;
+    @ColumnInfo(name = "SH_RepOpen")
+    String SH_RepOpen;
+    @ColumnInfo(name = "ST_RepOpen")
+    String ST_RepOpen;
+    public String getSHIP_Open() {
+        return SHIP_Open;
+    }
 
+    public String getUserActive() {
+        return UserActive;
+    }
+
+    public void setUserActive(String userActive) {
+        UserActive = userActive;
+    }
+
+    public String getMasterUser() {
+        return MasterUser;
+    }
+
+    public void setMasterUser(String masterUser) {
+        MasterUser = masterUser;
+    }
+
+    public String getSH_RepOpen() {
+        return SH_RepOpen;
+    }
+
+    public void setSH_RepOpen(String SH_RepOpen) {
+        this.SH_RepOpen = SH_RepOpen;
+    }
+
+    public String getST_RepOpen() {
+        return ST_RepOpen;
+    }
+
+    public void setST_RepOpen(String ST_RepOpen) {
+        this.ST_RepOpen = ST_RepOpen;
+    }
+
+    public void setSHIP_Open(String SHIP_Open) {
+        this.SHIP_Open = SHIP_Open;
+    }
+
+    public String getAddZone_Open() {
+        return AddZone_Open;
+    }
+
+    public void setAddZone_Open(String addZone_Open) {
+        AddZone_Open = addZone_Open;
+    }
+
+    public String getRep_Open() {
+        return Rep_Open;
+    }
+
+    public void setRep_Open(String rep_Open) {
+        Rep_Open = rep_Open;
+    }
+
+    public String getStockTake_Open() {
+        return StockTake_Open;
+    }
+
+    public void setStockTake_Open(String stockTake_Open) {
+        StockTake_Open = stockTake_Open;
+    }
+
+    public String getZoneRep_Open() {
+        return ZoneRep_Open;
+    }
+
+    public void setZoneRep_Open(String zoneRep_Open) {
+        ZoneRep_Open = zoneRep_Open;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public String getCONO() {
+        return CONO;
+    }
+
+    public void setCONO(String CONO) {
+        this.CONO = CONO;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getUserPassword() {
+        return UserPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        UserPassword = userPassword;
+    }
 
     public String getUserNO() {
         return UserNO;
@@ -91,13 +203,6 @@ public class UserPermissions {
         Setting_Per = setting_Per;
     }
 
-    public String getSaveSetting_Per() {
-        return SaveSetting_Per;
-    }
-
-    public void setSaveSetting_Per(String saveSetting_Per) {
-        SaveSetting_Per = saveSetting_Per;
-    }
 
     public String getImport_Per() {
         return Import_Per;
@@ -115,13 +220,7 @@ public class UserPermissions {
         Export_Per = export_Per;
     }
 
-    public String getExit_Per() {
-        return Exit_Per;
-    }
 
-    public void setExit_Per(String exit_Per) {
-        Exit_Per = exit_Per;
-    }
 
     public String getSHIP_Save() {
         return SHIP_Save;
@@ -139,13 +238,8 @@ public class UserPermissions {
         this.SHIP_LocalDelete = SHIP_LocalDelete;
     }
 
-    public String getSHIP_RemotelyDelete() {
-        return SHIP_RemotelyDelete;
-    }
 
-    public void setSHIP_RemotelyDelete(String SHIP_RemotelyDelete) {
-        this.SHIP_RemotelyDelete = SHIP_RemotelyDelete;
-    }
+
 
     public String getAddZone_Save() {
         return AddZone_Save;
@@ -163,13 +257,7 @@ public class UserPermissions {
         AddZone_LocalDelete = addZone_LocalDelete;
     }
 
-    public String getAddZone_RemotelyDelete() {
-        return AddZone_RemotelyDelete;
-    }
 
-    public void setAddZone_RemotelyDelete(String addZone_RemotelyDelete) {
-        AddZone_RemotelyDelete = addZone_RemotelyDelete;
-    }
 
     public String getRep_Save() {
         return Rep_Save;
@@ -187,13 +275,7 @@ public class UserPermissions {
         Rep_LocalDelete = rep_LocalDelete;
     }
 
-    public String getRep_RemotelyDelete() {
-        return Rep_RemotelyDelete;
-    }
 
-    public void setRep_RemotelyDelete(String rep_RemotelyDelete) {
-        Rep_RemotelyDelete = rep_RemotelyDelete;
-    }
 
     public String getStockTake_Save() {
         return StockTake_Save;
@@ -211,13 +293,7 @@ public class UserPermissions {
         StockTake_LocalDelete = stockTake_LocalDelete;
     }
 
-    public String getStockTake_RemotelyDelete() {
-        return StockTake_RemotelyDelete;
-    }
 
-    public void setStockTake_RemotelyDelete(String stockTake_RemotelyDelete) {
-        StockTake_RemotelyDelete = stockTake_RemotelyDelete;
-    }
 
     public String getZoneRep_Save() {
         return ZoneRep_Save;
@@ -235,13 +311,6 @@ public class UserPermissions {
         ZoneRep_LocalDelete = zoneRep_LocalDelete;
     }
 
-    public String getZoneRep_RemotelyDelete() {
-        return ZoneRep_RemotelyDelete;
-    }
-
-    public void setZoneRep_RemotelyDelete(String zoneRep_RemotelyDelete) {
-        ZoneRep_RemotelyDelete = zoneRep_RemotelyDelete;
-    }
 
     public String getStockTake_UpdateQty() {
         return StockTake_UpdateQty;

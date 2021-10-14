@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ActivityManager;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,9 +30,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.UserPermissions;
-import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneRepLogs;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
@@ -100,6 +96,8 @@ public static TextView ZR_itemkind;
     private String tozonetype;
     private String fromzonetype;
     private Animation animation;
+    private String itemtype;
+    private String Tozonetype, Fzonetype;
 
     //
     @Override
@@ -132,6 +130,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                             if (!fromzone.getText().toString().equals("")) {
                                  if(zoneExists(fromzone.getText().toString()))
                                    {
+                                       Fzonetype=itemtype;
                                        Log.e("fromzone","fromzone");
                                 fromzone.setEnabled(false);
                                 tozone.setEnabled(true);
@@ -153,9 +152,31 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                                 {
 
                                     if(zoneExists(tozone.getText().toString()))
-                                    {    RZ_itemcode.setEnabled(true);
+                                    {
+
+                                       Tozonetype=itemtype;
+                                        Log.e("fromzonetype",fromzonetype+"  "+Tozonetype);
+                                        if( Fzonetype.equals(Tozonetype))
+
+                                        {
+                                            RZ_itemcode.setEnabled(true);
                                 RZ_itemcode.requestFocus();
-                                tozone.setEnabled(false);}
+                                tozone.setEnabled(false);
+
+                                        }
+                                   else{
+                                            generalMethod.showSweetDialog(ZoneReplacment.this,3,"",getResources().getString(R.string.zonetype));
+
+                                   tozone.setText("");
+                                            tozone.requestFocus();
+
+                                    }
+
+
+
+
+
+                                    }
                                     else {
                                         tozone.setError("Invalid");
                                         tozone.setText("");
@@ -283,6 +304,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
     for(int x=0;x<listAllZone.size();x++)
             if(listAllZone.get(x).getZoneCode().equals(zone))
             {f=true;
+            itemtype =listAllZone.get(x).getZONETYPE();
             break;}
     return f;
 
@@ -445,9 +467,31 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                             {
 
                                 if(zoneExists(tozone.getText().toString()))
-                                {    RZ_itemcode.setEnabled(true);
-                                    RZ_itemcode.requestFocus();
-                                    tozone.setEnabled(false);}
+                                {
+
+                                    Tozonetype=itemtype;
+                                    Log.e("fromzonetype",fromzonetype+"  "+Tozonetype);
+                                    if( Fzonetype.equals(Tozonetype))
+
+                                    {
+                                        RZ_itemcode.setEnabled(true);
+                                        RZ_itemcode.requestFocus();
+                                        tozone.setEnabled(false);
+
+                                    }
+                                    else{
+                                        generalMethod.showSweetDialog(ZoneReplacment.this,3,"",getResources().getString(R.string.zonetype));
+
+                                        tozone.setText("");
+                                        tozone.requestFocus();
+
+                                    }
+
+
+
+
+
+                                }
                                 else {
                                     tozone.setError("Invalid");
                                     tozone.setText("");
@@ -463,6 +507,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                         } else
                             tozone.requestFocus();
                         break;
+
 
 
                     case R.id.ZR_itemcodeedt:
@@ -618,7 +663,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
         }
 
 
-        ZR_itemkind.addTextChangedListener(new TextWatcher() {
+     /*   ZR_itemkind.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -668,7 +713,7 @@ try {
 
 
             }
-        });
+        });*/
 
 
 
@@ -743,15 +788,15 @@ try {
                         if(Integer.parseInt(listQtyZone.get(0).getQty())>0)
                         {
                             {   try {
-                                importData.getKindItem2(RZ_itemcode.getText().toString().trim());
-
+                             //   importData.getKindItem2(RZ_itemcode.getText().toString().trim());
+                                filldata();
 
                             } catch (Exception e) {
                                 Log.e("Exception", e.getMessage());
                             }
 
-                        /*    RZ_itemcode.setText("");
-                            RZ_itemcode.requestFocus();*/
+                      RZ_itemcode.setText("");
+                            RZ_itemcode.requestFocus();
                         }}
                         else{
 
@@ -1874,11 +1919,6 @@ int getQTYOFItem(){
                 ZR_Delete.setEnabled(true);
 
 
-            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
-                ZR_Delete.setEnabled(true);
-
-            } else {
-                ZR_Delete.setEnabled(false);
             }
         }
     }

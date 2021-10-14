@@ -2999,11 +2999,8 @@ private boolean checkitemcodevalidty() {
                 Ship_delete.setEnabled(true);
 
 
-            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
-                Ship_delete.setEnabled(true);
+            } else{
 
-            } else {
-                Ship_delete.setEnabled(false);
             }
         }
     }

@@ -47,12 +47,12 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
         holder.ToZone.setText(replashmentList.get(i).getToZone());
         holder.Qty.setText(replashmentList.get(i).getQty());
         holder.Qty.setTag(i);
-        Log.e("tag==","Qty="+holder.Qty.getTag().toString());
-        Log.e("tag==","i=="+i);
+        Log.e("tag==", "Qty=" + holder.Qty.getTag().toString());
+        Log.e("tag==", "i==" + i);
         holder.Itemcode.setText(replashmentList.get(i).getItemcode());
         holder.Itemcode.setTag(i);
-        Log.e("tag==","Itemcode="+holder.Itemcode.getTag().toString());
-        holder. RECqty.setText(replashmentList.get(i).getRecQty());
+        Log.e("tag==", "Itemcode=" + holder.Itemcode.getTag().toString());
+        holder.RECqty.setText(replashmentList.get(i).getRecQty());
         holder.Qty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -66,31 +66,32 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().trim().length()!=0) {
-                    int position=(int)holder.Itemcode.getTag();
+                if (editable.toString().trim().length() != 0) {
+                    int position = (int) holder.Itemcode.getTag();
                     String newqty = editable.toString().trim();
                     Log.e("newqty1===", newqty);
-                    Log.e("newqty2===", "position="+position);
+                    Log.e("newqty2===", "position=" + position);
                     Log.e("tag===", holder.Qty.getTag().toString());
                     Log.e("from===", replashmentList.get(position).getFromZone());
-                    if(Integer.parseInt(replashmentList.get(position).getRecQty())>=(Integer.parseInt(newqty))) {
+                    if (Integer.parseInt(replashmentList.get(position).getRecQty()) >= (Integer.parseInt(newqty))) {
                         replashmentList.get(position).setQty(newqty);
                         my_dataBase.zoneReplashmentDao().updateqtyReplashment(replashmentList.get(position).getFromZone(), replashmentList.get(position).getToZone(), replashmentList.get(position).getItemcode(), newqty);
 
 
                     } else {
                         showSweetDialog(context, 3, "", context.getString(R.string.notvaildqty2) + " " + context.getResources().getString(R.string.msg));
-                        holder. Qty.setText("1");
+                        holder.Qty.setText("1");
                         my_dataBase.zoneReplashmentDao().updateqtyReplashment(replashmentList.get(position).getFromZone(), replashmentList.get(position).getToZone(), replashmentList.get(position).getItemcode(), newqty);
 
                     }
                     Log.e("newqty2===", newqty);
-                    Log.e("tag===",holder. Qty.getTag().toString());
+                    Log.e("tag===", holder.Qty.getTag().toString());
                     Log.e("from===", replashmentList.get(position).getFromZone());
                     //   Log.e("newqty2===", newqty);
 
 
-                }}
+                }
+            }
         });
 
     }
@@ -101,18 +102,18 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
     }
 
     public class ZoneRepViewHolder extends RecyclerView.ViewHolder {
-        TextView FromZone,ToZone,RECqty,Itemcode;
+        TextView FromZone, ToZone, RECqty, Itemcode;
         EditText Qty;
         CheckBox updateqty_chk;
 
-        public ZoneRepViewHolder(@NonNull View   convertView) {
-            super (convertView);
+        public ZoneRepViewHolder(@NonNull View convertView) {
+            super(convertView);
             my_dataBase = RoomAllData.getInstanceDataBase(context);
-            FromZone=   convertView.findViewById(R.id.textView_fromzone);
-            ToZone=   convertView.findViewById(R.id.textView_tozone);
-            Qty =   convertView.findViewById(R.id.textView_qty1);
-            Itemcode=   convertView.findViewById(R.id.textView_itemcodee);
-            RECqty=convertView.findViewById(R.id.textView_RECqty);
+            FromZone = convertView.findViewById(R.id.textView_fromzone);
+            ToZone = convertView.findViewById(R.id.textView_tozone);
+            Qty = convertView.findViewById(R.id.textView_qty1);
+            Itemcode = convertView.findViewById(R.id.textView_itemcodee);
+            RECqty = convertView.findViewById(R.id.textView_RECqty);
 
             Qty.setEnabled(true);
 
@@ -121,20 +122,16 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
         }
 
     }
-    private boolean CheckUpdateQty_Permissitions(){
 
-        String UserNo=my_dataBase.settingDao().getUserNo();
+    private boolean CheckUpdateQty_Permissitions() {
+
+        String UserNo = my_dataBase.settingDao().getUserNo();
         UserPermissions userPermissions = new UserPermissions();
         userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
         if (userPermissions != null) {
 
 
-            if ( userPermissions.getStockTake_RemotelyDelete().equals("1")) {
-
-                return true;
-            } else
-                return false;
-        }else
-            return false;
+        }
+        return false;
     }
 }

@@ -948,7 +948,10 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
     }
 
     private void filladapter() {
-        stockListView.setLayoutManager(new LinearLayoutManager(Stoketake.this));
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        stockListView.setLayoutManager(llm);
 
         stocktakeAdapter = new StocktakeAdapterr(this, stocktakelist);
         stockListView.setAdapter(stocktakeAdapter);
@@ -1848,11 +1851,8 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                 ST_delete.setEnabled(true);
 
 
-            } else if (userPermissions.getSHIP_RemotelyDelete().equals("1")) {
-                ST_delete.setEnabled(true);
+            } else{
 
-            } else {
-                ST_delete.setEnabled(false);
             }
         }
     }
