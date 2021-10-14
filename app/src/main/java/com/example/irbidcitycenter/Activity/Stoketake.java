@@ -52,6 +52,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.adapter;
 import static com.example.irbidcitycenter.Activity.AddZone.flage3;
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
 import static com.example.irbidcitycenter.ImportData.Storelist;
@@ -108,19 +109,22 @@ RecyclerView stockListView;
 public static TextView  Itemrespons,datarespon ,total_zoneqty_text,total_scanedqty_text,total_storeqty_text;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     ExportData exportData;
-    private UserPermissions userPermissions;
+
     private Animation animation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stoketake);
         init();
-zonecode.requestFocus();
+        ChecksavePermissitions();
+        CheckdeletePermissitions();
+        zonecode.requestFocus();
         itemOcode.setEnabled(false);
   //my_dataBase.itemDao().deleteall();
 
-    saveButton.setEnabled(false);
+
 
     //    AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
 
@@ -215,7 +219,7 @@ StoreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
 
                                     if (itemOcode.getText().toString().length() <= 15) {
                                         zonecode.setEnabled(false);
-                                        saveButton.setEnabled(true);
+
                                         itemname.setText("");
                                         stocktakelist.clear();
                                         Log.e("itemcode", itemOcode.getText().toString());
@@ -445,12 +449,18 @@ public static void getItemsSumQty() {
                     animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
                     saveButton.startAnimation(animation);
                     Log.e("ST_save","ST_save");
-                    MainActivity.activityflage=0;
-                    exportdata();
-                    clearAll();
-                    saveButton.setEnabled(false);
+                    MainActivity.activityflage=2;
+               if( stocktakelist.size()>0)
+               {exportdata();
+                    clearAll();}
+               else{
+
+                       generalMethod.showSweetDialog(Stoketake.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+
+               }
+
                     break;
-                case R.id.ST_delete:
+                case R.id.ST_deletebtn:
                     animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
                     reduiceButton  .startAnimation(animation);
                     OpenDeleteDailog();
@@ -575,7 +585,7 @@ Log.e("exportdata"," exportdata");
 
                             if (itemOcode.getText().toString().length() <= 15) {
                                 zonecode.setEnabled(false);
-                                saveButton.setEnabled(true);
+
                                 itemname.setText("");
                                 stocktakelist.clear();
                                 Log.e("itemcode", itemOcode.getText().toString());
@@ -693,6 +703,7 @@ Log.e("exportdata"," exportdata");
 
 
     private void init() {
+
         MainActivity.Items_activityflage=2;
         stocktakelist.clear();
        exportData=new ExportData(Stoketake.this);
@@ -716,7 +727,7 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
        // importData.getAllZones();
         respone = findViewById(R.id.respone3);
         saveButton = findViewById(R.id.ST_save);
-        reduiceButton = findViewById(R.id.ST_delete);
+        reduiceButton = findViewById(R.id.ST_deletebtn);
         backButton = findViewById(R.id.ST_cancel);
         importButton = findViewById(R.id.ST_importbtn);
         zonecode = findViewById(R.id.ST_zoneedt);
@@ -1025,7 +1036,7 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals("123")&&pass.getText().toString().trim().equals("123"))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                     if(enterflage==1)
                         openDeleteitemDailog();
@@ -1035,14 +1046,14 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals("123"))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
                     }
                     else {
-
-                    } pass.setError(getResources().getString(R.string.invalid_password));
+                        pass.setError(getResources().getString(R.string.invalid_password));
+                    }
                 }
             }
         });
@@ -1828,7 +1839,7 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         ST_searchdialog.show();
 
     }
-  /*  @Override
+ @Override
     protected void onPause() {
         Log.e("onPause","onPause");
         super.onPause();
@@ -1838,21 +1849,35 @@ total_zoneqty_text= findViewById(R.id.total_zoneqty_text);
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
-    private void CheckPermissitions() {
-        UserNo=my_dataBase.settingDao().getUserNo();
-        userPermissions=new UserPermissions();
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+    }
+    private void ChecksavePermissitions() {
+
 
         if( userPermissions!=null) {
-            if (userPermissions.getSHIP_Save().equals("0"))saveButton.setVisibility(View.GONE);
-            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
-                ST_delete.setEnabled(true);
+            if (userPermissions.getMasterUser().equals("0"))
+            { if (userPermissions.getStockTake_Save().equals("1"))
+                saveButton. setEnabled(true);
+            else
+                saveButton.setEnabled(false);}
+            else
+                saveButton. setEnabled(true);
 
 
-            } else{
 
-            }
+        }
+    }
+    private void CheckdeletePermissitions() {
+
+
+        if( userPermissions!=null) {
+            if (userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getStockTake_LocalDelete().equals("1")) {
+                  reduiceButton.setEnabled(true);
+
+                } else {
+                    reduiceButton.setEnabled(false);
+                }
+            }else     reduiceButton.setEnabled(true);
         }
     }
 }

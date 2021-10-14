@@ -170,6 +170,7 @@ public class ExportData {
         new JSONTask_AddZoneRep(zoneReplashmentModelslist).execute();
     }
     public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, ArrayList<ReplacementModel> listReplacment,List<StocktakeModel>liststocktake,List<ZoneReplashmentModel>zoneReplacmentList){
+        Log.e("context",context.getClass().getName());
         exportZoneList(listZone,2);
         listAllShipment=listShipment;
         listAllStock=liststocktake;
@@ -493,6 +494,7 @@ public class ExportData {
             if (result != null && !result.equals("")) {
                 if(result.contains("Saved Successfully"))
                 {
+                    Log.e("activityflage",activityflage+"");
                     if(activityflage==0)
                         ZonRepdatarespon.setText("exported");
                     else

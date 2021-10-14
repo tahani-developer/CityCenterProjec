@@ -21,6 +21,7 @@ import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .ZoneRepViewHolder > {
@@ -53,6 +54,29 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
         holder.Itemcode.setTag(i);
         Log.e("tag==", "Itemcode=" + holder.Itemcode.getTag().toString());
         holder.RECqty.setText(replashmentList.get(i).getRecQty());
+
+        if (userPermissions != null) {
+            if(userPermissions.getMasterUser().equals("0")){
+                if(userPermissions.getZoneRep_UpdateQty().equals("0"))
+                {
+                    Log.e("ca1", "i");
+                    holder.RECqty.setEnabled(false);}
+                else    {
+                    Log.e("ca2", "i");
+                    holder.RECqty.setEnabled(true);
+                }
+
+            }
+            else   {  holder.RECqty.setEnabled(true);
+                Log.e("ca3", "i");
+
+            }
+
+
+
+    }
+
+
         holder.Qty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -108,6 +132,7 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
 
         public ZoneRepViewHolder(@NonNull View convertView) {
             super(convertView);
+
             my_dataBase = RoomAllData.getInstanceDataBase(context);
             FromZone = convertView.findViewById(R.id.textView_fromzone);
             ToZone = convertView.findViewById(R.id.textView_tozone);
@@ -115,23 +140,25 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
             Itemcode = convertView.findViewById(R.id.textView_itemcodee);
             RECqty = convertView.findViewById(R.id.textView_RECqty);
 
-            Qty.setEnabled(true);
 
-       /*     if(CheckUpdateQty_Permissitions()==true)       Qty.setEnabled(true);
-            else       Qty.setEnabled(false);*/
-        }
-
-    }
-
-    private boolean CheckUpdateQty_Permissitions() {
-
-        String UserNo = my_dataBase.settingDao().getUserNo();
-        UserPermissions userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        if (userPermissions != null) {
 
 
         }
-        return false;
+        private void CheckUpdateQty_Permissitions() {
+
+            if (userPermissions != null) {
+                if(userPermissions.getMasterUser().equals("0")){
+                    if(userPermissions.getZoneRep_UpdateQty().equals("0"))
+                        Qty.setEnabled(false);
+                    else   Qty.setEnabled(true);
+
+                }
+                else   Qty.setEnabled(true);
+
+            }
+
+        }
     }
+
+
 }

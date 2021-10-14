@@ -64,6 +64,7 @@ import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.Adapters.ShipmentAdapter.sum;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
@@ -150,7 +151,7 @@ public class NewShipment extends AppCompatActivity {
     public  String deviceId="";
     Button Ship_delete;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
-    private UserPermissions userPermissions;
+
     private Animation animation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,8 @@ public class NewShipment extends AppCompatActivity {
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e("usenumber", UserNo);
         init();
+        checkFinishPermission();
+        checkDeletePermission();
         fillLastBoxinfo();
 
 // my_dataBase.shipmentDao().deleteALL();
@@ -380,7 +383,38 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
 
     }
 
-   public void OpenDeleteDailog(){
+    private void checkFinishPermission() {
+        if(userPermissions.getMasterUser().equals("0")){
+            if(userPermissions.getSHIP_Save().equals("1"))
+            {
+                save.setEnabled(true);
+            }
+            else
+                save.setEnabled(false);
+        }
+        else
+        {
+            save.setEnabled(true);
+        }
+    }
+    private void checkDeletePermission() {
+     //   userPermissions.setMasterUser("1");
+        if(userPermissions.getMasterUser().equals("0")){
+            if(userPermissions.getSHIP_LocalDelete().equals("1"))
+            {
+               Ship_delete.setEnabled(true);
+            }
+            else
+                Ship_delete.setEnabled(false);
+        }
+        else
+        {
+       //     Log.e("fffff","fff");
+            Ship_delete.setEnabled(true);
+        }
+    }
+
+    public void OpenDeleteDailog(){
         final Dialog dialog = new Dialog(NewShipment.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -443,7 +477,7 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals("123")&&pass.getText().toString().trim().equals("123"))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                     if(enterflage==1)
                        openDeleteItemDailog();
@@ -455,15 +489,15 @@ else
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals("123"))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
                     }
                     else {
+                        pass.setError(getResources().getString(R.string.invalid_password));
 
-                    } pass.setError(getResources().getString(R.string.invalid_password));
-                }
+                    }   }
             }
         });
         cancelbutton.setOnClickListener(new View.OnClickListener() {
@@ -2391,7 +2425,7 @@ barcode.setOnKeyListener(onKeyListener);
 
 
                               }
-                           save.setEnabled(true);
+
                           //  barcode.setText("");
                         /*    barcode.setEnabled(true);
                             barcode.requestFocus();*/
@@ -2433,7 +2467,7 @@ barcode.setOnKeyListener(onKeyListener);
 
                                         boxno.setEnabled(false);
                                         next.setEnabled(true);
-                                        save.setEnabled(true);
+
 
 
                                         itemname.setText("");
@@ -2977,7 +3011,7 @@ private boolean checkitemcodevalidty() {
       AllBoxesInDB= my_dataBase.shipmentDao().getboxes();
 
   }
-  /*  @Override
+   @Override
     protected void onPause() {
         Log.e("onPause","onPause");
         super.onPause();
@@ -2987,21 +3021,6 @@ private boolean checkitemcodevalidty() {
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
-    private void CheckPermissitions() {
-
-        userPermissions=new UserPermissions();
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
-
-        if( userPermissions!=null) {
-            if (userPermissions.getSHIP_Save().equals("0")) save.setVisibility(View.GONE);
-            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
-                Ship_delete.setEnabled(true);
-
-
-            } else{
-
-            }
-        }
     }
+
 }

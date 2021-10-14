@@ -60,6 +60,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.Storelist;
@@ -131,6 +132,8 @@ public class Replacement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
         init();
+        ChecksavePermissition();
+        CheckdeletePermissition();
         Storelist.clear();
         Storelist=  my_dataBase.storeDao().getall();
 
@@ -152,7 +155,7 @@ public class Replacement extends AppCompatActivity {
         zone.requestFocus();
         itemcode.setEnabled(false);
         recqty.setEnabled(false);
-        save.setEnabled(false);
+
 
         my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         UserNo=my_dataBase.settingDao().getUserNo();
@@ -248,8 +251,8 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 animation = AnimationUtils.loadAnimation(Replacement.this, R.anim.modal_in);
                 save.startAnimation(animation);
-
-                fromSpinner.setEnabled(true);
+if(     replacementlist.size()>0)
+{  fromSpinner.setEnabled(true);
                 toSpinner.setEnabled(true);
 
 
@@ -264,8 +267,11 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     zone.requestFocus();
 
            zone.setText("");
-               itemcode.setText("");
-       save.setEnabled(false);
+               itemcode.setText("");}
+else {
+    generalMethod.showSweetDialog(Replacement.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+}
+
             }
         });
 
@@ -390,7 +396,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals("123")&&pass.getText().toString().trim().equals("123"))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                     if(enterflage==1)
                         openDeleteitemDailog();
@@ -400,14 +406,14 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals("123"))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
                     }
                     else {
-
-                    } pass.setError(getResources().getString(R.string.invalid_password));
+                        pass.setError(getResources().getString(R.string.invalid_password));
+                    }
                 }
             }
         });
@@ -1446,7 +1452,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             } catch (Exception e) {
                                 Log.e("Exception", e.getMessage());
                             }
-                            save.setEnabled(true);
+
                             recqty.setText("1");
 
 
@@ -1588,7 +1594,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         if (replacementModel != null) {
                             if (!CaseDuplicates(replacementModel))
                                 replacementlist.add(replacementModel);
-                            save.setEnabled(true);
+
                         }
 
 
@@ -1697,7 +1703,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                 if (replacementModel != null) {
                                     if (!CaseDuplicates(replacementModel))
                                         replacementlist.add(replacementModel);
-                                    save.setEnabled(true);
+
                                 }
 
 
@@ -1954,7 +1960,7 @@ return  false;
 
    return false; }
 
-  /*  @Override
+   @Override
     protected void onPause() {
         Log.e("onPause","onPause");
         super.onPause();
@@ -1964,23 +1970,33 @@ return  false;
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
-    private void CheckPermissitions() {
-        UserNo=my_dataBase.settingDao().getUserNo();
-        userPermissions=new UserPermissions();
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+    }
+  private void ChecksavePermissition() {
 
 
-        if(userPermissions.getSHIP_Save().equals("0"))save.setVisibility(View.GONE);
-        if(userPermissions.getSHIP_LocalDelete().equals("1"))
-        {
-            Re_delete.setEnabled(true);
+      if( userPermissions!=null) {
+          if(userPermissions.getMasterUser().equals("0")) {
+              if (userPermissions.getRep_Save().equals("0"))
+                 save.setEnabled(false);
+              else save.setEnabled(true);
+          }
+          else
+              save.setEnabled(true);
 
 
 
+
+      }
+  }
+    private void CheckdeletePermissition() {
+
+        if (userPermissions != null) {
+            if (userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getRep_LocalDelete().equals("0"))
+                    Re_delete .setEnabled(false);
+                else
+                Re_delete.setEnabled(true);}
+            else   Re_delete.setEnabled(true);
         }
-        else
-        {
-
-    }}
+    }
 }

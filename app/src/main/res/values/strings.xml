@@ -142,4 +142,6 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="msg">To Transfer to other zones</string>
     <string name="zonetype">FromZone and ToZone are not of the same category</string>
     <string name="Msg1"> Item Tabel is Empty, do you want import Items?</string>
+    <string name="Permission">Sorry, No Permission To Enter</string>
+    <string name="activeuser">Sorry, No Permission (Not Active User)</string>
 </resources>

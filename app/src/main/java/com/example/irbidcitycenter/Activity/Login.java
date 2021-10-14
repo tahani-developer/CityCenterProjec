@@ -1,23 +1,24 @@
 package com.example.irbidcitycenter.Activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.KeyguardManager;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
+import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,19 +50,27 @@ import com.example.irbidcitycenter.Interfaces.OnHomePressedListener;
 import com.example.irbidcitycenter.Models.HomeWatcher;
 
 
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.appSettings;
+
+import com.example.irbidcitycenter.Models.customViewGroup;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
 
-
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+
 
 public class Login extends AppCompatActivity {
+   public static UserPermissions userPermissions;
     EditText username,password;
+
 
     boolean activitySwitchFlag = false;
     LinearLayout colorLinear, imgInner, imgOutter;
@@ -76,24 +85,53 @@ TextView settings;
     public appSettings setting;
     List<appSettings> appSettings;
     public  String SET_qtyup;
+    public  static  TextView UserperRespons;
+    public  List<UserPermissions> DBUserPermissions = new ArrayList<>();
+    private TextView login;
+    //
 
-    public boolean isApplicationSentToBackground(final Context context)
-    {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-        if (!tasks.isEmpty()) {
-            ComponentName topActivity = tasks.get(0).topActivity;
-            if (!topActivity.getPackageName().equals(context.getPackageName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // To keep track of activity's window focus
+    boolean currentFocus;
+
+    // To keep track of activity's foreground/background status
+    boolean isPaused;
+
+    Handler collapseNotificationHandler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //stop notification
+        //Remove title bar
+     //   this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
+        init();
+
+
+        disablePullNotificationTouch();
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+
+        appSettings=my_dataBase.settingDao(). getallsetting();
+        DBUserPermissions=my_dataBase.userPermissionsDao().getAll();
+        userPermissions =new UserPermissions();
+
+          if(appSettings.size()==0) {
+              settings.setEnabled(true);
+              login.setEnabled(false);
+          }
+          else {
+              getUsernameAndpass();
+            if( userPermissions.getSetting_Per().equals("0"))
+              settings.setEnabled(false);
+            else
+                settings.setEnabled(true);
+          }
+
 
 
         View decorView = getWindow().getDecorView();
@@ -156,15 +194,212 @@ TextView settings;
 
 
 
-        //stop notification
-         //Remove title bar
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         //Remove notification bar
-      //  this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
 
 
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                openSettingDialog();
+            }
+        });
+
+
+        login .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getUsernameAndpass();
+                if(userPermissions.getMasterUser().equals("1"))
+                {
+                    Log.e("case1","case1");
+                    if (username.getText().toString().trim().equals(userPermissions.getUserName()) && password.getText().toString().trim().equals(userPermissions.getUserPassword())) {
+                        MainActivity.SET_userNO = username.getText().toString().trim();
+                        if(existCoNo(2))
+                        {
+                            if(existCoNo(1))
+                            {
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                generalMethod.showSweetDialog(Login.this,3,"fill company No setting","");
+
+
+                            }
+
+                        }
+                        else {
+                            generalMethod.showSweetDialog(Login.this,3,"fill ip setting","");
+                        }
+
+                    } else {
+                       if(!username.getText().toString().trim().equals(userPermissions.getUserName())) username.setError(getResources().getString(R.string.invalid_username));
+                        else if(!password.getText().toString().trim().equals(userPermissions.getUserPassword())) password.setError(getResources().getString(R.string.invalid_username));
+
+                    }
+
+
+                }
+                else {
+                    if (userPermissions.getUserActive().equals("1") && CheckCompanyPer() == true) {
+                        Log.e("case2","case2");
+                        if (username.getText().toString().trim().equals(userPermissions.getUserName()) && password.getText().toString().trim().equals(userPermissions.getUserPassword())) {
+                            MainActivity.SET_userNO = username.getText().toString().trim();
+                            if (existCoNo(2)) {
+                                if (existCoNo(1)) {
+                                    Intent intent = new Intent(Login.this, MainActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    generalMethod.showSweetDialog(Login.this, 3, "fill company No setting", "");
+                                }
+
+                            } else {
+                                generalMethod.showSweetDialog(Login.this, 3, "fill ip setting", "");
+                            }
+
+                        } else {
+                            username.setError("");
+                            password.setError("");
+
+                        }
+
+                    } else if (userPermissions.getUserActive().equals("0")) {
+                        Log.e("case4","case4");
+                        showSweetDialog(Login.this, 0, getResources().getString(R.string.activeuser), "");
+
+                    } else if ( CheckCompanyPer() == false){
+                        Log.e("case5","case5");
+                        showSweetDialog(Login.this, 0, getResources().getString(R.string.Permission), "");
+
+                    }
+
+                }
+            }
+        });
+
+    }
+
+    private void disablePullNotificationTouch() {
+        WindowManager manager = ((WindowManager) getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE));
+        WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
+      localLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST ;
+       // localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+      //  WindowManager.LayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        localLayoutParams.gravity = Gravity.TOP;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                // this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                // Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+
+        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        localLayoutParams.height = (int) (25 * getResources()
+                .getDisplayMetrics().scaledDensity);
+        localLayoutParams.format = PixelFormat.RGBX_8888;
+        customViewGroup view = new customViewGroup(this);
+        manager.addView(view, localLayoutParams);
+    }
+    private boolean CheckCompanyPer() {
+        String comNUm="";
+        String Userno="";
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+        for(int i=0;i<DBUserPermissions.size();i++)
+            if( DBUserPermissions.get(i).getUserNO().equals( Userno)) {
+
+                if( DBUserPermissions.get(i).getCONO1().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO2().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO3().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO4().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO5().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO6().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO7().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO8().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO9().equals( comNUm))return true;
+                else
+                if( DBUserPermissions.get(i).getCONO10().equals( comNUm))return true;
+                else
+                    return false;
+            }
+
+    return false;}
+    private void getUsernameAndpass() {
+
+ boolean flage=false;
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+           Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+        Log.e("here"," "+ DBUserPermissions.size());
+        for(int i=0;i<DBUserPermissions.size();i++) {
+            if (DBUserPermissions.get(i).getUserNO().equals(Userno)) {
+                 flage=true;
+                userPermissions.setUserName(DBUserPermissions.get(i).getUserName());
+                userPermissions.setUserPassword(DBUserPermissions.get(i).getUserPassword());
+                userPermissions.setUserActive(DBUserPermissions.get(i).getUserActive());
+                userPermissions.setMasterUser(DBUserPermissions.get(i).getMasterUser());
+                userPermissions.setSetting_Per(DBUserPermissions.get(i).getSetting_Per());
+                userPermissions.setSH_RepOpen(DBUserPermissions.get(i).getSH_RepOpen());
+                userPermissions.setST_RepOpen(DBUserPermissions.get(i).getST_RepOpen());
+                userPermissions.setRep_Open(DBUserPermissions.get(i).getRep_Open());
+                userPermissions.setSHIP_Open(DBUserPermissions.get(i).getSHIP_Open());
+                userPermissions.setAddZone_Open(DBUserPermissions.get(i).getAddZone_Open());
+                userPermissions.setStockTake_Open(DBUserPermissions.get(i).getStockTake_Open());
+                userPermissions.setZoneRep_Open(DBUserPermissions.get(i).getZoneRep_Open());
+                userPermissions.setImport_Per(DBUserPermissions.get(i).getImport_Per());
+                userPermissions.setExport_Per(DBUserPermissions.get(i).getExport_Per());
+                userPermissions.setSHIP_Save(DBUserPermissions.get(i).getSHIP_Save());
+                userPermissions.setSHIP_LocalDelete(DBUserPermissions.get(i).getSHIP_LocalDelete());
+
+                userPermissions.setAddZone_Save(DBUserPermissions.get(i).getAddZone_Save());
+                userPermissions.setAddZone_LocalDelete(DBUserPermissions.get(i).getAddZone_LocalDelete());
+
+                userPermissions.setStockTake_Save(DBUserPermissions.get(i).getStockTake_Save());
+                userPermissions.setStockTake_LocalDelete(DBUserPermissions.get(i).getStockTake_LocalDelete());
+
+                userPermissions.setZoneRep_Save(DBUserPermissions.get(i).getZoneRep_Save());
+                userPermissions.setZoneRep_LocalDelete(DBUserPermissions.get(i).getZoneRep_LocalDelete());
+                userPermissions.setRep_Save(DBUserPermissions.get(i).getRep_Save());
+                userPermissions.setRep_LocalDelete(DBUserPermissions.get(i).getRep_LocalDelete());
+
+                userPermissions.setStockTake_UpdateQty(DBUserPermissions.get(i).getStockTake_UpdateQty());
+                userPermissions.setZoneRep_UpdateQty(DBUserPermissions.get(i).getZoneRep_UpdateQty());
+
+            }
+        }
+if(flage==false)Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+Log.e("Userno",Userno+" "+ comNUm);
+        Log.e("MasterUs===", userPermissions.getMasterUser());
+    }
+
+    private void init() {
+        login  = findViewById(R.id.login);
+        UserperRespons=findViewById(R.id.UserperRespons);
+        username=findViewById(R.id.username_input);
+        password=findViewById(R.id.pass);
         colorLinear = findViewById(R.id.colorLinear);
         mainLinearAnim = findViewById(R.id.mainLinearAnim);
         imgInner = (LinearLayout) findViewById(R.id.colorLinear);
@@ -176,40 +411,42 @@ TextView settings;
         username = findViewById(R.id.username_input);
         password = findViewById(R.id.pass);
         importData=new ImportData(Login.this);
+
+
+
+
         settings=findViewById(R.id.setting);
-        settings.setOnClickListener(new View.OnClickListener() {
+
+        UserperRespons.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                openSettingDialog();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
-        });
 
-        username=findViewById(R.id.username_input);
-        password=findViewById(R.id.pass);
-        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (username.getText().toString().trim().equals("6") && password.getText().toString().trim().equals("123")) {
-                    MainActivity.SET_userNO = username.getText().toString().trim();
-                    if(existCoNo(2))
-                    {
-                        if(existCoNo(1))
-                        {
-                            Intent intent = new Intent(Login.this, MainActivity.class);
-                            startActivity(intent);
-                        }
-                        else {
-                            generalMethod.showSweetDialog(Login.this,3,"fill company No setting","");
-                        }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().trim().equals("USERNO")) {
+                        my_dataBase.userPermissionsDao().deleteall();
+                        Log.e("UserPermissions"," "+ ImportData.UserPermissions.size());
+                        my_dataBase.userPermissionsDao().insertAll(   ImportData.UserPermissions);
+                        //importData.pdUserPer.dismiss();
+                        DBUserPermissions.clear();
+                        DBUserPermissions=my_dataBase.userPermissionsDao().getAll();
+                        Log.e(" DBUserPermissions"," "+  DBUserPermissions.size());
+
+                    } else {
+
+                        Toast.makeText(Login.this,"NetWork Error",Toast.LENGTH_SHORT).show();
+                        importData.pdUserPer.dismiss();
 
                     }
-                    else {
-                        generalMethod.showSweetDialog(Login.this,3,"fill ip setting","");
-                    }
-
-                } else {
-                    username.setError("");
-                    password.setError("");
 
                 }
             }
@@ -218,13 +455,13 @@ TextView settings;
     }
     //
 
-  /* @Override
+   @Override
     protected void onStop()
     {
         super.onStop();
         Log.d("tag==", "MYonStop is called");
         // insert here your instructions
-    }*/
+    }
 
    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -235,22 +472,22 @@ TextView settings;
        {
            Log.e("heeere==","home");
            activitySwitchFlag = true;
-            //openUthenticationDialog();
+            openUthenticationDialog();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-   /* @Override
+  @Override
     protected void onPause() {
-        Log.e("onPause","onPause");
-        super.onPause();
+      Log.e("onPause", "onPause");
+      super.onPause();
 
       ActivityManager activityManager = (ActivityManager) getApplicationContext()
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.moveTaskToFront(getTaskId(), 0);
-        //openUthenticationDialog();
-
+              .getSystemService(Context.ACTIVITY_SERVICE);
+      activityManager.moveTaskToFront(getTaskId(), 0);
+      //openUthenticationDialog();
+  }
 
    /*     Intent homeIntent = new Intent(Intent.ACTION_MAIN);
         homeIntent.addCategory(Intent.CATEGORY_HOME);
@@ -258,17 +495,8 @@ TextView settings;
         startActivity(homeIntent);*/
 
 
-    /*
-    @Override
-    public void onPause(){
-        super.onPause();
-        Log.v("TAG", "onPause" );
-        if(activitySwitchFlag)
-            Log.v("TAG", "activity switch");
-        else
-            Log.v("TAG", "home button");
-        activitySwitchFlag = false;
-    }*/
+
+
 
     private void openUthenticationDialog() {
         final Dialog dialog1 = new Dialog(Login.this);
@@ -673,7 +901,10 @@ TextView settings;
 
                 {
                     saveData(setting);
-                dialog.dismiss();
+                    dialog.dismiss();
+                    importData=new ImportData(Login.this);
+                    importData.getUserPermissions();
+                    login.setEnabled(true);
 
                 }
                 else

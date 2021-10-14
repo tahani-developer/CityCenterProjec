@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.itemdetalis;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
@@ -91,13 +94,13 @@ TextView FromZoneName,ToZoneName;
     public static ZoneAdapter adapter;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     private String deviceId="";
-    private UserPermissions userPermissions;
+
 public static TextView ZR_itemkind;
     private String tozonetype;
     private String fromzonetype;
     private Animation animation;
     private String itemtype;
-    private String Tozonetype, Fzonetype;
+    private String Tozonetype="", Fzonetype="1";
 
     //
     @Override
@@ -105,6 +108,8 @@ public static TextView ZR_itemkind;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_replacment);
         init();
+        ChecksavePermissition();
+        CheckdeletePermissition();
         fromzone.requestFocus();
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e(" UserNo==",UserNo+"k");
@@ -304,6 +309,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
     for(int x=0;x<listAllZone.size();x++)
             if(listAllZone.get(x).getZoneCode().equals(zone))
             {f=true;
+            Log.e("ssss1","sss2");
             itemtype =listAllZone.get(x).getZONETYPE();
             break;}
     return f;
@@ -412,7 +418,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                    else
                        generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
 
-                    ZR_save.setEnabled(false);
+
                     ZR_nextZone.setEnabled(false);
                     ZR_nexttoZone.setEnabled(false);
                     tozone.setEnabled(false);
@@ -446,6 +452,7 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                         if (!fromzone.getText().toString().equals("")) {
                             if(zoneExists(fromzone.getText().toString()))
                             {
+                                Fzonetype=itemtype;
                                 Log.e("fromzone","fromzone");
                                 fromzone.setEnabled(false);
                                 tozone.setEnabled(true);
@@ -509,13 +516,12 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                         break;
 
 
-
                     case R.id.ZR_itemcodeedt:
                         if (!RZ_itemcode.getText().toString().equals("")) {
                             ZR_nexttoZone.setEnabled(true);
                             ZR_nextZone.setEnabled(true);
                             if (RZ_itemcode.getText().toString().length() <= 15) {
-                                ZR_nexttoZone.setEnabled(true);
+
                                 if (LocalZoneReps.size() > 0) {
                                     if (ItemExistsLocal()) {
 
@@ -963,7 +969,7 @@ try {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals("123")&&pass.getText().toString().trim().equals("123"))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                     if(enterflage==1)
                         openDeleteZoneDailog();
@@ -974,14 +980,14 @@ try {
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals("123"))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
                     }
                     else {
-
-                    } pass.setError(getResources().getString(R.string.invalid_password));
+                        pass.setError(getResources().getString(R.string.invalid_password));
+                    }
                 }
             }
         });
@@ -1897,7 +1903,7 @@ int getQTYOFItem(){
       int sum=  my_dataBase.zoneReplashmentDao().getQTYofItem(fromzone.getText().toString(),RZ_itemcode.getText().toString());
         return sum;
     }
-   /* @Override
+   @Override
     protected void onPause() {
         Log.e("onPause","onPause");
         super.onPause();
@@ -1907,20 +1913,34 @@ int getQTYOFItem(){
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
-    private void CheckPermissitions() {
-        UserNo=my_dataBase.settingDao().getUserNo();
-        userPermissions=new UserPermissions();
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+    }
+    private void ChecksavePermissition() {
+
 
         if( userPermissions!=null) {
-            if (userPermissions.getSHIP_Save().equals("0"))ZR_save.setVisibility(View.GONE);
-            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
-                ZR_Delete.setEnabled(true);
+            if(userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getZoneRep_Save().equals("0"))
+                    ZR_save.setEnabled(false);
+                else ZR_save.setEnabled(true);
+            }
+            else
+                ZR_save.setEnabled(true);
 
 
+
+
+        }
+    }
+    private void CheckdeletePermissition() {
+
+        if (userPermissions != null) {
+            if (userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getZoneRep_LocalDelete().equals("0"))
+                    ZR_Delete.setEnabled(false);
+                else
+                    ZR_Delete.setEnabled(true);}
+              else   ZR_Delete.setEnabled(true);
             }
         }
     }
-}
 

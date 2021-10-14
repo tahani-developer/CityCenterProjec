@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Activity.Login;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
@@ -17,6 +18,7 @@ import com.example.irbidcitycenter.Activity.Stoketake;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.Store;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import com.example.irbidcitycenter.Models.Shipment;
@@ -77,6 +79,7 @@ public class ImportData {
     public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
     public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
     public static ArrayList<ZoneModel> itemdetalis = new ArrayList<>();
+    public static ArrayList<UserPermissions> UserPermissions = new ArrayList<>();
     public static int posize;
     public static String itemn;
     public static String item_name="";
@@ -102,6 +105,7 @@ public class ImportData {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private int max=50;
+   public SweetAlertDialog pdUserPer;
 
     private void showProgressDialogWithTitle(String title,String substring) {
         progressDialog.setTitle(title);
@@ -167,6 +171,19 @@ public class ImportData {
     public void getPoNum(){
         if(!ipAddress.equals(""))
             new JSONTask_getAllPoNum().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getUserPermissions(){
+        UserPermissions.clear();
+        pdUserPer = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdUserPer.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdUserPer.setTitleText(" Start get User Permissions");
+        pdUserPer.setCancelable(false);
+        pdUserPer.show();
+        if(!ipAddress.equals(""))
+            new JSONTask_getAllUserPermissions().execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
@@ -1986,6 +2003,184 @@ Log.e("Exception===",e.getMessage());
         }
     }
 
+
+    public class  JSONTask_getAllUserPermissions extends AsyncTask<String, String, String> {
+
+        private String itemNo = "", JsonResponse;
+
+        public JSONTask_getAllUserPermissions() {
+            this.itemNo = itemNo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    //  http://localhost:8085/GetIRUsers
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/GetIRUsers";
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("Exception===", e.getMessage());
+                pdUserPer.dismiss();
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+                HttpResponse response = client.execute(request);
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", "itemNo" + finalJson);
+
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                        pdUserPer.dismiss();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                pdUserPer.dismiss();
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pdUserPer.dismiss();
+            if (result != null) {
+                if (result.contains("USERNO")) {
+                    try {
+                        Log.e("here UserPermissions1"," UserPermissions1");
+                        UserPermissions requestDetail = new UserPermissions();
+                        JSONArray requestArray = null;
+                        requestArray = new JSONArray(result);
+
+
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            Log.e("here UserPermissions2"," UserPermissions2");
+                            JSONObject infoDetail = requestArray.getJSONObject(i);
+                            requestDetail = new UserPermissions();
+                            requestDetail.setUserNO(infoDetail.get("USERNO").toString());
+                            requestDetail.setUserName(infoDetail.get("USERNAME").toString());
+                            requestDetail.setUserPassword(infoDetail.get("PASSWORD").toString());
+
+
+                            requestDetail.setCONO1(infoDetail.get("CONO1").toString());
+                            requestDetail.setCONO2(infoDetail.get("CONO2").toString());
+                            requestDetail.setCONO3(infoDetail.get("CONO3").toString());
+                            requestDetail.setCONO4(infoDetail.get("CONO4").toString());
+                            requestDetail.setCONO5(infoDetail.get("CONO5").toString());
+                            requestDetail.setCONO6(infoDetail.get("CONO6").toString());
+                            requestDetail.setCONO7(infoDetail.get("CONO7").toString());
+                            requestDetail.setCONO8(infoDetail.get("CONO8").toString());
+                            requestDetail.setCONO9(infoDetail.get("CONO9").toString());
+                            requestDetail.setCONO10(infoDetail.get("CONO10").toString());
+                            requestDetail.setUserActive(infoDetail.get("UACTIVE").toString());
+                            requestDetail.setMasterUser(infoDetail.get("UMASTER").toString());
+                            requestDetail.setSHIP_Open(infoDetail.get("NOPEN").toString());
+                            requestDetail.setSHIP_Save(infoDetail.get("NFINISH").toString());
+                            requestDetail.setSHIP_LocalDelete(infoDetail.get("NDELETE").toString());
+
+
+                            requestDetail.setAddZone_Open(infoDetail.get("ZOPEN").toString());
+                            requestDetail.setAddZone_Save(infoDetail.get("ZSAVE").toString());
+                            requestDetail.setAddZone_LocalDelete(infoDetail.get("ZDELETE").toString());
+
+
+                            requestDetail.setRep_Open(infoDetail.get("ROPEN").toString());
+                            requestDetail.setRep_Save(infoDetail.get("RSAVE").toString());
+                            requestDetail.setAddZone_LocalDelete(infoDetail.get("RDELETE").toString());
+
+
+
+                            requestDetail.setZoneRep_Open(infoDetail.get("ZTOPEN").toString());
+                            requestDetail.setZoneRep_Save(infoDetail.get("ZTSAVE").toString());
+                            requestDetail.setZoneRep_LocalDelete(infoDetail.get("ZTDELETE").toString());
+                            requestDetail.setZoneRep_UpdateQty(infoDetail.get("ZTUPDATEQTY").toString());
+
+
+                            requestDetail.setStockTake_Open(infoDetail.get("STOPEN").toString());
+                            requestDetail.setStockTake_Save(infoDetail.get("STSAVE").toString());
+                            requestDetail.setStockTake_LocalDelete(infoDetail.get("STDELETE").toString());
+                            requestDetail.setStockTake_UpdateQty(infoDetail.get("STUPDATEQTY").toString());
+
+
+                            requestDetail.setSetting_Per(infoDetail.get("OSETTINGS").toString());
+                            requestDetail.setExport_Per(infoDetail.get("OEXPORT").toString());
+                            requestDetail.setImport_Per(infoDetail.get("OIMPORT").toString());
+                            requestDetail.setSH_RepOpen(infoDetail.get("RSHIPMENT").toString());
+
+                            requestDetail.setST_RepOpen(infoDetail.get("RSTOCKTAKE").toString());
+
+                            UserPermissions.add(requestDetail);
+                            Log.e("here UserPermissions"," UserPermissions");
+                        }
+
+
+                    }
+                    catch (JSONException e) {
+//                        progressDialog.dismiss();
+                        Log.e("JSONException", e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    Login.UserperRespons.setText("USERNO");
+                } else {
+                    Login. UserperRespons.setText("NetworkError");
+                }
+
+
+            } else {
+                Login.  UserperRespons.setText("NetworkError");
+            }
+        }
+    }
 }
 
 

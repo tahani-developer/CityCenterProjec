@@ -19,4 +19,6 @@ public interface UserPermissionsDao  {
 
     @Query("SELECT * FROM UserPermissions_TABLE WHERE UserNO= :usernum")
     UserPermissions getUserPermissions(String usernum);
+    @Query("DELETE FROM UserPermissions_TABLE")
+    void deleteall();
 }

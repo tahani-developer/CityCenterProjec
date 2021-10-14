@@ -72,8 +72,27 @@ public class UserPermissions {
 
     @ColumnInfo(name = "ZoneRep_UpdateQty")
     String ZoneRep_UpdateQty;
-    @ColumnInfo(name = "CONO")
-    String  CONO;
+    @ColumnInfo(name = "CONO1")
+    String  CONO1;
+    @ColumnInfo(name = "CONO2")
+    String  CONO2;
+    @ColumnInfo(name = "CONO3")
+    String  CONO3;
+    @ColumnInfo(name = "CONO4")
+    String  CONO4;
+    @ColumnInfo(name = "CONO5")
+    String  CONO5;
+    @ColumnInfo(name = "CONO6")
+    String  CONO6;
+    @ColumnInfo(name = "CONO7")
+    String  CONO7;
+    @ColumnInfo(name = "CONO8")
+    String  CONO8;
+    @ColumnInfo(name = "CONO9")
+    String  CONO9;
+    @ColumnInfo(name = "CONO10")
+    String  CONO10;
+
 
     @ColumnInfo(name = "UserActive")
     String UserActive;
@@ -159,12 +178,84 @@ public class UserPermissions {
         return UserName;
     }
 
-    public String getCONO() {
-        return CONO;
+    public String getCONO1() {
+        return CONO1;
     }
 
-    public void setCONO(String CONO) {
-        this.CONO = CONO;
+    public void setCONO1(String CONO1) {
+        this.CONO1 = CONO1;
+    }
+
+    public String getCONO2() {
+        return CONO2;
+    }
+
+    public void setCONO2(String CONO2) {
+        this.CONO2 = CONO2;
+    }
+
+    public String getCONO3() {
+        return CONO3;
+    }
+
+    public void setCONO3(String CONO3) {
+        this.CONO3 = CONO3;
+    }
+
+    public String getCONO4() {
+        return CONO4;
+    }
+
+    public void setCONO4(String CONO4) {
+        this.CONO4 = CONO4;
+    }
+
+    public String getCONO5() {
+        return CONO5;
+    }
+
+    public void setCONO5(String CONO5) {
+        this.CONO5 = CONO5;
+    }
+
+    public String getCONO6() {
+        return CONO6;
+    }
+
+    public void setCONO6(String CONO6) {
+        this.CONO6 = CONO6;
+    }
+
+    public String getCONO7() {
+        return CONO7;
+    }
+
+    public void setCONO7(String CONO7) {
+        this.CONO7 = CONO7;
+    }
+
+    public String getCONO8() {
+        return CONO8;
+    }
+
+    public void setCONO8(String CONO8) {
+        this.CONO8 = CONO8;
+    }
+
+    public String getCONO9() {
+        return CONO9;
+    }
+
+    public void setCONO9(String CONO9) {
+        this.CONO9 = CONO9;
+    }
+
+    public String getCONO10() {
+        return CONO10;
+    }
+
+    public void setCONO10(String CONO10) {
+        this.CONO10 = CONO10;
     }
 
     public void setUserName(String userName) {

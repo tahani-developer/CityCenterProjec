@@ -575,7 +575,7 @@
             />
 
         <Button
-            android:id="@+id/ST_delete"
+            android:id="@+id/ST_deletebtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

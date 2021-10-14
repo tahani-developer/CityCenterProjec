@@ -55,6 +55,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
@@ -114,7 +115,7 @@ Button AddZonesave;
     public String UserNo;
     public  String deviceId="";
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
-    private UserPermissions userPermissions;
+
     private Animation animation;
    Button AD_nextZone;
     @Override
@@ -123,6 +124,8 @@ Button AddZonesave;
         setContentView(R.layout.activity_add_zone);
 
         initial();
+        ChecksavePermissition();
+        CheckDeletePermissition();
         editQty.setEnabled(false);
       UserNo=my_dataBase.settingDao().getUserNo();
         AD_nextZone.setEnabled(false);
@@ -421,8 +424,7 @@ Button AddZonesave;
                 {
                     if(editable.toString().trim().equals("exported"))
                     {
-                        showSweetDialog(AddZone.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
-                        //saveDataLocaky(1);
+                         //saveDataLocaky(1);
                         showSweetDialog(AddZone.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
                         updateRowsPosted();
                         listZone.clear();
@@ -2580,7 +2582,7 @@ private void checkLocalList(){
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals("123")&&pass.getText().toString().trim().equals("123"))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                      if(enterflage==1)
                     openDeleteZoneDailog();
@@ -2591,14 +2593,14 @@ private void checkLocalList(){
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals("123"))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
                     }
                     else {
-
-                    } pass.setError(getResources().getString(R.string.invalid_password));
+                        pass.setError(getResources().getString(R.string.invalid_password));
+                    }
                 }
             }
         });
@@ -2664,7 +2666,7 @@ List<String> list=new ArrayList<>();
         searchdialog.show();
 
     }
-  /*  @Override
+    @Override
     protected void onPause() {
         Log.e("onPause","onPause");
         super.onPause();
@@ -2674,20 +2676,42 @@ List<String> list=new ArrayList<>();
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
 
-    }*/
+    }
 
-    private void CheckPermissitions() {
-        UserNo=my_dataBase.settingDao().getUserNo();
-        userPermissions=new UserPermissions();
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( UserNo);
+    private void ChecksavePermissition() {
+
 
         if( userPermissions!=null) {
-            if (userPermissions.getSHIP_Save().equals("0"))AddZonesave.setVisibility(View.GONE);
-            if (userPermissions.getSHIP_LocalDelete().equals("1")) {
-                delete.setEnabled(true);
+            if (userPermissions.getMasterUser().equals("0"))
+            { if (userPermissions.getAddZone_Save().equals("1"))
+                AddZonesave.setEnabled(true);
+            else
+                AddZonesave.setEnabled(false);
+            }
+            else
+                AddZonesave.setEnabled(true);
+
 
 
             } 
         }
+
+    private void CheckDeletePermissition() {
+        if( userPermissions!=null) {
+            if (userPermissions.getMasterUser().equals("0"))
+            { if (userPermissions.getAddZone_LocalDelete().equals("1"))
+            {
+                delete.setEnabled(true);
+
+            }
+            else
+                delete.setEnabled(false);
+            }
+            else {
+                delete.setEnabled(true);
+
+            }
+            }
+
     }
 }

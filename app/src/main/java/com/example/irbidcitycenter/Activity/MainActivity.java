@@ -52,6 +52,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
 import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle;
@@ -79,8 +80,7 @@ ImportData importData;
     public static TextView sh_res,zo_res,re_res;
     public static TextView itemrespons,    exportrespon,exportZonReprespon;
 public static    int   activityflage=1;
-    private String UserNo;
-    UserPermissions userPermissions;
+
   public    static  int Items_activityflage=1;
     //////
 
@@ -102,8 +102,8 @@ public static    int   activityflage=1;
 
 
     private boolean CheckViewSetting_Permissitions(){
-        userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
+
+
         if (userPermissions != null) {
 
 
@@ -115,31 +115,22 @@ public static    int   activityflage=1;
             return false;
 
     }
-    private boolean CheckSaveSetting_Permissitions() {
-        userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-       return true;
-    }
+
     private boolean CheckImportPermissitions() {
 
-        userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        if (userPermissions != null) {
-            if (userPermissions != null) {
-                if (userPermissions.getExport_Per().equals("0"))
-                    if (userPermissions.getImport_Per().equals("0"))
-                        if (userPermissions.getSetting_Per().equals("0")) {
+          if (userPermissions != null) {
 
-                        }
-            }}
-            return true;
+
+              if (userPermissions.getImport_Per().equals("1")) {
+                  return true;
+              }
+          }
+            return false;
 
     }
     private boolean CheckExportPermissitions() {
 
-        userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        if (userPermissions != null) {
+    if (userPermissions != null) {
             if (userPermissions.getExport_Per().equals("1"))
 
                 return true;
@@ -149,7 +140,30 @@ public static    int   activityflage=1;
 
 
     }
+    private boolean CheckviewShipmentRep() {
 
+        if (userPermissions != null) {
+            if (userPermissions.getSH_RepOpen().equals("1"))
+
+                return true;
+            else
+                return false;
+        } else return false;
+
+
+    }
+    private boolean CheckviewStocktakeRep() {
+
+        if (userPermissions != null) {
+            if (userPermissions.getST_RepOpen().equals("1"))
+
+                return true;
+            else
+                return false;
+        } else return false;
+
+
+    }
 
     private void initial() {
 
@@ -256,7 +270,7 @@ public static    int   activityflage=1;
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
                         hideProgressDialogWithTitle();
                  //   Toast.makeText(MainActivity.this,"gat all data",Toast.LENGTH_SHORT).show();
-                      showSweetDialog(MainActivity.this,2,"Done,All data is stored","");
+                      showSweetDialog(MainActivity.this,1,"Done,All data is stored","");
 
                     }
                     else     if (editable.toString().equals("nodata")) {
@@ -334,33 +348,79 @@ public static    int   activityflage=1;
             int id=v.getId();
            switch (id){
                case R.id.zoneLinear:
-                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   if(userPermissions.getAddZone_Open().equals("1"))
+                   {  animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                    zoneLinear.startAnimation(animation);
                    Intent intent =new Intent(MainActivity.this,AddZone.class);
-                   startActivity(intent);
+                   startActivity(intent);}
+                     else
+                   Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
                    break;
                case R.id.hipmentlinear:
-                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   if(userPermissions.getSHIP_Open().equals("1"))
+                   {  animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                    shipmentlinear.startAnimation(animation);
                    Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
                    startActivity(intent2);
-                   break;
+           }
+                     else
+            Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
+            break;
                case R.id.Replacmentlinear:
-                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                   replacmentlinear.startAnimation(animation);
-                   Intent intent3 =new Intent(MainActivity.this,Replacement.class);
-                   startActivity(intent3);
+                   if (userPermissions.getMasterUser().equals("0")) {
+
+                       if (userPermissions.getRep_Open().equals("1")) {
+                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                           replacmentlinear.startAnimation(animation);
+                           Intent intent3 = new Intent(MainActivity.this, Replacement.class);
+                           startActivity(intent3);
+                       } else
+                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                   }
+                   else
+                   {
+                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                       replacmentlinear.startAnimation(animation);
+                       Intent intent3 = new Intent(MainActivity.this, Replacement.class);
+                       startActivity(intent3);
+                   }
                    break;
                case R.id.Stocktakelinear:
-                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                   stocktakelinear.startAnimation(animation);
-                   Intent intent4 =new Intent(MainActivity.this, Stoketake.class);
-                   startActivity(intent4);
+                   if (userPermissions.getMasterUser().equals("0")) {
+                       if (userPermissions.getStockTake_Open().equals("1")) {
+                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                           stocktakelinear.startAnimation(animation);
+                           Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
+                           startActivity(intent4);
+                       } else
+                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                   }else {
+                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                       stocktakelinear.startAnimation(animation);
+                       Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
+                       startActivity(intent4);
+                   }
                    break;
                case R.id.zoneReplacmentlinear:
-                   Intent intent5 =new Intent(MainActivity.this, ZoneReplacment.class);
-                   startActivity(intent5);
-                   break;
+                   if (userPermissions.getMasterUser().equals("0")) {
+                       if (userPermissions.getZoneRep_Open().equals("1"))
+                       {
+                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                           zoneReplacmentlinear.startAnimation(animation);
+                           Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
+                           startActivity(intent5);
+                       } else
+                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                   }
+                   else {
+                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                       zoneReplacmentlinear.startAnimation(animation);
+                       Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
+                       startActivity(intent5);
+                   }
+                             break;
            }
         }
     };
@@ -387,58 +447,91 @@ public static    int   activityflage=1;
         Log.e("id", "onNavigationItemSelected " + id);
         switch (id) {
             case R.id.menu_setting: {
-
-                //  if(CheckViewSetting_Permissitions())
+                if (userPermissions.getMasterUser().equals("0"))
+                { if(CheckViewSetting_Permissitions())
                 {
                     Log.e("id", "menu_setting " + id);
                     drawerLayout.closeDrawer(navigationView);
                     openSettingDialog();
                 }
-                //  else
-                //      Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                  else
+                      Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
+            }else {
+                    Log.e("id", "menu_setting " + id);
+                    drawerLayout.closeDrawer(navigationView);
+                    openSettingDialog();
+                }
 
             }
             break;
             case R.id.menu_export: {
-                //   if(CheckExportPermissitions()==true)
+                if (userPermissions.getMasterUser().equals("0")){
+             if(CheckExportPermissitions()==true)
                 {
                     exportFromMainAct = true;
                     exportAllData();
                 }
-//else
-                //  Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+else
+                  Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
+            }else
+                {
+                    exportFromMainAct = true;
+                    exportAllData();
+                }
 
             }
+            ;
             break;
             case R.id.menu_import: {
-                // if(CheckImportPermissitions()==true)
-
-
-
-                getAllItems();
-
-
-
-
-
-
-           //    else
-              //     Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                if (userPermissions.getMasterUser().equals("0"))
+                    {
+                        if (CheckImportPermissitions() == true)
+                            getAllItems();
+                        else
+                            Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        getAllItems();
+                    }
                 break;
             }
 
                 case R.id.StocktakeReport: {
-                   Intent intent =new Intent(MainActivity.this,StockTakeReport.class);
-                    startActivity(intent);
+                    if (userPermissions.getMasterUser().equals("0")) {
+                        if (CheckviewStocktakeRep() == true) {
+                            Intent intent = new Intent(MainActivity.this, StockTakeReport.class);
+                            startActivity(intent);
+                        } else
+                            Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(MainActivity.this, StockTakeReport.class);
+                        startActivity(intent);
+                    }
                     break;
 
             }
             case R.id. shipmentReports: {
-                Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
-                startActivity(intent);
+                if (userPermissions.getMasterUser().equals("0")) {
+               if (CheckviewShipmentRep()==true)
+               {   Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
+                startActivity(intent);}
+               else
+                   Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+
+
                 break;
 
+            }else {
+                    Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
+                    startActivity(intent);
+                }
             }
+
         }
 
 
@@ -450,6 +543,7 @@ public static    int   activityflage=1;
         importData.getAllItems();
     }
     private void exportAllData() {
+        activityflage=1;
         List<ZoneModel> listZon=new ArrayList();
         ArrayList<Shipment> newShipmentList=new ArrayList();
         ArrayList<ReplacementModel> replacementList=new ArrayList();

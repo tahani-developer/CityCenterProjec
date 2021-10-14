@@ -22,6 +22,7 @@ import com.example.irbidcitycenter.RoomAllData;
 import java.text.BreakIterator;
 import java.util.List;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.Activity.Stoketake.getItemsSumQty;
 import static com.example.irbidcitycenter.Activity.Stoketake.getStoreSumQty;
 import static com.example.irbidcitycenter.Activity.Stoketake.getZoneSumQty;
@@ -55,7 +56,16 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
         holder.    qty.setTag(i);
         Log.e("tag:" ,holder. qty.getTag().toString());
 
+        if (userPermissions != null) {
+            if(userPermissions.getMasterUser().equals("0")){
+                if(userPermissions.getStockTake_UpdateQty().equals("0"))
+                    holder.   qty.setEnabled(false);
+                else     holder.  qty.setEnabled(true);
 
+            }
+            else   holder.    qty.setEnabled(true);
+
+        }
 
 
         holder.    qty.addTextChangedListener(new TextWatcher() {
@@ -124,22 +134,27 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
 
 
            ///
-     //       if(CheckUpdateQty_Permissitions()==true)
-                qty.setEnabled(true);
-      //      else  qty.setEnabled(false);
 
 
 
 
 
 
-        }}
-    private boolean CheckUpdateQty_Permissitions() {
+        }
 
+    }
+    private void CheckUpdateQty_Permissitions() {
 
-        String UserNo = my_dataBase.settingDao().getUserNo();
-        UserPermissions userPermissions = new UserPermissions();
-        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(UserNo);
-        return true;
+       /* if (userPermissions != null) {
+            if(userPermissions.getMasterUser().equals("0")){
+                if(userPermissions.getStockTake_UpdateQty().equals("0"))
+                    qty.setEnabled(false);
+                else    qty.setEnabled(true);
+
+            }
+            else    qty.setEnabled(true);
+
+        }*/
+
     }
 }
