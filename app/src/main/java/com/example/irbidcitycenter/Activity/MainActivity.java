@@ -21,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -39,6 +40,7 @@ import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.ReplenishmentReverseModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.UserPermissions;
@@ -65,11 +67,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     public static String SET_userNO;
     private Toolbar toolbar;
-    LinearLayout zoneLinear,shipmentlinear,replacmentlinear,stocktakelinear,zoneReplacmentlinear;
+    LinearLayout ReplacmentReverselinear,itemcheckerlinear,zoneLinear,shipmentlinear,replacmentlinear,stocktakelinear,zoneReplacmentlinear;
     public  String SET_qtyup;
     public appSettings settings;
     ExportData exportData;
     public static boolean exportFromMainAct=false;
+    public static boolean exportFromMainAct2=false;
     public static int setflage=-1;
     public static String COMPANYNO;
     private Animation animation;
@@ -82,9 +85,10 @@ ImportData importData;
 public static    int   activityflage=1;
 
   public    static  int Items_activityflage=1;
+    private TextView companyNum,  username_show;
     //////
 
-
+    public    static TextView RepRevExportsatate, addzoneexportstate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,7 @@ public static    int   activityflage=1;
 
 
         my_dataBase= RoomAllData.getInstanceDataBase(MainActivity.this);
+
         initial();
 
 
@@ -164,9 +169,40 @@ public static    int   activityflage=1;
 
 
     }
+    public void getUsernameAndpass() {
 
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
+
+    }
     private void initial() {
+      if( userPermissions==null)  getUsernameAndpass();
+        companyNum=findViewById(R.id.companyNum);
+        username_show=findViewById(R.id.username_show);
 
+
+        ReplacmentReverselinear=findViewById(R.id.ReplacmentReverselinear);
+        ReplacmentReverselinear.setOnClickListener(onClickListener);
+
+
+
+
+        itemcheckerlinear=findViewById(R.id.itemcheckerlinear);
         exportZonReprespon=findViewById(R.id.exportZonReprespon);
         exportrespon=findViewById(R.id.stocksrespon);
         itemrespons=findViewById(R.id.ST_itemrespons);
@@ -187,6 +223,7 @@ public static    int   activityflage=1;
         zoneLinear.setOnClickListener(onClickListener);
         shipmentlinear = findViewById(R.id.hipmentlinear);
         shipmentlinear.setOnClickListener(onClickListener);
+        itemcheckerlinear.setOnClickListener(onClickListener);
         stocktakelinear .setOnClickListener(onClickListener);
         zoneReplacmentlinear.setOnClickListener(onClickListener);
         replacmentlinear = findViewById(R.id.Replacmentlinear);
@@ -195,6 +232,8 @@ public static    int   activityflage=1;
         sh_res = findViewById(R.id.shipmentsrespon);
 
         re_res = findViewById(R.id.replashmentssrespon);
+        addzoneexportstate= findViewById(R.id.addzoneexportstate);
+
         exportZonReprespon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -213,7 +252,7 @@ public static    int   activityflage=1;
                     if (editable.toString().trim().equals("exported")) {
                         my_dataBase.zoneReplashmentDao().setposted();
 
-                        showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+
 
                     } else {
 
@@ -287,6 +326,8 @@ public static    int   activityflage=1;
 
 
 
+
+
                 }
             }
         });
@@ -339,6 +380,38 @@ public static    int   activityflage=1;
                     }    }
             }
         });
+        RepRevExportsatate =findViewById(R.id.RepRevExportsatate);
+        RepRevExportsatate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().length()!=0) {
+                    if ( editable.toString().trim().equals("exported")) {
+                        my_dataBase.repReversDao().updateReplashmentPosted();
+                        showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                    }    }
+            }
+        });
+
+try {
+    String comNo=my_dataBase.settingDao().getCono().trim();
+    if(comNo!=null) companyNum.setText(comNo);
+
+    String UName=my_dataBase.userPermissionsDao().getUSERnAM(my_dataBase.settingDao().getUserNo());
+    if(UName!=null)  username_show.setText(UName);
+}catch (Exception e){
+
+}
+
     }
 
 
@@ -348,79 +421,111 @@ public static    int   activityflage=1;
             int id=v.getId();
            switch (id){
                case R.id.zoneLinear:
-                   if(userPermissions.getAddZone_Open().equals("1"))
-                   {  animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                    zoneLinear.startAnimation(animation);
-                   Intent intent =new Intent(MainActivity.this,AddZone.class);
-                   startActivity(intent);}
-                     else
-                   Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                   if( userPermissions==null) getUsernameAndpass();
+                   if(userPermissions.getAddZone_Open().equals("1"))
+                   {
 
+
+                       Intent intent =new Intent(MainActivity.this,AddZone.class);
+                   startActivity(intent);
+
+
+                   }
+                     else {
+                       if( userPermissions==null) getUsernameAndpass();
+                       if(userPermissions.getMasterUser().equals("1")){
+                           Intent intent =new Intent(MainActivity.this,AddZone.class);
+                           startActivity(intent);
+
+                       }else
+                           showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
+                   }
                    break;
                case R.id.hipmentlinear:
-                   if(userPermissions.getSHIP_Open().equals("1"))
-                   {  animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   if( userPermissions==null) getUsernameAndpass();
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                    shipmentlinear.startAnimation(animation);
-                   Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
+
+                   if(userPermissions.getSHIP_Open().equals("1"))
+                   {        Intent intent2 =new Intent(MainActivity.this,NewShipment.class);
                    startActivity(intent2);
            }
                      else
-            Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                   if(userPermissions.getMasterUser().equals("1")){
+                       Intent intent =new Intent(MainActivity.this,NewShipment.class);
+                       startActivity(intent);
 
-            break;
+                   }else
+                       showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
+
+                   break;
                case R.id.Replacmentlinear:
-                   if (userPermissions.getMasterUser().equals("0")) {
+                   if( userPermissions==null) getUsernameAndpass();
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   replacmentlinear.startAnimation(animation);
 
+                   if (userPermissions.getMasterUser().equals("0")) {
+                       Log.e("(userPerm",userPermissions.getRep_Open());
                        if (userPermissions.getRep_Open().equals("1")) {
-                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                           replacmentlinear.startAnimation(animation);
-                           Intent intent3 = new Intent(MainActivity.this, Replacement.class);
+
+                               Intent intent3 = new Intent(MainActivity.this, Replacement.class);
                            startActivity(intent3);
                        } else
-                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                           showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                    }
                    else
                    {
-                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                       replacmentlinear.startAnimation(animation);
-                       Intent intent3 = new Intent(MainActivity.this, Replacement.class);
+                      Intent intent3 = new Intent(MainActivity.this, Replacement.class);
                        startActivity(intent3);
                    }
                    break;
                case R.id.Stocktakelinear:
+                   if( userPermissions==null) getUsernameAndpass();
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   stocktakelinear.startAnimation(animation);
+
                    if (userPermissions.getMasterUser().equals("0")) {
                        if (userPermissions.getStockTake_Open().equals("1")) {
-                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                           stocktakelinear.startAnimation(animation);
-                           Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
+                            Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
                            startActivity(intent4);
                        } else
-                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                           showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                    }else {
-                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                       stocktakelinear.startAnimation(animation);
-                       Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
+                             Intent intent4 = new Intent(MainActivity.this, Stoketake.class);
                        startActivity(intent4);
                    }
                    break;
                case R.id.zoneReplacmentlinear:
+                   if( userPermissions==null) getUsernameAndpass();
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   zoneReplacmentlinear.startAnimation(animation);
+
                    if (userPermissions.getMasterUser().equals("0")) {
                        if (userPermissions.getZoneRep_Open().equals("1"))
                        {
-                           animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                           zoneReplacmentlinear.startAnimation(animation);
-                           Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
+                             Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
                            startActivity(intent5);
                        } else
-                           Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                           showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                    }
                    else {
-                       animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                       zoneReplacmentlinear.startAnimation(animation);
-                       Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
+                         Intent intent5 = new Intent(MainActivity.this, ZoneReplacment.class);
                        startActivity(intent5);
                    }
                              break;
+               case  R.id.itemcheckerlinear:
+
+                   Intent intent9 = new Intent(MainActivity.this,ItemChecker.class);
+                   startActivity(intent9);
+
+             break;
+             case R.id.ReplacmentReverselinear:
+                 animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                 ReplacmentReverselinear   .startAnimation(animation);
+                   Intent intent10 = new Intent(MainActivity.this,ReplenishmentReverse.class);
+                   startActivity(intent10);
            }
         }
     };
@@ -439,7 +544,17 @@ public static    int   activityflage=1;
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
+        // if(keyCode==KeyEvent.KEYCODE_BACK || keyCode==KeyEvent.KEYCODE_HOME||keyCode==KeyEvent.KEYCODE_SWITCH_CHARSET){
+        Log.e("onKeyDown==",keyCode+"");
+        if( keyCode==KeyEvent.KEYCODE_BACK){
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -447,6 +562,7 @@ public static    int   activityflage=1;
         Log.e("id", "onNavigationItemSelected " + id);
         switch (id) {
             case R.id.menu_setting: {
+                if( userPermissions==null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0"))
                 { if(CheckViewSetting_Permissitions())
                 {
@@ -455,9 +571,10 @@ public static    int   activityflage=1;
                     openSettingDialog();
                 }
                   else
-                      Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                    showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
 
-            }else {
+
+                }else {
                     Log.e("id", "menu_setting " + id);
                     drawerLayout.closeDrawer(navigationView);
                     openSettingDialog();
@@ -466,6 +583,7 @@ public static    int   activityflage=1;
             }
             break;
             case R.id.menu_export: {
+                if( userPermissions==null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0")){
              if(CheckExportPermissitions()==true)
                 {
@@ -473,9 +591,9 @@ public static    int   activityflage=1;
                     exportAllData();
                 }
 else
-                  Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                 showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
 
-            }else
+                }else
                 {
                     exportFromMainAct = true;
                     exportAllData();
@@ -485,12 +603,13 @@ else
             ;
             break;
             case R.id.menu_import: {
+                if( userPermissions==null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0"))
                     {
                         if (CheckImportPermissitions() == true)
                             getAllItems();
                         else
-                            Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                            showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                     }
                     else
                     {
@@ -500,12 +619,13 @@ else
             }
 
                 case R.id.StocktakeReport: {
+                    if( userPermissions==null) getUsernameAndpass();
                     if (userPermissions.getMasterUser().equals("0")) {
                         if (CheckviewStocktakeRep() == true) {
                             Intent intent = new Intent(MainActivity.this, StockTakeReport.class);
                             startActivity(intent);
                         } else
-                            Toast.makeText(MainActivity.this, "No Permissitions", Toast.LENGTH_SHORT).show();
+                            showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                     }
                     else
                     {
@@ -516,22 +636,26 @@ else
 
             }
             case R.id. shipmentReports: {
+                if( userPermissions==null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0")) {
                if (CheckviewShipmentRep()==true)
                {   Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
                 startActivity(intent);}
                else
-                   Toast.makeText(MainActivity.this,"No Permissitions",Toast.LENGTH_SHORT).show();
+                   showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
 
 
-                break;
+                    break;
 
             }else {
                     Intent intent =new Intent(MainActivity.this,ShipmentsReport.class);
                     startActivity(intent);
-                }
-            }
 
+                }
+                break;   }
+            case R.id.logout:
+                Intent intent =new Intent(MainActivity.this,Login.class);
+                startActivity(intent);
         }
 
 
@@ -549,18 +673,21 @@ else
         ArrayList<ReplacementModel> replacementList=new ArrayList();
         List<StocktakeModel> StoktakeList=new ArrayList();
         List<ZoneReplashmentModel>zoneReplacmentList=new ArrayList<>();
+        List<ReplenishmentReverseModel>ReplacmentReversList=new ArrayList<>();
         List<Shipment> listShipment;
         List<ReplacementModel>listReplasment;
       activityflage=1;
+        exportFromMainAct2=true;
         listZon=my_dataBase.zoneDao().getUnpostedZone("0");
         listShipment=my_dataBase.shipmentDao().getUnpostedShipment("0");
         listReplasment=my_dataBase.replacementDao().getUnpostedReplacement("0");
         StoktakeList=my_dataBase.stocktakeDao().getall();
+        ReplacmentReversList=my_dataBase.repReversDao().getallReplacement();
         zoneReplacmentList=my_dataBase.zoneReplashmentDao().getAllZonesUnposted();
         newShipmentList=(ArrayList<Shipment>) listShipment;
 
         replacementList=(ArrayList<ReplacementModel>)listReplasment ;
-        exportData.exportAllUnposted(listZon,newShipmentList,replacementList,  StoktakeList,zoneReplacmentList);
+        exportData.exportAllUnposted(listZon,newShipmentList,replacementList,  StoktakeList,zoneReplacmentList,ReplacmentReversList);
 
     }
 
@@ -579,8 +706,8 @@ else
         final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
         final EditText usernum= dialog.findViewById(R.id.usernumber);
         final EditText deviceId= dialog.findViewById(R.id.deviceId);
-        usernum.setText(SET_userNO);
-        ip.setEnabled(false);
+      //  usernum.setText(SET_userNO);
+
         conNO.setEnabled(false);
         years.setEnabled(false);
         usernum.setEnabled(false);
@@ -616,7 +743,7 @@ else
                     cancelbutton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ip.setEnabled(false);
+
                             dialog1.dismiss();
                         }
                     });
@@ -639,6 +766,7 @@ else
             conNO.setText(appSettings.get(0).getCompanyNum());
             COMPANYNO=appSettings.get(0).getCompanyNum();
             years.setText(appSettings.get(0).getYears());
+            usernum.setText(appSettings.get(0).getUserNumber());
             if (appSettings.get(0).getUpdateQTY().equals("1"))
                 qtyUP.setChecked(true);
 
@@ -710,7 +838,7 @@ else
 
          my_dataBase.settingDao().insert(settings);
 
-            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule),"");
+            generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule2),"");
 
     }
     private void getDataZone() {

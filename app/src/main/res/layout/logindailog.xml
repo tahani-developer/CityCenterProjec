@@ -2,7 +2,7 @@
 <LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
-    android:layout_height="170dp"
+    android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -15,11 +15,33 @@
             android:layout_weight="1"
             />
         <TextView
-            android:id="@+id/cancel2"
+            android:id="@+id/log_cancel2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:drawableEnd="@drawable/ic_baseline_clear_24"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_marginStart="3dp"
+            app:srcCompat="@drawable/ic_baseline_account_circle_24"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+
+            android:text="Please enter your login information"
+            android:textAlignment="textStart"
+            android:textColor="@color/dark_blue_3" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -32,10 +54,10 @@
         android:background="@drawable/blue_border_rounded_cornwe">
         <!-- INPUT -->
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/log_usernum"
             android:layout_width="match_parent"
             android:inputType="number"
-           android:maxLines="1"
+            android:maxLines="1"
             android:padding="1dp"
             android:layout_height="match_parent"
             android:hint="UserNumber">
@@ -56,14 +78,14 @@
         android:background="@drawable/blue_border_rounded_cornwe">
         <!-- INPUT -->
         <EditText
-            android:id="@+id/pass"
+            android:id="@+id/log_pass"
             android:layout_width="match_parent"
             android:padding="1dp"
             android:maxLines="1"
             android:layout_height="match_parent"
             android:hint="password"
             android:inputType="numberPassword"
-        />
+            />
 
     </LinearLayout>
     <LinearLayout
@@ -82,12 +104,12 @@
             android:layout_gravity="center"
             />
         <Button
-            android:id="@+id/authentic"
+            android:id="@+id/log_authentic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="top|center"
-            android:gravity="top|center"
+            android:gravity="center"
             android:layout_margin="5dp"
             android:background="@drawable/loginbtn"
             android:fontFamily="@font/poppins_medium"

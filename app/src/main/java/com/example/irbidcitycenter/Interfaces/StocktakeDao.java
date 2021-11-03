@@ -48,13 +48,14 @@ List<StocktakeModel>getall();
 
     @Query("UPDATE STOCKTAKE_TABLE SET ISPOSTED= :poststate WHERE ISPOSTED='0'")
     void setposted(String poststate);
-    @Query ("select SUM(QTY) from STOCKTAKE_TABLE WHERE STORE= :Store AND ISPOSTED='0'")
+
+    @Query ("select SUM(CAST(QTY AS LONG)) from STOCKTAKE_TABLE WHERE STORE= :Store AND ISPOSTED='0'")
 long getStoreQty(String Store);
-    @Query ("select SUM(QTY) from STOCKTAKE_TABLE WHERE ZONECODE= :zonecode AND ISPOSTED='0'")
+    @Query ("select SUM(CAST(QTY AS LONG)) from STOCKTAKE_TABLE WHERE ZONECODE= :zonecode AND ISPOSTED='0'")
     long getZoneQty(String zonecode);
 
-    @Query ("select SUM(QTY) from STOCKTAKE_TABLE WHERE ISPOSTED='0'")
+    @Query ("select SUM(CAST(QTY AS LONG)) from STOCKTAKE_TABLE WHERE ISPOSTED='0'")
     long  getItemQty();
-    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date ")
+    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0'")
     List<StocktakeModel> getdateStoketakes (String date);
 }

@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
@@ -24,7 +25,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
         android:layout_weight="2"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
@@ -52,54 +55,87 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="match_parent"/>
 
 
         <EditText
-            android:id="@+id/DZRE_ZONEcode"
+            android:id="@+id/DRepRev_itemcode"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/back_border_edit"
             android:inputType="text"
             android:maxLines="1"
             android:padding="3dp"
-            android:hint="@string/ZoneCode"
+            android:hint="@string/itemCode"
             android:textCursorDrawable="@color/red"
             android:textColor="@color/dark_blue_3"
             android:textSize="14sp"
             android:layout_weight="1"
             />
 
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+
+        android:orientation="horizontal">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:orientation="horizontal">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+
+        android:orientation="horizontal">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
         <TextView
-            android:id="@+id/DZRE_zoneSearch"
+            android:layout_width="120dp"
+            android:textColor="@color/red"
 
-            android:onClick="showZoneDialog"
-            android:drawableStart="@drawable/ic_baseline_search_24"
-            android:layout_height="match_parent"
+            android:layout_height="match_parent"/>
+        <TextView
             android:layout_width="50dp"
-            android:gravity="top|left">
+            android:textColor="@color/red"
+            android:text="@string/oldqty"
+            android:layout_height="match_parent"/>
 
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
 
-        android:orientation="horizontal">
-    </LinearLayout>
+        <TextView
+            android:id="@+id/DRepRev_preQTY"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/back_border_edit"
+            android:inputType="text"
+            android:enabled="false"
+            android:maxLines="1"
+            android:padding="3dp"
+            android:textColor="@color/red"
+            android:textSize="14sp"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:orientation="horizontal">
+            />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
         <TableRow
@@ -119,7 +155,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:text="@string/Zone"
+                android:text="@string/itemCode"
                 android:textSize="15sp" />
             <TextView
 
@@ -144,6 +180,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.8"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         android:orientation="horizontal">
 
         <TableRow
@@ -151,10 +189,11 @@
             android:layout_height="match_parent"
             android:background="@drawable/back_border_dark"
             android:gravity="bottom"
+
             android:padding="3dp">
 
             <TextView
-                android:id="@+id/DZRE_zonecodeshow"
+                android:id="@+id/DRepRev_zonecodeshow"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@color/white"
@@ -165,7 +204,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/DZRE_qtyshow"
+                android:id="@+id/DRepRev_qtyshow"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
@@ -205,11 +244,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
         <Button
 
-            android:id="@+id/DZRE_dialogsave"
+            android:id="@+id/DRepRev_dialogsave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -225,8 +266,8 @@
             />
         <Button
 
-            android:id="@+id/DZRE_delete"
-            android:text="@string/deletezone"
+            android:id="@+id/DRepRev_delete"
+            android:text="@string/deleteitemt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

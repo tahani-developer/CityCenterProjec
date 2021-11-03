@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
-<TextView
+      <TextView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
@@ -74,10 +74,13 @@
             <!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="6"
+            android:id="@+id/companyLin"
+            android:visibility="invisible"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginTop="2dp"
@@ -90,24 +93,24 @@
                 android:gravity="center"
                 android:layout_marginTop="2dp"
                 android:orientation="horizontal">
-            <TextView
+                <TextView
 
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/selectCompany"
-                android:textColor="@color/text_color"
-                android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/selectCompany"
+                    android:textColor="@color/text_color"
+                    android:gravity="center"
 
-                android:layout_weight="2" />
-            <ImageView
-                android:id="@+id/companyName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:onClick="showCompanyDialog"
-                app:srcCompat="@drawable/ic_keyboard_arrow_down2"
-                android:layout_weight="3" />
-<!--                android:drawableStart="@drawable/ic_keyboard_arrow_down_black_24dp"-->
+                    android:layout_weight="2" />
+                <ImageView
+                    android:id="@+id/companyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:onClick="showCompanyDialog"
+                    app:srcCompat="@drawable/ic_keyboard_arrow_down2"
+                    android:layout_weight="3" />
+                <!--                android:drawableStart="@drawable/ic_keyboard_arrow_down_black_24dp"-->
 
             </LinearLayout>
             <TextView
@@ -127,13 +130,12 @@
 
 
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="62dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="62dp"
+            android:layout_marginRight="60dp"
             android:layout_weight="6.5"
             android:background="@drawable/blue_border_rounded_cornwe">
             <!-- INPUT -->
@@ -141,14 +143,14 @@
                 android:id="@+id/username_input"
                 android:layout_width="290dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="-14dp"
+
                 android:layout_toRightOf="@+id/username_icon"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/poppins_regular"
-                android:hint="UsernNme"
-                android:inputType="text"
+                android:hint="UserNum"
+                android:inputType="number"
                 android:maxLines="1"
-                android:padding="2dp"
+                android:padding="3dp"
 
                 android:textCursorDrawable="@drawable/cursor_color"
                 android:textSize="14sp" />
@@ -160,14 +162,41 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="17dp"
                 app:srcCompat="@drawable/ic_person_black_24dp" />
-        </RelativeLayout>
 
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="110dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="120dp"
+            android:layout_weight="6.5">
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_regular"
+                android:id="@+id/show_UN"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:textColor="@color/black"
+
+                android:padding="6dp"
+android:gravity="center"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="62dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="62dp"
+
+            android:layout_marginRight="60dp"
             android:layout_weight="6.5"
             android:background="@drawable/blue_border_rounded_cornwe">
             <!-- INPUT -->
@@ -179,10 +208,10 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/poppins_regular"
                 android:hint="Password"
-                android:inputType="textPassword"
+                android:inputType="numberPassword"
                 android:maxLength="10"
                 android:maxLines="1"
-               android:padding="2dp"
+               android:padding="3dp"
 
                 android:textCursorDrawable="@drawable/cursor_color"
                 android:textSize="14sp" />
@@ -196,10 +225,11 @@
                 app:srcCompat="@drawable/ic_baseline_vpn_key_24" />
         </RelativeLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="6.3"
             android:layout_gravity="top|center"
             android:gravity="top|center"
             android:layout_marginTop="10dp"

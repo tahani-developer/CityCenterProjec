@@ -38,8 +38,8 @@ public interface ReplacementDao {
 
     @Query("UPDATE REPLACEMENT_TABLE SET  ISPOSTED='1' WHERE ISPOSTED='0' ")
     void updateReplashmentPosted();
-    @Query("UPDATE REPLACEMENT_TABLE SET RECQTY = :qty WHERE ITEMCODE= :barcode AND ISPOSTED='0'" )
-    int updateQTY(String barcode,String qty);
+    @Query("UPDATE REPLACEMENT_TABLE SET RECQTY = :qty WHERE ITEMCODE= :barcode AND ISPOSTED='0' AND FROMSTORE= :FrSt AND TOSTORE= :ToSt" )
+    int updateQTY(String FrSt,String ToSt,String barcode,String qty);
 
     @Query("DELETE FROM REPLACEMENT_TABLE WHERE ITEMCODE= :barcode AND FROMSTORE= :FrSt AND TOSTORE= :ToSt AND ISPOSTED='0'")
     int  deleteReplacement(String barcode,String FrSt,String ToSt);

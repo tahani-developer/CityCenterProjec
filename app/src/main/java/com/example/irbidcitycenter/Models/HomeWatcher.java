@@ -17,7 +17,7 @@ public class HomeWatcher {
 
     public HomeWatcher(Context context) {
         mContext = context;
-        mFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        mFilter = new IntentFilter(Intent.ACTION_CALL);
     }
 
     public void setOnHomePressedListener(OnHomePressedListener listener) {
@@ -52,7 +52,8 @@ public class HomeWatcher {
                     Log.e(TAG, "action:" + action + ",reason:" + reason);
                     if (mListener != null) {
                         if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
-                            mListener.onHomePressed();
+                         mListener.onHomePressed();
+
                         } else if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
                             mListener.onHomeLongPressed();
                         }

@@ -29,6 +29,7 @@
     <color name="text_color">#25383C</color>
     <color name="white_two">#85E4DCDC</color>
     <color name="darkOrange2">#D8FFEB3B</color>
+    <color name="black">#000000</color>
 
 
 </resources>

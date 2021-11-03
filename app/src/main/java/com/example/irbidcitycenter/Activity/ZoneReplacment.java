@@ -88,7 +88,7 @@ TextView FromZoneName,ToZoneName;
     ZRDI_qtyshow,ZRDI_zoneshow, ZRDI_preQTY ;
 
     public List<ZoneReplashmentModel> ReducedItemlist =new ArrayList<>();
-    public  int sumOfQTY;
+    public  long sumOfQTY;
     public int pos_item_inreducelist;
     public static ArrayList<ZoneModel> ZR_listZone;
     public static ZoneAdapter adapter;
@@ -108,8 +108,8 @@ public static TextView ZR_itemkind;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_replacment);
         init();
-        ChecksavePermissition();
-        CheckdeletePermissition();
+        //ChecksavePermissition();
+
         fromzone.requestFocus();
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e(" UserNo==",UserNo+"k");
@@ -209,9 +209,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                                         if (ItemExistsLocal()) {
 
 
-                                            if (Integer.parseInt(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
+                                            if (Long.parseLong(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
                                                 Log.e("case1", "case1");
-                                                int x = Integer.parseInt(LocalZoneReps.get(localitempostion).getQty()) + 1;
+                                                long x = Long.parseLong(LocalZoneReps.get(localitempostion).getQty()) + 1;
                                                 LocalZoneReps.get(localitempostion).setQty(x + "");
                                                 my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
                                                 filladapter();
@@ -228,9 +228,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
 
                                             ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                             if (replashmentModel != null) {
-                                                if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
                                                     Log.e("case3", "case3");
-                                                    int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                                    long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                     replashmentModel.setQty(x + "");
                                                     my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                                     LocalZoneReps.add(replashmentModel);
@@ -259,8 +259,8 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                                         ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                         if (replashmentModel != null) {
                                             Log.e("case6", "case6");
-                                            if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
-                                                int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                            if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                 replashmentModel.setQty(x + "");
                                                 my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                                 LocalZoneReps.add(replashmentModel);
@@ -407,22 +407,68 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                     }).show();
                 break;
                 case R.id.ZR_delete:
+                    if( userPermissions==null) getUsernameAndpass();
                     animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
                     ZR_Delete.startAnimation(animation);
-                    OpenDeleteDailog();
+                    if (userPermissions.getMasterUser().equals("0")) {
+                        if (userPermissions.getZoneRep_LocalDelete().equals("1"))
+                            OpenDeleteDailog();
+                        else {
+
+                            new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.del_per))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            OpenDeleteDailog2();
+                                            sweetAlertDialog.dismiss();
+                                        }
+
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }else{
+                        OpenDeleteDailog();
+                    }
                     break;
                 case R.id.ZR_save:
+                    if( userPermissions==null) getUsernameAndpass();
                     animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
                   ZR_save.startAnimation(animation);
-                   if(LocalZoneReps.size()>0) exportdata();
-                   else
-                       generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+
+                    if(userPermissions.getMasterUser().equals("0")) {
+                        if (userPermissions.getZoneRep_Save().equals("1")) {
+                            if (LocalZoneReps.size() > 0) exportdata();
+                            else
+                                generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
 
 
-                    ZR_nextZone.setEnabled(false);
-                    ZR_nexttoZone.setEnabled(false);
-                    tozone.setEnabled(false);
-                    RZ_itemcode.setEnabled(false);
+                            ZR_nextZone.setEnabled(false);
+                            ZR_nexttoZone.setEnabled(false);
+                            tozone.setEnabled(false);
+                            RZ_itemcode.setEnabled(false);
+                        } else {
+                            generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+
+                        }
+                    }  else{
+                            if(LocalZoneReps.size()>0) exportdata();
+                            else
+                                generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
+
+
+                            ZR_nextZone.setEnabled(false);
+                            ZR_nexttoZone.setEnabled(false);
+                            tozone.setEnabled(false);
+                            RZ_itemcode.setEnabled(false);
+                        }
                     break;
             }
 
@@ -526,9 +572,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                                     if (ItemExistsLocal()) {
 
 
-                                        if (Integer.parseInt(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
+                                        if (Long.parseLong(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
                                             Log.e("case1", "case1");
-                                            int x = Integer.parseInt(LocalZoneReps.get(localitempostion).getQty()) + 1;
+                                            long x = Long.parseLong(LocalZoneReps.get(localitempostion).getQty()) + 1;
                                             LocalZoneReps.get(localitempostion).setQty(x + "");
                                             my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
                                             filladapter();
@@ -545,9 +591,9 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
 
                                         ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                         if (replashmentModel != null) {
-                                            if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                            if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
                                                 Log.e("case3", "case3");
-                                                int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                                long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                 replashmentModel.setQty(x + "");
                                                 my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                                 LocalZoneReps.add(replashmentModel);
@@ -576,8 +622,8 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                                     ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                     if (replashmentModel != null) {
                                         Log.e("case6", "case6");
-                                        if (Integer.parseInt(replashmentModel.getRecQty()) > getQTYOFItem()) {
-                                            int x = Integer.parseInt(replashmentModel.getQty()) + 1;
+                                        if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                            long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                             replashmentModel.setQty(x + "");
                                             my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                             LocalZoneReps.add(replashmentModel);
@@ -619,8 +665,29 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
     };
 
 
-    private void init() {
+    public void getUsernameAndpass() {
 
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
+
+    }
+    private void init() {
+        if( userPermissions==null)  getUsernameAndpass();
         DBZoneReps.clear();
       LocalZoneReps.clear();
         ZR_itemkind=findViewById(R.id.ZR_itemkind);
@@ -791,7 +858,7 @@ try {
                     Log.e("afterTextChanged",ZR_respon.getText().toString());
                     if (ZR_respon.getText().toString().equals("QTY"))
                     {
-                        if(Integer.parseInt(listQtyZone.get(0).getQty())>0)
+                        if(Long.parseLong(listQtyZone.get(0).getQty())>0)
                         {
                             {   try {
                              //   importData.getKindItem2(RZ_itemcode.getText().toString().trim());
@@ -949,6 +1016,52 @@ try {
 
 
     }
+    private void  OpenDeleteDailog2(){
+
+
+        final Dialog dialog = new Dialog(ZoneReplacment.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.deletelayout);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        Button deletezone=dialog.findViewById(R.id.deletezone);
+        Button deleteitem=dialog.findViewById(R.id.deleteitem);
+        zones=new ArrayList<>();
+        deletezone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deletedZonsList.clear();
+
+                authenticDailog2(1);
+
+            }
+        });
+
+        deleteitem.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View view) {
+                                              getzonefromDB();
+
+
+                                              authenticDailog2(2);
+
+                                          }
+                                      }
+        );
+
+        dialog.findViewById(R.id.dialogcancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
     private void authenticDailog(int enterflage) {
         authenticationdialog = new Dialog( ZoneReplacment.this);
         authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -969,8 +1082,7 @@ try {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
-                {
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))        {
                     if(enterflage==1)
                         openDeleteZoneDailog();
                     else
@@ -980,7 +1092,7 @@ try {
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserNO()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
@@ -988,6 +1100,59 @@ try {
                     else {
                         pass.setError(getResources().getString(R.string.invalid_password));
                     }
+                }
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticationdialog.dismiss();
+            }
+        });
+        authenticationdialog.show();
+    }
+    private void authenticDailog2(int enterflage) {
+        authenticationdialog = new Dialog( ZoneReplacment.this);
+        authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        authenticationdialog.setCancelable(false);
+        authenticationdialog.setContentView(R.layout.authentication);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(authenticationdialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        authenticationdialog.getWindow().setAttributes(lp);
+
+        Button button= authenticationdialog.findViewById(R.id.authentic);
+        TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
+        UsNa= authenticationdialog.findViewById(R.id.username);
+        UsNa.requestFocus();
+
+        EditText pass= authenticationdialog.findViewById(R.id.pass);
+        pass.setEnabled(true);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String isMaster ="";
+                if(!UsNa.getText().toString().trim().equals("")&&!pass.getText().toString().trim().equals("")) {
+                    isMaster = my_dataBase.userPermissionsDao().getIsMaster(UsNa.getText().toString().trim(), pass.getText().toString().trim());
+
+                    if ( isMaster!=null &&isMaster.equals("1")) {
+                        if(enterflage==1)
+                        {  openDeleteZoneDailog();  authenticationdialog.dismiss();}
+                    else {
+                            openDeleteitemDailog();
+                            authenticationdialog.dismiss();
+                        }
+
+                }else{
+                        generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.Permission), "");
+
+                    }
+                }
+                else {
+
+                    UsNa.setError(getResources().getString(R.string.required));
+                    pass.setError(getResources().getString(R.string.required));
+
                 }
             }
         });
@@ -1049,7 +1214,7 @@ try {
                                         ZR_DZzonebarecodehow.setText(  ZR_DZzonecode.getText().toString());
 
                                         //set qty of zone
-                                        int sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
+                                        long sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
                                         ZR_DZqtyshow.setText(sumqty + "");
 
 
@@ -1509,7 +1674,7 @@ try {
                                     ZRDI_preQTY.setText(x);
 
 
-                                    sumOfQTY = Integer.parseInt(zones2.get(ind).getQty()) ;
+                                    sumOfQTY = Long.parseLong(zones2.get(ind).getQty()) ;
                                     if(  sumOfQTY >1) {
                                         sumOfQTY -= 1;
                                         // oldQTY.setText( sumOfQTY+"" );
@@ -1899,8 +2064,8 @@ ZRDI_itemcodeshow.setText("");
         }}
         return  flage;
     }
-int getQTYOFItem(){
-      int sum=  my_dataBase.zoneReplashmentDao().getQTYofItem(fromzone.getText().toString(),RZ_itemcode.getText().toString());
+    long getQTYOFItem(){
+    long sum=  my_dataBase.zoneReplashmentDao().getQTYofItem(fromzone.getText().toString(),RZ_itemcode.getText().toString());
         return sum;
     }
    @Override
@@ -1921,7 +2086,8 @@ int getQTYOFItem(){
             if(userPermissions.getMasterUser().equals("0")) {
                 if (userPermissions.getZoneRep_Save().equals("0"))
                     ZR_save.setEnabled(false);
-                else ZR_save.setEnabled(true);
+                else
+                    ZR_save.setEnabled(true);
             }
             else
                 ZR_save.setEnabled(true);

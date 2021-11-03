@@ -131,6 +131,9 @@ public class StockTakeReport extends AppCompatActivity {
         }
         else
         {
+            searchlist=new ArrayList<>();
+            fillAdapterData(searchlist);
+            total_qty_text.setText("");
             //tableRow.setVisibility(View.GONE);
 
           //  STR_search_edt.setText("");
@@ -154,6 +157,7 @@ public class StockTakeReport extends AppCompatActivity {
         return date;
     }
     private void updateLabel(int flag) {
+
         String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
@@ -166,9 +170,9 @@ public class StockTakeReport extends AppCompatActivity {
         listView.setAdapter(reportAdapter);
     }
     private void CalculateSum(List<StocktakeModel> Stocktakslist){
-        int sum=0;
+        long sum=0;
         for(int i = 0; i< Stocktakslist.size(); i++)
-            sum+=Integer.parseInt(Stocktakslist.get(i).getQty());
+            sum+=Long.parseLong(Stocktakslist.get(i).getQty());
 
         total_qty_text.setText(sum+"");
     }

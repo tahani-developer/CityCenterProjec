@@ -159,7 +159,7 @@ public  class ShipmentAdapter extends RecyclerView.Adapter<ShipmentAdapter.Shipm
                              if (  list.get(position).getIsNew().equals("0")) {// ITEM IS NOT NEW ==0
                                 oldqty = localList.get(position).getQty();
                                 olddif = localList.get(position).getDiffer();
-                                sum += Integer.parseInt(oldqty);
+                                sum += Long.parseLong(oldqty);
                                 Log.e("newqty", newqty);
                                 localList.get(position).setQty(newqty);
 

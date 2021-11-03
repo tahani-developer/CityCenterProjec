@@ -54,7 +54,16 @@
 
     </group>
 
+    <group android:id="@+id/group3">
 
+        <item
+            android:id="@+id/logout"
+            android:title="@string/logout"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_info_outline_black_24dp"/>
+
+
+    </group>
 
     <group android:id="@+id/group2">
 
@@ -66,4 +75,6 @@
 
 
     </group>
+
+
 </menu>

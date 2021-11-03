@@ -3,6 +3,7 @@
     <string name="NewShipment">New Shipment</string>
     <string name="Zone">Zone</string>
     <string name="Replacement">Replenishment</string>
+    <string name="ReplacementReverse">Replenishment Reverse</string>
     <string name="setting">Setting</string>
     <string name="about">About</string>
     <string name="signout">signout</string>
@@ -28,7 +29,7 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_username">Not a valid user number</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="login_failed">"Login failed"</string>
     <string name="ZoneCode">Zone Code</string>
@@ -38,7 +39,7 @@
     <string name="notvaildqty2">There is no enough quantity in </string>
     <string name="reqired_filled">*Reqired</string>
     <string name="savedSuccsesfule">Saved Succsesfule</string>
-
+    <string name="savedSuccsesfule2">Settings Saved Succsesfule</string>
     <string name="barcodeexists">invalid itemcode</string>
     <string name="boxnovalidate">boxNO does not exists in this PO</string>
     <string name="pono">PoNo</string>
@@ -77,6 +78,7 @@ This box is not available in this PO, do you want to add it? </string>
 This barcode is not available in this PO, do you want to add it? </string>
     <string name="messageExit">Are You Sure To Exit ?</string>
     <string name="messageExit2">all data saved locally, Are You Sure To Exit ?</string>
+    <string name="messageExit3">Are You Sure To Exit ?</string>
     <string name="ok">OK</string>
     <string name="warning">Warning</string>
     <string name="fillYourList">Fill Your List !!</string>
@@ -85,7 +87,7 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
     <string name="edit"> Edit Ip Address</string>
-    <string name="version">v 1.7</string>
+    <string name="version">v 3.9</string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
     <string name="Login">Login</string>
@@ -124,6 +126,8 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="scanedqty">Scaned Qty</string>
     <string name="storeqty">store Qty</string>
     <string name="StockTake">Stock Take</string>
+
+    <string name="itemcheck"> Item Checker</string>
     <string name="Itemkind">Item Kind</string>
     <string name="saleprice">Sale Price</string>
     <string name="aviqty">AVI Qty</string>
@@ -143,5 +147,42 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="zonetype">FromZone and ToZone are not of the same category</string>
     <string name="Msg1"> Item Tabel is Empty, do you want import Items?</string>
     <string name="Permission">Sorry, No Permission To Enter</string>
+    <string name="savePermission">Sorry, No Permission To Save Data</string>
     <string name="activeuser">Sorry, No Permission (Not Active User)</string>
+    <string name="userexists"> This user is not recognized</string>
+    <string name="del_per">Sorry, No Permission To Enter ,Are you want to enter as MasterUser?</string>
+
+
+    <string name="F_D"> F_D</string>
+    <string name="LASTSPRICE"> LASTS PRICE</string>
+    <string name="BUYERGGROUP"> BUY ERGGROUP</string>
+    <string name="DIVISION"> DIVISION</string>
+    <string name="SUBDIVISION"> SUB DIVISION</string>
+    <string name="CLASS">CLASS</string>
+    <string name="SSIZE"> SSIZE</string>
+    <string name="SEASON"> SEASON</string>
+    <string name="STYLECODE"> STYLE CODE</string>
+    <string name="SECTION"> SECTION</string>
+    <string name="BRANDNAME"> BRAND NAME</string>
+    <string name="COLORNAME"> COLOR NAME</string>
+    <string name="LENGTH">LENGTH</string>
+    <string name="ZONE">ZONE</string>
+    <string name="SHELF"> SHELF</string>
+    <string name="COLORCODE"> COLOR CODE</string>
+    <string name="TAXPERC"> TAX PERC</string>
+    <string name="LLCPRICE"> TAX PERC</string>
+
+    <string name="AVGCOST"> AVG COST </string>
+
+    <string name="username"> username:</string>
+    <string name="perMsg">  You don\'t have permission,
+        but you can login if you enter the correct password</string>
+
+    <string name="logout"> LogOut</string>
+
+
+    <string name="stockNum" >stock No</string>
+    <string name="stockName" >stock Name</string>
+
+
 </resources>

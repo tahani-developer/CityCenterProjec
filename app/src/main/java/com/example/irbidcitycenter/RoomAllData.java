@@ -11,8 +11,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.irbidcitycenter.Interfaces.ItemDao;
+import com.example.irbidcitycenter.Interfaces.RepReversDao;
 import com.example.irbidcitycenter.Interfaces.ReplacementDao;
 import com.example.irbidcitycenter.Interfaces.ReplashmentLogsDao;
+import com.example.irbidcitycenter.Interfaces.ReplashmentReversLogsDao;
 import com.example.irbidcitycenter.Interfaces.SettingDao;
 import com.example.irbidcitycenter.Interfaces.ShipmentDao;
 import com.example.irbidcitycenter.Interfaces.ShipmentLogsDao;
@@ -28,6 +30,8 @@ import com.example.irbidcitycenter.Interfaces.ZoneReplashmentDao;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.ReplashmentLogs;
+import com.example.irbidcitycenter.Models.ReplashmentReversLogs;
+import com.example.irbidcitycenter.Models.ReplenishmentReverseModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ShipmentLogs;
 import com.example.irbidcitycenter.Models.StocktakeLogs;
@@ -41,7 +45,7 @@ import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
 import com.example.irbidcitycenter.Models.appSettings;
 
 
-@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class, StocktakeModel.class,StocktakeLogs.class, AllItems.class, Store.class, ZoneReplashmentModel.class, ZoneRepLogs.class, UserPermissions.class}, version = 35,exportSchema = false)
+@Database(entities =  {ZoneModel.class, Shipment.class, ReplacementModel.class, appSettings.class, ZoneLogs.class, ShipmentLogs.class, ReplashmentLogs.class, StocktakeModel.class,StocktakeLogs.class, AllItems.class, Store.class, ZoneReplashmentModel.class, ZoneRepLogs.class, UserPermissions.class, ReplenishmentReverseModel.class, ReplashmentReversLogs.class}, version = 40,exportSchema = false)
 public abstract class RoomAllData extends RoomDatabase  {
     private  static  RoomAllData database;
     public  static  String dataBaseName="DBRoomIrbidCenter";
@@ -59,6 +63,8 @@ public abstract class RoomAllData extends RoomDatabase  {
     public abstract ZoneReplashmentDao zoneReplashmentDao();
     public abstract ZoneRepLogsDao zoneRepLogsDao();
     public abstract UserPermissionsDao userPermissionsDao();
+    public abstract RepReversDao repReversDao();
+    public abstract ReplashmentReversLogsDao replashmentReversLogsDao();
     static final Migration MIGRATION_1_2 = new Migration(19, 21) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {

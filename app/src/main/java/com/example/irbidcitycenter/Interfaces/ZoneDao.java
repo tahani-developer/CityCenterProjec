@@ -79,8 +79,8 @@ public interface ZoneDao {
     @Query("DELETE FROM ZONETABLE WHERE ITEMCODE= :barcode AND ISPOSTED='0'")
     public int  deleteitem(String barcode);
 
-    @Query("SELECT SUM(QTYZONE) FROM ZONETABLE WHERE ZONECODE= :barcode AND ISPOSTED='0'")
-    public int  GetQtyOfZone(String barcode);
+    @Query("SELECT SUM(CAST(QTYZONE AS LONG)) FROM ZONETABLE WHERE ZONECODE= :barcode AND ISPOSTED='0'")
+    public  long  GetQtyOfZone(String barcode);
     @Query("SELECT ZONENAME FROM ZONETABLE WHERE ZONECODE= :barcode")
    public String GetNameOfZone(String barcode);
 
@@ -90,8 +90,8 @@ public interface ZoneDao {
     @Query("SELECT DISTINCT ITEMCODE FROM ZONETABLE WHERE ISPOSTED='0'")
     public List <String>getallitems();
 
-    @Query ("select SUM(QTYZONE) from ZONETABLE WHERE ITEMCODE= :itemcode AND ISPOSTED='0'")
-    int getsumofqty(String itemcode);
+    @Query ("select SUM(CAST(QTYZONE AS LONG)) from ZONETABLE WHERE ITEMCODE= :itemcode AND ISPOSTED='0'")
+    long getsumofqty(String itemcode);
 
     @Query ("select * from ZONETABLE WHERE ZONECODE= :zonecode AND ISPOSTED='0'")
     List<ZoneModel> getzoneRows(String zonecode);

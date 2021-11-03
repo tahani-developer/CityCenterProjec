@@ -8,11 +8,62 @@
     android:orientation="vertical"
     tools:context=".Activity.ShipmentsReport">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".2"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:text="@string/pono"
+            android:gravity="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/PONUMBER"
+            android:layout_width="115dp"
+            android:layout_height="match_parent"
+            android:inputType="date"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/add_button"
+
+            android:textSize="12sp"
+ />
+        <EditText
+
+            android:layout_width="30dp"
+            android:visibility="invisible"
+            android:layout_height="match_parent"
+            android:inputType="date"
+            android:textColor="@color/add_button"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/PONO_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+
+            android:textSize="14sp"
+            android:background="@drawable/done_button"
+            android:text="@string/preview"
+            android:textColor="@color/white" />
+
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_weight=".2"
         android:orientation="horizontal">
 
         <TextView

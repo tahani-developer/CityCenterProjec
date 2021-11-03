@@ -94,7 +94,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
                     if((editable.toString().trim().length()!=0)&&(!position.toString().trim().equals("")))
                     {
-                        if(!qty.getText().toString().trim().equals("0") &&Integer.parseInt(qty.getText().toString().trim())!=0)
+                        if(!qty.getText().toString().trim().equals("0") &&Long.parseLong(qty.getText().toString().trim())!=0)
                         {
 
                             updateQtyList(editable.toString().trim(),position);

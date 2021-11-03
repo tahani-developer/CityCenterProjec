@@ -56,16 +56,32 @@ public interface ShipmentDao {
     @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED='0' AND PONO= :po")
  Shipment getlastShipment(String po);
 
+    @Query ("select * from SHIPMENT_TABLE WHERE ISPOSTED='0' AND PONO= :po")
+    List<Shipment> getlastShipments(String po);
+
     @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE)")
     Shipment getlastbox();
 
     @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po")
     List<Shipment> getPOShipments(String po);
 
-    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE PONO= :po")
-   int getsumofqty(String po);
-    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po")
-    int getsumofboxitemsqty(String po,String box);
+    @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED= '0'")
+    List<Shipment> getShipmentsbyPONO(String po);
+
+    @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED= '0'")
+   long getsumofqty(String po);
+
+    ////////
+    @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po AND ISPOSTED= '0'")
+    long getsumofboxitemsqty(String po,String box);
+
+    //////////
+    ///
+    @Query ("select SUM(CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
+    long getsumofitemsqty(String po);
+    //
+    @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po")
+    long getsumofboxitemsqty2(String po,String box);
 
     @Query("Delete from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
     void deleteshipment(String barcode,String po,String box);
@@ -77,8 +93,7 @@ public interface ShipmentDao {
     public List<String> getallpo();
     @Query ("select  Count(DISTINCT BOXNO) from SHIPMENT_TABLE  WHERE ISPOSTED='0' AND PONO= :po")
     String getboxescount(String po);
-    @Query ("select SUM(QTY) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
-    String getsumofitemsqty(String po);
+
     @Query("Delete from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED='0'")
     void deletePO(String po);
 
@@ -86,7 +101,7 @@ public interface ShipmentDao {
     int deleteBox(String po,String box);
     @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
     List<Shipment> getBoxsShipments(String po,String box);
-    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :date")
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :date AND ISPOSTED='0'")
     List<Shipment> getdateshipments(String date);
 
 }

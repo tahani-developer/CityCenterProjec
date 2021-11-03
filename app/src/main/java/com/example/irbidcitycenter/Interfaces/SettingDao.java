@@ -37,6 +37,8 @@ public interface SettingDao {
 
     @Query ("update SETTINGS_TABLE set  COMPANYNO=:cono ")
     void  updateCompanyInfo(String cono);
+    @Query ("update SETTINGS_TABLE set USERNO=:usnu ")
+    void  updateusernum(String usnu);
 
     @Query ("select USERNO from SETTINGS_TABLE")
     String getUserNo();

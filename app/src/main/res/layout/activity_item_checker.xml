@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity.ItemChecker">
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-   android:layout_weight="9"
+        android:layout_weight="8"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/stockqrtRes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+        </TextView>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,8 +33,9 @@
             android:text="@string/itemCode"
             android:textColor="@color/dark_blue_3"
             android:textSize="14sp" />
+
         <EditText
-            android:id="@+id/ITC_itemcodeedt"
+            android:id="@+id/ItC_itemcode"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="5dp"
@@ -54,306 +64,1286 @@
             android:visibility="invisible" />
 
     </LinearLayout>
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:background="@drawable/shap"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="3dp"
 
             android:layout_margin="5dp"
-            android:layout_weight=".99"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:textColor="@color/dark_blue_3"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                android:layout_gravity="center"/>
-      <TextView
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:text="Item details"
-          android:padding="2dp"
-          android:textColor="@color/dark_blue_3"
-          android:textStyle="bold"
-          android:layout_weight="1"
-          android:textSize="20sp"
-          android:layout_gravity="center|bottom"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:textColor="@color/dark_blue_3"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                android:layout_gravity="center"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:layout_margin="5dp"
-            android:layout_weight=".99"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:text="@string/Itemname"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/ITC_itemname"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/back_without_border"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/qtyrespon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:layout_margin="5dp"
-            android:layout_weight=".99"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:text="@string/Itemkind"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/ITC_itemkind"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/back_without_border"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp"
-                android:visibility="invisible" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:text="@string/saleprice"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/ITC_saleprice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/back_without_border"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp"
-                android:visibility="invisible" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:text="@string/aviqty"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/ITC_qty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/back_without_border"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textColor="@color/dark_blue_3"
-                android:textSize="14sp"
-                android:visibility="invisible" />
-
-            <TextView
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:elevation="2dp"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="3dp"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_weight=".5"
-            android:layout_height="match_parent">
-
+            android:orientation="horizontal">
         </LinearLayout>
 
-</LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.2"
+
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="@color/dark_blue_3"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|bottom"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:text="Item details"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/Itemname"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_ITEMNAME1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/qtyrespon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/TAXPERC"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_TAXPERC"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/saleprice"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/SALEPRICE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/AVGCOST"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/itemRES"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/ITC_AVGCOST"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/LLCPRICE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_LLCPRICE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/F_D"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_F_D"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/LASTSPRICE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_LASTSPRICE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/BUYERGGROUP"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_BUYERGGROUP"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/DIVISION"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_DIVISION"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/SUBDIVISION"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_SUBDIVISION"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/CLASS"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_CLASS"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/SSIZE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_SSIZE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/SEASON"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_SEASON"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/STYLECODE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_STYLECODE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/SECTION"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_SECTION"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/BRANDNAME"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_BRANDNAME"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/COLORNAME"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_COLORNAME"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/LENGTH"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_LENGTH"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/COLORCODE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_COLORCODE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/ZONE"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_ZONE"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/SHELF"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_SHELF"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_weight=".5">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="50dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/dark_blue_3"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/stockNum"
+                            android:textColor="@color/white"
+
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/stockName"
+                            android:textColor="@color/white"
+
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Qty"
+                            android:textColor="@color/white"
+
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/stockQty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/shap2">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:layout_weight=".5">
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+
+            android:layout_margin="5dp"
+            android:layout_weight=".5"
+            android:orientation="horizontal">
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="9"
+        android:layout_weight="8"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintHorizontal_bias="1.0"

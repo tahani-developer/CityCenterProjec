@@ -12,6 +12,7 @@
     <string name="to">إلى</string>
     <string name="pono">رقم الطلبية</string>
     <string name="savedSuccsesfule">تم الحفظ بنجاح</string>
+    <string name="savedSuccsesfule2">تم الحفظ الإعدادات بنجاح</string>
     <string name="Poqty">الكمية الأصلية</string>
     <string name="notvaildqty">لا توجد كمية كافية</string>
     <string name="action_sign_in_short">تسجيل دخول</string>
@@ -27,7 +28,7 @@
     <string name="signout">تسجيل خروج</string>
     <string name="CONO">رقم الشركة</string>
     <string name="action_sign_in">تسجيل دخول</string>
-    <string name="invalid_username">اسم مستخدم غير صالح</string>
+    <string name="invalid_username">رقم مستخدم غير صالح</string>
     <string name="invalid_password">رقم سري غير صالح</string>
     <string name="enter_password">ادخل كلمة المرور</string>
     <string name="app_done">تم</string>
@@ -36,6 +37,7 @@
     <string name="Zone">المنطقة </string>
     <string name="NewShipment">شحنة جديدة</string>
     <string name="Replacement">تزويد</string>
+    <string name="ReplacementReverse">Replenishment Reverse</string>
     <string name="login">تسجيل دخول</string>
     <string name="nextBox">الصندوق التالي</string>
     <string name="confirm">Are you sure you want to select this entry?</string>
@@ -69,6 +71,7 @@
 
     <string name="itemqty">كمية المادة</string>
     <string name="messageExit2">تم حفظ البيانات، هل تريد الخروج؟</string>
+    <string name="messageExit3">هل تريد الخروج؟</string>
     <string name="errorsaving">لم يتم الحفظ</string>
     <string name="searchhere">أبحث هنا</string>
     <string name="boxsnumber">عدد الصناديق</string>
@@ -107,6 +110,8 @@
     <string name="scanedqty">Scaned Qty</string>
     <string name="storeqty">store Qty</string>
     <string name="StockTake">StockTake</string>
+
+    <string name="itemcheck"> Item Checker</string>
     <string name="Itemkind">نوع المادة</string>
     <string name="saleprice">Sale Price</string>
     <string name="aviqty">AVI Qty</string>

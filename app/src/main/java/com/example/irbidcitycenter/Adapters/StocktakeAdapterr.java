@@ -34,7 +34,7 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
     private Context context; //context
     private List<StocktakeModel> items; //data source of the list adapter
     public RoomAllData my_dataBase;
-
+    List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     public StocktakeAdapterr(Context context, List<StocktakeModel> items) {
         this.context = context;
         this.items = items;
@@ -55,7 +55,7 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
         holder.    qty.setText( items.get( i).getQty());
         holder.    qty.setTag(i);
         Log.e("tag:" ,holder. qty.getTag().toString());
-
+        if( userPermissions==null) getUsernameAndpass();
         if (userPermissions != null) {
             if(userPermissions.getMasterUser().equals("0")){
                 if(userPermissions.getStockTake_UpdateQty().equals("0"))
@@ -155,6 +155,28 @@ public  class StocktakeAdapterr extends RecyclerView.Adapter<StocktakeAdapterr.S
             else    qty.setEnabled(true);
 
         }*/
+
+    }
+
+    public void getUsernameAndpass() {
+
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
 
     }
 }

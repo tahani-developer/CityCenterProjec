@@ -7,10 +7,10 @@
                 android:endColor="@color/white_dark"
                 android:angle="270" />
             <stroke android:width="4dp"
-                android:color="@color/yelow"/>
+                android:color="@color/dark_blue_3"/>
 
             <corners
-                android:radius="25dp" />
+                android:radius="0dp" />
 
         </shape>
     </item>

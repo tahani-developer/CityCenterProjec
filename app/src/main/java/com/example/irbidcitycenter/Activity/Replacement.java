@@ -69,6 +69,7 @@ import static com.example.irbidcitycenter.Activity.AddZone.validItem;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 import static com.example.irbidcitycenter.Activity.AddZone.flage3;
+import static com.example.irbidcitycenter.ImportData.zoneinfo;
 public class Replacement extends AppCompatActivity {
     boolean saved = false;
     int position;
@@ -121,7 +122,7 @@ public class Replacement extends AppCompatActivity {
   List<String>DB_zone;
     EditText UsNa;
     public static EditText   DIRE_ZONEcode, DIRE_itemcode;
-    private UserPermissions userPermissions;
+
 
     Button Re_delete;
     private Animation animation;
@@ -132,8 +133,9 @@ public class Replacement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replacement);
         init();
-        ChecksavePermissition();
-        CheckdeletePermissition();
+        actvityflage=1;
+    //    ChecksavePermissition();
+        //CheckdeletePermissition();
         Storelist.clear();
         Storelist=  my_dataBase.storeDao().getall();
 
@@ -150,6 +152,10 @@ public class Replacement extends AppCompatActivity {
      if( Storelist.size()==0)
           {getStors();
            Log.e("sss4","sss4");}
+
+
+
+
 
         zone.setEnabled(true);
         zone.requestFocus();
@@ -239,39 +245,100 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         Re_delete .setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            if( userPermissions==null) getUsernameAndpass();
             animation = AnimationUtils.loadAnimation(Replacement.this, R.anim.modal_in);
             Re_delete.startAnimation(animation);
+            if (userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getRep_LocalDelete().equals("1"))
+                    OpenDeleteDailog();
+                else{
 
-            OpenDeleteDailog();
+
+                    new SweetAlertDialog(Replacement.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText(getResources().getString(R.string.confirm_title))
+                            .setContentText(getResources().getString(R.string.del_per))
+                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    OpenDeleteDailog2();
+                                    sweetAlertDialog.dismiss();
+                                }
+
+                            })
+                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
+            }else{
+                OpenDeleteDailog();
+            }
+
         }
     });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if( userPermissions==null) getUsernameAndpass();
                 animation = AnimationUtils.loadAnimation(Replacement.this, R.anim.modal_in);
                 save.startAnimation(animation);
-if(     replacementlist.size()>0)
-{  fromSpinner.setEnabled(true);
-                toSpinner.setEnabled(true);
 
 
-                UnPostedreplacementlist=my_dataBase.replacementDao().getallReplacement();
+                if (userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getRep_Save().equals("1")) {
+                        if (replacementlist.size() > 0) {
+                            fromSpinner.setEnabled(true);
+                            toSpinner.setEnabled(true);
 
-                for(int i=0;i<  UnPostedreplacementlist.size();i++)
-                    if( UnPostedreplacementlist.get(i).getDeviceId()==null) UnPostedreplacementlist.get(i).setDeviceId(deviceId);
+
+                            UnPostedreplacementlist = my_dataBase.replacementDao().getallReplacement();
+
+                            for (int i = 0; i < UnPostedreplacementlist.size(); i++)
+                                if (UnPostedreplacementlist.get(i).getDeviceId() == null)
+                                    UnPostedreplacementlist.get(i).setDeviceId(deviceId);
+
+                            MainActivity.exportFromMainAct = false;
+                            exportData();
+                            zone.setEnabled(true);
+                            zone.requestFocus();
+
+                            zone.setText("");
+                            itemcode.setText("");
+                        } else {
+                            generalMethod.showSweetDialog(Replacement.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+                        }
+
+                    }else{
+                        generalMethod.showSweetDialog(Replacement.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+
+                    }
+                }else{
+                    if (replacementlist.size() > 0) {
+                        fromSpinner.setEnabled(true);
+                        toSpinner.setEnabled(true);
 
 
-                exportData();
-                    zone.setEnabled(true);
-                    zone.requestFocus();
+                        UnPostedreplacementlist = my_dataBase.replacementDao().getallReplacement();
 
-           zone.setText("");
-               itemcode.setText("");}
-else {
-    generalMethod.showSweetDialog(Replacement.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
-}
+                        for (int i = 0; i < UnPostedreplacementlist.size(); i++)
+                            if (UnPostedreplacementlist.get(i).getDeviceId() == null)
+                                UnPostedreplacementlist.get(i).setDeviceId(deviceId);
 
+                        MainActivity.exportFromMainAct = false;
+                        exportData();
+                        zone.setEnabled(true);
+                        zone.requestFocus();
+
+                        zone.setText("");
+                        itemcode.setText("");
+                    } else {
+                        generalMethod.showSweetDialog(Replacement.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+                    }
+                }
             }
         });
 
@@ -372,6 +439,46 @@ else {
 
 
     }
+    private void  OpenDeleteDailog2(){
+
+
+        final Dialog dialog = new Dialog(Replacement.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.deletelayout);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        Button deletezone=dialog.findViewById(R.id.deletezone);
+        Button deleteitem=dialog.findViewById(R.id.deleteitem);
+
+        deletezone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticDailog2(2);
+            }
+        });
+
+        deleteitem.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View view) {
+
+                                              authenticDailog2(1);
+                                          }
+                                      }
+        );
+
+        dialog.findViewById(R.id.dialogcancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
     private void authenticDailog(int enterflage) {
 
 
@@ -396,8 +503,7 @@ else {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
-                {
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))   {
                     if(enterflage==1)
                         openDeleteitemDailog();
                     else  if(enterflage==2)   openDeleteZoneDailog();
@@ -406,7 +512,7 @@ else {
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserNO()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
@@ -415,6 +521,72 @@ else {
                         pass.setError(getResources().getString(R.string.invalid_password));
                     }
                 }
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticationdialog.dismiss();
+            }
+        });
+        authenticationdialog.show();
+
+
+    }
+
+    private void authenticDailog2(int enterflage) {
+
+
+        authenticationdialog = new Dialog(Replacement.this);
+        authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        authenticationdialog.setCancelable(false);
+        authenticationdialog.setContentView(R.layout.authentication);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(authenticationdialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        authenticationdialog.getWindow().setAttributes(lp);
+
+        authenticationdialog.show();
+
+        Button button= authenticationdialog.findViewById(R.id.authentic);
+        TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
+        UsNa= authenticationdialog.findViewById(R.id.username);
+        UsNa.requestFocus();
+
+        EditText pass= authenticationdialog.findViewById(R.id.pass);
+        pass.setEnabled(true);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                    String isMaster ="";
+                    if(!UsNa.getText().toString().trim().equals("")&&!pass.getText().toString().trim().equals("")) {
+                        isMaster = my_dataBase.userPermissionsDao().getIsMaster(UsNa.getText().toString().trim(), pass.getText().toString().trim());
+
+                        if ( isMaster!=null &&isMaster.equals("1")) {
+                            if(enterflage==1)
+                            {    openDeleteitemDailog();
+                                authenticationdialog.dismiss();
+
+                            }
+                    else  if(enterflage==2)  { openDeleteZoneDailog();
+                                authenticationdialog.dismiss();
+
+                    }
+
+
+                }
+                else {
+
+                            generalMethod.showSweetDialog(Replacement.this, 3, getResources().getString(R.string.Permission), "");
+
+                        }
+            }else {
+                        UsNa.setError(getResources().getString(R.string.required));
+                        pass.setError(getResources().getString(R.string.required));
+
+                    }
+
             }
         });
         cancelbutton.setOnClickListener(new View.OnClickListener() {
@@ -447,7 +619,7 @@ else {
         dialog.getWindow().setAttributes(lp);
     spinner=dialog.findViewById(R.id.DZRE_storespinner);
         for(int i=0;i< DB_replist.size();i++)
-          if(!DB_store.contains(DB_replist.get(i).getTo()))  DB_store.add(DB_replist.get(i).getTo());
+          if(!DB_store.contains(DB_replist.get(i).getToName()))  DB_store.add(DB_replist.get(i).getToName());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, DB_store);
         spinner.setAdapter(adapter);
@@ -456,6 +628,9 @@ else {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 DZRE_ZONEcode.setText("");
+                DZRE_qtyshow.setText("");
+                DZRE_zonecodeshow.setText("");
+
             }
 
             @Override
@@ -473,7 +648,7 @@ else {
             public void onClick(View view) {
                 DB_zone.clear();
                 for(int i=0;i< DB_replist.size();i++) {
-                    if (DB_replist.get(i).getTo().equals(spinner.getSelectedItem().toString())) {
+                    if (DB_replist.get(i).getTo().equals(spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")))) {
                         if (!DB_zone.contains(DB_replist.get(i).getZone()))
                             DB_zone.add(DB_replist.get(i).getZone());
                     }
@@ -497,7 +672,7 @@ else {
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     if(!DZRE_ZONEcode.getText().toString().equals(""))
                     {
-                        if(isExists(1,DZRE_ZONEcode.getText().toString().trim(),spinner.getSelectedItem().toString(),"")) {
+                        if(isExists(1,DZRE_ZONEcode.getText().toString().trim(),spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")),"")) {
                         DZRE_zonecodeshow.setText(DZRE_ZONEcode.getText().toString().trim());
 
            getqtyofDBzone();
@@ -557,7 +732,7 @@ else {
 ;
 
                                         for(int i=0;i< DB_replist.size();i++)
-                                       if(  spinner.getSelectedItem().toString().equals(DB_replist.get(i).getTo())&&
+                                       if( spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")).equals(DB_replist.get(i).getTo())&&
                                                DZRE_ZONEcode.getText().toString().trim().equals(DB_replist.get(i).getZone()))
                                        {
 
@@ -622,7 +797,7 @@ else {
 
                 for(int x=0;x< reducedqtyitemlist.size();x++)
             if(reducedqtyitemlist.get(x).getZone().equals(DIRE_ZONEcode.getText().toString().trim())&&
-                    reducedqtyitemlist.get(x).getTo().equals(spinner2.getSelectedItem().toString())
+                    reducedqtyitemlist.get(x).getTo().equals(spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")))
                     && reducedqtyitemlist.get(x).getItemcode().equals(DIRE_itemcodeshow.getText().toString().trim()))
                 {  f=true;
                     indexOfReduceditem =x;
@@ -667,11 +842,11 @@ else {
     }
 
     public static void getqtyofDBzone() {
-        int sum=0;
+       long sum=0;
         for(int x=0;x< DB_replist.size();x++)
-            if(DB_replist.get(x).getTo().equals(spinner.getSelectedItem().toString())&&
+            if(DB_replist.get(x).getTo().equals(spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")))&&
                     DB_replist.get(x).getZone().equals(DZRE_ZONEcode.getText().toString().trim()) )
-                sum+=Integer.parseInt(DB_replist.get(x).getRecQty());
+                sum+=Long.parseLong(DB_replist.get(x).getRecQty());
         DZRE_qtyshow.setText(sum+"");
     }
 
@@ -771,7 +946,7 @@ else {
             public void onClick(View view) {
                 DB_zone.clear();
                 for(int i=0;i< DB_replist.size();i++) {
-                    if (DB_replist.get(i).getTo().equals(spinner2.getSelectedItem().toString())) {
+                    if (DB_replist.get(i).getTo().equals(spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")))) {
                         if (!DB_zone.contains(DB_replist.get(i).getZone()))
                             DB_zone.add(DB_replist.get(i).getZone());
                     }
@@ -809,7 +984,7 @@ else {
             }
         });
         for(int i=0;i< DB_replist.size();i++)
-            if(!DB_store.contains(DB_replist.get(i).getTo()))  DB_store.add(DB_replist.get(i).getTo());
+            if(!DB_store.contains(DB_replist.get(i).getToName()))  DB_store.add(DB_replist.get(i).getToName());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, DB_store);
         spinner2.setAdapter(adapter);
@@ -824,7 +999,7 @@ else {
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                         if(!DIRE_ZONEcode.getText().toString().equals(""))
                         {
-                            if(isExists(1,DIRE_ZONEcode.getText().toString().trim(),spinner2.getSelectedItem().toString(),"")) {
+                            if(isExists(1,DIRE_ZONEcode.getText().toString().trim(),spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")),"")) {
                                 DIRE_itemcode.setEnabled(true);
                                 DIRE_itemcode.requestFocus();
 
@@ -853,12 +1028,12 @@ else {
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                         if(!DIRE_itemcode.getText().toString().equals(""))
                         {
-                           if(isExists(2,DIRE_ZONEcode.getText().toString().trim(),spinner2.getSelectedItem().toString(),DIRE_itemcode.getText().toString().trim()))
+                           if(isExists(2,DIRE_ZONEcode.getText().toString().trim(),spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")),DIRE_itemcode.getText().toString().trim()))
 
                             {
-                               int preqty= Integer.parseInt(getpreQty(spinner2.getSelectedItem().toString(),DIRE_ZONEcode.getText().toString().trim(),DIRE_itemcode.getText().toString().trim()));
+                               long preqty= Long.parseLong(getpreQty(spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")),DIRE_ZONEcode.getText().toString().trim(),DIRE_itemcode.getText().toString().trim()));
                                 DIRE_preQTY.setText(preqty+"");
-                                int sumqty=Integer.parseInt(DB_replist.get( indexDBitem ).getRecQty());
+                                long sumqty=Long.parseLong(DB_replist.get( indexDBitem ).getRecQty());
                                 if(sumqty>1){
 
                                     sumqty--;
@@ -886,6 +1061,7 @@ else {
                                                     DB_replist.get( indexDBitem ).setRecQty("0");
                                                     DIRE_preQTY.setText("1");
                                                     DIRE_qtyshow.setText("1");
+
                                                     DIRE_zoneshow.setText(DIRE_ZONEcode.getText().toString().trim());
                                                     DIRE_itemcodeshow.setText(DIRE_itemcode.getText().toString().trim());
 
@@ -895,7 +1071,7 @@ else {
                                                         reducedqtyitemlist.add( DB_replist.get(indexDBitem));
 
 
-                                                    DB_replist.remove(indexDBitem);
+                                                        DB_replist.remove(indexDBitem);
                                                     DIRE_itemcode.setText("");
                                                     DIRE_ZONEcode.setText("");
                                                     DIRE_qtyshow.setText("");
@@ -1055,10 +1231,11 @@ else {
             replashmentLogs.setStore(reducedqtyitemlist.get(i).getTo());
             replashmentLogs.setZoneCode(reducedqtyitemlist.get(i).getZone());
             replashmentLogs.setNewQty(reducedqtyitemlist.get(i).getRecQty());
+            replashmentLogs.setItemCode(reducedqtyitemlist.get(i).getItemcode());
+
             String preqty = getpreQty(reducedqtyitemlist.get(i).getTo(), reducedqtyitemlist.get(i).getZone(), reducedqtyitemlist.get(i).getItemcode());
             replashmentLogs.setPreQty(preqty);
-            replashmentLogs.setItemCode(reducedqtyitemlist.get(i).getItemcode());
-            replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
+              replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             replashmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
             replashmentLogs.setUserNO( UsNa.getText().toString());
             my_dataBase.replashmentLogsDao().insert(replashmentLogs);
@@ -1071,9 +1248,9 @@ else {
             replashmentLogs.setStore(deleted_DBzone.get(i).getTo());
             replashmentLogs.setZoneCode(deleted_DBzone.get(i).getZone());
             replashmentLogs.setNewQty("0");
-            replashmentLogs.setPreQty(deleted_DBzone.get(i).getRecQty());
             replashmentLogs.setItemCode(deleted_DBzone.get(i).getItemcode());
-            replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
+            replashmentLogs.setPreQty(deleted_DBzone.get(i).getRecQty());
+                replashmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
             replashmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
             replashmentLogs.setUserNO(UsNa.getText().toString());
             my_dataBase.replashmentLogsDao().insert(replashmentLogs);
@@ -1272,9 +1449,29 @@ else {
         }
 
     }
+    public void getUsernameAndpass() {
 
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
+
+    }
     private void init() {
-
+        if( userPermissions==null)  getUsernameAndpass();
         my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         replacementlist.clear();
         poststateRE = findViewById(R.id.poststatRE);
@@ -1289,7 +1486,9 @@ else {
         try {
             appSettings=my_dataBase.settingDao().getallsetting();
         }
-        catch (Exception e){}
+        catch (Exception e){
+
+        }
         Re_delete  =findViewById(R.id.Re_delete);
         fromSpinner = findViewById(R.id.fromspinner);
         toSpinner = findViewById(R.id.tospinner);
@@ -1440,7 +1639,7 @@ else {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
                     {
-                       if(Integer.parseInt(listQtyZone.get(0).getQty())>0)
+                       if(Long.parseLong(listQtyZone.get(0).getQty())>0)
                         {
                             try {
 
@@ -1602,12 +1801,12 @@ else {
                             Log.e("replacementFrom", replacement.getTo());
                             Log.e("AddInCaseDuplicates", "AddInCaseDuplicates");
                             //update qty in Duplicate case
-                            int sum = Integer.parseInt(replacementlist.get(position).getRecQty()) + Integer.parseInt("1");
+                            long sum = Long.parseLong(replacementlist.get(position).getRecQty()) + Long.parseLong("1");
                             Log.e("aaasum ", sum + "");
 
-                            if (sum <= Integer.parseInt(replacementlist.get(position).getQty())) {
+                            if (sum <= Long.parseLong(replacementlist.get(position).getQty())) {
                                 replacementlist.get(position).setRecQty((sum + ""));
-                                my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
+                                my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getFrom(),replacementlist.get(position).getTo(),replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
 
                                 zone.setEnabled(false);
                                 itemcode.setText("");
@@ -1711,12 +1910,12 @@ else {
                                     Log.e("replacementFrom", replacement.getTo());
                                     Log.e("AddInCaseDuplicates", "AddInCaseDuplicates");
                                     //update qty in Duplicate case
-                                    int sum = Integer.parseInt(replacementlist.get(position).getRecQty()) + Integer.parseInt("1");
+                                    long sum = Long.parseLong(replacementlist.get(position).getRecQty()) + Long.parseLong("1");
                                     Log.e("aaasum ", sum + "");
 
-                                    if (sum <= Integer.parseInt(replacementlist.get(position).getQty())) {
+                                    if (sum <= Long.parseLong(replacementlist.get(position).getQty())) {
                                         replacementlist.get(position).setRecQty((sum + ""));
-                                        my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
+                                        my_dataBase.replacementDao().updateQTY(replacementlist.get(position).getFrom(),replacementlist.get(position).getTo(),replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
 
                                         zone.setEnabled(false);
                                         itemcode.setText("");
@@ -1816,14 +2015,16 @@ return  false;
             recqty.setError("required");
         else {
 
-       if(Itemcode.toString().trim().length()<=15)
+     if(!CaseDuplicates(replacement))
+     {
+         if(Itemcode.toString().trim().length()<=15)
        { replacement.setRecQty(Qty);
             replacement.setUserNO(UserNo);
             Log.e("replacement","1=="+qty.getText().toString());
             replacement.setQty( listQtyZone.get(0).getQty());
             Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
-            replacement.setUserNO(getusernum());
+            replacement.setUserNO(UserNo);
             replacement.setDeviceId(deviceId);
             replacement.setReplacementDate(generalMethod.getCurentTimeDate(1) + "");
              Log.e("else","AddInCaseDuplicates");
@@ -1841,6 +2042,17 @@ return  false;
        }
             }
 
+     else{
+         itemcode.setError("InValid");
+         itemcode.setText("");
+         itemcode.setEnabled(true);
+         itemcode.requestFocus();
+
+     }
+
+
+        }
+
 
 
 
@@ -1857,7 +2069,7 @@ return  false;
             if (itemcode.getText().toString().trim().equals(listQtyZone.get(i).getItemCode().trim())
                     && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
                 {
-                    listQtyZone.get(i).setQty(Integer.parseInt(listQtyZone.get(i).getQty()) -Integer.parseInt( Qty)+"");
+                    listQtyZone.get(i).setQty(Long.parseLong(listQtyZone.get(i).getQty()) -Long.parseLong( Qty)+"");
                     d=listQtyZone.get(i).getQty();
                 }
             }}
@@ -1943,7 +2155,7 @@ return  false;
             Log.e("checkQtyValidate","for");
             if (itemcode.getText().toString().trim().equals(listQtyZone.get(i).getItemCode().trim())
                     && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
-                if (Integer.parseInt(recqty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
+                if (Long.parseLong(recqty) <= Long.parseLong(listQtyZone.get(i).getQty()))
                 {
 
                     return true;
@@ -1997,6 +2209,14 @@ return  false;
                 else
                 Re_delete.setEnabled(true);}
             else   Re_delete.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if ( zoneinfo!=null && zoneinfo.isShowing() ){
+            zoneinfo.cancel();
         }
     }
 }

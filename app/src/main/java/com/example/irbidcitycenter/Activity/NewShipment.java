@@ -17,6 +17,7 @@ import android.net.http.DelegatingSSLSession;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -31,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -164,8 +166,9 @@ public class NewShipment extends AppCompatActivity {
         UserNo=my_dataBase.settingDao().getUserNo();
         Log.e("usenumber", UserNo);
         init();
-        checkFinishPermission();
-        checkDeletePermission();
+        next.setEnabled(false);
+      //  checkFinishPermission();
+        //checkDeletePermission();
         fillLastBoxinfo();
 
 // my_dataBase.shipmentDao().deleteALL();
@@ -240,27 +243,81 @@ public class NewShipment extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if( userPermissions==null) getUsernameAndpass();
                 animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
                 save.startAnimation(animation);
-if(localList.size()!=0) {
-    shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
-    Log.e("shipmentsListsize", shipmentsList.size() + "");
-    for(int i=0;i< shipmentsList.size();i++)
-        if(shipmentsList.get(i).getDeviceId()==null)shipmentsList.get(i).setDeviceId(deviceId);
-    exportData(shipmentsList);
 
-    localList.clear();
-    shipmentsList.clear();
-    next.setEnabled(false);
-}
-else
-{
 
-        generalMethod.showSweetDialog(NewShipment.this,3,getResources().getString(R.string.warning),getResources().getString(R.string.fillYourList));
 
-}
-               if(adapter!=null) adapter.notifyDataSetChanged();
+
+                if(userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getSHIP_Save().equals("1")) {
+
+                        if (localList.size() != 0) {
+                            shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
+                            Log.e("shipmentsListsize", shipmentsList.size() + "");
+                            for (int i = 0; i < shipmentsList.size(); i++)
+                                if (shipmentsList.get(i).getDeviceId() == null)
+                                    shipmentsList.get(i).setDeviceId(deviceId);
+                            exportData(shipmentsList);
+
+                            localList.clear();
+                            shipmentsList.clear();
+                            PoQTY.setText("");
+                            itemname.setText("");
+                            next.setEnabled(false);
+                        } else {
+
+                            generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+
+                        }
+                        if (adapter != null) adapter.notifyDataSetChanged();
+                        pono.setText("");
+                        pono.setEnabled(true);
+                        pono.requestFocus();
+                        boxno.setText("");
+                        barcode.setText("");
+                        boxno.setEnabled(false);
+                        barcode.setEnabled(false);
+                        qty.setEnabled(false);
+                        PoQTY.setText("");
+                        itemname.setText("");
+                        ////
+
+                        searchView1.setEnabled(true);
+                        importData.BoxNolist.clear();
+                        importData.POdetailslist.clear();
+                        clearPOinfo();
+                        clearLastBoxinfo();
+
+                    }
+                  else {
+                        generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.savePermission), "");
+
+                    }
+
+
+                }  else{
+                    if (localList.size() != 0) {
+                        shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
+                        Log.e("shipmentsListsize", shipmentsList.size() + "");
+                        for (int i = 0; i < shipmentsList.size(); i++)
+                            if (shipmentsList.get(i).getDeviceId() == null)
+                                shipmentsList.get(i).setDeviceId(deviceId);
+                        exportData(shipmentsList);
+
+                        localList.clear();
+                        shipmentsList.clear();
+                        PoQTY.setText("");
+                        itemname.setText("");
+                        next.setEnabled(false);
+
+                    } else {
+
+                        generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+
+                    }
+                    if (adapter != null) adapter.notifyDataSetChanged();
                     pono.setText("");
                     pono.setEnabled(true);
                     pono.requestFocus();
@@ -271,9 +328,18 @@ else
                     qty.setEnabled(false);
                     ////
 
-                searchView1.setEnabled(true);
-                importData.BoxNolist.clear();
-                importData.POdetailslist.clear();
+                    searchView1.setEnabled(true);
+                    importData.BoxNolist.clear();
+                    importData.POdetailslist.clear();
+                    PoQTY.setText("");
+                    itemname.setText("");
+                    clearPOinfo();
+                    clearLastBoxinfo();
+
+                }
+
+
+
 
 
             }
@@ -296,7 +362,8 @@ else
                 qty.setText("1");
                 qty.setEnabled(false);
                 ////
-
+                PoQTY.setText("");
+                itemname.setText("");
                 searchView2.setEnabled(true);
                 localList.clear();
 if(adapter!=null)           adapter.notifyDataSetChanged();
@@ -373,10 +440,42 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
         Ship_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if( userPermissions==null) getUsernameAndpass();
                 animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
                 Ship_delete.startAnimation(animation);
+                if (userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getSHIP_LocalDelete().equals("1")) {
+                        OpenDeleteDailog();
 
-                OpenDeleteDailog();
+                    }
+                    else{
+
+
+                        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.del_per))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        OpenDeleteDailog2();
+                                        sweetAlertDialog.dismiss();
+                                    }
+
+                                })
+                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                })
+                                .show();
+
+
+                    }
+                }else
+                {
+                    OpenDeleteDailog();
+                }
             }
         });
 
@@ -453,6 +552,46 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
        });
 
     }
+
+    public void OpenDeleteDailog2(){
+        final Dialog dialog = new Dialog(NewShipment.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.deleteshipments);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+
+
+        dialog.findViewById(R.id.Shdialogcancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.sh_deleteitem).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticDailog2(1);
+            }
+        });
+        dialog.findViewById(R.id.sh_deletebox).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticDailog2(2);
+            }
+        });
+        dialog.findViewById(R.id.sh_deletePo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticDailog2(3);
+
+            }
+        });
+
+    }
     private void authenticDailog(int enterflage) {
 
 
@@ -477,7 +616,7 @@ if(adapter!=null)           adapter.notifyDataSetChanged();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
                 {
                     if(enterflage==1)
                        openDeleteItemDailog();
@@ -489,7 +628,7 @@ else
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserNO()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
@@ -498,6 +637,71 @@ else
                         pass.setError(getResources().getString(R.string.invalid_password));
 
                     }   }
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticationdialog.dismiss();
+            }
+        });
+        authenticationdialog.show();
+
+
+    }
+    private void authenticDailog2(int enterflage) {
+
+
+        authenticationdialog = new Dialog(NewShipment.this);
+        authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        authenticationdialog.setCancelable(false);
+        authenticationdialog.setContentView(R.layout.authentication);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(authenticationdialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        authenticationdialog.getWindow().setAttributes(lp);
+
+        authenticationdialog.show();
+
+        Button button= authenticationdialog.findViewById(R.id.authentic);
+        TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
+        UsNa= authenticationdialog.findViewById(R.id.username);
+        UsNa.requestFocus();
+
+        EditText pass= authenticationdialog.findViewById(R.id.pass);
+        pass.setEnabled(true);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String isMaster ="";
+                if(!UsNa.getText().toString().trim().equals("")&&!pass.getText().toString().trim().equals("")) {
+                    isMaster = my_dataBase.userPermissionsDao().getIsMaster(UsNa.getText().toString().trim(), pass.getText().toString().trim());
+
+                    if ( isMaster!=null &&isMaster.equals("1")) {
+                        if (enterflage == 1)
+                        {         openDeleteItemDailog();
+                            authenticationdialog.dismiss();
+
+                        }
+                        else if (enterflage == 2){ openDeleteBoxDailog();
+                            authenticationdialog.dismiss();
+
+                        }
+
+                        else if (enterflage == 3) {openDeletePoDailog();
+                            authenticationdialog.dismiss();
+                        }
+                    }
+                    else{
+                        generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.Permission), "");
+
+                    }
+
+                }
+                else {
+                    UsNa.setError(getResources().getString(R.string.required));
+                    pass.setError(getResources().getString(R.string.required));
+                   }
             }
         });
         cancelbutton.setOnClickListener(new View.OnClickListener() {
@@ -698,8 +902,8 @@ else
         DS_poediteshow.setText(DS_poedit.getText().toString().trim());
         String boxcount=my_dataBase.shipmentDao().getboxescount(DS_poedit.getText().toString().trim());
         DS_boxcountediteshow.setText(boxcount);
-        String allitemqty=my_dataBase.shipmentDao(). getsumofitemsqty(DS_poedit.getText().toString().trim());
-        DS_Itemcountediteshow.setText(allitemqty);
+       long allitemqty=my_dataBase.shipmentDao(). getsumofitemsqty(DS_poedit.getText().toString().trim());
+        DS_Itemcountediteshow.setText(allitemqty+"");
     }
 
     private void openDeleteBoxDailog() {
@@ -860,8 +1064,8 @@ else
                         if(!   Db_boxedit.getText().toString().trim().equals(""))
                         {
                             Db_boxnumshow.setText(Db_boxedit.getText().toString().trim());
-
-                            Db_Itemcountediteshow.setText( ""+my_dataBase.shipmentDao().getsumofboxitemsqty( Dbsh_poedit.getText().toString().trim(),Db_boxedit.getText().toString().trim()));
+                    long allqtys=my_dataBase.shipmentDao().getsumofboxitemsqty( Dbsh_poedit.getText().toString().trim(),Db_boxedit.getText().toString().trim());
+                            Db_Itemcountediteshow.setText( ""+allqtys);
                                 }
                                 else
                                 {
@@ -1097,19 +1301,19 @@ else
 
                         if(!DIsh_itemcodeedit.getText().toString().equals(""))     {
                             int flage=0;
-                            int newqty;
+                           long newqty;
                             for (int x = 0; x < BbShip_list.size(); x++)
                                 if (BbShip_list.get(x).getPoNo().equals(DIsh_poedit.getText().toString().trim())
                                         && BbShip_list.get(x).getBoxNo().equals(DIsh_boxedit.getText().toString().trim())
                                         && BbShip_list.get(x).getBarcode().equals(DIsh_itemcodeedit.getText().toString().trim())) {
                                ind=x;
                                     flage=0;
-                                 newqty=Integer.parseInt(BbShip_list.get(x).getQty());
+                                 newqty=Long.parseLong(BbShip_list.get(x).getQty());
                                  if(newqty>1) {
                                      newqty-=1;
                                      BbShip_list.get(x).setQty(newqty + "");
                                     if(BbShip_list.get(x).getDiffer()!=null&&!BbShip_list.get(x).getDiffer().equals(""))
-                                        BbShip_list.get(x).setDiffer(String.valueOf (Integer.parseInt(BbShip_list.get(x).getDiffer())-1));
+                                        BbShip_list.get(x).setDiffer(String.valueOf (Long.parseLong(BbShip_list.get(x).getDiffer())-1));
                                      DIsh_poediteshow.setText(DIsh_poedit.getText().toString().trim());
                                      DIsh_boxcountediteshow.setText(DIsh_boxedit.getText().toString().trim());
                                      DIsh_Itemcodeediteshow.setText(DIsh_itemcodeedit.getText().toString().trim());
@@ -1126,7 +1330,7 @@ else
                                              reducedshipmentsList.add(BbShip_list.get(x));
                                          else {
                                              reducedshipmentsList.get(exists_index).setQty(newqty + "");
-                                             reducedshipmentsList.get(exists_index).setDiffer(String.valueOf (Integer.parseInt(reducedshipmentsList.get(exists_index).getDiffer())-1));
+                                             reducedshipmentsList.get(exists_index).setDiffer(String.valueOf (Long.parseLong(reducedshipmentsList.get(exists_index).getDiffer())-1));
                                          }
                                      }
                                  }
@@ -1235,9 +1439,10 @@ else
                          shipmentLogs.setBoxNo(reducedshipmentsList.get(i).getBoxNo());
                          shipmentLogs.setDiffer(reducedshipmentsList.get(i).getDiffer());
                          shipmentLogs.setNewQty(reducedshipmentsList.get(i).getQty());
+                         shipmentLogs.setItemCode(reducedshipmentsList.get(i).getBarcode());
                          String pre = getpreQty(reducedshipmentsList.get(i).getPoNo(), reducedshipmentsList.get(i).getBoxNo(), reducedshipmentsList.get(i).getBarcode());
                          shipmentLogs.setPreQty(pre);
-                         shipmentLogs.setItemCode(reducedshipmentsList.get(i).getBarcode());
+
                          shipmentLogs.setLogsDATE(generalMethod.getCurentTimeDate(1));
                          shipmentLogs.setLogsTime(generalMethod.getCurentTimeDate(2));
                          shipmentLogs.setUserNO(UsNa.getText().toString());
@@ -1875,7 +2080,8 @@ else
            if(localList.get(pos).getIsNew().equals("0"))
            {
                localList.get(pos).setDiffer(String.valueOf(Long.parseLong(localList.get(pos).getDiffer())+Long.parseLong("1")));
-
+               PoQTY.setText( localList.get(pos).getPoqty());
+               itemname.setText(localList.get(pos).getItemname());
 
            }else {
                localList.get(pos).setDiffer("0");
@@ -1899,13 +2105,16 @@ else
             ArrayList<Shipment> List = new ArrayList<>();
         if(CheckIsExistsINDB(shipment))
         {
-          //  Log.e("list.get(0)",list.get(0).getQty()+"\t"+localList.get(0).getQty()+"\t"+Integer.parseInt(Qty)+"");
+
           //show item in rec
             Log.e("listgetQty",""+DbShip.getQty());
-            DbShip.setQty(String.valueOf(Long.parseLong(DbShip.getQty()) + Integer.parseInt("1")));
-            if(DbShip.getIsNew().equals("0") )
-                DbShip.setDiffer( String.valueOf(Long.parseLong( DbShip.getDiffer())+Integer.parseInt("1")));
-            else {
+            DbShip.setQty(String.valueOf(Long.parseLong(DbShip.getQty()) + Long.parseLong("1")));
+            if(DbShip.getIsNew().equals("0") ) {
+                DbShip.setDiffer(String.valueOf(Long.parseLong(DbShip.getDiffer()) + Long.parseLong("1")));
+               PoQTY.setText( DbShip.getPoqty());
+                itemname.setText(DbShip.getItemname());
+
+            } else {
                // localList.get(pos).setDiffer("0");
                 DbShip.setDiffer("0");
             }
@@ -2052,74 +2261,7 @@ else
 
     }
 
-    /*private void filldata() {
-        Log.e("filldata1", "filldata");
 
-        Qty = "1";
-        boxNo = boxno.getText().toString().trim();
-
-
-        ShipmentAdapter.newqty = Qty;
-
-//        if (poNo.toString().trim().equals("")) pono.setError("required");
-//
-//        else {
-//
-//            if (boxNo.toString().trim().equals("")) boxno.setError("required");
-//            else {
-//                if (barCode.toString().trim().equals("")) barcode.setError("required");
-//
-//                else if (Qty.toString().trim().equals("")) {
-//
-//                }
-//
-//
-//
-//
-//                else
-
-
-        // CheckPOnumber();
-
-
-        shipment = new Shipment();
-        shipment.setPoNo(poNo);
-        shipment.setBoxNo(boxNo);
-        shipment.setBarcode(barCode);
-        shipment.setQty(Qty);
-        shipment.setIsPosted("0");
-        int qty = Integer.parseInt(Qty);
-
-
-        shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
-        shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
-        shipment.setPoqty(PoQTY.getText().toString());
-        shipment.setItemname(itemname.getText().toString());
-
-
-        if (AddInCaseDuplicates(shipment)) {
-            // barcode.requestFocus();
-            //updateRow(shipment.getBarcode(), shipment.getQty());
-            Log.e("up", "up");
-
-          //  updateRow();
-
-        } else {
-            Log.e("filldata", "1111else" + barCode);
-            int differ = getDiff(qty);
-            if (differ > 0)
-                shipment.setDiffer("+" + differ);
-            else
-                shipment.setDiffer(differ + "");
-            Log.e("shipment.getDiffer", shipment.getDiffer() + "");
-            shipmentList.add(shipment);
-            updateflage = 1;
-            filladapter(shipmentList);
-            //saveRow(shipment);
-        }
-
-
-    }*/
 
 
 
@@ -2204,12 +2346,14 @@ else
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     public void fillLastBoxinfo(){
         try {
+
             Shipment shipment=my_dataBase.shipmentDao().getlastbox();
             lastpo.setText(shipment.getPoNo().toString());
             lastbox.setText(shipment.getBoxNo().toString());
-            int sum=my_dataBase.shipmentDao().getsumofboxitemsqty(shipment.getPoNo(),shipment.getBoxNo());
+            long sum=my_dataBase.shipmentDao().getsumofboxitemsqty2(shipment.getPoNo(),shipment.getBoxNo());
             itemcount.setText(sum+"");
         }
         catch (Exception e){
@@ -2221,6 +2365,7 @@ else
     public void fillPOinfo(String s){
 
        try{
+           numBOx.clear();
 
            ///
            POlist =my_dataBase.shipmentDao().getPOShipments(s);
@@ -2246,7 +2391,7 @@ else
            }
 
            currentbox.setText(set.size()+"");
-           int sum=my_dataBase.shipmentDao().getsumofqty(s);
+          long sum=my_dataBase.shipmentDao().getsumofqty(s);
            Log.e("sum",sum+"");
            itemscounts.setText( sum +"");
        }
@@ -2255,6 +2400,19 @@ else
        }
 
     }
+    public void clearLastBoxinfo(){
+        try {
+
+            lastpo.setText("");
+            lastbox.setText("");
+            itemcount.setText("");
+        }
+        catch (Exception e){
+            Log.e("",e.getMessage());
+        }
+
+    }
+
     public void clearPOinfo(){
         try{currentpo.setText("");
         currentbox.setText("");
@@ -2263,7 +2421,29 @@ else
 
         }
     }
+    public void getUsernameAndpass() {
+
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
+
+    }
     private void init() {
+        if( userPermissions==null)  getUsernameAndpass();
         MainActivity.exportFromMainAct=false;
         localList.clear();
         exportData = new ExportData(NewShipment.this);
@@ -2329,6 +2509,12 @@ barcode.setOnKeyListener(onKeyListener);
         requestQueue = Volley.newRequestQueue(this);
 
         itemname = findViewById(R.id.Itemnametxt);
+
+//        itemname.setScroller(new Scroller(NewShipment.this));
+//        itemname.setMaxLines(1);
+//        itemname.setVerticalScrollBarEnabled(true);
+//        itemname.setMovementMethod(new ScrollingMovementMethod());
+
         PoQTY = findViewById(R.id.PoQtytxt);
 
         respon.addTextChangedListener(new TextWatcher() {
@@ -2355,15 +2541,16 @@ barcode.setOnKeyListener(onKeyListener);
                             newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
                             newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
                             newshipment.setUserNO(UserNo);
-                         //   Log.e("sss:",CheckNewShipmentObject(newshipment)+"");
                               if(CheckNewShipmentObject(newshipment)==false
                                       &&!barcode.getText().equals("")
                               &&barcode.getText().toString().trim().length()<=15) {
                                   Log.e("barcodehere",barcode.getText().toString());
                                   showConfirmBarcodeDailog();
 
+
                               }
                              else {
+                                  Log.e("aya","=======");
                                   barcode.setText("");
                            barcode.setEnabled(true);
                             barcode.requestFocus();
@@ -2371,7 +2558,8 @@ barcode.setOnKeyListener(onKeyListener);
 
 
 
-                                  if(list.get(0).getIsPosted().trim().equals("1"))
+                                  if(list.size()>0)
+                                  { if(list.get(0).getIsPosted().trim().equals("1"))
                                   {
                                     /*  list.get(0). setPoNo(convertToEnglish(pono.getText().toString().trim()));
                                       list.get(0).setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
@@ -2412,12 +2600,16 @@ barcode.setOnKeyListener(onKeyListener);
                                   {
 
 
-                                      list.get(0).setQty(String.valueOf(Long.parseLong(list.get(0).getQty()) + Integer.parseInt("1")));
+                                      list.get(0).setQty(String.valueOf(Long.parseLong(list.get(0).getQty()) + Long.parseLong("1")));
                                       localList.add(list.get(0));
                                       Log.e("CheckIsExistsINDB2","true3");
                                       updateRow(list.get(0).getBarcode(),list.get(0).getPoNo(),list.get(0).getBoxNo(),list.get(0).getQty(),"0");
                                       filladapter(localList);
 
+                                  }}
+                                  else {
+                                      barcode.setText("");
+                                      barcode.setError("Invalid");
                                   }
 
 
@@ -2434,8 +2626,8 @@ barcode.setOnKeyListener(onKeyListener);
 
                             try {
                                 Log.e("afterTextChanged",""+POdetailslist.get(0).getPoqty()+"");
-                                if(Integer.parseInt(POdetailslist.get(0).getPoqty())>0) {
-                                    sum = Integer.parseInt(POdetailslist.get(0).getPoqty().toString());
+                                if(Long.parseLong(POdetailslist.get(0).getPoqty())>0) {
+                                    sum = Long.parseLong(POdetailslist.get(0).getPoqty().toString());
                                     {
 
 
@@ -2447,13 +2639,16 @@ barcode.setOnKeyListener(onKeyListener);
                                         Qty = "1";
                                         shipment.setQty(Qty);
                                         shipment.setIsPosted("0");
-                                        int qty = Integer.parseInt(Qty);
+                                        long qty = Long.parseLong(Qty);
                                         shipment.setIsNew("0");
                                         shipment.setDeviceId(deviceId);
                                         shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                                         shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
-                                        shipment.setPoqty(PoQTY.getText().toString());
-                                        shipment.setItemname(itemname.getText().toString());
+                                        shipment.setPoqty(POdetailslist.get(0).getPoqty());
+                                        PoQTY.setText(POdetailslist.get(0).getPoqty());
+                                        itemname.setText(POdetailslist.get(0).getItemname());
+                                        shipment.setItemname(POdetailslist.get(0).getItemname());
+
                                         shipment.setUserNO(UserNo);
                                         long differ = getDiff(qty);
                                         if (differ > 0)
@@ -2471,11 +2666,18 @@ barcode.setOnKeyListener(onKeyListener);
 
 
                                         itemname.setText("");
-                                        PoQTY.setText("");
-                                        localList.clear();
+                                        //PoQTY.setText("");
+                                        if(barcode.getText().toString().length()<=15)
+                                        { localList.clear();
                                         saveRow(shipment);
                                         localList.add(shipment);
-                                        filladapter(localList);
+
+
+                                        filladapter(localList);}
+                                        else{
+                                            barcode.setText("");
+                                            barcode.setError("Invalid");
+                                        }
                                         barcode.setText("");
                                         barcode.setEnabled(true);
                                         barcode.requestFocus();
@@ -2607,20 +2809,29 @@ pono.addTextChangedListener(new TextWatcher() {
     @Override
     public void afterTextChanged(Editable editable) {
        if(editable.length()!=0)
+
+           clearPOinfo();
         fillPOinfo(pono.getText().toString().trim());
-
-
-
+        Log.e("localList",localList.size()+"");
         try {
 
             localList.clear();
-
-            Shipment shipment ;
+            List<Shipment>shipments=new ArrayList<>();
+            /* Shipment shipment ;
             shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
             if(shipment!=null){
                 localList.add(shipment);
-                filladapter(localList);}
+                Log.e("localList",localList.size()+"");
+                filladapter(localList);*/
+            shipments= my_dataBase.shipmentDao().getlastShipments(pono.getText().toString().trim());
+
+            if(shipments.size()>0) {
+                localList.add(shipments.get(shipments.size() - 1));
+                filladapter(localList);
+            }
+
         } catch (Exception e) {
+            Log.e("Exception==",e.getMessage());
         }
 
 
@@ -2649,12 +2860,15 @@ pono.addTextChangedListener(new TextWatcher() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
 
-
+                                    PoQTY.setText("");
+                                    itemname.setText("");
                                     newshipment.setQty("1");
                                     newshipment.setPoqty("1");
                                     newshipment.setDiffer("0");
                                     newshipment.setIsPosted("0");
                                     newshipment.setItemname("");
+                                    newshipment.setDeviceId(deviceId);
+
                                     newshipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                                     newshipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
                                     newshipment.setIsNew("1");
@@ -2693,6 +2907,7 @@ pono.addTextChangedListener(new TextWatcher() {
 
     private void getPoNu() {
         PoNolist.clear();
+        importData=new ImportData(NewShipment.this);
         importData.getPoNum();
     }
 
@@ -2895,60 +3110,16 @@ pono.addTextChangedListener(new TextWatcher() {
         barcode.requestFocus();
     }
 
-   /* public boolean AddInCaseDuplicates(Shipment shipment) {
-        Log.e("filldata1","AddInCaseDuplicates");
-        boolean flag = false;
-        if (shipmentList.size() != 0)
-            for (int i = 0; i < shipmentList.size(); i++) {
-
-                if (convertToEnglish(shipmentList.get(i).getBoxNo()).equals(convertToEnglish(shipment.getBoxNo()))
-                        && convertToEnglish(shipmentList.get(i).getBarcode()).equals(convertToEnglish(shipment.getBarcode()))) {
-                    shipmentList.get(i).setQty(Integer.parseInt(shipmentList.get(i).getQty()) + Integer.parseInt(Qty) + "");
-                   // Log.e("filldata2 dif",shipmentList.get(i).getDiffer());
-                    Flag1=0;
-                    shipmentList.get(i).setDiffer(String.valueOf(Integer.parseInt(shipmentList.get(i).getDiffer())+Integer.parseInt("1")));
-                   // Log.e("filldata1 dif",shipmentList.get(i).getDiffer());
-                    updateAdpapter();
-                    flag = true;
-                    break;
-
-
-                } else
-                    flag = false;
-                continue;
-            }
-
-        return flag;
-
-    }*/
 
 
 
 
-   /* private void saveData(int isposted) {
-      //  Log.e("poststate",shipmentList.get(0).getBoxNo()+" ");
 
-        if(isposted==1)
-            for (int i = 0; i < shipmentList.size(); i++)
-                shipmentList.get(i).setIsPosted("1");
-
-        long result[] = my_dataBase.shipmentDao().insertAll(shipmentList);
-
-        if (result.length != 0) {
-
-            generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule), "");
-        }
-        else
-            Log.e("poststate"," not saaave");
-
-        //  shipmentList.clear();
-
-
-
-    }*/
     private void saveRow(Shipment shipment) {
-
+if(!boxno.getText().toString().trim().equals(""))
       my_dataBase.shipmentDao().insert(shipment);
+else
+    boxno.setError("Empty");
 
     }
     private void updateRow(String barcpde,String po,String box,String qty,String dif){

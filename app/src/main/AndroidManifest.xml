@@ -4,7 +4,7 @@
     package="com.example.irbidcitycenter">
 
     <application
-
+        android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
@@ -13,21 +13,25 @@
         android:roundIcon="@drawable/irbid"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".Activity.StockTakeReport"
-            android:windowSoftInputMode="adjustPan|adjustResize"></activity>
+        <activity android:name=".Activity.ReplenishmentReverse"
+            android:windowSoftInputMode="adjustPan|adjustResize">
+
+
+        </activity>
+        <activity
+            android:name=".Activity.StockTakeReport"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".Activity.ZoneReplacment"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activity.ShipmentsReport"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".Activity.ItemChecker"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.Stoketake"
             android:screenOrientation="portrait"
@@ -52,12 +56,18 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-<!--              <category android:name="android.intent.category.HOME" />-->
-<!--                        <category android:name="android.intent.category.DEFAULT" />-->
                 <category android:name="android.intent.category.LAUNCHER" />
+<!--                <category android:name="android.intent.category.HOME" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+
             </intent-filter>
         </activity>
 
+        <receiver android:name=".Models.ServiceActionsReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.CLOSE_SYSTEM_DIALOGS" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".Activity.HomeScreenLaunch"
             android:enabled="true"
@@ -75,7 +85,6 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
     </application>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -91,7 +100,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
 
 </manifest>

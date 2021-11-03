@@ -59,8 +59,9 @@ import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
+import static com.example.irbidcitycenter.ImportData.pditeminfo;
 import static com.example.irbidcitycenter.ImportData.zonetype;
-
+import static com.example.irbidcitycenter.ImportData.zoneinfo;
 public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
     public static EditText editZoneCode, editItemCode, editQty,itemKintText,exportStateText;
@@ -106,7 +107,7 @@ public class AddZone extends AppCompatActivity {
     ArrayList<ZoneModel> searchlistAllZone;
 
 Button AddZonesave;
-    public  int sumOfQTY;
+    public  long sumOfQTY;
     private int ind;
 
     public static int flage3=0;
@@ -124,8 +125,8 @@ Button AddZonesave;
         setContentView(R.layout.activity_add_zone);
 
         initial();
-        ChecksavePermissition();
-        CheckDeletePermissition();
+     //   ChecksavePermissition();
+       // CheckDeletePermissition();
         editQty.setEnabled(false);
       UserNo=my_dataBase.settingDao().getUserNo();
         AD_nextZone.setEnabled(false);
@@ -192,9 +193,19 @@ Button AddZonesave;
         AddZonesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if( userPermissions==null) getUsernameAndpass();
                 animation = AnimationUtils.loadAnimation(AddZone.this, R.anim.modal_in);
                 AddZonesave.startAnimation(animation);
-                saveData();
+                if (userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getAddZone_Save().equals("1"))
+                        saveData();
+                    else
+                        generalMethod.showSweetDialog(AddZone.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+
+                }else{
+                    saveData();
+                }
+
             }
         });
 
@@ -202,19 +213,71 @@ Button AddZonesave;
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
-            {
+            {  if( userPermissions==null) getUsernameAndpass();
                 animation = AnimationUtils.loadAnimation(AddZone.this, R.anim.modal_in);
                 delete.startAnimation(animation);
+                if (userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getAddZone_LocalDelete().equals("1")) {
+                        OpenDeleteDailog();
+                    }
+                    else{
+                        new SweetAlertDialog(AddZone.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.del_per))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        OpenDeleteDailog2();
+                                        sweetAlertDialog.dismiss();
+                                        }
 
-                OpenDeleteDailog();
+                                })
+                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    }
+
+                }
+
+
+                else
+                {
+
+                    OpenDeleteDailog();
+                }
             }
         });
 
 
 
     }
+    public void getUsernameAndpass() {
 
+
+        String comNUm="";
+        String Userno="";
+        appSettings=my_dataBase.settingDao().getallsetting();
+        if(appSettings.size()!=0)
+        {
+            Userno=  appSettings.get(0).getUserNumber();
+            comNUm= appSettings.get(0).getCompanyNum();
+
+        }
+
+        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
+
+
+
+        //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();
+
+
+    }
     private void initial() {
+        if( userPermissions==null)  getUsernameAndpass();
         MainActivity.setflage=0;
         AddZonesave=findViewById(R.id.save);
         AD_nextZone=findViewById(R.id.AD_nextZone);
@@ -436,6 +499,7 @@ Button AddZonesave;
                         //saveDataLocaky(0);
                         listZone.clear();
                         if(adapter!=null)  adapter.notifyDataSetChanged();
+
                     }
                     else{
                         listZone.clear();
@@ -526,7 +590,7 @@ public boolean exists (String zonecode,String itemcode){
 
                                         if (exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString())) {
                                             Log.e("exists ", "true");
-                                            listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
+                                            listZone.get(index).setQty(String.valueOf(Long.parseLong(listZone.get(index).getQty()) + 1));
                                             updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(), listZone.get(index).getZoneCode());
                                             editItemCode.setText("");
                                             fillAdapter(listZone);
@@ -651,7 +715,7 @@ public boolean exists (String zonecode,String itemcode){
 
                                     if (exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString())) {
                                         Log.e("exists ", "true");
-                                        listZone.get(index).setQty(String.valueOf(Integer.parseInt(listZone.get(index).getQty()) + 1));
+                                        listZone.get(index).setQty(String.valueOf(Long.parseLong(listZone.get(index).getQty()) + 1));
                                         updateQtyOfRow(listZone.get(index).getItemCode(), listZone.get(index).getQty(), listZone.get(index).getZoneCode());
                                         editItemCode.setText("");
                                         fillAdapter(listZone);
@@ -805,10 +869,10 @@ public boolean exists (String zonecode,String itemcode){
     }
     private void updateListZones(ZoneModel itemZone, int updatedIndex) {
         Log.e("updateListZones1",""+listZone.get(updatedIndex).getQty());
-        int currentQty=0,qtyNew=0;
+        long currentQty=0,qtyNew=0;
         try {
-            currentQty=Integer.parseInt(listZone.get(updatedIndex).getQty());
-            qtyNew=Integer.parseInt(itemZone.getQty());
+            currentQty=Long.parseLong(listZone.get(updatedIndex).getQty());
+            qtyNew=Long.parseLong(itemZone.getQty());
             Log.e("updateListZones2",""+currentQty+"\t"+qtyNew);
         }catch (Exception e)
         {}
@@ -1352,6 +1416,56 @@ public void onBackPressed() {
 
 
     }
+    private void  OpenDeleteDailog2(){
+
+
+        final Dialog dialog = new Dialog(AddZone.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.deletelayout);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(lp);
+        dialog.show();
+        Button deletezone=dialog.findViewById(R.id.deletezone);
+        Button deleteitem=dialog.findViewById(R.id.deleteitem);
+        zones=new ArrayList<>();
+        deletezone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deletedZonsList.clear();
+
+                authenticDailog2(1);
+
+            }
+        });
+
+        deleteitem.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View view) {
+                                              getzonefromDB();
+
+                                              if( zones2.size()>0) {
+
+                                                  authenticDailog2(2);
+
+                                              }
+                                              else
+                                                  Toast.makeText(AddZone.this, "No Data", Toast.LENGTH_SHORT).show();
+                                          }
+                                      }
+        );
+
+        dialog.findViewById(R.id.dialogcancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
     public boolean isEx(){
      boolean f=false;
  for (int x = 0; x < zones2.size(); x++)
@@ -1417,354 +1531,7 @@ break;
 
 
 
-/*private void openDeleteitemDailog() {
 
-
-        Log.e(" zones2size",""+zones2.size());
-
-        final Dialog Deleteitemdialog = new Dialog(AddZone.this);
-        Deleteitemdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Deleteitemdialog.setCancelable(false);
-        Deleteitemdialog.setContentView(R.layout.deleteitemdailog);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(Deleteitemdialog.getWindow().getAttributes());
-        lp.gravity = Gravity.CENTER;
-        Deleteitemdialog.getWindow().setAttributes(lp);
-        Deleteitemdialog.show();
-        items=new ArrayList<>();
-
-
-
-       DDitemcode=Deleteitemdialog.findViewById(R.id.DD_itemcode);
-        DI_itemcode  =Deleteitemdialog.findViewById(R.id.DI_itemcode);
-    DIqty=Deleteitemdialog.findViewById(R.id.DI_qty);
-      DDzoneEDT =Deleteitemdialog.findViewById(R.id.DD_ZONEcode);
-        DI_zonecode=Deleteitemdialog.findViewById(R.id.DI_zone);
-        DD_preQTY=Deleteitemdialog.findViewById(R.id.DD_preQTY);
-       Button deletebtn= Deleteitemdialog.findViewById(R.id.DD_deleteitem);
-
-        DDitemcode.setEnabled(false);
-        deletebtn.setEnabled(false);
-        DD_preQTY.setText("");
-        DDzoneEDT.requestFocus();
-        DDzoneEDT.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (i != KeyEvent.KEYCODE_ENTER) {
-
-                    if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                        if (!DDzoneEDT.getText().toString().equals("")) {
-                          if (isEx())
-                          {
-                              DDitemcode.setEnabled(true);
-                              DDitemcode.requestFocus();
-
-                                } else {
-                                    DDzoneEDT.setError("INvalid");
-                                    DDzoneEDT.setText("");
-                                }
-
-                        } else {
-                            DDitemcode.requestFocus();
-                        }
-                        return true;
-                    }
-              }
-                return false;
-            }
-        });
-        Deleteitemdialog.findViewById(R.id.cancel1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-
-
-                if(ReducedItemlist.size()>0) {
-
-                    new SweetAlertDialog(AddZone.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText(getResources().getString(R.string.confirm_title))
-                            .setContentText(getResources().getString(R.string.returndata))
-                            .setConfirmButton(getResources().getString(R.string.yes),
-                                    new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                            int x;
-                                            for (int i = 0; i < ReducedItemlist.size(); i++)
-                                            {
-                                                if(ReducedItemlist.get(i).getDeletedflage()!=null &&ReducedItemlist.get(i).getDeletedflage().equals("1")) {
-
-                                                    ReducedItemlist.get(i).setDeletedflage("");
-
-                                                    preQTY = getpreQty(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode());
-
-
-                                                    ReducedItemlist.get(i).setQty(preQTY);
-                                                    my_dataBase.zoneDao().insert(ReducedItemlist.get(i));
-                                                }
-                                                  else {
-                                                    preQTY = getpreQty(ReducedItemlist.get(i).getZoneCode(), ReducedItemlist.get(i).getItemCode());
-                                                    x = my_dataBase.zoneDao().updateQTYreduced(ReducedItemlist.get(i).getItemCode(), preQTY, ReducedItemlist.get(i).getZoneCode());
-                                                    zones2.get(i).setQty(preQTY);
-                                                }
-
-
-                                            }
-                                            Toast.makeText(AddZone.this,getResources().getString(R.string.dataRet),Toast.LENGTH_LONG).show();
-
-                                            AddZone.DDitemcode.setText("");
-                                            AddZone.DI_zonecode.setText("");
-                                            AddZone.DIqty.setText("");
-                                            AddZone.DD_preQTY.setText("");
-                                            AddZone.DI_itemcode.setText("");
-
-                                            AddZone.DDzoneEDT.setText("");
-                                            AddZone.DDzoneEDT.setEnabled(true);
-                                            AddZone.DDzoneEDT.requestFocus();
-                                            AddZone.DDitemcode.setEnabled(false);
-                                            ReducedItemlist.clear();
-                                            sweetAlertDialog.dismiss();
-                                            zones2.clear();
-                                            zonescopylist.clear();
-                                            getzonefromDB();
-
-                                        }
-
-                                    })
-                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-                                    sweetAlertDialog.dismiss();
-
-                                    // FinishProcessFlag=0;
-                                }
-                            })
-                            .show();
-
-
-                }
-                else
-                {
-                    Toast.makeText(AddZone.this,getResources().getString(R.string.NODATA),Toast.LENGTH_LONG).show();
-                }
-                ///
-
-
-
-
-
-            }
-        });
-
-        Deleteitemdialog.findViewById(R.id.zoneSearch2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                zones.clear();
-                zones=my_dataBase.zoneDao().getZonesUnposted();
-                if(zones.size()!=0) {
-                   flage3=6;
-                    searchZonecodeDailog();
-                }
-                else
-                    Toast.makeText(AddZone.this,"No Data",Toast.LENGTH_LONG).show();
-
-
-            }
-        });
-
-
-        //dditemcode=DDitemcode.getText().toString().trim();
-        DDitemcode.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-
-                if (i != KeyEvent.KEYCODE_ENTER) {
-
-                    {
-                        if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                            if (!DDitemcode.getText().toString().equals(""))
-
-                           {
-                                 if (ismatch())
-                                 {
-                                     String x=getpreQty(zones2.get(ind).getZoneCode(),zones2.get(ind).getItemCode());
-                                     DD_preQTY.setText(x);
-
-
-                                     sumOfQTY = Integer.parseInt(zones2.get(ind).getQty()) ;
-                                     if(  sumOfQTY >1) {
-                                         sumOfQTY -= 1;
-                                         // oldQTY.setText( sumOfQTY+"" );
-
-                                         DI_itemcode.setText(  DDitemcode.getText().toString());
-
-
-
-                                    if( ReducedItemlist.size()>0)
-                                    {
-
-                                        if(notExists(zones2.get(ind).getZoneCode(),zones2.get(ind).getItemCode()))
-                                         {
-
-                                             ZoneModel zoneModel=new ZoneModel();
-                                             zoneModel.setItemCode(zones2.get(ind).getItemCode());
-                                             zoneModel.setZoneCode(zones2.get(ind).getZoneCode());
-                                             ReducedItemlist.add(zoneModel);
-
-                                         }
-                                        else
-                                        {
-                                            Log.e("exists","exists");
-                                        }
-                                    }
-                                    else
-                                         {
-                                             ZoneModel zoneModel=new ZoneModel();
-
-                                             zoneModel.setItemCode(zones2.get(ind).getItemCode());
-                                             zoneModel.setZoneCode(zones2.get(ind).getZoneCode());
-                                           //  zoneModel.setQty(zonescopylist.get(ind).getQty());
-                                                  ReducedItemlist.add(zoneModel);
-                                         }
-                                         zones2.get(ind).setQty(sumOfQTY + "");
-                                         //  sumOfQTY -= 1;
-                                         my_dataBase.zoneDao().reduceQTY(DDitemcode.getText().toString().trim(), String.valueOf(sumOfQTY), DDzoneEDT.getText().toString().trim());
-                                         DIqty.setText(sumOfQTY + "");
-                                         DI_zonecode.setText(zones2.get(ind).getZoneCode());
-
-                                         deletebtn.setEnabled(true);
-                                         DDitemcode.setText("");
-                                         DDitemcode.requestFocus();
-
-                                     }//end of if(sumOfQTY >1)
-                                     else {
-                                         new SweetAlertDialog(AddZone.this, SweetAlertDialog.BUTTON_CONFIRM)
-                                                 .setTitleText(getResources().getString(R.string.confirm_title))
-                                                 .setContentText(getResources().getString(R.string.delete3))
-                                                 .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                                     @Override
-                                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                                         int z= my_dataBase.zoneDao().deleteITEM(DI_zonecode.getText().toString(), DI_itemcode.getText().toString());
-
-                                                         zones2.remove(ind);
-                                                         // zonesforPre_qty.remove(ind);
-
-                                                         zones.clear();
-                                                         zones=my_dataBase.zoneDao().getZonesUnposted();
-
-                                                         cleardataOfDailog();
-                                                         sweetAlertDialog.dismiss();
-                                                     }
-                                                 })
-                                                 .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                                     @Override
-                                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                         sweetAlertDialog.dismiss();
-                                                     }
-                                                 })
-                                                 .show();
-
-                                         DI_itemcode.setText(  DDitemcode.getText().toString());
-                                         DIqty.setText("1");
-                                         DI_zonecode.setText(zones2.get(ind).getZoneCode());
-                                         deletebtn.setEnabled(true);
-                                         DDitemcode.setText("");
-                                         DDitemcode.requestFocus();
-
-                                     }
-                                    } else {
-                                        DDitemcode.setError("Invalid");
-                                     DDitemcode.setText("");
-                                    }
-                                }
-                            else
-                                DDitemcode.requestFocus();
-                        }
-                    }
-                    return true;}
-
-                return  false;     }
-                 });
-        deletebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!DI_itemcode.getText().toString().trim().equals("")&& ! DI_zonecode.getText().toString().trim().equals("")) {
-                      try {
-
-                          if( ReducedItemlist.size()>0)
-                          {
-
-                              if(notExists(zones2.get(ind).getZoneCode(),zones2.get(ind).getItemCode()))
-                              {
-
-
-
-
-                                  zones2.get(ind).setDeletedflage("1");
-                                  ReducedItemlist.add(zones2.get(ind));
-
-                                  int z= my_dataBase.zoneDao().deleteITEM(DI_zonecode.getText().toString(), DI_itemcode.getText().toString());
-
-                                  zones2.remove(ind);
-                                  cleardataOfDailog();
-
-
-
-                                  ////
-                              }
-                              else
-                              {
-                                  ReducedItemlist.remove(pos_item_inreducelist);
-                                  zones2.get(ind).setDeletedflage("1");
-                                  ReducedItemlist.add(zones2.get(ind));
-
-                                  int z= my_dataBase.zoneDao().deleteITEM(DI_zonecode.getText().toString(), DI_itemcode.getText().toString());
-
-                                  zones2.remove(ind);
-                                  cleardataOfDailog();
-
-                              }
-                          }
-                          else
-                          {
-
-                              zones2.get(ind).setDeletedflage("1");
-                              ReducedItemlist.add(zones2.get(ind));
-
-                              int z= my_dataBase.zoneDao().deleteITEM(DI_zonecode.getText().toString(), DI_itemcode.getText().toString());
-
-                              zones2.remove(ind);
-                              cleardataOfDailog();
-
-
-                          }
-
-
-               }catch (Exception e){
-
-               }}
-               else
-                    {
-                        if(DDitemcode.getText().toString().trim().equals("")) DDitemcode.setError("required");
-                        if(DDzoneEDT.getText().toString().trim().equals("")) DDitemcode.setError("required");
-                    }
-                }
-        });
-
-
-        Deleteitemdialog.findViewById(R.id.DD_dialogcancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Deleteitemdialog.dismiss();
-                authenticationdialog.dismiss();
-            }
-        });
-
-    }*/
 private void openDeleteitemDailog() {
 
 
@@ -1937,7 +1704,7 @@ private void openDeleteitemDailog() {
                                 DD_preQTY.setText(x);
 
 
-                                sumOfQTY = Integer.parseInt(zones2.get(ind).getQty()) ;
+                                sumOfQTY = Long.parseLong(zones2.get(ind).getQty()) ;
                                 if(  sumOfQTY >1) {
                                     sumOfQTY -= 1;
                                     // oldQTY.setText( sumOfQTY+"" );
@@ -2275,7 +2042,7 @@ private void openDeleteitemDailog() {
                                         zonecode1.setText(zonebarecode.getText().toString());
 
                                         //set qty of zone
-                                        int sumqty = my_dataBase.zoneDao().GetQtyOfZone(zonebarecode.getText().toString());
+                                        long sumqty = my_dataBase.zoneDao().GetQtyOfZone(zonebarecode.getText().toString());
                                         qty1.setText(sumqty + "");
 
 
@@ -2582,8 +2349,7 @@ private void checkLocalList(){
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals(userPermissions.getUserName())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))
-                {
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))      {
                      if(enterflage==1)
                     openDeleteZoneDailog();
                      else
@@ -2593,7 +2359,7 @@ private void checkLocalList(){
                 }
                 else {
 
-                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserName()))
+                    if(!UsNa.getText().toString().trim().equals(userPermissions.getUserNO()))
                     {
                         UsNa.setError(getResources().getString(R.string.invalid_username));
 
@@ -2612,7 +2378,60 @@ private void checkLocalList(){
         });
         authenticationdialog.show();
     }
+    private void authenticDailog2(int enterflage) {
+        authenticationdialog = new Dialog(AddZone.this);
+        authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        authenticationdialog.setCancelable(false);
+        authenticationdialog.setContentView(R.layout.authentication);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(authenticationdialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        authenticationdialog.getWindow().setAttributes(lp);
 
+        Button button= authenticationdialog.findViewById(R.id.authentic);
+        TextView cancelbutton= authenticationdialog.findViewById(R.id.cancel2);
+        UsNa= authenticationdialog.findViewById(R.id.username);
+        UsNa.requestFocus();
+
+        EditText pass= authenticationdialog.findViewById(R.id.pass);
+        pass.setEnabled(true);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String isMaster ="";
+         if(!UsNa.getText().toString().trim().equals("")&&!pass.getText().toString().trim().equals("")) {
+         isMaster = my_dataBase.userPermissionsDao().getIsMaster(UsNa.getText().toString().trim(), pass.getText().toString().trim());
+
+             if ( isMaster!=null &&isMaster.equals("1")) {
+                 if (enterflage == 1)
+                 {  openDeleteZoneDailog();
+                     authenticationdialog.dismiss();
+                 }
+                 else
+                 {      openDeleteitemDailog();
+                     authenticationdialog.dismiss();
+                 }
+
+
+             } else {
+
+                 generalMethod.showSweetDialog(AddZone.this, 3, getResources().getString(R.string.Permission), "");
+
+             }
+         }else{
+             UsNa.setError(getResources().getString(R.string.required));
+             pass.setError(getResources().getString(R.string.required));
+         }
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticationdialog.dismiss();
+            }
+        });
+        authenticationdialog.show();
+    }
 
 
     private void searchZonecodeDailog(List< String> Zonelist) {
@@ -2713,5 +2532,13 @@ List<String> list=new ArrayList<>();
             }
             }
 
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if ( zoneinfo!=null && zoneinfo.isShowing() ){
+            zoneinfo.cancel();
+        }
     }
 }

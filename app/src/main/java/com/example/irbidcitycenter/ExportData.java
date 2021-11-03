@@ -12,6 +12,7 @@ import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.ReplenishmentReverseModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -40,8 +41,10 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.AddZone.exportStateText;
+import static com.example.irbidcitycenter.Activity.MainActivity.RepRevExportsatate;
 import static com.example.irbidcitycenter.Activity.MainActivity.activityflage;
 import static com.example.irbidcitycenter.Activity.MainActivity.exportFromMainAct;
+import static com.example.irbidcitycenter.Activity.MainActivity.exportFromMainAct2;
 import static com.example.irbidcitycenter.Activity.MainActivity.exportZonReprespon;
 import static com.example.irbidcitycenter.Activity.MainActivity.exportrespon;
 import static com.example.irbidcitycenter.Activity.MainActivity.re_res;
@@ -49,6 +52,7 @@ import static com.example.irbidcitycenter.Activity.MainActivity.sh_res;
 import static com.example.irbidcitycenter.Activity.MainActivity.zo_res;
 import static com.example.irbidcitycenter.Activity.NewShipment.poststate;
 import static com.example.irbidcitycenter.Activity.Replacement.poststateRE;
+import static com.example.irbidcitycenter.Activity.ReplenishmentReverse.RepRev_exportstate;
 import static com.example.irbidcitycenter.Activity.Stoketake.datarespon;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZonRepdatarespon;
 
@@ -56,17 +60,18 @@ public class ExportData {
     private Context context;
     public  String ipAddress="",CONO="",headerDll="",link="",PONO="";
     public RoomAllData my_dataBase;
-    SweetAlertDialog pdVoucher,pdshipmant,pdRepla,pdstock,pdzone;
+    SweetAlertDialog pdVoucher,pdshipmant,pdRepla,pdstock,pdzone,pdRepRev;
     JSONObject vouchersObject;
     JSONObject ShipmentObject;
-    JSONObject ReplacmentObject,StockObject,ZoneRepObject;
+    JSONObject ReplacmentObject,StockObject,ZoneRepObject,ReplacmentReverseObject;
     private JSONArray jsonArrayShipment;
-    private JSONArray jsonArrayReplacement,jsonArrayStock,jsonArrayZoneRep;
+    private JSONArray jsonArrayReplacement,jsonArrayStock,jsonArrayZoneRep,jsonArrayReversRep;
     private JSONArray jsonArrayVouchers;
     public  ArrayList<Shipment> listAllShipment   =new ArrayList<>();
     public  List<ZoneReplashmentModel> listAllZoneRep  =new ArrayList<>();
     public  List<StocktakeModel> listAllStock   =new ArrayList<>();
     public  ArrayList<ReplacementModel> listAllReplacment =new ArrayList<>();
+    public  List<ReplenishmentReverseModel> listAllReplacmentRevers =new ArrayList<>();
     int typeExportZone=0;
     int typeExportShipment=0;
     int typeExportReplacement=0;
@@ -98,6 +103,17 @@ public class ExportData {
 
         new JSONTask_AddReplacment(replacementlist).execute();
     }
+    public void exportReversReplacementList(List<ReplenishmentReverseModel>replacementlist) {
+        getReversReplacmentObject(replacementlist);
+        pdRepRev = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdRepRev.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pdRepRev.setTitleText(" Start export Revers Replenishments");
+        pdRepRev.setCancelable(false);
+        pdRepRev.show();
+
+        new JSONTask_AddReversReplacment(replacementlist).execute();
+    }
+
     public void exportStockTakeList(List<StocktakeModel>Stocktakelist) {
         getStocktakeObject(Stocktakelist);
         pdstock = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
@@ -124,6 +140,22 @@ public class ExportData {
             e.printStackTrace();
         }
         }
+    private void  getReversReplacmentObject(List<ReplenishmentReverseModel>replacementlist) {
+        jsonArrayReversRep = new JSONArray();
+        for (int i = 0; i < replacementlist.size(); i++)
+        {
+
+            jsonArrayReversRep.put(replacementlist.get(i).getJSONObjectDelphi());
+
+        }
+        try {
+            ReplacmentReverseObject=new JSONObject();
+            ReplacmentReverseObject.put("JSN",jsonArrayReversRep);
+            Log.e("vouchersObject",""+ReplacmentReverseObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     private void  getStocktakeObject(List<StocktakeModel>Stocktakelist) {
         jsonArrayStock = new JSONArray();
         for (int i = 0; i <Stocktakelist.size(); i++)
@@ -169,13 +201,14 @@ public class ExportData {
 
         new JSONTask_AddZoneRep(zoneReplashmentModelslist).execute();
     }
-    public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, ArrayList<ReplacementModel> listReplacment,List<StocktakeModel>liststocktake,List<ZoneReplashmentModel>zoneReplacmentList){
+    public void exportAllUnposted(List<ZoneModel> listZone, ArrayList<Shipment> listShipment, ArrayList<ReplacementModel> listReplacment,List<StocktakeModel>liststocktake,List<ZoneReplashmentModel>zoneReplacmentList,List<ReplenishmentReverseModel>reverseModelList){
         Log.e("context",context.getClass().getName());
         exportZoneList(listZone,2);
         listAllShipment=listShipment;
         listAllStock=liststocktake;
         Log.e("exportAllUnposted","listAllShipment"+listAllShipment.size());
         listAllReplacment=listReplacment;
+        listAllReplacmentRevers=reverseModelList;
         listAllZoneRep=zoneReplacmentList;
 
     }
@@ -344,6 +377,9 @@ public class ExportData {
                      exportStateText.setText("not");
 
 
+                    }else {
+                        Toast.makeText(context, "No InterNet", Toast.LENGTH_SHORT).show();
+
                     }
 
 
@@ -367,7 +403,8 @@ public class ExportData {
 
             }
             else{
-                exportShipmentsList(listAllShipment);
+                Toast.makeText(context, "No InterNet", Toast.LENGTH_SHORT).show();
+
             }
 
             }
@@ -498,7 +535,11 @@ public class ExportData {
                     if(activityflage==0)
                         ZonRepdatarespon.setText("exported");
                     else
+                    {
                         exportZonReprespon.setText("exported");
+                        exportReversReplacementList(listAllReplacmentRevers);
+
+                    }
 
                 }
                 else
@@ -507,7 +548,10 @@ public class ExportData {
                     if(activityflage==0)
                         ZonRepdatarespon.setText("not");
                     else
-                        exportZonReprespon.setText("not");
+                    {  exportZonReprespon.setText("not");
+                        exportReversReplacementList(listAllReplacmentRevers);
+
+                    }
 
                 }
 
@@ -517,7 +561,10 @@ public class ExportData {
                 if(activityflage==0)
                     ZonRepdatarespon.setText("not");
                 else
-                    exportZonReprespon.setText("not");
+                {  exportZonReprespon.setText("not");
+                    exportReversReplacementList(listAllReplacmentRevers);
+
+                }
             }
 
 
@@ -614,7 +661,8 @@ public class ExportData {
 
                     Log.e("listAllZoneRep",listAllZoneRep.size()+"");
 
-                 if(activityflage==2)   datarespon.setText("exported");
+                 if(activityflage==2)
+                     datarespon.setText("exported");
           else {
                      exportrespon.setText("exported");
 
@@ -873,10 +921,10 @@ else{
                   if( !exportFromMainAct)
                       poststateRE.setText("exported");
                   else
-                      re_res.setText("exported");
+                  {    re_res.setText("exported");
 
 
-                  exportStockTakeList(listAllStock);
+                  exportStockTakeList(listAllStock);}
               }
 
               else
@@ -884,8 +932,11 @@ else{
               {
                   if( !exportFromMainAct)
                       poststateRE.setText("not");
-                  else
-                      re_res.setText("not");
+                   else
+                  { re_res.setText("not");
+                      exportStockTakeList(listAllStock);
+                  }
+
               }
 
 
@@ -893,7 +944,12 @@ else{
 
 
               } else {
+              if( !exportFromMainAct)
                   poststateRE.setText("not");
+              else
+              { re_res.setText("not");
+                  exportStockTakeList(listAllStock);
+              }
 
 
 
@@ -904,6 +960,129 @@ else{
 
       }
 
+    public class  JSONTask_AddReversReplacment extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+
+        List<ReplenishmentReverseModel> replacementList = new ArrayList<>();
+
+        public JSONTask_AddReversReplacment(List<ReplenishmentReverseModel> replacementList) {
+            this.replacementList = replacementList;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+
+            URLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    http:
+//localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrTransFer";
+
+
+                    Log.e("URL_TO_HIT", "" + link);
+                }
+            } catch (Exception e) {
+                //progressDialog.dismiss();
+                pdRepRev.dismissWithAnimation();
+
+            }
+
+            try {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost request = new HttpPost();
+                try {
+                    request.setURI(new URI(link));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
+                nameValuePairs.add(new BasicNameValuePair("JSONSTR", ReplacmentReverseObject.toString().trim()));
+                Log.e("JSONSTR", ReplacmentReverseObject.toString());
+                request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                HttpResponse response = client.execute(request);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                JsonResponse = sb.toString();
+                Log.e("JsonResponse", "Expor Replacement" + JsonResponse);
+
+
+            } catch (Exception e) {
+            }
+            return JsonResponse;
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            super.onPostExecute(result);
+//            progressDialog.dismiss();
+            Log.e("JSONTaskAddRepReverse", "" + result);
+            pdRepRev.dismissWithAnimation();
+
+            if (result != null && !result.equals("")) {
+                if (result.contains("Saved Successfully")) {
+                    //  poststateRE.setText("exported");
+
+                   if(!exportFromMainAct2)
+                       RepRev_exportstate.setText("exported");
+
+             else  RepRevExportsatate.setText("exported");
+
+
+
+                }
+                else
+                {
+
+
+                    if(!exportFromMainAct2)
+                        RepRev_exportstate.setText("not");
+                    else
+                        RepRevExportsatate.setText("not");
+                }
+
+
+
+
+
+            } else {
+
+                if(!exportFromMainAct2)
+                    RepRev_exportstate.setText("not");
+                else
+                    RepRevExportsatate.setText("not");
+
+            }
+
+
+        }
+
+    }
 
   }
 

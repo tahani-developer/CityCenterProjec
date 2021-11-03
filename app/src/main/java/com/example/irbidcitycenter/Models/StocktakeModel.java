@@ -33,6 +33,16 @@ public class StocktakeModel {
     String ItemName;
     @ColumnInfo(name = "DEVICEID")
     String deviceId;
+    @ColumnInfo(name = "StoreName" ,defaultValue = "")
+    String StoreName;
+
+    public String getStoreName() {
+        return StoreName;
+    }
+
+    public void setStoreName(String storeName) {
+        StoreName = storeName;
+    }
 
     public String getDeviceId() {
         return deviceId;

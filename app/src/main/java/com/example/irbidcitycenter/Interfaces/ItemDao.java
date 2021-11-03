@@ -1,5 +1,7 @@
 package com.example.irbidcitycenter.Interfaces;
 
+import android.content.ClipData;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -21,5 +23,7 @@ public interface ItemDao {
 
     @Query("Delete FROM ITEM_TABLE")
   void deleteall();
+    @Query("SELECT * FROM ITEM_TABLE WHERE ITEMOCODE= :itemcode ")
+  AllItems getitem(String itemcode);
 
 }

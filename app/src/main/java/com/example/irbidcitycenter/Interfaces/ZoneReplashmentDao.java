@@ -40,8 +40,8 @@ public interface ZoneReplashmentDao {
 
     @Query("SELECT * FROM ZONEREPLASHMENT_TABLE WHERE ISPOSTED='0'")
     public List<ZoneReplashmentModel>  getAllZonesUnposted();
-    @Query("SELECT SUM(Qty) FROM ZONEREPLASHMENT_TABLE WHERE ToZone= :barcode AND ISPOSTED='0'")
-    public int  GetQtyOfZone(String barcode);
+    @Query("SELECT SUM(CAST(Qty AS LONG)) FROM ZONEREPLASHMENT_TABLE WHERE ToZone= :barcode AND ISPOSTED='0'")
+    public  long  GetQtyOfZone(String barcode);
     @Query("SELECT DISTINCT ToZone FROM ZONEREPLASHMENT_TABLE WHERE ISPOSTED='0'")
     public List<String> getZonesUnposted();
     @Query("DELETE FROM ZONEREPLASHMENT_TABLE WHERE ToZone= :barcode AND ISPOSTED='0'")
@@ -57,6 +57,6 @@ public interface ZoneReplashmentDao {
     int setposted();
 
 
-    @Query("SELECT SUM(Qty) FROM ZONEREPLASHMENT_TABLE WHERE FromZone= :fromzone AND ItemCode= :itembarcode AND ISPOSTED='0'")
-    public int  getQTYofItem(String fromzone,String itembarcode);
+    @Query("SELECT SUM(CAST(Qty AS LONG)) FROM ZONEREPLASHMENT_TABLE WHERE FromZone= :fromzone AND ItemCode= :itembarcode AND ISPOSTED='0'")
+    public  long  getQTYofItem(String fromzone,String itembarcode);
 }

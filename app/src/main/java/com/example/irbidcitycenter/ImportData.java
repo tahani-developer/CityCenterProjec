@@ -14,9 +14,12 @@ import com.example.irbidcitycenter.Activity.Login;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
+import com.example.irbidcitycenter.Activity.ReplenishmentReverse;
 import com.example.irbidcitycenter.Activity.Stoketake;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.CompanyInfo;
+import com.example.irbidcitycenter.Models.ItemInfo;
+import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -51,6 +54,9 @@ import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
+import static com.example.irbidcitycenter.Activity.ItemChecker.ItC_itemcode;
+import static com.example.irbidcitycenter.Activity.ItemChecker.itemRES;
+import static com.example.irbidcitycenter.Activity.ItemChecker.stockqrtRes;
 import static com.example.irbidcitycenter.Activity.Login.getListCom;
 import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
@@ -64,17 +70,17 @@ import static com.example.irbidcitycenter.Activity.Replacement.zone;
 
 import static com.example.irbidcitycenter.Activity.Stoketake.AllstocktakeDBlist;
 
-import static com.example.irbidcitycenter.Activity.Stoketake.Itemrespons;
+import static com.example.irbidcitycenter.Activity.Stoketake.St_Itemrespons;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.RZ_itemcode;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_itemkind;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_respon;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromZoneRepActivity;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromzone;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
-import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
 public class ImportData {
+    public static  int actvityflage=1;
     SweetAlertDialog pdVoucher;
     public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
     public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
@@ -92,10 +98,12 @@ public class ImportData {
     public static ArrayList<String> BoxNolist = new ArrayList<>();
     public static ArrayList<String> PoNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
+    public static List<ReplacementModel> stocksQty = new ArrayList<>();
     public static List<ZoneModel>  listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
     public static String  barcode="";
     public static List<AllItems> AllImportItemlist = new ArrayList<>();
+    public static List<ItemInfo> itemInfos = new ArrayList<>();
     public  JSONArray jsonArrayPo;
     public  JSONObject stringNoObject;
 
@@ -105,7 +113,8 @@ public class ImportData {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private int max=50;
-   public SweetAlertDialog pdUserPer;
+   public static SweetAlertDialog pdUserPer,pditeminfo,storeinfo,zoneinfo;
+    private int timer=1;
 
     private void showProgressDialogWithTitle(String title,String substring) {
         progressDialog.setTitle(title);
@@ -175,6 +184,13 @@ public class ImportData {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
 
+    public void GetItemCountInSTR(){
+        stocksQty.clear();
+        if(!ipAddress.equals(""))
+            new JSONTask_GetItemCountInSTR().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+    }
     public void getUserPermissions(){
         UserPermissions.clear();
         pdUserPer = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
@@ -193,10 +209,23 @@ public class ImportData {
         AllImportItemlist.clear();
         progressDialog = new ProgressDialog(context);
         Log.e("context",context.getClass().getName().toString());
-        showProgressDialogWithTitle("Importing Data","Please Wait");
+       showProgressDialogWithTitle("Importing Data","Please Wait");
         AllstocktakeDBlist.clear();
         if(!ipAddress.equals(""))
             new  JSONTask_getAllItems().execute();
+        else
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getItemInfo(){
+        pditeminfo = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pditeminfo.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        pditeminfo.setTitleText(" Start get Items Info");
+        pditeminfo.setCancelable(false);
+        pditeminfo.show();
+
+        if(!ipAddress.equals(""))
+            new  JSONTask_getItemInfo().execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
@@ -206,6 +235,12 @@ public class ImportData {
 
     }
     public void getStore() {
+        storeinfo = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        storeinfo.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        storeinfo.setTitleText(" Start get Stores Info");
+        storeinfo.setCancelable(false);
+        storeinfo.show();
+
         if(!ipAddress.equals(""))
         new JSONTask_getAllStoreData().execute();
         else
@@ -239,6 +274,12 @@ else
 
     }
     public  void getAllZones(){
+        zoneinfo = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        zoneinfo.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        zoneinfo.setTitleText(" Start get Zones Info");
+        zoneinfo.setCancelable(false);
+
+        zoneinfo.show();
         if(!ipAddress.equals(""))
         {
             new JSONTask_getAllZoneCode().execute();
@@ -738,7 +779,7 @@ Log.e("Exception===",e.getMessage());
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-
+               zoneinfo.dismiss();
             }
 
             try {
@@ -786,7 +827,7 @@ Log.e("Exception===",e.getMessage());
             {
                 ex.printStackTrace();
 //                progressDialog.dismiss();
-
+                zoneinfo.dismiss();
                 Handler h = new Handler(Looper.getMainLooper());
                 h.post(new Runnable() {
                     public void run() {
@@ -804,6 +845,7 @@ Log.e("Exception===",e.getMessage());
                 e.printStackTrace();
                 Log.e("Exception", "" + e.getMessage());
 //                progressDialog.dismiss();
+                zoneinfo.dismiss();
                 return null;
             }
 
@@ -815,7 +857,7 @@ Log.e("Exception===",e.getMessage());
         @Override
         protected void onPostExecute(JSONArray array) {
             super.onPostExecute(array);
-
+            zoneinfo.dismiss();
             JSONObject result = null;
 
 
@@ -1174,6 +1216,7 @@ Log.e("Exception===",e.getMessage());
                     }
                 } catch (Exception e) {
                     Log.e("getAllSto", e.getMessage());
+                    storeinfo.dismiss();
                 }
 
                 try {
@@ -1224,6 +1267,7 @@ Log.e("Exception===",e.getMessage());
                         public void run() {
 
                             Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
+                            storeinfo.dismiss();
                         }
                     });
 
@@ -1232,6 +1276,7 @@ Log.e("Exception===",e.getMessage());
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("Exception", "" + e.getMessage());
+                    storeinfo.dismiss();
 //                progressDialog.dismiss();
                     return null;
                 }
@@ -1244,7 +1289,7 @@ Log.e("Exception===",e.getMessage());
             @Override
             protected void onPostExecute(String array) {
                 super.onPostExecute(array);
-
+                storeinfo.dismiss();
                 JSONObject jsonObject1 = null;
                 if (array != null) {
                     if (array.contains("STORENO")) {
@@ -1263,9 +1308,13 @@ Log.e("Exception===",e.getMessage());
 
                                         Storelist.add(store);
                                     }
-                              if( Replacement.actvityflage==1)      Replacement.respon.setText("fill");
-                              else
+                              if( Replacement.actvityflage==1)
+                                  Replacement.respon.setText("fill");
+                              else if(Replacement.actvityflage==3)
+                                  ReplenishmentReverse.RepRev_storrespon.setText("fill");
+                                  else
                                   Stoketake.respone.setText("fill");
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -1278,8 +1327,12 @@ Log.e("Exception===",e.getMessage());
                     }
                 } else {
 
-                    if( Replacement.actvityflage==1)     Replacement.respon.setText("nodata");
-                   else  Stoketake.respone.setText("fill");
+                    if( Replacement.actvityflage==1)
+                        Replacement.respon.setText("nodata");
+
+                    else if(Replacement.actvityflage==3)  ReplenishmentReverse.RepRev_storrespon.setText("nodata");
+                       else
+                           Stoketake.respone.setText("fill");
 
                 }
             }
@@ -1590,7 +1643,8 @@ Log.e("Exception===",e.getMessage());
         }
 
     }
-    private class  JSONTask_getAllItems extends AsyncTask<String, String, String> {
+
+    private class  JSONTask_getItemInfo extends AsyncTask<String, String, String> {
 
         private String custId = "", JsonResponse;
 
@@ -1599,6 +1653,202 @@ Log.e("Exception===",e.getMessage());
             super.onPreExecute();
             String do_ = "my";
             Log.e("onPreExecute", "onPreExecute");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetInfo?CONO=" + CONO.trim()+"&ITEMCODE="+ItC_itemcode.getText().toString().trim();
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("Exception",""+e.getMessage());
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        //  pdVoucher.dismissWithAnimation();
+                        //hide Progressbar after finishing process
+                        pditeminfo.dismiss();
+                        Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+//                JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+                pditeminfo.dismiss();
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        pditeminfo.dismiss();
+                       // hideProgressDialogWithTitle();
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+             //   hideProgressDialogWithTitle();
+             pditeminfo.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String respon) {
+            super.onPostExecute(respon);
+            String d="";
+            JSONObject jsonObject1 = null;
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                public void run() {
+
+                    pditeminfo.dismiss();
+                }
+            });
+
+
+            if (respon != null) {
+                if (respon.contains("ITEMCODE")) {
+
+                    if (respon.length() != 0) {
+                        try {
+
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(respon);
+
+                            for (int i = 0; i < requestArray.length(); i++) {
+
+                               ItemInfo itemInfo= new ItemInfo ();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                itemInfo.setItemcode(jsonObject1.getString("ITEMCODE"));
+                                itemInfo.setITEMNAME(jsonObject1.getString("ITEMNAME"));
+                                itemInfo.setTAXPERC(jsonObject1.getString("TAXPERC"));
+                                itemInfo.setAVGCOST(jsonObject1.getString("AVGCOST"));
+
+                                itemInfo.setSALEPRICE(jsonObject1.getString("SALEPRICE"));
+                                itemInfo.setLLCPRICE(jsonObject1.getString("LLCPRICE"));
+                                itemInfo.setF_D(jsonObject1.getString("F_D"));
+                                itemInfo.setLASTSPRICE(jsonObject1.getString("LASTSPRICE"));
+
+
+                                itemInfo.setBUYERGGROUP(jsonObject1.getString("BUYERGGROUP"));
+                                itemInfo.setDIVISION(jsonObject1.getString("DIVISION"));
+                                itemInfo.setSUBDIVISION(jsonObject1.getString("SUBDIVISION"));
+                                itemInfo.setCLASS(jsonObject1.getString("CLASS"));
+
+                                itemInfo.setSSIZE(jsonObject1.getString("SSIZE"));
+                                itemInfo.setSEASON(jsonObject1.getString("SEASON"));
+                                itemInfo.setSTYLECODE(jsonObject1.getString("STYLECODE"));
+                                itemInfo.setSECTION(jsonObject1.getString("SECTION"));
+
+
+                                itemInfo.setBRANDNAME(jsonObject1.getString("BRANDNAME"));
+                                itemInfo.setCOLORNAME(jsonObject1.getString("COLORNAME"));
+                                itemInfo.setLENGTH(jsonObject1.getString("LENGTH"));
+                                itemInfo.setCOLORCODE(jsonObject1.getString("COLORCODE"));
+
+                                itemInfo.setZONE(jsonObject1.getString("ZONE"));
+                                itemInfo.setSHELF(jsonObject1.getString("SHELF"));
+
+
+
+                                itemInfos .add(itemInfo);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+
+                    itemRES.setText("ItemOCode");
+
+
+                }
+                else {
+
+                    itemRES.setText("nodata");
+
+
+                }
+
+            }
+            else {
+                itemRES.setText("NoInterNet");
+
+            }
+        }
+
+
+    }
+
+    private class  JSONTask_getAllItems extends AsyncTask<String, String, String> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+                      Log.e("onPreExecute", "onPreExecute");
         }
 
         @Override
@@ -1620,7 +1870,7 @@ Log.e("Exception===",e.getMessage());
                       //  pdVoucher.dismissWithAnimation();
                         //hide Progressbar after finishing process
                         hideProgressDialogWithTitle();
-                        Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -1716,7 +1966,32 @@ Log.e("Exception===",e.getMessage());
                                AllItems allItems= new  AllItems ();
                                 jsonObject1 = requestArray.getJSONObject(i);
                                 allItems.setItemOcode(jsonObject1.getString("ItemOCode"));
-                                allItems.setItemName(jsonObject1.getString("ItemNameA"));
+                                allItems.setItemNCode(jsonObject1.getString("ItemNCode"));
+                                allItems.setItemNameE(jsonObject1.getString("ItemNameE"));
+                                allItems.setItemNameA(jsonObject1.getString("ItemNameA"));
+
+
+
+                                allItems.setSalePrice(jsonObject1.getString("SalePrice"));
+                                allItems.setLFCPrice(jsonObject1.getString("LFCPrice"));
+                                allItems.setLLCPrice(jsonObject1.getString("LLCPrice"));
+
+
+                                allItems.setOrdLvl(jsonObject1.getString("OrdLvl"));
+                                allItems.setAVG_Cost(jsonObject1.getString("AVG_Cost"));
+                                allItems.setLifo(jsonObject1.getString("Lifo"));
+                                allItems.setFifo(jsonObject1.getString("Fifo"));
+                                allItems.setItemG(jsonObject1.getString("ItemG"));
+
+                                allItems.setItemK(jsonObject1.getString("ItemK"));
+                                allItems.setItemM(jsonObject1.getString("ItemM"));
+                                allItems.setItemU(jsonObject1.getString("ItemU"));
+                                allItems.setItemL(jsonObject1.getString("ItemL"));
+
+                                allItems.setIStatus(jsonObject1.getString("IStatus"));
+                                allItems.setF_D(jsonObject1.getString("F_D"));
+                                allItems.setITEMGS(jsonObject1.getString("ITEMGS"));
+
                              AllImportItemlist.add(allItems);
                             }
 
@@ -1728,7 +2003,7 @@ Log.e("Exception===",e.getMessage());
                     }
 
              if(MainActivity.Items_activityflage==1)       itemrespons.setText("ItemOCode");
-            else        Itemrespons.setText("ItemOCode");
+            else        St_Itemrespons.setText("ItemOCode");
 
                     Log.e("itemrespons",itemrespons.getText().toString()+d);
 
@@ -1737,14 +2012,15 @@ Log.e("Exception===",e.getMessage());
                 else {
 
                     if(MainActivity.Items_activityflage==1)  itemrespons.setText("nodata");
-                    else    Itemrespons.setText("nodata");
+                    else    St_Itemrespons.setText("nodata");
 
                 }
 
             }
             else {
-                if(MainActivity.Items_activityflage==1)    itemrespons.setText("nodata");
-                else    Itemrespons.setText("nodata");
+                if(MainActivity.Items_activityflage==1)
+                    itemrespons.setText("nodata");
+                else    St_Itemrespons.setText("nodata");
             }
         }
 
@@ -2068,13 +2344,13 @@ Log.e("Exception===",e.getMessage());
             catch (HttpHostConnectException ex) {
                 ex.printStackTrace();
 //                progressDialog.dismiss();
-
+                pdUserPer.dismiss();
                 Handler h = new Handler(Looper.getMainLooper());
                 h.post(new Runnable() {
                     public void run() {
 
                         Toast.makeText(context, "Ip Connection Failed ", Toast.LENGTH_LONG).show();
-                        pdUserPer.dismiss();
+
                     }
                 });
 
@@ -2135,7 +2411,7 @@ Log.e("Exception===",e.getMessage());
 
                             requestDetail.setRep_Open(infoDetail.get("ROPEN").toString());
                             requestDetail.setRep_Save(infoDetail.get("RSAVE").toString());
-                            requestDetail.setAddZone_LocalDelete(infoDetail.get("RDELETE").toString());
+                            requestDetail.setRep_LocalDelete(infoDetail.get("RDELETE").toString());
 
 
 
@@ -2180,6 +2456,149 @@ Log.e("Exception===",e.getMessage());
                 Login.  UserperRespons.setText("NetworkError");
             }
         }
+    }
+
+    private class JSONTask_GetItemCountInSTR extends AsyncTask<String, String, String> {
+
+        private String custId = "", JsonResponse;
+        Shipment shipment;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    http://10.0.0.22:8085/IrGetItemCountInSTR?CONO=305&ITEMCODE=8031295530769
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemCountInSTR?CONO=" + CONO.trim() + "&ITEMCODE=" + ItC_itemcode.getText().toString().trim();
+
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("", e.getMessage());
+            }
+
+//                } catch (Exception e) {
+//            Log.e("getAllPOdetails",e.getMessage());
+//                }
+//
+            try {
+//
+//                //*************************************
+//
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                //JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String array) {
+            super.onPostExecute(array);
+
+            JSONObject jsonObject1 = null;
+
+            if (array != null) {
+                if (array.length() != 0) {
+                    if (array.contains("Stock_Code")) {
+
+
+                        try {
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(array);
+
+                            for (int i = 0; i < requestArray.length(); i++) {
+
+                                ReplacementModel replacementModel= new ReplacementModel();
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                replacementModel.setFrom(jsonObject1.getString("Stock_Code"));
+                                replacementModel.setFromName(jsonObject1.getString("Stock_NameA"));
+                                replacementModel.setRecQty(jsonObject1.getString("QTY"));
+                                stocksQty.add(replacementModel);
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        stockqrtRes.setText("Stock_Code");
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            else{
+
+            }
+
+        }
+
     }
 }
 

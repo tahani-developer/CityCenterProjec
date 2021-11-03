@@ -104,7 +104,7 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
 
 
                         //set qty of zone
-                        int sumqty = my_dataBase.zoneDao().GetQtyOfZone(items.get(position));
+                        long sumqty = my_dataBase.zoneDao().GetQtyOfZone(items.get(position));
                      AddZone.qty1.setText(sumqty + "");
 
 
@@ -178,7 +178,7 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                     ZR_DZzonebarecodehow.setText(  ZR_DZzonecode.getText().toString());
 
                     //set qty of zone
-                    int sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
+                    long sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
                     ZR_DZqtyshow.setText(sumqty + "");
                     ZoneReplacment.searchdialog .dismiss();
 

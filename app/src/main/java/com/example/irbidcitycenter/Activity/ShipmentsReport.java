@@ -37,11 +37,12 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 public class ShipmentsReport extends AppCompatActivity {
 TextView  SH_date,total_qty_text;
     Calendar myCalendar;
-    EditText search_edt;
-    Button perview;
+    EditText search_edt,PONO_edt;
+    Button perview ,ponoperview;
     List<Shipment> shipments;
     public RoomAllData my_dataBase;
     ListView listView;
+    private List<Shipment> PoNoShlist=new ArrayList<>();
     private List<Shipment> searchlist=new ArrayList<>();
     private List<Shipment> allShipmentslist=new ArrayList<>();
     @Override
@@ -51,11 +52,36 @@ TextView  SH_date,total_qty_text;
         init();
         myCalendar = Calendar.getInstance();
 
-allShipmentslist=my_dataBase.shipmentDao().getallShipment();
+allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
         SH_date.setText(today);
+        ponoperview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!PONO_edt.getText().toString().trim().equals(""))
+                {
+
+                    PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbyPONO(PONO_edt.getText().toString().trim());
+
+               if(PoNoShlist!=null&& PoNoShlist.size()!=0) {
+                   fillAdapterData(PoNoShlist);
+                   CalculateSum(  PoNoShlist);
+               }
+
+                else {
+                   Toast.makeText(ShipmentsReport.this, "No Data for this po", Toast.LENGTH_SHORT).show();
+                   PoNoShlist=new ArrayList<>();
+                   fillAdapterData(PoNoShlist);
+
+               }
+                }
+                else{
+                    PONO_edt.setError("Empty");
+                }
+            }
+        });
         SH_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +129,8 @@ allShipmentslist=my_dataBase.shipmentDao().getallShipment();
 
         }};
     private void init() {
+        ponoperview=findViewById(R.id.PONO_preview);
+        PONO_edt=findViewById(R.id.PONUMBER);
         search_edt=findViewById(R.id.search_edt);
         my_dataBase = RoomAllData.getInstanceDataBase(ShipmentsReport.this);
         total_qty_text=findViewById(R.id.total_qty_text);
@@ -184,7 +212,11 @@ allShipmentslist=my_dataBase.shipmentDao().getallShipment();
            // tableRow.setVisibility(View.VISIBLE);
             }
         else
-        { //tableRow.setVisibility(View.GONE);
+        {
+            searchlist=new ArrayList<>();
+            fillAdapterData(searchlist);
+            total_qty_text.setText("");
+            //tableRow.setVisibility(View.GONE);
 
           //  search_edt.setText("");
          }
@@ -197,9 +229,9 @@ allShipmentslist=my_dataBase.shipmentDao().getallShipment();
         listView.setAdapter(reportAdapter);
     }
     private void CalculateSum(List<Shipment> Shipmentslist){
-        int sum=0;
+       long sum=0;
         for(int i = 0; i< Shipmentslist.size(); i++)
-            sum+=Integer.parseInt(Shipmentslist.get(i).getQty());
+            sum+= Long.parseLong(Shipmentslist.get(i).getQty());
 
         total_qty_text.setText(sum+"");
     }
