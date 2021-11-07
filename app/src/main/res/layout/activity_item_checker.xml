@@ -22,13 +22,13 @@
             android:visibility="gone">
 
         </TextView>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="2"
             android:gravity="center"
-
             android:padding="3dp"
             android:text="@string/itemCode"
             android:textColor="@color/dark_blue_3"
@@ -38,7 +38,7 @@
             android:id="@+id/ItC_itemcode"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@drawable/back_border_edit"
             android:elevation="2dp"
@@ -64,20 +64,21 @@
             android:visibility="invisible" />
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.2"
         android:background="@drawable/shap"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="3dp"
 
             android:layout_margin="5dp"
             android:layout_weight=".5"
-            android:orientation="horizontal">
-        </LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -116,7 +117,7 @@
                         android:layout_gravity="center|bottom"
                         android:layout_weight="1"
                         android:padding="2dp"
-                        android:text="Item details"
+                        android:text="@string/item_details"
                         android:textColor="@color/dark_blue_3"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -157,7 +158,7 @@
                         android:id="@+id/ITC_ITEMNAME1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -220,7 +221,7 @@
                         android:id="@+id/ITC_TAXPERC"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -282,7 +283,7 @@
                         android:id="@+id/SALEPRICE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -350,7 +351,7 @@
                         android:id="@+id/ITC_AVGCOST"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -390,7 +391,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:layout_margin="5dp"
                     android:layout_weight=".5"
                     android:orientation="horizontal">
@@ -412,7 +412,7 @@
                         android:id="@+id/ITC_LLCPRICE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -464,7 +464,7 @@
                         android:id="@+id/ITC_F_D"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -515,7 +515,7 @@
                         android:id="@+id/ITC_LASTSPRICE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -566,7 +566,7 @@
                         android:id="@+id/ITC_BUYERGGROUP"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -617,7 +617,7 @@
                         android:id="@+id/ITC_DIVISION"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -668,7 +668,7 @@
                         android:id="@+id/ITC_SUBDIVISION"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -719,7 +719,7 @@
                         android:id="@+id/ITC_CLASS"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -770,7 +770,7 @@
                         android:id="@+id/ITC_SSIZE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -821,7 +821,7 @@
                         android:id="@+id/ITC_SEASON"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -872,7 +872,7 @@
                         android:id="@+id/ITC_STYLECODE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -923,7 +923,7 @@
                         android:id="@+id/ITC_SECTION"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -974,7 +974,7 @@
                         android:id="@+id/ITC_BRANDNAME"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1025,7 +1025,7 @@
                         android:id="@+id/ITC_COLORNAME"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1076,7 +1076,7 @@
                         android:id="@+id/ITC_LENGTH"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1127,7 +1127,7 @@
                         android:id="@+id/ITC_COLORCODE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1178,7 +1178,7 @@
                         android:id="@+id/ITC_ZONE"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1229,7 +1229,7 @@
                         android:id="@+id/ITC_SHELF"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -1319,6 +1319,7 @@
 
                     </androidx.recyclerview.widget.RecyclerView>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -1336,9 +1337,9 @@
 
             android:layout_margin="5dp"
             android:layout_weight=".5"
-            android:orientation="horizontal">
-        </LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -1351,7 +1352,6 @@
 
         <Button
             android:id="@+id/ST_save"
-            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="3dp"
@@ -1360,7 +1360,8 @@
             android:gravity="center"
             android:text="@string/save"
             android:textAllCaps="false"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/ITC_cancel"
@@ -1390,11 +1391,11 @@
             android:background="@drawable/delete_button"
             android:elevation="15dp"
             android:gravity="center"
-            android:visibility="invisible"
             android:text="@string/deletebut"
             android:textAllCaps="false"
             android:textColor="@color/dark_blue_3"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="invisible" />
 
     </LinearLayout>
 </LinearLayout>

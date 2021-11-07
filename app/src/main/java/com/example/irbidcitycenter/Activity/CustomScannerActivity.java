@@ -16,7 +16,9 @@ import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.ViewfinderView;
 
 import java.util.Random;
-public class CustomScannerActivity{}
+
+public class CustomScannerActivity {
+}
 //public class CustomScannerActivity extends Activity implements
 //        DecoratedBarcodeView.TorchListener {
 //

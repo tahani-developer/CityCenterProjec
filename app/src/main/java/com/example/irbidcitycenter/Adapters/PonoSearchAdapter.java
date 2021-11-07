@@ -20,12 +20,12 @@ import java.util.ArrayList;
 
 import static com.example.irbidcitycenter.Activity.NewShipment.dialog2;
 
-public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.SearchViewHolder1 >{
+public class PonoSearchAdapter extends RecyclerView.Adapter<PonoSearchAdapter.SearchViewHolder1> {
     private ArrayList<String> list;
     Context shipment;
     GeneralMethod generalMethod;
 
-    public PonoSearchAdapter(Context shipment,ArrayList<String> list) {
+    public PonoSearchAdapter(Context shipment, ArrayList<String> list) {
         this.list = list;
         this.shipment = shipment;
     }
@@ -34,7 +34,7 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
     @Override
     public SearchViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pono_listitem, parent, false);
-        return new PonoSearchAdapter .SearchViewHolder1(view);
+        return new PonoSearchAdapter.SearchViewHolder1(view);
     }
 
     @Override
@@ -59,14 +59,14 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
             super(itemView);
             ponumber = itemView.findViewById(R.id.po);
 
-           ponumber.setOnClickListener(new View.OnClickListener() {
+            ponumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                   final Dialog dialog = new Dialog(shipment);
+                    final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.confirm_pono_insearch);
-                    Button cancel=dialog.findViewById(R.id.cancel);
+                    Button cancel = dialog.findViewById(R.id.cancel);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -77,16 +77,16 @@ public class PonoSearchAdapter  extends RecyclerView.Adapter<PonoSearchAdapter.S
 
 
                     dialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            NewShipment.ponotag = ponumber.getTag().toString();
-                            NewShipment.colsedialog(2);
-                            NewShipment.fillPoEdittext();
-                            dialog.dismiss();
+                                                                        @Override
+                                                                        public void onClick(View view) {
+                                                                            NewShipment.ponotag = ponumber.getTag().toString();
+                                                                            NewShipment.colsedialog(2);
+                                                                            NewShipment.fillPoEdittext();
+                                                                            dialog.dismiss();
 
 
-                        }
-                    }
+                                                                        }
+                                                                    }
                     );
                     dialog.show();
                     dialog.setCanceledOnTouchOutside(true);

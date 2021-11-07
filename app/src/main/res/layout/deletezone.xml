@@ -212,7 +212,7 @@
             android:id="@+id/DZ_dialogsave"
             android:layout_width="20dp"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:background="@drawable/done_button"
             android:text="@string/save"
             android:layout_weight="1"

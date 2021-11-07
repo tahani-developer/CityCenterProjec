@@ -8,17 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+
         <TextView
             android:id="@+id/cancel7"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="8"
-            android:drawableEnd="@drawable/ic_baseline_clear_24"/>
+            app:drawableEndCompat="@drawable/ic_baseline_clear_24" />
 
      </LinearLayout>
     <LinearLayout
@@ -56,7 +51,7 @@
             android:maxLines="1"
             android:padding="1dp"
             android:layout_height="match_parent"
-            android:hint="UserNumber">
+            android:hint="@string/userNum">
 
         </EditText>
 
@@ -76,12 +71,12 @@
         <EditText
             android:id="@+id/pass1"
             android:layout_width="match_parent"
-            android:padding="1dp"
-            android:maxLines="1"
             android:layout_height="match_parent"
-            android:hint="password"
+            android:hint="@string/prompt_password"
             android:inputType="numberPassword"
-            />
+            android:maxLines="1"
+            android:padding="1dp"
+            android:textAlignment="viewStart"/>
 
     </LinearLayout>
     <LinearLayout

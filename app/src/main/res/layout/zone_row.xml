@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -8,8 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="3dp"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="3dp">
 
         <TextView
             android:id="@+id/zoneCode"
@@ -17,59 +18,57 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:textColor="@color/colorPrimary"
             android:gravity="center"
-            android:textSize="15sp"
-            android:text="@string/ZoneCode" />
+            android:text="@string/ZoneCode"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/itemCode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
             android:layout_margin="2dp"
-            android:textSize="15sp"
             android:layout_weight="1"
-            android:textColor="@color/colorPrimary"
             android:gravity="center"
-            android:text="@string/itemCode" />
-
+            android:text="@string/itemCode"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp" />
 
 
         <EditText
             android:id="@+id/qtyZone"
-            android:maxLines="1"
             android:layout_width="0dp"
-            android:background="@drawable/qtyedittext"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:inputType="number"
-            android:textColor="@color/colorPrimary"
-            android:textSize="15sp"
             android:layout_weight="1"
-            android:gravity="center"
+            android:background="@drawable/qtyedittext"
             android:enabled="false"
-            />
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp" />
+
         <TextView
             android:id="@+id/remove"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="15sp"
-            android:visibility="invisible"
-            android:textColor="@color/colorPrimary"
             android:drawableEnd="@drawable/ic_baseline_close_24"
-           />
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            android:visibility="invisible" />
     </LinearLayout>
+
     <TextView
 
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_weight="1"
-        android:gravity="center"
         android:layout_margin="3dp"
-     android:background="@color/yelow"/>
+        android:layout_weight="1"
+        android:background="@color/yelow"
+        android:gravity="center" />
 
 </LinearLayout>

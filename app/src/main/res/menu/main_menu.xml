@@ -1,55 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-  >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <group>
 
         <item
             android:id="@+id/menu_setting"
-            android:title="@string/setting"
             android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/setting"
             app:showAsAction="always" />
 
 
         <item
             android:id="@+id/menu_export"
-            android:title="@string/export"
-            app:showAsAction="always"
             android:icon="@drawable/ic_arrow_export_black_24dp"
-            />
+            android:title="@string/export"
+            app:showAsAction="always" />
 
         <item
             android:id="@+id/menu_import"
-            android:title="@string/Import"
-            app:showAsAction="always"
             android:icon="@drawable/ic_baseline_arrow_downward_24"
-            />
+            android:title="@string/Import"
+            app:showAsAction="always" />
         <item
             android:id="@+id/Reports"
-            android:title="@string/Reports"
-            app:showAsAction="always"
             android:icon="@drawable/ic_baseline_description_24"
-            >
+            android:title="@string/Reports"
+            app:showAsAction="always">
             <menu>
                 <item
                     android:id="@+id/shipmentReports"
-                    android:title="@string/shipmentReport"
-                    app:showAsAction="always"
                     android:icon="@drawable/ic_baseline_description_24"
-                 />
+                    android:title="@string/shipmentReport"
+                    app:showAsAction="always" />
                 <item
                     android:id="@+id/StocktakeReport"
-                    android:title="@string/StocktakeReport"
-                    app:showAsAction="always"
                     android:icon="@drawable/ic_baseline_description_24"
-                    />
+                    android:title="@string/StocktakeReport"
+                    app:showAsAction="always" />
 
             </menu>
 
         </item>
-
 
 
     </group>
@@ -58,9 +51,9 @@
 
         <item
             android:id="@+id/logout"
+            android:icon="@drawable/ic_logout"
             android:title="@string/logout"
-            app:showAsAction="always"
-            android:icon="@drawable/ic_info_outline_black_24dp"/>
+            app:showAsAction="always" />
 
 
     </group>
@@ -69,10 +62,34 @@
 
         <item
             android:id="@+id/menu_about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
             android:title="@string/about"
-            app:showAsAction="always"
-            android:icon="@drawable/ic_info_outline_black_24dp"/>
+            app:showAsAction="always" />
 
+
+    </group>
+
+    <group android:id="@+id/languageGroup">
+
+        <item
+            android:id="@+id/language"
+            android:title="@string/language"
+            app:showAsAction="always">
+
+            <menu>
+                <item
+                    android:id="@+id/enLang"
+                    android:title="@string/english"
+                    app:showAsAction="always" />
+
+                <item
+                    android:id="@+id/arLang"
+                    android:title="@string/arabic"
+                    app:showAsAction="always" />
+
+            </menu>
+
+        </item>
 
     </group>
 

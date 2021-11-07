@@ -30,13 +30,13 @@ import static com.example.irbidcitycenter.Activity.NewShipment.db_boxsearchdialo
 import static com.example.irbidcitycenter.Activity.NewShipment.db_posearchdialog;
 import static com.example.irbidcitycenter.Activity.NewShipment.deleteBoxdialog;
 
-public class D_SH_boxsearchAdapter  extends BaseAdapter {
+public class D_SH_boxsearchAdapter extends BaseAdapter {
     private Context context; //context
     private List<String> items; //data source of the list adapter
     public RoomAllData my_dataBase;
 
     //public constructor
-    public D_SH_boxsearchAdapter (Context context, List<String> items) {
+    public D_SH_boxsearchAdapter(Context context, List<String> items) {
         this.context = context;
         this.items = items;
     }
@@ -75,15 +75,14 @@ public class D_SH_boxsearchAdapter  extends BaseAdapter {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(dailogNum==2){
+                if (dailogNum == 2) {
                     Db_boxedit.setText(items.get(position));
                     db_boxsearchdialog.dismiss();
                     Db_boxnumshow.setText(Db_boxedit.getText().toString().trim());
 
-                    Db_Itemcountediteshow.setText( ""+my_dataBase.shipmentDao().getsumofboxitemsqty( Dbsh_poedit.getText().toString().trim(),Db_boxedit.getText().toString().trim()));
+                    Db_Itemcountediteshow.setText("" + my_dataBase.shipmentDao().getsumofboxitemsqty(Dbsh_poedit.getText().toString().trim(), Db_boxedit.getText().toString().trim()));
 
-                }
-                else {
+                } else {
                     DIsh_boxedit.setText(items.get(position));
                     DIsh_poediteshow.setText("");
                     DIsh_boxcountediteshow.setText("");

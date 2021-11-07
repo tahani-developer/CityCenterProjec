@@ -1,529 +1,514 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layoutDirection="locale">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/layer7"
+        android:orientation="vertical">
+
+
         <LinearLayout
+            android:id="@+id/linearmain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/layer7"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="4"
+            android:elevation="2dp"
+            android:gravity="center"
             android:orientation="vertical">
 
 
             <LinearLayout
-                android:id="@+id/linearmain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:gravity="center"
+                android:layout_margin="5dp"
 
-                android:elevation="2dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-                android:orientation="vertical">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:padding="1dp"
+                    android:text="@string/ZoneCode"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
 
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:elevation="2dp"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:padding="1dp"
-                        android:text="@string/ZoneCode"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp" />
-
-                    <EditText
-                        android:id="@+id/editZoneCode"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/back_border_edit"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:textCursorDrawable="@color/red"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-
-                        />
-                    <TextView
-                        android:id="@+id/scanZoneCode"
-                        android:layout_width="0dp"
-                        android:visibility="gone"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:elevation="2dp"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:padding="3dp"
-                        android:onClick="ScanCode"
-
-
-
-                        app:drawableEndCompat="@drawable/ic_scan_black_24dp"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-                        app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
-                    <TextView
-                        android:id="@+id/zoneSearch"
-
-                        android:onClick="showZoneDialog"
-                        app:drawableEndCompat="@drawable/ic_baseline_search_24"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:gravity="top">
-
-                    </TextView>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/editZoneCode"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/back_border_edit"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textCursorDrawable="@color/red"
+                    android:textSize="14sp"
 
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
+                    />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
+                <TextView
+                    android:id="@+id/scanZoneCode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:onClick="ScanCode"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:drawableEndCompat="@drawable/ic_scan_black_24dp"
+                    app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
 
-                        android:text="@string/ZoneName"
+                <TextView
+                    android:id="@+id/zoneSearch"
 
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="top"
+                    android:onClick="showZoneDialog"
+                    app:drawableEndCompat="@drawable/ic_baseline_search_24">
 
-                    <TextView
-                        android:id="@+id/zoneName"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/back_without_border"
-
-                        android:elevation="2dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-                    <TextView
-                        android:id="@+id/sc"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:elevation="2dp"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:padding="3dp"
-                        android:onClick="ScanCode"
-                        android:visibility="invisible"
-
-
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-                  />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
-
-                        android:text="@string/itemCode"
-
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-
-                    <EditText
-                        android:id="@+id/editItemCode"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/back_border_edit"
-                        android:maxLines="1"
-                        android:inputType="text"
-
-                        android:textCursorDrawable="@color/red"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-                    <TextView
-                        android:id="@+id/scanItemCode"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:elevation="2dp"
-                        android:visibility="gone"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:padding="3dp"
-                        android:onClick="ScanCode"
-                      app:drawableEndCompat="@drawable/ic_scan_black_24dp"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-                        app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
-                    <TextView
-                        android:id="@+id/zon"
-                        android:onClick="showZoneDialog"
-                        android:visibility="invisible"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:gravity="top"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
-
-                        android:text="@string/Itemname"
-
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-
-                    <TextView
-                        android:id="@+id/itemName"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/back_without_border"
-                        android:elevation="2dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-                    <TextView
-                        android:id="@+id/scanItemCode222"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:elevation="2dp"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:padding="3dp"
-                        android:visibility="invisible"
-
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp" />
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
-                        android:text="@string/Qty"
-
-                        android:elevation="2dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-
-                    <EditText
-                        android:id="@+id/editQty"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/back_border_edit"
-                        android:textCursorDrawable="@color/red"
-                        android:maxLines="1"
-                        android:inputType="number"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"  />
-                    <EditText
-                        android:id="@+id/itemKintText"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:visibility="gone"
-                        android:layout_height="1dp" />
-                    <EditText
-                        android:id="@+id/exportStateText"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:visibility="gone"
-                        android:layout_height="1dp" />
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:elevation="2dp"
-                        android:gravity="center"
-                        android:inputType="text"
-                        android:visibility="invisible"
-                        android:padding="3dp"
-
-
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="14sp"
-                       />
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                    </TextView>
-                    <Button
-
-                        android:id="@+id/AD_nextZone"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="right"
-                        android:layout_weight="3"
-                        android:background="@drawable/back_border_edit"
-                        android:text="@string/nextZone"
-                        android:textAllCaps="false"
-                        android:textColor="@color/dark_blue_3"
-                        android:textSize="12sp" />
-
-
-
-                </LinearLayout>
+                </TextView>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/total_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="2.4"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-                android:elevation="2dp"
-                android:gravity="center"
-                android:orientation="vertical"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/ZoneName"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/zoneName"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/back_without_border"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/sc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:onClick="ScanCode"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+
+
+                    android:textSize="14sp"
+                    android:visibility="invisible" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/itemCode"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/editItemCode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/back_border_edit"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textCursorDrawable="@color/red"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/scanItemCode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:onClick="ScanCode"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:drawableEndCompat="@drawable/ic_scan_black_24dp"
+                    app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
+
+                <TextView
+                    android:id="@+id/zon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="top"
+                    android:onClick="showZoneDialog"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/Itemname"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/itemName"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/back_without_border"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/scanItemCode222"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+
+                    android:textSize="14sp"
+                    android:visibility="invisible" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="@string/Qty"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/editQty"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/back_border_edit"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+                    android:textCursorDrawable="@color/red"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/itemKintText"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/exportStateText"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:padding="3dp"
+                    android:textColor="@color/dark_blue_3"
+
+
+                    android:textSize="14sp"
+                    android:visibility="invisible" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                </TextView>
+
+                <Button
+
+                    android:id="@+id/AD_nextZone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_weight="3"
+                    android:background="@drawable/back_border_edit"
+                    android:text="@string/nextZone"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_blue_3"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/total_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2.4"
+
+            android:elevation="2dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="3dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back_border_dark"
                 android:padding="3dp">
 
-                <TableRow
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/back_border_dark"
-                    android:padding="3dp">
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/ZoneCode"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
-                    <TextView
-                        android:layout_width="0dp"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/itemCode"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Qty"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
-                        android:text="@string/ZoneCode"
-                        android:textColor="@color/white"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/itemCode"
-                        android:textColor="@color/white"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/Qty"
-                        android:textColor="@color/white"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/remove"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textColor="@color/white_dark"
-                        android:textSize="15sp"
+                <TextView
+                    android:id="@+id/remove"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/white_dark"
+                    android:textSize="15sp"
 
 
-                        />
+                    />
 
-                </TableRow>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.core.widget.NestedScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fillViewport="true">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recycleZone"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/background_container"
-                            android:padding="5dp">
-
-                        </androidx.recyclerview.widget.RecyclerView>
-                    </androidx.core.widget.NestedScrollView>
-                </LinearLayout>
-
-
-            </LinearLayout>
+            </TableRow>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="5.5"
-                android:gravity="center">
+                android:layout_height="match_parent">
 
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
 
-                <Button
-                    android:id="@+id/save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/done_button"
-                    android:elevation="5dp"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycleZone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/background_container"
+                        android:padding="5dp">
 
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="@string/save"
-
-                    android:textColor="@color/dark_blue_3"
-
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/cancel_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-
-                    android:layout_marginTop="3dp"
-                    android:layout_marginRight="55dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/cancel_button"
-                    android:elevation="5dp"
-                    android:gravity="center"
-                    android:onClick="exitAddZone"
-                    android:padding="5dp"
-                    android:text="@string/back"
-
-                    android:textColor="@color/red"
-
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-
-
-                    />
-
-                <Button
-                    android:id="@+id/delete_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/delete_button"
-                    android:elevation="5dp"
-                    android:gravity="center"
-                    android:onClick="exitAddZone"
-                    android:padding="5dp"
-                    android:text="@string/deletebut"
-                    android:textColor="@color/dark_blue_3"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-
-                    />
+                    </androidx.recyclerview.widget.RecyclerView>
+                </androidx.core.widget.NestedScrollView>
             </LinearLayout>
 
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="5.5"
+            android:gravity="center">
 
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/done_button"
+                android:elevation="5dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/save"
+                android:textColor="@color/dark_blue_3"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="55dp"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/cancel_button"
+                android:elevation="5dp"
+                android:gravity="center"
+                android:onClick="exitAddZone"
+                android:padding="5dp"
+                android:text="@string/back"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+
+                />
+
+            <Button
+                android:id="@+id/delete_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/delete_button"
+                android:elevation="5dp"
+                android:gravity="center"
+                android:onClick="exitAddZone"
+                android:padding="5dp"
+                android:text="@string/deletebut"
+                android:textColor="@color/dark_blue_3"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </RelativeLayout>

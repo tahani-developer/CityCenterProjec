@@ -15,11 +15,12 @@ import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
 
-public class RepReverseAdapter  extends RecyclerView.Adapter<RepReverseAdapter.replacementViewHolder> {
+public class RepReverseAdapter extends RecyclerView.Adapter<RepReverseAdapter.replacementViewHolder> {
     private List<ReplenishmentReverseModel> list;
     Context context;
     String newqty;
     public RoomAllData my_dataBase;
+
     public RepReverseAdapter(List<ReplenishmentReverseModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -49,29 +50,25 @@ public class RepReverseAdapter  extends RecyclerView.Adapter<RepReverseAdapter.r
         return list.size();
     }
 
-    class replacementViewHolder extends RecyclerView.ViewHolder{
-        TextView from,to,zone,itemcode ,itemqty;;
+    class replacementViewHolder extends RecyclerView.ViewHolder {
+        TextView from, to, zone, itemcode, itemqty;
+        ;
         TextView qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);
             my_dataBase = RoomAllData.getInstanceDataBase(context);
-            from=itemView.findViewById( R.id.from);
-            to=itemView.findViewById( R.id.to);
+            from = itemView.findViewById(R.id.from);
+            to = itemView.findViewById(R.id.to);
 
-            itemcode=(TextView) itemView.findViewById( R.id.itemcode);
-            qty=itemView.findViewById( R.id.tblqty);
-
-
-
-
+            itemcode = (TextView) itemView.findViewById(R.id.itemcode);
+            qty = itemView.findViewById(R.id.tblqty);
 
 
         }
 
 
-       }
-
+    }
 
 
 }

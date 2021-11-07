@@ -17,7 +17,7 @@ import java.util.List;
 public class ShipmentsReportAdapter extends BaseAdapter {
     private List<Shipment> list;
     Context context;
-    TextView pono,itemcode,boxno,qty,isnew,itemname;
+    TextView pono, itemcode, boxno, qty, isnew, itemname;
 
     public ShipmentsReportAdapter(List<Shipment> list, Context context) {
         this.list = list;
@@ -44,12 +44,12 @@ public class ShipmentsReportAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).
                     inflate(R.layout.shipmentreportrow, parent, false);
-                    pono=convertView.findViewById(R.id.textView_pono);
-                    itemcode=convertView.findViewById(R.id.textView_itemcode);
-                    boxno=convertView.findViewById(R.id.textView_boxno);
-                    qty=convertView.findViewById(R.id.textView_qty);
-                    isnew=convertView.findViewById(R.id.textView_isnew);
-                    itemname=convertView.findViewById(R.id.textView_itemname);
+            pono = convertView.findViewById(R.id.textView_pono);
+            itemcode = convertView.findViewById(R.id.textView_itemcode);
+            boxno = convertView.findViewById(R.id.textView_boxno);
+            qty = convertView.findViewById(R.id.textView_qty);
+            isnew = convertView.findViewById(R.id.textView_isnew);
+            itemname = convertView.findViewById(R.id.textView_itemname);
 
 
             pono.setText(list.get(i).getPoNo());
@@ -61,5 +61,6 @@ public class ShipmentsReportAdapter extends BaseAdapter {
 
 
         }
-        return   convertView;  }
+        return convertView;
+    }
 }

@@ -31,11 +31,12 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.itemn;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
-public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder > {
+public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder> {
     private List<ReplacementModel> list;
     Context context;
     String newqty;
     public RoomAllData my_dataBase;
+
     public ReplacementAdapter(List<ReplacementModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -54,7 +55,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.to.setText(list.get(position).getToName());
         holder.zone.setText(list.get(position).getZone());
         holder.itemcode.setText(list.get(position).getItemcode());
-        Log.e("onBindViewHolder202020",""+list.get(position).getRecQty());
+        Log.e("onBindViewHolder202020", "" + list.get(position).getRecQty());
         holder.qty.setText(list.get(position).getRecQty());
         holder.qty.setTag(position);
         holder.rmovetxt.setTag(position);
@@ -62,11 +63,13 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         holder.itemqty.setEnabled(false);
         holder.qty.setEnabled(true);
     }
+
     public void removeItem(int position) {
-        if(position<list.size()){
-            my_dataBase.replacementDao().deleteReplacement(list.get(position).getItemcode(),list.get(position).getFrom(),list.get(position).getTo());
+        if (position < list.size()) {
+            my_dataBase.replacementDao().deleteReplacement(list.get(position).getItemcode(), list.get(position).getFrom(), list.get(position).getTo());
             list.remove(position);
-        notifyItemRemoved(position);}
+            notifyItemRemoved(position);
+        }
     }
 
     @Override
@@ -74,21 +77,22 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
         return list.size();
     }
 
-    class replacementViewHolder extends RecyclerView.ViewHolder{
-          TextView from,to,zone,itemcode ,rmovetxt,itemqty;;
-          TextView qty;
+    class replacementViewHolder extends RecyclerView.ViewHolder {
+        TextView from, to, zone, itemcode, rmovetxt, itemqty;
+        ;
+        TextView qty;
 
         public replacementViewHolder(@NonNull View itemView) {
             super(itemView);
             my_dataBase = RoomAllData.getInstanceDataBase(context);
-            from=itemView.findViewById( R.id.from);
-            to=itemView.findViewById( R.id.to);
-            zone=itemView.findViewById( R.id.zone);
-            itemcode=(TextView) itemView.findViewById( R.id.itemcode);
-           qty=itemView.findViewById( R.id.tblqty);
-           // qty.setOnEditorActionListener(onEditAction);
-            rmovetxt=itemView.findViewById(R.id.remove);
-            itemqty=itemView.findViewById(R.id.itemqty);
+            from = itemView.findViewById(R.id.from);
+            to = itemView.findViewById(R.id.to);
+            zone = itemView.findViewById(R.id.zone);
+            itemcode = (TextView) itemView.findViewById(R.id.itemcode);
+            qty = itemView.findViewById(R.id.tblqty);
+            // qty.setOnEditorActionListener(onEditAction);
+            rmovetxt = itemView.findViewById(R.id.remove);
+            itemqty = itemView.findViewById(R.id.itemqty);
 
 
 
@@ -148,11 +152,10 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                 }});*/
 
 
-
             rmovetxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final String tag= rmovetxt.getTag().toString();
+                    final String tag = rmovetxt.getTag().toString();
 
                     final Dialog dialog = new Dialog(context);
                     dialog.setCancelable(false);
@@ -162,7 +165,7 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                         public void onClick(View view) {
                             removeItem(Integer.parseInt(tag));
                             dialog.dismiss();
-                            Log.e("removeItemposition",Integer.parseInt(tag)+"");
+                            Log.e("removeItemposition", Integer.parseInt(tag) + "");
 
                         }
                     });
@@ -191,16 +194,14 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
                     switch (textView.getId()) {
                         case R.id.tblqty:
 
-                            newqty=qty.getText().toString();
-                            String zone= replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
-                            String itemcode= replacementlist.get(Integer.parseInt(qty.getTag().toString())).getItemcode();
-                           if( checkQtyValidateinRow(newqty,itemcode,zone))
-                           {
-                              // updateQTYOfZoneinRow(newqty,zone,itemcode);
-                               replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
-                            }
-                           else
-                              showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
+                            newqty = qty.getText().toString();
+                            String zone = replacementlist.get(Integer.parseInt(qty.getTag().toString())).getZone();
+                            String itemcode = replacementlist.get(Integer.parseInt(qty.getTag().toString())).getItemcode();
+                            if (checkQtyValidateinRow(newqty, itemcode, zone)) {
+                                // updateQTYOfZoneinRow(newqty,zone,itemcode);
+                                replacementlist.get(Integer.parseInt(qty.getTag().toString())).setRecQty(newqty);
+                            } else
+                                showSweetDialog(context, 3, "", context.getResources().getString(R.string.notvaildqty));
                             break;
                     }
 
@@ -210,18 +211,17 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
             }
         };
     }
-    public  boolean checkQtyValidateinRow(String newQty, String itemco,String zonecode) {
-        Log.e("checkQtyValidateinRow","heckQtyValidate");
+
+    public boolean checkQtyValidateinRow(String newQty, String itemco, String zonecode) {
+        Log.e("checkQtyValidateinRow", "heckQtyValidate");
         for (int i = 0; i < listQtyZone.size(); i++) {
             if (itemco.trim().equals(listQtyZone.get(i).getItemCode().trim())
-                    &&zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
-                if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty()))
-                {
-                    Log.e("checkQtyValidateinRow",listQtyZone.get(i).getQty()+" "+newQty);
-                      return true;
+                    && zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
+                if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty())) {
+                    Log.e("checkQtyValidateinRow", listQtyZone.get(i).getQty() + " " + newQty);
+                    return true;
 
-                }
-                else {
+                } else {
                     return false;
 
 

@@ -12,7 +12,9 @@ import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,10 +54,13 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
+import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
+import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
@@ -122,6 +127,7 @@ Button AddZonesave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_add_zone);
 
         initial();
@@ -255,6 +261,17 @@ Button AddZonesave;
 
 
     }
+
+    private void loadLanguage() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
     public void getUsernameAndpass() {
 
 
@@ -441,10 +458,10 @@ Button AddZonesave;
                         editQty.setEnabled(false);
                        Log.e("here","here");
                        try {
-                           generalMethod.showSweetDialog(AddZone.this,3,"This Item Not Exist","");
+                           generalMethod.showSweetDialog(AddZone.this,3,getString(R.string.itemNotExist),"");
 
                        }catch (Exception e){
-                           Toast.makeText(AddZone.this,"This Item Not Exist",Toast.LENGTH_SHORT).show();
+                           Toast.makeText(AddZone.this,getString(R.string.itemNotExist),Toast.LENGTH_SHORT).show();
                        }
                            itemKintText.setText("");
                         editItemCode.setText("");
@@ -453,7 +470,7 @@ Button AddZonesave;
                     else {
                         if(editable.toString().equals("ErrorNet"))
                         {
-                            generalMethod.showSweetDialog(AddZone.this,3,"No Internet Connection","");
+                            generalMethod.showSweetDialog(AddZone.this,3,getString(R.string.noInternet),"");
                             editItemCode.setText("");
                             itemKintText.setText("");
                         }
@@ -668,7 +685,7 @@ public boolean exists (String zonecode,String itemcode){
         }
         else {
             editQty.setEnabled(false);
-            generalMethod.showSweetDialog(AddZone.this,0,"Item Kind Not Match To Zone Type","");
+            generalMethod.showSweetDialog(AddZone.this,0,getString(R.string.kindDifferent),"");
             editItemCode.setText("");
 
         }}
