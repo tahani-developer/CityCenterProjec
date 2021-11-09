@@ -81,7 +81,7 @@ public class ExportData {
         try {
             getIpAddress();
         }catch (Exception e){
-            Toast.makeText(context, "Fill Ip and Company No", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.fillIpAndComNo), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -97,7 +97,7 @@ public class ExportData {
         getReplacmentObject(replacementlist);
         pdRepla = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdRepla.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdRepla.setTitleText(" Start export Replenishments");
+        pdRepla.setTitleText(context.getString(R.string.exportRep));
         pdRepla.setCancelable(false);
         pdRepla.show();
 
@@ -107,7 +107,7 @@ public class ExportData {
         getReversReplacmentObject(replacementlist);
         pdRepRev = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdRepRev.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdRepRev.setTitleText(" Start export Revers Replenishments");
+        pdRepRev.setTitleText(context.getString(R.string.exportRevRep));
         pdRepRev.setCancelable(false);
         pdRepRev.show();
 
@@ -118,7 +118,7 @@ public class ExportData {
         getStocktakeObject(Stocktakelist);
         pdstock = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdstock.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdstock.setTitleText(" Start export Stock Take ");
+        pdstock.setTitleText(context.getString(R.string.exportStockTake));
         pdstock.setCancelable(false);
         pdstock.show();
 
@@ -195,7 +195,7 @@ public class ExportData {
         getZoneRepObject(zoneReplashmentModelslist);
         pdzone = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdzone.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdzone.setTitleText(" Start export ZoneReplenishments");
+        pdzone.setTitleText(context.getString(R.string.exportZoneRep));
         pdzone.setCancelable(false);
         pdzone.show();
 
@@ -218,7 +218,7 @@ public class ExportData {
         getZoneObject(listZone);
         pdVoucher = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdVoucher.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdVoucher.setTitleText(" Start export Zones");
+        pdVoucher.setTitleText(context.getString(R.string.exportZones));
         pdVoucher.setCancelable(false);
         pdVoucher.show();
 
@@ -285,7 +285,7 @@ public class ExportData {
                     public void run() {
                         pdVoucher.dismissWithAnimation();
 
-                        Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.checkCon), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -378,7 +378,7 @@ public class ExportData {
 
 
                     }else {
-                        Toast.makeText(context, "No InterNet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -403,7 +403,7 @@ public class ExportData {
 
             }
             else{
-                Toast.makeText(context, "No InterNet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -423,7 +423,7 @@ public class ExportData {
         getShipmentObject(listShipment);
         pdshipmant = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdshipmant.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-        pdshipmant.setTitleText(" Start export shipments");
+        pdshipmant.setTitleText(context.getString(R.string.exportShip));
         pdshipmant.setCancelable(false);
         pdshipmant.show();
 

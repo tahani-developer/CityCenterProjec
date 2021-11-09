@@ -16,8 +16,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -73,11 +75,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Filter;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
+import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
@@ -93,7 +98,8 @@ public class Login extends AppCompatActivity {
     public RoomAllData my_dataBase;
     public static TextView getListCom, selectedCompany;
     public String selectedCom = "", cono = "", coYear = "";
-    ;Dialog logindialog;
+    ;
+    Dialog logindialog;
     GeneralMethod generalMethod;
     TextView settings, show_UN;
     public String COMPANYNO;
@@ -125,6 +131,7 @@ public class Login extends AppCompatActivity {
     private View lockView;
     Dialog authenticationdialog;
 
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
 
@@ -135,6 +142,16 @@ public class Login extends AppCompatActivity {
             // Method that handles loss of window focus
             collapseNow();
         }
+    }
+
+    private void loadLanguage() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
     public void collapseNow() {
@@ -207,8 +224,9 @@ public class Login extends AppCompatActivity {
             }, 300L);
         }
     }
+
     public static void resetPreferredLauncherAndOpenChooser(Context context) {
-        Log.e("fffff","fffff");
+        Log.e("fffff", "fffff");
         PackageManager packageManager = context.getPackageManager();
         ComponentName componentName = new ComponentName(context, Login.class);
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
@@ -220,14 +238,13 @@ public class Login extends AppCompatActivity {
 
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-           setContentView(R.layout.activity_login);
+        loadLanguage();
+        setContentView(R.layout.activity_login);
         init();
-
-
 
 
         selectedCompany.setOnClickListener(new View.OnClickListener() {
@@ -236,7 +253,7 @@ public class Login extends AppCompatActivity {
                 //showAvilableCompany();
             }
         });
-     //   companyLin.setVisibility(View.INVISIBLE);
+        //   companyLin.setVisibility(View.INVISIBLE);
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
@@ -297,12 +314,12 @@ public class Login extends AppCompatActivity {
                 filter.addCategory(Intent.CATEGORY_DEFAULT);
                 Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                 sendBroadcast(closeDialog);
-              //  openUthenticationDialog();
+                //  openUthenticationDialog();
               /*  Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.example.irbidcitycenter");
                 if (launchIntent != null) {
                     startActivity(launchIntent);//null pointer check in case package name was not found
                 }*/
-            ;
+                ;
 
 
              /*   ActivityManager activityManager = (ActivityManager) getApplicationContext()
@@ -310,15 +327,16 @@ public class Login extends AppCompatActivity {
                 activityManager.moveTaskToFront(getTaskId(), 0);*/
 
 
-               // moveTaskToBack(false);
+                // moveTaskToBack(false);
                 //android.os.Process.killProcess(android.os.Process.myPid());
-               // System.exit(0);
-    onResume();
+                // System.exit(0);
+                onResume();
 
             }
+
             @Override
             public void onHomeLongPressed() {
-                Log.e("heeere==","LONGhome");
+                Log.e("heeere==", "LONGhome");
             }
         });
         mHomeWatcher.startWatch();
@@ -334,9 +352,9 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 appSettings = my_dataBase.settingDao().getallsetting();
-                if (appSettings.size() == 0 ) {
+                if (appSettings.size() == 0) {
                     openSettingDialog();
-                    Log.e  (" caseA1"," caseA1");
+                    Log.e(" caseA1", " caseA1");
 
                 }
                 //// 1. app setting is not empty
@@ -345,14 +363,14 @@ public class Login extends AppCompatActivity {
                     //2. user tabel not empty   (ip address correct)
 
                     if (DBUserPermissions.size() > 0) {
-                        Log.e  (" caseB1"," caseB1");
+                        Log.e(" caseB1", " caseB1");
                         openloginDailog();
 
 
                     } /// end of 2
 
                     else {
-                        Log.e  (" caseC1"," caseC1");
+                        Log.e(" caseC1", " caseC1");
                         //3. user tabel empty   ( may be ip address not correct)
 
                         openSettingDialog();
@@ -394,7 +412,7 @@ public class Login extends AppCompatActivity {
 
 
                                     MainActivity.SET_userNO = username.getText().toString().trim();
-                                    my_dataBase.settingDao().   updateusernum(username.getText().toString().trim());
+                                    my_dataBase.settingDao().updateusernum(username.getText().toString().trim());
                                     showAvilableCompany(userPermissions);
 
 
@@ -419,21 +437,22 @@ public class Login extends AppCompatActivity {
                     }
 
                 } else {
-                    if (username.getText().toString().trim().equals("")) username.setError("Empty");
-                    if (password.getText().toString().trim().equals("")) password.setError("Empty");
+                    if (username.getText().toString().trim().equals(""))
+                        username.setError(getString(R.string.required2));
+                    if (password.getText().toString().trim().equals(""))
+                        password.setError(getString(R.string.required2));
                 }
 
 
             }
         });
-        }
-
+    }
 
 
     private void openloginDailog() {
 
 
-     logindialog = new Dialog(Login.this);
+        logindialog = new Dialog(Login.this);
         logindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         logindialog.setCancelable(false);
         logindialog.setContentView(R.layout.logindailog);
@@ -458,50 +477,49 @@ public class Login extends AppCompatActivity {
 
                 UserPermissions userPerm = my_dataBase.userPermissionsDao().getUserPermissions(UsNa.getText().toString().trim());
                 if (userPerm != null) {
-                    if(userPerm.getUserPassword().equals(pass.getText().toString().trim()))
-                    {if (userPerm.getUserActive().equals("1")) {
+                    if (userPerm.getUserPassword().equals(pass.getText().toString().trim())) {
+                        if (userPerm.getUserActive().equals("1")) {
 
-                        if (userPerm.getSetting_Per().equals("0")) {
-                            if (userPerm.getMasterUser().equals("0"))
-                            {
+                            if (userPerm.getSetting_Per().equals("0")) {
+                                if (userPerm.getMasterUser().equals("0")) {
 
-                                new SweetAlertDialog(Login.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText(getResources().getString(R.string.confirm_title))
-                                        .setContentText(getResources().getString(R.string.perMsg)).setConfirmButton(R.string.yes, new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    new SweetAlertDialog(Login.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText(getResources().getString(R.string.confirm_title))
+                                            .setContentText(getResources().getString(R.string.perMsg))
+                                            .setConfirmButton(R.string.yes, new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
 
-                                        openauthenticDailog();
-                                        sweetAlertDialog.dismiss();
-                                    }
-                                }).setCancelButton(R.string.no, new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        sweetAlertDialog.dismiss();
-                                    }
-                                }).show();
+                                            openauthenticDailog();
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    }).setCancelButton(R.string.no, new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    }).show();
 
+                                    logindialog.dismiss();
+
+                                } else {
+                                    openSettingDialog();
+                                    logindialog.dismiss();
+                                }
+
+                            } else
+                                openSettingDialog();
                             logindialog.dismiss();
-
-                            }
-                            else
-                            {openSettingDialog();
-                                logindialog.dismiss();
-                            }
-
-                        } else
-                            openSettingDialog();
-                        logindialog.dismiss();
-                        Log.e("a3", "a3");
-                    } else {
+                            Log.e("a3", "a3");
+                        } else {
 
 
-                        showSweetDialog(Login.this, 3, getResources().getString(R.string.activeuser), "");
+                            showSweetDialog(Login.this, 3, getResources().getString(R.string.activeuser), "");
 
-                    }
-                } else  pass.setError(getResources().getString(R.string.invalid_password));
+                        }
+                    } else pass.setError(getResources().getString(R.string.invalid_password));
 
-                }else {
+                } else {
 
                     UsNa.setError(getResources().getString(R.string.invalid_username));
 
@@ -525,7 +543,7 @@ public class Login extends AppCompatActivity {
     private void openauthenticDailog() {
 
 
-      authenticationdialog = new Dialog(Login.this);
+        authenticationdialog = new Dialog(Login.this);
         authenticationdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         authenticationdialog.setCancelable(false);
         authenticationdialog.setContentView(R.layout.settingauthentic);
@@ -704,7 +722,7 @@ public class Login extends AppCompatActivity {
 
                     } else {
 
-                        Toast.makeText(Login.this, "NetWork Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, getString(R.string.netWorkError), Toast.LENGTH_SHORT).show();
                         importData.pdUserPer.dismiss();
 
                     }
@@ -718,7 +736,7 @@ public class Login extends AppCompatActivity {
     private void showAvilableCompany(UserPermissions userPermissions3) {
         ArrayList<String> companyInList = new ArrayList<>();
         companyInList.clear();
-        Log.e("ssssss","sssss");
+        Log.e("ssssss", "sssss");
         final Dialog dialog = new Dialog(Login.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -747,7 +765,8 @@ public class Login extends AppCompatActivity {
         if (!userPermissions3.getCONO7().equals("")) companyInList.add(userPermissions3.getCONO7());
         if (!userPermissions3.getCONO8().equals("")) companyInList.add(userPermissions3.getCONO8());
         if (!userPermissions3.getCONO9().equals("")) companyInList.add(userPermissions3.getCONO9());
-        if (!userPermissions3.getCONO10().equals("")) companyInList.add(userPermissions3.getCONO10());
+        if (!userPermissions3.getCONO10().equals(""))
+            companyInList.add(userPermissions3.getCONO10());
 
        /* if( companyInList.size()!=0) {
             for (int i = 0; i < companyInList.size(); i++) {
@@ -771,7 +790,7 @@ public class Login extends AppCompatActivity {
             }
         };
 
-        selectedCom=companyInList.get(0);
+        selectedCom = companyInList.get(0);
 
         // DataBind ListView with items from ArrayAdapter
         listCompany.setAdapter(arrayAdapter);
@@ -785,26 +804,21 @@ public class Login extends AppCompatActivity {
 
                 listCompany.setSelection(position);
 
-                selectedCom =companyInList.get(position);
+                selectedCom = companyInList.get(position);
 
-                try{
-                    for (int ctr=0;ctr<=companyInList.size();ctr++){
-                        if(position==ctr){
+                try {
+                    for (int ctr = 0; ctr <= companyInList.size(); ctr++) {
+                        if (position == ctr) {
                             listCompany.getChildAt(ctr).setBackgroundColor(Color.YELLOW);
-                        }else{
+                        } else {
                             listCompany.getChildAt(ctr).setBackgroundColor(Color.WHITE);
                         }
                     }
 
 
-
-
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
 
 
             }
@@ -816,8 +830,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
 
 
-
-                my_dataBase.settingDao().updateCompanyInfo(  selectedCom );
+                my_dataBase.settingDao().updateCompanyInfo(selectedCom);
 
                 Intent intent = new Intent(Login.this, MainActivity.class);
                 startActivity(intent);
@@ -829,8 +842,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-
-
     //
     @Override
     protected void onResume() {
@@ -839,14 +850,15 @@ public class Login extends AppCompatActivity {
         // Activity's been resumed
         isPaused = false;
     }
-   @Override
+
+    @Override
     protected void onStop() {
 
-     super.onStop();
+        super.onStop();
 
-       Log.d("tag==", "MYonStop is called");
-       // insert here your instructions
-   }
+        Log.d("tag==", "MYonStop is called");
+        // insert here your instructions
+    }
 
   /*  @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -856,110 +868,100 @@ public class Login extends AppCompatActivity {
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        Log.e("onKeyDown==",keyCode+"");
+        Log.e("onKeyDown==", keyCode + "");
         return super.onKeyLongPress(keyCode, event);
     }
 
 
-   @Override
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 
-
-       if (keyCode == KeyEvent.KEYCODE_BACK) {
-          Log.e("heeere","BACK");
-           activitySwitchFlag = true;
-           String  Userno1;
-          {
-               appSettings=my_dataBase.settingDao().getallsetting();
-               Log.e("appSettings.size===",appSettings.size()+"");
-               if(appSettings.size()!=0)
-               {
-                   Log.e("usernum===",appSettings.get(0).getUserNumber());
-                   userPermissions=my_dataBase.userPermissionsDao().getUserPermissions(   appSettings.get(0).getUserNumber());
-
-               }
-
-
-
-           }
-       //Log.e("userPermissions",userPermissions.getAddZone_Open());
-
-           if(userPermissions!=null)
-
-        {
-            Log.e("heeere8","BACK");
-            if(userPermissions.getMasterUser()!=null)
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.e("heeere", "BACK");
+            activitySwitchFlag = true;
+            String Userno1;
             {
-                Log.e("heeere7","BACK");
-                if(
-                    userPermissions.getMasterUser().equals("1")){
-               Log.e("heeere22","BACK");
-
-               ExitDailog();
-
-           } else{
-                showSweetDialog(Login.this, 0,"No Permission To Exit", "");
-
-            }
-
-            }
-
-           else{
-               showSweetDialog(Login.this, 0,"No Permission To Exit", "");
-
-           }
-
-        }
-         else  showSweetDialog(Login.this, 0,"No Permission To Exit", "");
-
-        }
-           return true;
-
-       }
-
-void ExitDailog(){
-    new SweetAlertDialog(Login.this, SweetAlertDialog.WARNING_TYPE)
-            .setTitleText(getResources().getString(R.string.confirm_title))
-            .setContentText(getResources().getString(R.string.messageExit3))
-            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    sweetAlertDialog.dismissWithAnimation();
-
-                    moveTaskToBack(true);
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                    System.exit(1);
-
-
+                appSettings = my_dataBase.settingDao().getallsetting();
+                Log.e("appSettings.size===", appSettings.size() + "");
+                if (appSettings.size() != 0) {
+                    Log.e("usernum===", appSettings.get(0).getUserNumber());
+                    userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(appSettings.get(0).getUserNumber());
 
                 }
-            })
-            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    sweetAlertDialog.dismiss();
+
+
+            }
+            //Log.e("userPermissions",userPermissions.getAddZone_Open());
+
+            if (userPermissions != null) {
+                Log.e("heeere8", "BACK");
+                if (userPermissions.getMasterUser() != null) {
+                    Log.e("heeere7", "BACK");
+                    if (
+                            userPermissions.getMasterUser().equals("1")) {
+                        Log.e("heeere22", "BACK");
+
+                        ExitDailog();
+
+                    } else {
+                        showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+
+                    }
+
+                } else {
+                    showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+
                 }
-            })
-            .show();
-}
-  @Override
+
+            } else showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+
+        }
+        return true;
+
+    }
+
+    void ExitDailog() {
+        new SweetAlertDialog(Login.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getResources().getString(R.string.confirm_title))
+                .setContentText(getResources().getString(R.string.messageExit3))
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+
+                        moveTaskToBack(true);
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(1);
+
+
+                    }
+                })
+                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    @Override
     protected void onPause() {
-      Log.e("onPause", "onPause");
+        Log.e("onPause", "onPause");
 
-      isPaused = true;
-      ActivityManager activityManager = (ActivityManager) getApplicationContext()
-              .getSystemService(Context.ACTIVITY_SERVICE);
-      activityManager.moveTaskToFront(getTaskId(), 0);
-      super.onPause();
+        isPaused = true;
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+        super.onPause();
 
     /*  lockLayer.unlock();
       finish();*/
 
 
-
-      //openUthenticationDialog();
-  }
+        //openUthenticationDialog();
+    }
 
    /*     Intent homeIntent = new Intent(Intent.ACTION_MAIN);
         homeIntent.addCategory(Intent.CATEGORY_HOME);
@@ -967,12 +969,11 @@ void ExitDailog(){
         startActivity(homeIntent);*/
 
 
-
-public void aaa(Activity activity){
-    ActivityManager activityManager = (ActivityManager)activity
-            .getSystemService(Context.ACTIVITY_SERVICE);
-    activityManager.moveTaskToFront(getTaskId(), 0);
-}
+    public void aaa(Activity activity) {
+        ActivityManager activityManager = (ActivityManager) activity
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
+    }
 
     private void openUthenticationDialog() {
         final Dialog dialog1 = new Dialog(Login.this);
@@ -1093,16 +1094,16 @@ public void aaa(Activity activity){
     }
 
     public void showCompanyDialog(View view) {
-        if(view.getId()==R.id.companyName)
-        {
-            if(existCoNo(2))
-            showCompany(Login.this);
+        if (view.getId() == R.id.companyName) {
+            if (existCoNo(2))
+                showCompany(Login.this);
             else {
                 openSettingDialog();
                 //generalMethod.openSettingDialog();
             }
         }
     }
+
     private void showCompany(final Context context1) {
 
         final Dialog dialog = new Dialog(context1);
@@ -1114,13 +1115,13 @@ public void aaa(Activity activity){
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
-         appSettings settings;
-        importData=new ImportData(Login.this);
-        ArrayList<String> nameOfEngi=new ArrayList<>();
+        appSettings settings;
+        importData = new ImportData(Login.this);
+        ArrayList<String> nameOfEngi = new ArrayList<>();
         final ListView listCompany = dialog.findViewById(R.id.listViewEngineering);
         //importData.getCompanyInfo();
 
-        getListCom=dialog.findViewById(R.id.getListCom);
+        getListCom = dialog.findViewById(R.id.getListCom);
 
 //        getListCom.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -1175,7 +1176,7 @@ public void aaa(Activity activity){
 
 
         final int[] rowZone = new int[1];
-        selectedCom="";
+        selectedCom = "";
 
        /* listCompany.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -1198,19 +1199,14 @@ public void aaa(Activity activity){
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            //    selectedCompany.setText(selectedCom);
+                //    selectedCompany.setText(selectedCom);
 
-                    if(listCompany.getSelectedItem().toString()!=null)
-
-                    {updateCono(listCompany.getSelectedItem().toString(),coYear);
-                        dialog.dismiss();
-                    }
-                    else {
-                        showSweetDialog(Login.this,0,"","selct Company");
-                    }
-
-
-
+                if (listCompany.getSelectedItem().toString() != null) {
+                    updateCono(listCompany.getSelectedItem().toString(), coYear);
+                    dialog.dismiss();
+                } else {
+                    showSweetDialog(Login.this, 0, "", getString(R.string.selectCompany));
+                }
 
 
             }
@@ -1223,7 +1219,7 @@ public void aaa(Activity activity){
         my_dataBase.settingDao().updateCompanyInfo(cono);
         my_dataBase.settingDao().updateCompanyYear(coYear);
 
-       //Log.e("updateCono",""+up);
+        //Log.e("updateCono",""+up);
     }
 
     private void addSetting() {
@@ -1231,37 +1227,34 @@ public void aaa(Activity activity){
     }
 
 
-
-    private boolean existCoNo(int flag ) {
-           // ipAddress=my_dataBase.settingDao().getIpAddress().trim();
-        String  CONO="";
+    private boolean existCoNo(int flag) {
+        // ipAddress=my_dataBase.settingDao().getIpAddress().trim();
+        String CONO = "";
         try {
-            if(flag==1)
-            {
-                CONO=my_dataBase.settingDao().getCono();
-            }else {
-                if(flag==2)
-                    CONO=my_dataBase.settingDao().getIpAddress();
+            if (flag == 1) {
+                CONO = my_dataBase.settingDao().getCono();
+            } else {
+                if (flag == 2)
+                    CONO = my_dataBase.settingDao().getIpAddress();
             }
 
-            Log.e("CONO",""+CONO);
-            if(CONO!=null)
-            {
-                if(CONO.length()!=0)
-                {
+            Log.e("CONO", "" + CONO);
+            if (CONO != null) {
+                if (CONO.length() != 0) {
                     return true;
                 }
 
             }
-        }catch (Exception e){
-            return  false;
+        } catch (Exception e) {
+            return false;
         }
 
 
-            return  false;
+        return false;
 
 
-        }
+    }
+
     private void openSettingDialog() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -1273,95 +1266,91 @@ public void aaa(Activity activity){
         dialog.setContentView(R.layout.ip_setting_dialog);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.height=height/2;
-        lp.gravity=Gravity.TOP;
+        lp.height = height / 2;
+        lp.gravity = Gravity.TOP;
         dialog.getWindow().setAttributes(lp);
         dialog.show();
 
 
-
-        final EditText ip= dialog.findViewById(R.id.ipEditText);
-        final TextView editip= dialog.findViewById(R.id.editip);
-       // ip.setEnabled(false);
-        final EditText conNO= dialog.findViewById(R.id.cono);
-        final EditText years=dialog.findViewById(R.id.storeNo_edit);
-        final CheckBox qtyUP=(CheckBox)dialog.findViewById(R.id.qtycheck);
-        final EditText usernum= dialog.findViewById(R.id.usernumber);
-        final EditText deviceId= dialog.findViewById(R.id.deviceId);
-        comLin= dialog.findViewById(R.id. comLin);
-        yearr=dialog.findViewById(R.id. yearrLin);
-                userrnum=dialog.findViewById(R.id.userrnumLin);
-         comLin.setVisibility(View.GONE);
-        yearr   .setVisibility(View.GONE);
-        userrnum .setVisibility(View.GONE);
+        final EditText ip = dialog.findViewById(R.id.ipEditText);
+        final TextView editip = dialog.findViewById(R.id.editip);
+        // ip.setEnabled(false);
+        final EditText conNO = dialog.findViewById(R.id.cono);
+        final EditText years = dialog.findViewById(R.id.storeNo_edit);
+        final CheckBox qtyUP = (CheckBox) dialog.findViewById(R.id.qtycheck);
+        final EditText usernum = dialog.findViewById(R.id.usernumber);
+        final EditText deviceId = dialog.findViewById(R.id.deviceId);
+        comLin = dialog.findViewById(R.id.comLin);
+        yearr = dialog.findViewById(R.id.yearrLin);
+        userrnum = dialog.findViewById(R.id.userrnumLin);
+        comLin.setVisibility(View.GONE);
+        yearr.setVisibility(View.GONE);
+        userrnum.setVisibility(View.GONE);
         years.setVisibility(View.GONE);
         usernum.setVisibility(View.GONE);
 
         ip.setEnabled(true);
-       // conNO.setEnabled(false);
-      //  years.setEnabled(false);
-      //  usernum.setEnabled(false);
+        // conNO.setEnabled(false);
+        //  years.setEnabled(false);
+        //  usernum.setEnabled(false);
         editip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (!ip.getText().toString().equals("")) {
-                final Dialog dialog1 = new Dialog(Login.this);
-                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog1.setCancelable(false);
-                dialog1.setContentView(R.layout.passworddailog);
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(dialog1.getWindow().getAttributes());
-                ip.setEnabled(true);
-                lp.gravity = Gravity.CENTER;
-                dialog1.getWindow().setAttributes(lp);
+                    final Dialog dialog1 = new Dialog(Login.this);
+                    dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setCancelable(false);
+                    dialog1.setContentView(R.layout.passworddailog);
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(dialog1.getWindow().getAttributes());
+                    ip.setEnabled(true);
+                    lp.gravity = Gravity.CENTER;
+                    dialog1.getWindow().setAttributes(lp);
 
 
-                EditText editText=dialog1.findViewById(R.id.passwordd);
-                Button donebutton=dialog1.findViewById(R.id.done);
-                Button cancelbutton=dialog1.findViewById(R.id.cancel);
-                donebutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(editText.getText().toString().trim().equals("304555"))
-                        {
-                            ip.setEnabled(true);
+                    EditText editText = dialog1.findViewById(R.id.passwordd);
+                    Button donebutton = dialog1.findViewById(R.id.done);
+                    Button cancelbutton = dialog1.findViewById(R.id.cancel);
+                    donebutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (editText.getText().toString().trim().equals("304555")) {
+                                ip.setEnabled(true);
+                                dialog1.dismiss();
+                            }
+                        }
+                    });
+                    cancelbutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
                             dialog1.dismiss();
                         }
-                    }
-                });
-                cancelbutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        dialog1.dismiss();
-                    }
-                });
+                    });
 
 
-
-
-
-                dialog1.show();
-            }else {
-                    Log.e("dd","dd");
+                    dialog1.show();
+                } else {
+                    Log.e("dd", "dd");
                     ip.setEnabled(true);
                     ip.requestFocus();
-                }}
+                }
+            }
 
         });
         getDataZone();
-        if(appSettings.size()!=0) {
+        if (appSettings.size() != 0) {
 
             ip.setText(appSettings.get(0).getIP());
             conNO.setText(appSettings.get(0).getCompanyNum());
-            COMPANYNO=appSettings.get(0).getCompanyNum();
+            COMPANYNO = appSettings.get(0).getCompanyNum();
 
 
             try {
                 deviceId.setText(appSettings.get(0).getDeviceId());
-            }catch ( Exception e){
-                Log.e("deviceId",""+e.getMessage());
+            } catch (Exception e) {
+                Log.e("deviceId", "" + e.getMessage());
             }
 
             if (appSettings.get(0).getUpdateQTY().equals("1"))
@@ -1376,7 +1365,7 @@ public void aaa(Activity activity){
             public void onClick(View view) {
                 deletesettings();
                 final String SET_IP = ip.getText().toString();
-               final String SET_conNO = conNO.getText().toString();
+                final String SET_conNO = conNO.getText().toString();
                 COMPANYNO = conNO.getText().toString();
 
                 String device_Id = deviceId.getText().toString().trim();
@@ -1400,34 +1389,26 @@ public void aaa(Activity activity){
                 if (ip.getText().toString().trim().length() != 0)
 
 
-
-                if (setting.getDeviceId().toString().trim().length() != 0)
-                {
+                    if (setting.getDeviceId().toString().trim().length() != 0) {
 
 
-                                saveData(setting);
-                                dialog.dismiss();
-                                importData = new ImportData(Login.this);
-                                importData.getUserPermissions();
+                        saveData(setting);
+                        dialog.dismiss();
+                        importData = new ImportData(Login.this);
+                        importData.getUserPermissions();
 
 
-                            }
-
-                         else {
-                    deviceId.setError(getResources().getString(R.string.reqired_filled));
+                    } else {
+                        deviceId.setError(getResources().getString(R.string.reqired_filled));
 
 
+                    }
+
+                else {
+                    usernum.setError(getResources().getString(R.string.reqired_filled));
 
 
-                        }
-
-                         else {
-                            usernum.setError(getResources().getString(R.string.reqired_filled));
-
-
-
-                        }
-
+                }
 
 
             }
@@ -1440,17 +1421,20 @@ public void aaa(Activity activity){
         });
 
     }
+
     private void getDataZone() {
-        appSettings=new ArrayList();
+        appSettings = new ArrayList();
         try {
-            appSettings=my_dataBase.settingDao().getallsetting();
+            appSettings = my_dataBase.settingDao().getallsetting();
+        } catch (Exception e) {
         }
-        catch (Exception e){}
     }
-    private void deletesettings(){
-        if(appSettings.size()!=0)
+
+    private void deletesettings() {
+        if (appSettings.size() != 0)
             my_dataBase.settingDao().deleteALL();
     }
+
     private void saveData(appSettings settings) {
         my_dataBase.settingDao().deleteALL();
         my_dataBase.settingDao().insert(settings);
@@ -1458,7 +1442,7 @@ public void aaa(Activity activity){
         my_dataBase.userPermissionsDao().deleteall();
         DBUserPermissions.clear();
         show_UN.setText("");
-        generalMethod.showSweetDialog(this,1,this.getResources().getString(R.string.savedSuccsesfule2),"");
+        generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule2), "");
 
     }
 

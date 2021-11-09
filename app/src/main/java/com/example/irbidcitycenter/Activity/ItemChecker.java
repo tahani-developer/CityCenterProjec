@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +33,8 @@ import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
+import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
+import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
@@ -39,6 +43,8 @@ import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle
 import static com.example.irbidcitycenter.ImportData.itemInfos;
 import static com.example.irbidcitycenter.ImportData.pditeminfo;
 import static com.example.irbidcitycenter.ImportData.stocksQty;
+
+import java.util.Locale;
 
 public class ItemChecker extends AppCompatActivity {
     private  TextView ITEMNAME,  TAXPERC,
@@ -78,6 +84,7 @@ LinearLayout avgcostLin, headerLin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_item_checker);
 
 
@@ -107,6 +114,16 @@ LinearLayout avgcostLin, headerLin;
 
         }
 
+    }
+
+    private void loadLanguage() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {

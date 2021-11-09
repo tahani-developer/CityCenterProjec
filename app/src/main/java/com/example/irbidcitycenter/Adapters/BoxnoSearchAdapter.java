@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import static com.example.irbidcitycenter.Activity.NewShipment.dialog1;
 import static com.example.irbidcitycenter.Activity.NewShipment.dialog2;
 
-public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter.SearchViewHolder >{
+public class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter.SearchViewHolder> {
     private ArrayList<String> list;
     static Context shipment;
 
@@ -46,19 +46,20 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
     @Override
     public int getItemCount() {
 
-            return list.size();
-}
+        return list.size();
+    }
 
 
-    static class SearchViewHolder extends RecyclerView.ViewHolder{
+    static class SearchViewHolder extends RecyclerView.ViewHolder {
 
 
         TextView boxnumber;
         LinearLayout linearLayout;
+
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            boxnumber=itemView.findViewById(R.id.po);
+            boxnumber = itemView.findViewById(R.id.po);
 
             boxnumber.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -67,7 +68,7 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
                     final Dialog dialog = new Dialog(shipment);
                     dialog.setCancelable(false);
                     dialog.setContentView(R.layout.confirm_pono_insearch);
-                    Button cancel=dialog.findViewById(R.id.cancel);
+                    Button cancel = dialog.findViewById(R.id.cancel);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -76,15 +77,15 @@ public  class BoxnoSearchAdapter extends RecyclerView.Adapter<BoxnoSearchAdapter
                         }
                     });
 
-                   dialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-                           NewShipment.boxnotag= boxnumber.getTag().toString();
-                           NewShipment.colsedialog(1);
-                           NewShipment.fillBoxEdittext();
-                          dialog.dismiss();
-                       }
-                   });
+                    dialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            NewShipment.boxnotag = boxnumber.getTag().toString();
+                            NewShipment.colsedialog(1);
+                            NewShipment.fillBoxEdittext();
+                            dialog.dismiss();
+                        }
+                    });
                     dialog.show();
                     dialog.setCanceledOnTouchOutside(true);
 

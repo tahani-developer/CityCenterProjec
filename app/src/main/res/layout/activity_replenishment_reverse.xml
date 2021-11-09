@@ -85,7 +85,7 @@
                 android:id="@+id/RepRev_tospinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:layout_gravity="end"
                 android:layout_weight="1.5" />
 
             <TextView
@@ -93,9 +93,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
-
-
-
 
 
         </LinearLayout>
@@ -112,7 +109,7 @@
                 android:id="@+id/RepRev_zoneedt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
 
                 android:background="@drawable/back_border_edit"
@@ -150,7 +147,6 @@
                 android:textColor="@color/dark_blue_3"
                 android:textSize="14sp"
                 app:drawableEndCompat="@drawable/ic_scan_black_24dp"
-
                 app:drawableRightCompat="@drawable/ic_scan_black_24dp" />
 
 
@@ -163,6 +159,7 @@
 
             android:layout_margin="5dp"
             android:layout_weight="5"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
@@ -170,6 +167,7 @@
                 android:layout_height="match_parent"
 
                 android:layout_weight="3"
+                android:gravity="center"
                 android:padding="3dp"
                 android:text="@string/itemCode"
                 android:textColor="@color/dark_blue_3"
@@ -190,11 +188,7 @@
                 android:textSize="14sp" />
 
 
-            <TextView
-                android:id="@+id/RepRev_Itemrespons"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/RepRev_exportstate"
                 android:layout_width="match_parent"

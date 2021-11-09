@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-
 
 
     <LinearLayout
@@ -12,9 +10,8 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="2dp"
-
         android:layout_weight="0"
+        android:elevation="2dp"
         android:orientation="vertical">
 
         <TextView
@@ -24,59 +21,55 @@
             android:layout_weight="0" />
 
     </LinearLayout>
+
     <LinearLayout
 
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="2dp"
-
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/boxsearch_edt"
-            android:layout_marginLeft="10dp"
-            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="6"
-            android:ems="10"
             android:background="@drawable/back_border_edit"
+            android:ems="10"
             android:hint="@string/searchhere"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:padding="8dp" />
 
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/boxlistview"
-        android:padding="8dp"
-
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:padding="8dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/cancelbtnBoxdialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/cancel_button"
             android:padding="8dp"
-            android:text="Cancel"
-            android:visibility="gone"
-            android:textColor="@color/red" />
+            android:text="@string/cancel"
+            android:textColor="@color/red"
+            android:visibility="gone" />
     </LinearLayout>
-
-
 
 
 </LinearLayout>

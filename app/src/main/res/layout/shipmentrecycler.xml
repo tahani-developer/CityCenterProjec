@@ -26,7 +26,7 @@
             android:padding="3dp"
             android:textSize="15sp"
             android:textColor="@color/colorPrimary"
-            android:text="pono" />
+            android:text="@string/pono" />
 
         <TextView
             android:id="@+id/boxno"
@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/colorPrimary"
-            android:text="boxno" />
+            android:text="@string/boxnum" />
 
         <TextView
             android:id="@+id/barcode"
@@ -50,7 +50,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="3dp"
-            android:text="barcode" />
+            android:text="@string/barcode" />
 
         <EditText
             android:id="@+id/tbl_qty"
@@ -90,7 +90,7 @@
             android:enabled="false"
             android:visibility="invisible"
             android:drawableEnd="@drawable/ic_baseline_close_24"
-            android:gravity="right"
+            android:gravity="end"
             android:textSize="15sp" />
 
 

@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/drawable/back_white_container.xml" value="0.2203125" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/drawable/ic_info_outline_black_24dp.xml" value="0.20185185185185187" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/drawable/ic_logout.xml" value="0.20185185185185187" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_add_zone.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_custom_scanner.xml" value="0.22" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_item_checker.xml" value="0.33" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_new_shipment.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_replacement.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_replenishment_reverse.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_shipments_report.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_stock_take_report.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_stoketake.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/activity_zone_replacment.xml" value="0.22" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/authentication.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/box_dialog_listview.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/box_listitem.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/confirm_pono_insearch.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/custom_barcode_scanner.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/db_boxlist.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/db_boxlistdailog.xml" value="0.22" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/db_polist.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/db_polistdailog.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/delete_entry.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deleteboxdailog.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deleteitemdailog.xml" value="0.33" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deletelayout.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deletepodailog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deletere_zonediaolg.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deleterep_itemsdialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deletesh_itemdailog.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deleteshipments.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/deletezone.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/dialog_zone_search.xml" value="0.33" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/ip_setting_dialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/logindailog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/nav_header_main.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/passworddailog.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/pono_dialog_listview.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/pono_listitem.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/rep_revers_deletedailog.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/replacmentrecycler.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/replacmentrevsersrecycler.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/serachzone.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/settingauthentic.xml" value="0.18854166666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/shipmentrecycler.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/shipmentreportrow.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/stockqtyrecycle.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/stocktakeraw.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/stocktakereportrow.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zone_row.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zone_search.xml" value="0.33" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zonenamelist.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zonerepraw.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zr_deleteitem.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/layout/zr_deletezone.xml" value="0.33" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/menu/main_menu.xml" value="0.25" />
+        <entry key="..\:/Android_Studio_Projects/CityCenterProject/app/src/main/res/menu/menu.xml" value="0.18854166666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

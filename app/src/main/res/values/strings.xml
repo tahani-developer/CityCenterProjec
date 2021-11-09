@@ -2,34 +2,35 @@
     <string name="app_name">IrbidCityCenter</string>
     <string name="NewShipment">New Shipment</string>
     <string name="Zone">Zone</string>
-    <string name="Replacement">Replenishment</string>
+    <string name="addZone">Add Zone</string>
+    <string name="Replacement">Replenishments</string>
     <string name="ReplacementReverse">Replenishment Reverse</string>
-    <string name="setting">Setting</string>
+    <string name="setting">Settings</string>
     <string name="about">About</string>
-    <string name="signout">signout</string>
+    <string name="signout">Sign Out</string>
     <string name="export">Export</string>
-    <string name="required">required</string>
+    <string name="required">Required</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
-    <string name="settings_ip">Settings Ip</string>
-    <string name="server_ip">Server ip</string>
+    <string name="settings_ip">IP Settings</string>
+    <string name="server_ip">Server Ip</string>
     <string name="IP_PORT">IP PORT</string>
-    <string name="CONO">CoNo</string>
+    <string name="CONO">CoNo:</string>
     <string name="year">Year</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="searchhere">Search her</string>
-    <string name="itemqty">item qty</string>
+    <string name="searchhere">Search here</string>
+    <string name="itemqty">Item Qty</string>
     <string name="Items">#Items</string>
-    <string name="samestore">not allowed to choose the same store</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="errorsaving">Error in Save</string>
+    <string name="samestore">Not allowed to choose the same store</string>
+    <string name="title_activity_login">Login</string>
+    <string name="errorsaving">An error occurred while saving</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid user number</string>
+    <string name="invalid_username">Invalid user number</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="login_failed">"Login failed"</string>
     <string name="ZoneCode">Zone Code</string>
@@ -37,13 +38,13 @@
     <string name="Poqty">PoQty</string>
     <string name="notvaildqty">There is no enough quantity </string>
     <string name="notvaildqty2">There is no enough quantity in </string>
-    <string name="reqired_filled">*Reqired</string>
-    <string name="savedSuccsesfule">Saved Succsesfule</string>
-    <string name="savedSuccsesfule2">Settings Saved Succsesfule</string>
-    <string name="barcodeexists">invalid itemcode</string>
-    <string name="boxnovalidate">boxNO does not exists in this PO</string>
+    <string name="reqired_filled">*Required</string>
+    <string name="savedSuccsesfule">Saved Successfully</string>
+    <string name="savedSuccsesfule2">Settings Saved Successfully</string>
+    <string name="barcodeexists">Invalid itemCode</string>
+    <string name="boxnovalidate">BoxNO does not exist in this PO</string>
     <string name="pono">PoNo</string>
-    <string name="boxsnumber">Boxs Counts</string>
+    <string name="boxsnumber">Boxes Count</string>
     <string name="boxnum">BoxNo</string>
     <string name="barcode">BareCode</string>
     <string name="from">From</string>
@@ -54,9 +55,9 @@
     <string name="Import">Import</string>
     <string name="finish">Finish</string>
     <string name="recQty">recQty</string>
-    <string name="invalidPONO">in valid PO number</string>
+    <string name="invalidPONO">Invalid PO number</string>
     <string name="existsBARCODE">BareCode not exists</string>
-    <string name="Itemname">Item name</string>
+    <string name="Itemname">Item Name</string>
     <string name="app_done">Done</string>
     <string name="Differ">Differ</string>
     <string name="confirm">Are you sure you want to select this entry?</string>
@@ -64,25 +65,22 @@
             \n delete this entry?</string>
     <string name="deletezone1">Are you sure you want to
             \n delete this zone?</string>
-    <string name="delete3"> Qty is 1, Are you sure you want to
-            \n delete this item</string>
-    <string name="yes">yes</string>
+    <string name="delete3">" Qty is 1, Are you sure you want to delete this item ?"</string>
+    <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="lastBox">Last Box Info:  </string>
     <string name="Arabic">ar</string>
     <string name="ZoneName">Zone Name</string>
     <string name="confirm_title">Confirm</string>
-    <string name="boxconfirm">
-This box is not available in this PO, do you want to add it? </string>
-    <string name="barcodeconfirm">
-This barcode is not available in this PO, do you want to add it? </string>
+    <string name="boxconfirm">This box is not available in this PO, do you want to add it? </string>
+    <string name="barcodeconfirm">This barcode is not available in this PO, do you want to add it? </string>
     <string name="messageExit">Are You Sure To Exit ?</string>
-    <string name="messageExit2">all data saved locally, Are You Sure To Exit ?</string>
+    <string name="messageExit2">All data saved locally, Are You Sure To Exit ?</string>
     <string name="messageExit3">Are You Sure To Exit ?</string>
     <string name="ok">OK</string>
     <string name="warning">Warning</string>
     <string name="fillYourList">Fill Your List !!</string>
-    <string name="invaledZero">Invaled Zero</string>
+    <string name="invaledZero">Invalid Zero</string>
     <string name="clearAllData">Clear All Data??</string>
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
@@ -91,11 +89,11 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
     <string name="Login">Login</string>
-    <string name="qtyerror3">not valid quantity </string>
+    <string name="qtyerror3">Not valid quantity </string>
     <string name="nopo">No Po exists</string>
-    <string name="fillpo">fill po field</string>
-    <string name="nobox">No Boxs for this Po</string>
-    <string name="deletebut"> delete </string>
+    <string name="fillpo">Fill po field</string>
+    <string name="nobox">No Boxes for this Po</string>
+    <string name="deletebut"> Delete </string>
     <string name="deleteitemt">Delete Item </string>
     <string name="delete1">Delete </string>
     <string name="reduceqty">Reduce QTY Of Item </string>
@@ -105,16 +103,16 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="back">  Back </string>
     <string name="enter"> Enter </string>
     <string name="deleted"> Deleted successfully</string>
-    <string name="nextZone"> next Zone </string>
-    <string name="nextfromZone"> next From Zone </string>
-    <string name="nexttoZone"> next To Zone </string>
+    <string name="nextZone"> Next Zone </string>
+    <string name="nextFromZone"> Next From Zone </string>
+    <string name="nexttoZone"> Next To Zone </string>
     <string name="NODATA">  No deleted data to recover </string>
     <string name="dataRet"> DATA Returned</string>
     <string name="returndata"> Do you want to undo the deletion process? </string>
     <string name="alertPoSearch">Are you sure you want to select this entry?</string>
     <string name="deleteitem"> Are you sure you want to
             \n delete this item</string>
-    <string name="fill_setting">Fill Setting</string>
+    <string name="fill_setting">Fill Settings</string>
     <string name="deletepo">Delete Po</string>
     <string name="deletepo1">Are you sure you want to
             \n delete this po</string>
@@ -122,35 +120,35 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="store">TO Store</string>
     <string name="store2">Store</string>
     <string name="sumQty">Sum of Qty</string>
-    <string name="zoneqty">zone Qty</string>
-    <string name="scanedqty">Scaned Qty</string>
-    <string name="storeqty">store Qty</string>
+    <string name="zoneqty">Zone Qty</string>
+    <string name="scanedqty">Scanned Qty</string>
+    <string name="storeqty">Store Qty</string>
     <string name="StockTake">Stock Take</string>
 
     <string name="itemcheck"> Item Checker</string>
     <string name="Itemkind">Item Kind</string>
     <string name="saleprice">Sale Price</string>
     <string name="aviqty">AVI Qty</string>
-    <string name="search1">search by ItemCode or ItemName</string>
+    <string name="search1">Search by ItemName or ItemCode</string>
 
     <string name="total_qty">Total_Qty</string>
     <string name="IsNew">IsNew</string>
     <string name="date">Date</string>
     <string name="preview">Preview</string>
-    <string name="frmoZone">from Zone</string>
+    <string name="frmoZone">From Zone</string>
     <string name="ToZone">To Zone</string>
-    <string name="ZoneReplacement"> Zone Transpher</string>
+    <string name="ZoneReplacement"> Zone Transfer</string>
     <string name="Reports">Reports</string>
-    <string name="shipmentReport">shipment Report</string>
-    <string name="StocktakeReport">Stock take Report</string>
+    <string name="shipmentReport">Shipments Report</string>
+    <string name="StocktakeReport">StockTake Report</string>
     <string name="msg">To Transfer to other zones</string>
     <string name="zonetype">FromZone and ToZone are not of the same category</string>
-    <string name="Msg1"> Item Tabel is Empty, do you want import Items?</string>
+    <string name="Msg1"> Item Table is Empty, do you want to import Items?</string>
     <string name="Permission">Sorry, No Permission To Enter</string>
     <string name="savePermission">Sorry, No Permission To Save Data</string>
     <string name="activeuser">Sorry, No Permission (Not Active User)</string>
     <string name="userexists"> This user is not recognized</string>
-    <string name="del_per">Sorry, No Permission To Enter ,Are you want to enter as MasterUser?</string>
+    <string name="del_per">Sorry, No Permission To Enter ,Do you want to enter as MasterUser?</string>
 
 
     <string name="F_D"> Original Price</string>
@@ -175,15 +173,64 @@ This barcode is not available in this PO, do you want to add it? </string>
 
     <string name="AVGCOST"> Avg Cost </string>
 
-    <string name="username"> username:</string>
+    <string name="username"> Username:</string>
     <string name="perMsg">  You don\'t have permission,
         but you can login if you enter the correct password</string>
 
-    <string name="logout"> LogOut</string>
+    <string name="logout">Log Out</string>
 
 
-    <string name="stockNum" >stock No</string>
-    <string name="stockName" >stock Name</string>
+    <string name="stockNum" >Stock No</string>
+    <string name="stockName" >Stock Name</string>
+
+    <string name="selected_language">English</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="userNum">User Number</string>
+    <string name="enter_login_info">Please enter your login information</string>
+    <string name="userNo">User No</string>
+    <string name="deviceId">Device Id</string>
+
+    <string name="importingData">Importing Data</string>
+    <string name="pleaseWait">Please Wait</string>
+    <string name="search">Search</string>
+    <string name="language">Language</string>
+
+    <string name="required2">Required!</string>
+    <string name="item_details">Item Details</string>
+    <string name="falcons_soft">Falcons Soft</string>
+    <string name="update_qty">Update Qty</string>
+
+    <string name="Zones">Zones</string>
+    <string name="turn_on_flashlight">Turn On Flashlight</string>
+
+    <string name="fillIp"> Fill IP</string>
+    <string name="StartgetItemsInfo">Getting Items Info</string>
+    <string name="dataStored">Done, All data has been stored</string>
+    <string name="netWorkError">Network Error</string>
+    <string name="noInternet">No Internet</string>
+    <string name="itemNotExist">This Item Doesn\'t Exist</string>
+    <string name="kindDifferent">Item Kind Doesn\'t Match Zone Type</string>
+    <string name="noPermToExit">No Permission To Exit</string>
+    <string name="checkCon">Check Connection</string>
+    <string name="noPoData">No data for this po in database</string>
+    <string name="nODataChanged">NO data changed</string>
+    <string name="noBoxData">No data for this Box in database</string>
+    <string name="noItemCodeData">No data for this itemCode in Database</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="noData">No Data</string>
+    <string name="getZonesInfo">Getting Zones Info</string>
+    <string name="getUserPerm">Getting User Permissions</string>
+    <string name="exportRep">Exporting Replenishments</string>
+    <string name="exportRevRep">Exporting Reverse Replenishments</string>
+    <string name="exportStockTake"> Exporting StockTake Processes</string>
+    <string name="exportZoneRep">Exporting Zone Replenishments</string>
+    <string name="exportZones">Exporting Zones</string>
+    <string name="exportShip">Exporting shipments</string>
+    <string name="fillIpAndComNo">Fill IP and Company No.</string>
+
+    <string name="allStores">All Stores</string>
+
 
 
 </resources>

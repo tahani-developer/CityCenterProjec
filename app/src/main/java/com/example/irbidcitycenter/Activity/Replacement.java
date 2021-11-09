@@ -13,7 +13,9 @@ import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,11 +58,14 @@ import com.example.irbidcitycenter.Models.ReplacementModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
+import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
+import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.Storelist;
@@ -132,6 +137,7 @@ public class Replacement extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_replacement);
         init();
         actvityflage=1;
@@ -399,6 +405,16 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         });
 
 
+    }
+
+    private void loadLanguage() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
 

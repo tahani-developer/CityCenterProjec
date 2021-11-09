@@ -25,7 +25,7 @@ import java.util.List;
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
-public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .ZoneRepViewHolder > {
+public class ZonePerAdapterr extends RecyclerView.Adapter<ZonePerAdapterr.ZoneRepViewHolder> {
     Context context;
     List<ZoneReplashmentModel> replashmentList;
     public RoomAllData my_dataBase;
@@ -55,27 +55,25 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
         holder.Itemcode.setTag(i);
         Log.e("tag==", "Itemcode=" + holder.Itemcode.getTag().toString());
         holder.RECqty.setText(replashmentList.get(i).getRecQty());
-        if( userPermissions==null) getUsernameAndpass();
+        if (userPermissions == null) getUsernameAndpass();
         if (userPermissions != null) {
-            if(userPermissions.getMasterUser().equals("0")){
-                if(userPermissions.getZoneRep_UpdateQty().equals("0"))
-                {
+            if (userPermissions.getMasterUser().equals("0")) {
+                if (userPermissions.getZoneRep_UpdateQty().equals("0")) {
                     Log.e("ca1", "i");
-                    holder.RECqty.setEnabled(false);}
-                else    {
+                    holder.RECqty.setEnabled(false);
+                } else {
                     Log.e("ca2", "i");
                     holder.RECqty.setEnabled(true);
                 }
 
-            }
-            else   {  holder.RECqty.setEnabled(true);
+            } else {
+                holder.RECqty.setEnabled(true);
                 Log.e("ca3", "i");
 
             }
 
 
-
-    }
+        }
 
 
         holder.Qty.addTextChangedListener(new TextWatcher() {
@@ -142,19 +140,17 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
             RECqty = convertView.findViewById(R.id.textView_RECqty);
 
 
-
-
         }
+
         private void CheckUpdateQty_Permissitions() {
 
             if (userPermissions != null) {
-                if(userPermissions.getMasterUser().equals("0")){
-                    if(userPermissions.getZoneRep_UpdateQty().equals("0"))
+                if (userPermissions.getMasterUser().equals("0")) {
+                    if (userPermissions.getZoneRep_UpdateQty().equals("0"))
                         Qty.setEnabled(false);
-                    else   Qty.setEnabled(true);
+                    else Qty.setEnabled(true);
 
-                }
-                else   Qty.setEnabled(true);
+                } else Qty.setEnabled(true);
 
             }
 
@@ -164,18 +160,16 @@ public class ZonePerAdapterr  extends RecyclerView.Adapter<ZonePerAdapterr .Zone
     public void getUsernameAndpass() {
 
 
-        String comNUm="";
-        String Userno="";
-         appSettings=my_dataBase.settingDao().getallsetting();
-        if(appSettings.size()!=0)
-        {
-            Userno=  appSettings.get(0).getUserNumber();
-            comNUm= appSettings.get(0).getCompanyNum();
+        String comNUm = "";
+        String Userno = "";
+        appSettings = my_dataBase.settingDao().getallsetting();
+        if (appSettings.size() != 0) {
+            Userno = appSettings.get(0).getUserNumber();
+            comNUm = appSettings.get(0).getCompanyNum();
 
         }
 
-        userPermissions=my_dataBase.userPermissionsDao().getUserPermissions( Userno);
-
+        userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(Userno);
 
 
         //   Toast.makeText(Login.this,"This user is not recognized ",Toast.LENGTH_SHORT).show();

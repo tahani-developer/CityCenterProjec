@@ -8,16 +8,16 @@
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
+
     <EditText
         android:id="@+id/searchZoneText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:drawableEnd="@drawable/ic_baseline_search_24"
-        android:hint="search"
+        android:hint="@string/search"
         android:textColor="@color/dark_blue_3"
-        android:textColorHint="@color/layer1"
-
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:textColorHint="@color/layer1" />
     <LinearLayout
         android:id="@+id/headerComp2"
         android:layout_width="match_parent"
@@ -38,7 +38,6 @@
             android:gravity="center"
             android:textColor="@color/dark_blue_3"
             android:textStyle="bold"
-
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
         <TextView
@@ -68,8 +67,6 @@
         android:divider="@color/layer6"
         android:dividerHeight="1dp"
         android:visibility="visible"
-
-
         android:background="@drawable/edittext_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -86,11 +83,9 @@
             android:layout_width="90dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/done_button"
-
             android:elevation="5dp"
             android:gravity="center"
             android:onClick="addToHoldList"

@@ -10,15 +10,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.http.DelegatingSSLSession;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -32,7 +34,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,6 @@ import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.ReplenishmentReverseModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
-import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
 import com.example.irbidcitycenter.Models.appSettings;
@@ -53,6 +53,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
@@ -86,6 +87,13 @@ public static    int   activityflage=1;
 
   public    static  int Items_activityflage=1,flg=1;;
     private TextView companyNum,  username_show;
+
+
+
+    Resources resources;
+    Context context;
+    public static final String FILE_NAME = "file_lang"; // preference file name
+    public static final String KEY_LANG = "key_lang"; // preference key
     //////
 
     public    static TextView RepRevExportsatate, addzoneexportstate;
@@ -93,6 +101,7 @@ public static    int   activityflage=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_main);
 
 
@@ -674,12 +683,71 @@ else
             case R.id.logout:
                 Intent intent =new Intent(MainActivity.this,Login.class);
                 startActivity(intent);
+                break;
+
+
+            case R.id.arLang: {
+                saveLanguage("ar");
+                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                break;
+            }
         }
 
 
         return true;
 
     }
+
+    public void saveLanguage(String lang) {
+
+// we can use this method to save language
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(KEY_LANG, lang);
+        editor.apply();
+// we have saved
+// recreate activity after saving to load the new language, this is the same
+// as refreshing activity to load new language
+
+        recreate();
+
+    }
+
+    public void loadLanguage() {
+// we can use this method to load language,
+// this method should be called before setContentView() method of the onCreate method
+
+        Locale locale = new Locale(getLangCode());
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    public String getLangCode() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+// save english ‘en’ as the default language
+        return langCode;
+    }
+
+    public void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        conf.setLayoutDirection(myLocale);
+        res.updateConfiguration(conf, dm);
+        conf.setLayoutDirection(myLocale);
+
+        Intent refresh = new Intent(this, MainActivity.class);
+        finish();
+        startActivity(refresh);
+
+
+    }
+
     private void getAllItems() {
         importData=new ImportData(MainActivity.this);
         importData.getAllItems();

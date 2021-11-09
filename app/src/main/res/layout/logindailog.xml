@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="wrap_content"
     android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:padding="4dp"
 
-            android:text="Please enter your login information"
+            android:text="@string/enter_login_info"
             android:textAlignment="textStart"
             android:textColor="@color/dark_blue_3" />
 
@@ -56,11 +56,12 @@
         <EditText
             android:id="@+id/log_usernum"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/userNum"
             android:inputType="number"
             android:maxLines="1"
             android:padding="1dp"
-            android:layout_height="match_parent"
-            android:hint="UserNumber">
+            android:textAlignment="viewStart">
 
         </EditText>
 
@@ -80,12 +81,12 @@
         <EditText
             android:id="@+id/log_pass"
             android:layout_width="match_parent"
-            android:padding="1dp"
-            android:maxLines="1"
             android:layout_height="match_parent"
-            android:hint="password"
+            android:hint="@string/prompt_password"
             android:inputType="numberPassword"
-            />
+            android:maxLines="1"
+            android:padding="1dp"
+            android:textAlignment="viewStart"/>
 
     </LinearLayout>
     <LinearLayout

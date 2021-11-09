@@ -82,7 +82,7 @@ import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 
 
 public class ImportData {
-    public static  int actvityflage=1;
+    public static int actvityflage = 1;
     SweetAlertDialog pdVoucher;
     public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
     public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
@@ -90,7 +90,7 @@ public class ImportData {
     public static ArrayList<UserPermissions> UserPermissions = new ArrayList<>();
     public static int posize;
     public static String itemn;
-    public static String item_name="";
+    public static String item_name = "";
     public static String poqty;
     private static Context context;
     public String ipAddress = "", CONO = "", headerDll = "", link = "";
@@ -101,24 +101,24 @@ public class ImportData {
     public static ArrayList<String> PoNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static List<ReplacementModel> stocksQty = new ArrayList<>();
-    public static List<ZoneModel>  listQtyZone = new ArrayList<>();
+    public static List<ZoneModel> listQtyZone = new ArrayList<>();
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
-    public static String  barcode="";
+    public static String barcode = "";
     public static List<AllItems> AllImportItemlist = new ArrayList<>();
     public static List<ItemInfo> itemInfos = new ArrayList<>();
-    public  JSONArray jsonArrayPo;
-    public  JSONObject stringNoObject;
+    public JSONArray jsonArrayPo;
+    public JSONObject stringNoObject;
 
 //
 
-   static ProgressDialog progressDialog;
+    static ProgressDialog progressDialog;
     private int progressStatus = 0;
     private Handler handler = new Handler();
-    private int max=50;
-   public static SweetAlertDialog pdUserPer,pditeminfo,storeinfo,zoneinfo;
-    private int timer=1;
+    private int max = 50;
+    public static SweetAlertDialog pdUserPer, pditeminfo, storeinfo, zoneinfo;
+    private int timer = 1;
 
-    private void showProgressDialogWithTitle(String title,String substring) {
+    private void showProgressDialogWithTitle(String title, String substring) {
         progressDialog.setTitle(title);
         progressDialog.setMessage(substring);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -231,7 +231,6 @@ public class ImportData {
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
-
     public void getQty() {
         listQtyZone.clear();
             new  JSONTask_getQTYOFZone().execute();
@@ -2385,6 +2384,8 @@ Log.e("Exception===",e.getMessage());
                             requestDetail.setUserNO(infoDetail.get("USERNO").toString());
                             requestDetail.setUserName(infoDetail.get("USERNAME").toString());
                             requestDetail.setUserPassword(infoDetail.get("PASSWORD").toString());
+
+
                             requestDetail.setCONO1(infoDetail.get("CONO1").toString());
                             requestDetail.setCONO2(infoDetail.get("CONO2").toString());
 

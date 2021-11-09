@@ -17,8 +17,7 @@ import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.List;
 
-public class StockInfoqtyAdapter extends  RecyclerView.Adapter<StockInfoqtyAdapter.StockInfoqtyViewHolder>
-{
+public class StockInfoqtyAdapter extends RecyclerView.Adapter<StockInfoqtyAdapter.StockInfoqtyViewHolder> {
     private List<ReplacementModel> list;
     Context context;
 
@@ -33,6 +32,7 @@ public class StockInfoqtyAdapter extends  RecyclerView.Adapter<StockInfoqtyAdapt
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.stockqtyrecycle, parent, false);
         return new StockInfoqtyAdapter.StockInfoqtyViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull StockInfoqtyAdapter.StockInfoqtyViewHolder holder, int position) {
         holder.Stock_Code.setText(list.get(position).getFrom());
@@ -46,8 +46,9 @@ public class StockInfoqtyAdapter extends  RecyclerView.Adapter<StockInfoqtyAdapt
     public int getItemCount() {
         return list.size();
     }
-    class StockInfoqtyViewHolder extends RecyclerView.ViewHolder{
-        TextView Stock_Code,Stock_NameA,QTY ;
+
+    class StockInfoqtyViewHolder extends RecyclerView.ViewHolder {
+        TextView Stock_Code, Stock_NameA, QTY;
 
         public StockInfoqtyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,5 +61,5 @@ public class StockInfoqtyAdapter extends  RecyclerView.Adapter<StockInfoqtyAdapt
         }
 
 
-        }
+    }
 }

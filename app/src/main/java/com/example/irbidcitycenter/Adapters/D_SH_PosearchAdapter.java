@@ -77,31 +77,29 @@ public class D_SH_PosearchAdapter extends BaseAdapter {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          if(dailogNum==0)
-          {  DIsh_poedit.setText(items.get(position));
-                DIsh_poediteshow.setText("");
-                DIsh_boxcountediteshow.setText("");
-                DIsh_Itemcodeediteshow.setText("");
-                DIsh_preQTY.setText("");
-                DIsh_boxedit.setText("");
-                DIsh_qtyedit.setText("");
-                DIsh_boxSearch.setEnabled(true);
-              Log.e("dailogNum==0","dailogNum==0");
-                DIsh_boxedit.setEnabled(true);
-                DIsh_boxedit.requestFocus();
-                db_posearchdialog.dismiss();}
-                else
-                    if(dailogNum==1){
-              DS_poedit.setText(items.get(position));
-                        Log.e("dailogNum==1","dailogNum==1");
-              db_posearchdialog.dismiss();
-              filldeletePOdialogDATA();
-                }
-                else if(dailogNum==2){
-              Dbsh_poedit.setText(items.get(position));
-              Log.e("dailogNum==2","dailogNum==2");
-                        Db_boxedit.requestFocus();
-                        db_posearchdialog.dismiss();
+                if (dailogNum == 0) {
+                    DIsh_poedit.setText(items.get(position));
+                    DIsh_poediteshow.setText("");
+                    DIsh_boxcountediteshow.setText("");
+                    DIsh_Itemcodeediteshow.setText("");
+                    DIsh_preQTY.setText("");
+                    DIsh_boxedit.setText("");
+                    DIsh_qtyedit.setText("");
+                    DIsh_boxSearch.setEnabled(true);
+                    Log.e("dailogNum==0", "dailogNum==0");
+                    DIsh_boxedit.setEnabled(true);
+                    DIsh_boxedit.requestFocus();
+                    db_posearchdialog.dismiss();
+                } else if (dailogNum == 1) {
+                    DS_poedit.setText(items.get(position));
+                    Log.e("dailogNum==1", "dailogNum==1");
+                    db_posearchdialog.dismiss();
+                    filldeletePOdialogDATA();
+                } else if (dailogNum == 2) {
+                    Dbsh_poedit.setText(items.get(position));
+                    Log.e("dailogNum==2", "dailogNum==2");
+                    Db_boxedit.requestFocus();
+                    db_posearchdialog.dismiss();
                 }
             }
         });

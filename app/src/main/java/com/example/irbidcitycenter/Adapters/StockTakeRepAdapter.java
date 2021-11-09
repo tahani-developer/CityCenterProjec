@@ -13,9 +13,9 @@ import com.example.irbidcitycenter.R;
 import java.util.List;
 
 public class StockTakeRepAdapter extends BaseAdapter {
-    TextView store,zone,itemcode,itemname,qty;
+    TextView store, zone, itemcode, itemname, qty;
 
-    List<StocktakeModel>stocktakeModels;
+    List<StocktakeModel> stocktakeModels;
     Context context;
 
     public StockTakeRepAdapter(List<StocktakeModel> stocktakeModels, Context context) {
@@ -40,14 +40,14 @@ public class StockTakeRepAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
-        if(convertView==null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(context).
                     inflate(R.layout.stocktakereportrow, parent, false);
-            store= convertView.findViewById(R.id.textView_store);
-            zone= convertView.findViewById(R.id.textView_zone);
-            itemcode= convertView.findViewById(R.id.textView_itemcode1);
-            itemname= convertView.findViewById(R.id.textView_itemname1);
-            qty= convertView.findViewById(R.id.textView_qty1);
+            store = convertView.findViewById(R.id.textView_store);
+            zone = convertView.findViewById(R.id.textView_zone);
+            itemcode = convertView.findViewById(R.id.textView_itemcode1);
+            itemname = convertView.findViewById(R.id.textView_itemname1);
+            qty = convertView.findViewById(R.id.textView_qty1);
 
             store.setText(stocktakeModels.get(i).getStore());
             zone.setText(stocktakeModels.get(i).getZone());

@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,10 +43,13 @@ import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
+import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
+import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
@@ -97,6 +102,7 @@ LinearLayout zoneLin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_replenishment_reverse);
         init();
 
@@ -147,6 +153,16 @@ LinearLayout zoneLin;
 
         }
         UserNo = my_dataBase.settingDao().getUserNo();
+    }
+
+    private void loadLanguage() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
 
     TextView.OnKeyListener onKeyListener = new View.OnKeyListener() {

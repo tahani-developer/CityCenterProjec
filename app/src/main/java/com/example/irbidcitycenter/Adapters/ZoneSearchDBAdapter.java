@@ -53,8 +53,9 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
     private Context context; //context
     private List<String> items; //data source of the list adapter
     public RoomAllData my_dataBase;
+
     //public constructor
-    public ZoneSearchDBAdapter (Context context, List<String> items) {
+    public ZoneSearchDBAdapter(Context context, List<String> items) {
         this.context = context;
         this.items = items;
     }
@@ -88,38 +89,34 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
         // get the TextView for item name and item description
         TextView textViewItemName = (TextView)
                 convertView.findViewById(R.id.itemname);
-        LinearLayout linearLayout= convertView.findViewById(R.id.linear);
+        LinearLayout linearLayout = convertView.findViewById(R.id.linear);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(flage3==0) {
-
+                if (flage3 == 0) {
 
 
                     try {
                         AddZone.zonebarecode.setText(items.get(position));
                         //set zone barecode
-                        Log.e("here","hee");
-                            AddZone.zonecode1.setText(items.get(position));
+                        Log.e("here", "hee");
+                        AddZone.zonecode1.setText(items.get(position));
 
 
                         //set qty of zone
                         long sumqty = my_dataBase.zoneDao().GetQtyOfZone(items.get(position));
-                     AddZone.qty1.setText(sumqty + "");
+                        AddZone.qty1.setText(sumqty + "");
 
 
                         //set zonename
                         String zoneNam = my_dataBase.zoneDao().GetNameOfZone(items.get(position));
-                            AddZone.zonename1.setText(zoneNam);
+                        AddZone.zonename1.setText(zoneNam);
 
                         AddZone.searchdialog.dismiss();
                     } catch (Exception e) {
 
                     }
-                }
-
-                else   if(flage3==6)
-                {
+                } else if (flage3 == 6) {
 
                     AddZone.DDzoneEDT.setText(items.get(position));
                     AddZone.DDitemcode.setText("");
@@ -132,19 +129,14 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
 
                     AddZone.searchdialog.dismiss();
 
-                }
-                else   if(flage3==4)
-                {
+                } else if (flage3 == 4) {
                     DZRE_ZONEcode.setText(items.get(position));
                     DZRE_zonecodeshow.setText(DZRE_ZONEcode.getText().toString().trim());
                     getqtyofDBzone();
 
                     DZRE_delete.setEnabled(true);
                     Re_searchdialog.dismiss();
-                }
-
-                else     if(flage3==5)
-                {
+                } else if (flage3 == 5) {
                     Replacement.DIRE_ZONEcode.setText(items.get(position));
                     DIRE_qtyshow.setText("");
                     DIRE_zoneshow.setText("");
@@ -153,15 +145,13 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                     DIRE_itemcode.setEnabled(true);
                     DIRE_itemcode.requestFocus();
                     Re_searchdialog.dismiss();
-                } else     if(flage3==7)
-                {
+                } else if (flage3 == 7) {
                     Stoketake.ST_ZONEcode.setText(items.get(position));
                     ST_zonecodeshow.setText(items.get(position));
                     Stoketake.getqtyofDBzone();
                     ST_delete.setEnabled(true);
                     ST_searchdialog.dismiss();
-                }
-                else  if(flage3==8){
+                } else if (flage3 == 8) {
                     Stoketake.ST_ZONEcod.setText(items.get(position));
                     ST_qtyshows.setText("");
                     ST_preQTY.setText("");
@@ -171,19 +161,17 @@ public class ZoneSearchDBAdapter extends BaseAdapter {
                     ST_itemcode.setEnabled(true);
                     ST_itemcode.requestFocus();
                     ST_searchdialog.dismiss();
-                }
-                else  if(flage3==9){
+                } else if (flage3 == 9) {
                     ZR_DZzonecode.setText(items.get(position));
                     //set zone barecode
-                    ZR_DZzonebarecodehow.setText(  ZR_DZzonecode.getText().toString());
+                    ZR_DZzonebarecodehow.setText(ZR_DZzonecode.getText().toString());
 
                     //set qty of zone
-                    long sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(  ZR_DZzonecode.getText().toString());
+                    long sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(ZR_DZzonecode.getText().toString());
                     ZR_DZqtyshow.setText(sumqty + "");
-                    ZoneReplacment.searchdialog .dismiss();
+                    ZoneReplacment.searchdialog.dismiss();
 
-                }
-                else  if(flage3==10){
+                } else if (flage3 == 10) {
                     ZRDI_ZONEcode.setText(items.get(position));
                     ZRDI_itemcode.setText("");
                     ZRDI_itemcode.setEnabled(true);
