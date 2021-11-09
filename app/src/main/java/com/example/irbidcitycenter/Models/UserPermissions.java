@@ -102,6 +102,41 @@ public class UserPermissions {
     String SH_RepOpen;
     @ColumnInfo(name = "ST_RepOpen")
     String ST_RepOpen;
+
+
+    @ColumnInfo(name = "RevRep_Open")
+    String RevRep_Open;
+    @ColumnInfo(name = "OVIEWCOST")
+    String VIEWCost;
+    @ColumnInfo(name = "RepRev_LocalDelete")
+    String RepRev_LocalDelete;
+
+    public String getRevRep_Open() {
+        return RevRep_Open;
+    }
+
+    public void setRevRep_Open(String revRep_Open) {
+        RevRep_Open = revRep_Open;
+    }
+
+    public String getVIEWCost() {
+        return VIEWCost;
+    }
+
+    public void setVIEWCost(String VIEWCost) {
+        this.VIEWCost = VIEWCost;
+    }
+
+    public String getRepRev_LocalDelete() {
+        return RepRev_LocalDelete;
+    }
+
+    public void setRepRev_LocalDelete(String repRev_LocalDelete) {
+        RepRev_LocalDelete = repRev_LocalDelete;
+    }
+
+
+
     public String getSHIP_Open() {
         return SHIP_Open;
     }

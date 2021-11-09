@@ -58,6 +58,7 @@ import static com.example.irbidcitycenter.Activity.ItemChecker.ItC_itemcode;
 import static com.example.irbidcitycenter.Activity.ItemChecker.itemRES;
 import static com.example.irbidcitycenter.Activity.ItemChecker.stockqrtRes;
 import static com.example.irbidcitycenter.Activity.Login.getListCom;
+import static com.example.irbidcitycenter.Activity.MainActivity.flg;
 import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
@@ -68,6 +69,7 @@ import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
 import static com.example.irbidcitycenter.Activity.Replacement.qtyrespons;
 import static com.example.irbidcitycenter.Activity.Replacement.zone;
 
+import static com.example.irbidcitycenter.Activity.ReplenishmentReverse.RepRev_Itemrespons;
 import static com.example.irbidcitycenter.Activity.Stoketake.AllstocktakeDBlist;
 
 import static com.example.irbidcitycenter.Activity.Stoketake.St_Itemrespons;
@@ -223,12 +225,13 @@ public class ImportData {
         pditeminfo.setTitleText(" Start get Items Info");
         pditeminfo.setCancelable(false);
         pditeminfo.show();
-
+        itemInfos.clear();
         if(!ipAddress.equals(""))
             new  JSONTask_getItemInfo().execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
+
     public void getQty() {
         listQtyZone.clear();
             new  JSONTask_getQTYOFZone().execute();
@@ -1305,7 +1308,7 @@ Log.e("Exception===",e.getMessage());
                                         jsonObject1 = requestArray.getJSONObject(i);
                                         store.setSTORENO(jsonObject1.getString("STORENO"));
                                         store.setSTORENAME(jsonObject1.getString("STORENAME"));
-
+                                        store.setSTOREKIND(jsonObject1.getString("STOREKIND"));
                                         Storelist.add(store);
                                     }
                               if( Replacement.actvityflage==1)
@@ -1754,13 +1757,7 @@ Log.e("Exception===",e.getMessage());
             super.onPostExecute(respon);
             String d="";
             JSONObject jsonObject1 = null;
-            Handler h = new Handler(Looper.getMainLooper());
-            h.post(new Runnable() {
-                public void run() {
 
-                    pditeminfo.dismiss();
-                }
-            });
 
 
             if (respon != null) {
@@ -1805,7 +1802,7 @@ Log.e("Exception===",e.getMessage());
 
                                 itemInfo.setZONE(jsonObject1.getString("ZONE"));
                                 itemInfo.setSHELF(jsonObject1.getString("SHELF"));
-
+                                itemInfo.setFREEZ(jsonObject1.getString("FREEZ"));
 
 
                                 itemInfos .add(itemInfo);
@@ -2004,6 +2001,8 @@ Log.e("Exception===",e.getMessage());
 
              if(MainActivity.Items_activityflage==1)       itemrespons.setText("ItemOCode");
             else        St_Itemrespons.setText("ItemOCode");
+
+                   if(flg==0) RepRev_Itemrespons.setText("ItemOCode");
 
                     Log.e("itemrespons",itemrespons.getText().toString()+d);
 
@@ -2381,24 +2380,29 @@ Log.e("Exception===",e.getMessage());
                         for (int i = 0; i < requestArray.length(); i++) {
                             Log.e("here UserPermissions2"," UserPermissions2");
                             JSONObject infoDetail = requestArray.getJSONObject(i);
+
                             requestDetail = new UserPermissions();
                             requestDetail.setUserNO(infoDetail.get("USERNO").toString());
                             requestDetail.setUserName(infoDetail.get("USERNAME").toString());
                             requestDetail.setUserPassword(infoDetail.get("PASSWORD").toString());
-
-
                             requestDetail.setCONO1(infoDetail.get("CONO1").toString());
                             requestDetail.setCONO2(infoDetail.get("CONO2").toString());
+
+
                             requestDetail.setCONO3(infoDetail.get("CONO3").toString());
                             requestDetail.setCONO4(infoDetail.get("CONO4").toString());
                             requestDetail.setCONO5(infoDetail.get("CONO5").toString());
                             requestDetail.setCONO6(infoDetail.get("CONO6").toString());
                             requestDetail.setCONO7(infoDetail.get("CONO7").toString());
+
+
                             requestDetail.setCONO8(infoDetail.get("CONO8").toString());
                             requestDetail.setCONO9(infoDetail.get("CONO9").toString());
                             requestDetail.setCONO10(infoDetail.get("CONO10").toString());
                             requestDetail.setUserActive(infoDetail.get("UACTIVE").toString());
                             requestDetail.setMasterUser(infoDetail.get("UMASTER").toString());
+
+
                             requestDetail.setSHIP_Open(infoDetail.get("NOPEN").toString());
                             requestDetail.setSHIP_Save(infoDetail.get("NFINISH").toString());
                             requestDetail.setSHIP_LocalDelete(infoDetail.get("NDELETE").toString());
@@ -2433,6 +2437,9 @@ Log.e("Exception===",e.getMessage());
                             requestDetail.setSH_RepOpen(infoDetail.get("RSHIPMENT").toString());
 
                             requestDetail.setST_RepOpen(infoDetail.get("RSTOCKTAKE").toString());
+                            requestDetail.setRevRep_Open(infoDetail.get("OREVERSE").toString());
+                            requestDetail.setVIEWCost(infoDetail.get("OVIEWCOST").toString());
+                           // requestDetail.setRepRev_LocalDelete(infoDetail.get("OREVERSE").toString());
 
                             UserPermissions.add(requestDetail);
                             Log.e("here UserPermissions"," UserPermissions");

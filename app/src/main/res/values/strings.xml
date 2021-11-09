@@ -153,26 +153,27 @@ This barcode is not available in this PO, do you want to add it? </string>
     <string name="del_per">Sorry, No Permission To Enter ,Are you want to enter as MasterUser?</string>
 
 
-    <string name="F_D"> F_D</string>
+    <string name="F_D"> Original Price</string>
     <string name="LASTSPRICE"> LASTS PRICE</string>
-    <string name="BUYERGGROUP"> BUY ERGGROUP</string>
-    <string name="DIVISION"> DIVISION</string>
-    <string name="SUBDIVISION"> SUB DIVISION</string>
-    <string name="CLASS">CLASS</string>
-    <string name="SSIZE"> SSIZE</string>
-    <string name="SEASON"> SEASON</string>
-    <string name="STYLECODE"> STYLE CODE</string>
-    <string name="SECTION"> SECTION</string>
-    <string name="BRANDNAME"> BRAND NAME</string>
-    <string name="COLORNAME"> COLOR NAME</string>
-    <string name="LENGTH">LENGTH</string>
-    <string name="ZONE">ZONE</string>
-    <string name="SHELF"> SHELF</string>
-    <string name="COLORCODE"> COLOR CODE</string>
-    <string name="TAXPERC"> TAX PERC</string>
-    <string name="LLCPRICE"> TAX PERC</string>
+    <string name="BUYERGGROUP"> Years</string>
+    <string name="DIVISION"> Season</string>
+    <string name="SUBDIVISION"> Category Desc</string>
+    <string name="CLASS">Dept Desc</string>
+    <string name="SSIZE"> Invoice Date</string>
+    <string name="SEASON"> Season Code</string>
+    <string name="STYLECODE"> Item Master</string>
+    <string name="SECTION"> Size Desc</string>
+    <string name="BRANDNAME"> Brand Desc</string>
+    <string name="COLORNAME"> Style Code</string>
+    <string name="LENGTH">Color</string>
+    <string name="ZONE">Family code</string>
+    <string name="SHELF"> Family Desc</string>
+    <string name="COLORCODE"> Sub Dept Desc</string>
+    <string name="TAXPERC"> Tax Price</string>
+    <string name="LLCPRICE"> LLC Price</string>
+    <string name="freeze"> Freez</string>
 
-    <string name="AVGCOST"> AVG COST </string>
+    <string name="AVGCOST"> Avg Cost </string>
 
     <string name="username"> username:</string>
     <string name="perMsg">  You don\'t have permission,

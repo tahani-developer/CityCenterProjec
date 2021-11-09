@@ -530,6 +530,7 @@ public static void getItemsSumQty() {
                     zonecode.setEnabled(true);
                     itemname.setText("");
                     itemOcode.setText("");
+                    itemOcode.setEnabled(false);
                     zonecode.setText("");
                   zonecode.requestFocus();
                   total_zoneqty_text.setText("0");

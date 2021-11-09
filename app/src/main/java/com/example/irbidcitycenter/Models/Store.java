@@ -12,8 +12,17 @@ public class Store {
    String STORENO ;
     @ColumnInfo(name = "STORENAME")
     String     STORENAME;
-
+    @ColumnInfo(name = "STOREKIND")
+    String     STOREKIND;
     public Store() {
+    }
+
+    public String getSTOREKIND() {
+        return STOREKIND;
+    }
+
+    public void setSTOREKIND(String STOREKIND) {
+        this.STOREKIND = STOREKIND;
     }
 
     public int getSERIAL() {

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
 import com.example.irbidcitycenter.Adapters.StockInfoqtyAdapter;
@@ -28,8 +31,10 @@ import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
+import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
+import static com.example.irbidcitycenter.ImportData.UserPermissions;
 import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle;
 import static com.example.irbidcitycenter.ImportData.itemInfos;
 import static com.example.irbidcitycenter.ImportData.pditeminfo;
@@ -56,10 +61,10 @@ public class ItemChecker extends AppCompatActivity {
     SECTION ,
 
     BRANDNAME,
-    COLORNAME,
+    COLORNAME,  ITC_itemcodeshow,
     LENGTH ,
     COLORCODE,
-    ZONE ,
+    ZONE ,ITC_freeze,
     SHELF ;;
     public static  EditText ItC_itemcode;
     public TextView itemname,itemkind,saleprice,qty;
@@ -68,6 +73,7 @@ public class ItemChecker extends AppCompatActivity {
  ImportData importData;
  RecyclerView  recyclerView;
     private StockInfoqtyAdapter adapter;
+LinearLayout avgcostLin, headerLin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,31 @@ public class ItemChecker extends AppCompatActivity {
 
 
         init();
+        headerLin.setVisibility(View.INVISIBLE);
+        try {
+            if(userPermissions.getMasterUser().equals("0") )
+                if(userPermissions.getVIEWCost().equals("0") )
+                {
+                    avgcostLin .setVisibility(View.GONE);
+                LASTSPRICE.setVisibility(View.GONE);
+
+
+                }
+                else
+            {  avgcostLin.setVisibility(View.VISIBLE);
+                LASTSPRICE.setVisibility(View.VISIBLE);
+
+            }
+
+            else
+            {
+                avgcostLin .setVisibility(View.VISIBLE);
+                LASTSPRICE.setVisibility(View.VISIBLE);
+            }
+        }catch (Exception e){
+
+        }
+
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -111,9 +142,10 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                             importData.getItemInfo();
                                 stocksQty.clear();
                             filladapter();
-                                importData.   GetItemCountInSTR();
+                                importData. GetItemCountInSTR();
 
-                        }else{
+                        }
+                            else{
                                 clearData();
                                 ItC_itemcode.requestFocus();
                             }
@@ -133,10 +165,11 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
 void clearData(){
 
     ITEMNAME .setText("");
+    ITC_itemcodeshow.setText("");
     TAXPERC .setText("");
     AVGCOST .setText("");
 
-
+   ITC_freeze.setText("");
     SALEPRICE .setText("");
     LLCPRICE.setText("");
     F_D .setText("");
@@ -163,6 +196,9 @@ void clearData(){
 
 }
     private void init() {
+        ITC_freeze=findViewById(R.id.ITC_freeze);
+        headerLin=findViewById(R.id. headerLin);
+        avgcostLin=findViewById(R.id.avgcostLin);
         recyclerView=findViewById(R.id.stockQty);
         itemRES = findViewById(R.id.itemRES);
         importData = new ImportData(ItemChecker.this);
@@ -191,6 +227,7 @@ void clearData(){
 
         BRANDNAME = findViewById(R.id.ITC_BRANDNAME);
         COLORNAME = findViewById(R.id.ITC_COLORNAME);
+        ITC_itemcodeshow = findViewById(R.id.ITC_itemcodeshow);
         LENGTH = findViewById(R.id.ITC_LENGTH);
         COLORCODE = findViewById(R.id.ITC_COLORCODE);
 
@@ -217,8 +254,15 @@ void clearData(){
                 if (!editable.toString().equals("")) {
 
                     if (editable.toString().equals("ItemOCode")) {
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                pditeminfo.dismiss();
+                                 }
+                        });
 
                         ITEMNAME .setText(itemInfos.get(0).getITEMNAME());
+                        ITC_itemcodeshow.setText(itemInfos.get(0).getItemcode());
                         TAXPERC .setText(itemInfos.get(0).getTAXPERC());
                         AVGCOST .setText(itemInfos.get(0).getAVGCOST());
 
@@ -231,7 +275,7 @@ void clearData(){
                         BUYERGGROUP.setText(itemInfos.get(0).getBUYERGGROUP());
                         DIVISION .setText(itemInfos.get(0).getDIVISION());
                         SUBDIVISION .setText(itemInfos.get(0).getSUBDIVISION());
-                        CLASS.setText(itemInfos.get(0).getITEMNAME());
+                        CLASS.setText(itemInfos.get(0).getCLASS());
 
                         SSIZE.setText(itemInfos.get(0).getSSIZE());
                         SEASON .setText(itemInfos.get(0).getSEASON ());
@@ -243,13 +287,38 @@ void clearData(){
                         LENGTH .setText(itemInfos.get(0).getLENGTH());
                         COLORCODE .setText(itemInfos.get(0).getCOLORCODE());
 
+                        if(itemInfos.get(0).getFREEZ().equals("1"))
+                        {
+                            ITC_freeze.setText("Yes");
+                            ITC_freeze.setTextColor(Color.RED);
+                        }
+                       else {
+
+                           ITC_freeze.setText("No");
+                            ITC_freeze.setTextColor(Color.GREEN);
+                       }
                         ZONE.setText(itemInfos.get(0).getZONE());
                         SHELF .setText(itemInfos.get(0).getSHELF());
                         ItC_itemcode.setText("");
                         ItC_itemcode.requestFocus();
 
-
                     }  if (editable.toString().equals("nodata")) {
+
+
+                        try {
+                            Handler h = new Handler(Looper.getMainLooper());
+                            h.post(new Runnable() {
+                                public void run() {
+                                    pditeminfo.dismiss();
+                                    // hideProgressDialogWithTitle();
+                                }
+                            });
+
+                        }
+                   catch (Exception e){
+
+                   }
+
                      //   showSweetDialog(ItemChecker.this,0,"","No Data For this Item");
                           ItC_itemcode.setError("Invalid");
                         ItC_itemcode.setText("");
@@ -257,6 +326,16 @@ void clearData(){
                         ItC_itemcode.requestFocus();
 
                     }else  if (editable.toString().equals("NoInterNet")) {
+
+                     Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                pditeminfo.dismiss();
+                                // hideProgressDialogWithTitle();
+                                     }
+                        });
+
+
                        showSweetDialog(ItemChecker.this,0,"","Check Connection");
                         ItC_itemcode.setText("");
                         ItC_itemcode.requestFocus();
@@ -280,8 +359,11 @@ void clearData(){
                 if (!editable.toString().equals("")) {
 
                     if (editable.toString().equals("Stock_Code")) {
-
+                        headerLin.setVisibility(View.VISIBLE);
                         filladapter();
+                    }
+                    else{
+
                     }
 
                 }

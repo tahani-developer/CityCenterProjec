@@ -27,6 +27,15 @@ public class ItemInfo {
     String     COLORCODE;
     String  ZONE;
     String     SHELF;
+    String   FREEZ;
+
+    public String getFREEZ() {
+        return FREEZ;
+    }
+
+    public void setFREEZ(String FREEZ) {
+        this.FREEZ = FREEZ;
+    }
 
     public String getItemcode() {
         return itemcode;

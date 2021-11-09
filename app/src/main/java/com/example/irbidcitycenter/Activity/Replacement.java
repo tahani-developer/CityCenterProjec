@@ -123,7 +123,8 @@ public class Replacement extends AppCompatActivity {
     EditText UsNa;
     public static EditText   DIRE_ZONEcode, DIRE_itemcode;
 
-
+    List<String> FromArray = new ArrayList<>();
+    List<String> ToArray = new ArrayList<>();
     Button Re_delete;
     private Animation animation;
 
@@ -142,11 +143,13 @@ public class Replacement extends AppCompatActivity {
        if(Storelist.size()>0) {
            Log.e("sss","sss");
            for (int i = 0; i < Storelist.size(); i++) {
-               spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+              if(Storelist.get(i).getSTOREKIND().equals("0")) FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+               if(Storelist.get(i).getSTOREKIND().equals("1"))    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
 
            }
            fillSp();
        }
+
 
       else
      if( Storelist.size()==0)
@@ -1537,12 +1540,15 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         respon.setText("");
                     } else {
                         if (editable.toString().equals("fill")) {
-                            for (int i = 0; i < Storelist.size(); i++)
-                            {   spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-                            my_dataBase.storeDao().insert(Storelist.get(i));}
-                        }
-                        fillSp();
+                            for (int i = 0; i < Storelist.size(); i++) {
+                                if (Storelist.get(i).getSTOREKIND().equals("0"))
+                                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                                if (Storelist.get(i).getSTOREKIND().equals("1"))
+                                    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
 
+                            }
+                            fillSp();
+                        }
                         zone.requestFocus();
                         Log.e("afterTextChanged", "" + editable.toString());
 
@@ -1697,11 +1703,16 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
     private void fillSp() {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray);
+                this, android.R.layout.simple_spinner_item, FromArray);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, ToArray);
         fromSpinner.setAdapter(adapter);
-        toSpinner.setAdapter(adapter);
-        toSpinner.setSelection(1);
+        toSpinner.setAdapter(adapter2);
+       // toSpinner.setSelection(1);
         Log.e("sss1","sss1");
+
+
     }
 
     private void compareItemKind(String itemKind) {

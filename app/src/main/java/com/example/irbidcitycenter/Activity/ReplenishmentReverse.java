@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -45,7 +47,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
 import static com.example.irbidcitycenter.ImportData.Storelist;
+import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle;
 import static com.example.irbidcitycenter.ImportData.storeinfo;
 
 public class ReplenishmentReverse extends AppCompatActivity {
@@ -87,7 +91,9 @@ LinearLayout zoneLin;
     public static  List<ReplenishmentReverseModel> reducedqtyitemlist=new ArrayList<>();
     public static  List<ReplenishmentReverseModel> DB_replistcopy=new ArrayList<>();
     private int indexOfReduceditem;
-    public static    TextView RepRev_exportstate;
+    public static    TextView RepRev_exportstate,RepRev_Itemrespons;
+    List<String> FromArray = new ArrayList<>();
+    List<String> ToArray = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +113,10 @@ LinearLayout zoneLin;
                     .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            MainActivity.flg=0;
                             importData.getAllItems();
                             sweetAlertDialog.dismiss();
+
                         }
                     })
                     .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
@@ -126,7 +134,8 @@ LinearLayout zoneLin;
         if (Storelist.size() > 0) {
             Log.e("sss", "sss");
             for (int i = 0; i < Storelist.size(); i++) {
-                spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                if(Storelist.get(i).getSTOREKIND().equals("1")) FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                if(Storelist.get(i).getSTOREKIND().equals("0"))    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
 
             }
             fillSp2();
@@ -445,7 +454,8 @@ LinearLayout zoneLin;
                     if( userPermissions==null) getUsernameAndpass();
                     animation = AnimationUtils.loadAnimation(ReplenishmentReverse.this, R.anim.modal_in);
                     deleteBtn.startAnimation(animation);
-                    if (userPermissions.getMasterUser().equals("0")) {
+                    OpenDeleteDailog();
+                   /* if (userPermissions.getMasterUser().equals("0")) {
                         if (userPermissions.getRep_LocalDelete().equals("1"))
                             OpenDeleteDailog();
                         else{
@@ -472,7 +482,7 @@ LinearLayout zoneLin;
                         }
                     }else{
                         OpenDeleteDailog();
-                    }
+                    }*/
 
 
             }
@@ -895,8 +905,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
         saveBtn.startAnimation(animation);
 
 
-        if (userPermissions.getMasterUser().equals("0")) {
-            if (userPermissions.getRep_Save().equals("1")) {
+
                 if (replacementlist.size() > 0) {
                     fromSpinner.setEnabled(true);
                     toSpinner.setEnabled(true);
@@ -916,30 +925,8 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                     generalMethod.showSweetDialog(ReplenishmentReverse.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
                 }
 
-            }else{
-                generalMethod.showSweetDialog(ReplenishmentReverse.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
-
-            }
-        }else{
-            if (replacementlist.size() > 0) {
-                fromSpinner.setEnabled(true);
-                toSpinner.setEnabled(true);
 
 
-                UnPostedreplacementlist = my_dataBase.repReversDao().getallReplacement();
-
-                for (int i = 0; i < UnPostedreplacementlist.size(); i++)
-                    if (UnPostedreplacementlist.get(i).getDeviceId() == null)
-                        UnPostedreplacementlist.get(i).setDeviceId(deviceId);
-
-                MainActivity.exportFromMainAct = false;
-                exportData();
-
-                RepRev_itemcodeedt.setText("");
-            } else {
-                generalMethod.showSweetDialog(ReplenishmentReverse.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-            }
-        }
     }
     private void copylist() {
         DB_replistcopy.clear();
@@ -1001,30 +988,35 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
         return flag;
 
     }
-    private void fillSp() {
-        spinnerArray.remove(0);
+    private void fillSp2() {
+        //spinnerArray.remove(0);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray);
+                this, android.R.layout.simple_spinner_item, FromArray);
         fromSpinner.setAdapter(adapter);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, ToArray);
+        toSpinner.setAdapter(adapter2);
 
     //    toSpinner.setAdapter(adapter);
       //  toSpinner.setSelection(1);
 
         Log.e("sss1","sss1");
     }
-    private void fillSp2() {
-        List<String> spinnerArray2 = new ArrayList<>();
-        spinnerArray2.add(spinnerArray.get(0));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray2);
-
-        toSpinner.setAdapter(adapter);
-        toSpinner.setSelection(0);
-        Log.e("sss1","sss1");
-        fillSp();
-    }
+//    private void fillSp2() {
+//        List<String> spinnerArray2 = new ArrayList<>();
+//        spinnerArray2.add(spinnerArray.get(0));
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this, android.R.layout.simple_spinner_item, spinnerArray2);
+//
+//        toSpinner.setAdapter(adapter);
+//        toSpinner.setSelection(0);
+//        Log.e("sss1","sss1");
+//        fillSp();
+//    }
     private void init() {
         replacementlist.clear();
+        RepRev_Itemrespons=findViewById(R.id.RepRev_Itemrespons);
         RepRev_exportstate=findViewById(R.id.RepRev_exportstate);
         exportData=new ExportData(ReplenishmentReverse.this);
         deleteBtn=findViewById(R.id.RepRev_delete);
@@ -1084,13 +1076,19 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
 
                     } else {
                         if (editable.toString().equals("fill")) {
-                            for (int i = 0; i < Storelist.size(); i++)
-                            {   spinnerArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-                                my_dataBase.storeDao().insert(Storelist.get(i));}
+                            for (int i = 0; i < Storelist.size(); i++) {
+
+
+                                if (Storelist.get(i).getSTOREKIND().equals("1"))
+                                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                                if (Storelist.get(i).getSTOREKIND().equals("0"))
+                                    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+                            }
+
+                            fillSp2();
+
                         }
-                        fillSp2();
-
-
                         Log.e("afterTextChanged", "" + editable.toString());
 
                     }
@@ -1143,7 +1141,41 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                 }
             }
         });
+        RepRev_Itemrespons.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+
+                    if (editable.toString().equals("ItemOCode")) {
+                        Log.e("herea","aaaaa");
+                        my_dataBase.itemDao().deleteall();
+                        my_dataBase.itemDao().insertAll(AllImportItemlist);
+                        AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                try {
+                                    showSweetDialog(ReplenishmentReverse.this, 1, "Done,All data is stored", "");
+                                } catch (WindowManager.BadTokenException e) {
+                                    //use a log message
+                                }
+                            }
+                        });
+                    }
+
+                    }
+            }
+        });
 
 
     }

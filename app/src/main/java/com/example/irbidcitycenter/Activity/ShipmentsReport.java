@@ -11,10 +11,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +39,8 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 public class ShipmentsReport extends AppCompatActivity {
 TextView  SH_date,total_qty_text;
     Calendar myCalendar;
-    EditText search_edt,PONO_edt;
+    EditText search_edt;
+         Spinner PONO_edt;
     Button perview ,ponoperview;
     List<Shipment> shipments;
     public RoomAllData my_dataBase;
@@ -45,6 +48,7 @@ TextView  SH_date,total_qty_text;
     private List<Shipment> PoNoShlist=new ArrayList<>();
     private List<Shipment> searchlist=new ArrayList<>();
     private List<Shipment> allShipmentslist=new ArrayList<>();
+    private List<String> poNoSpinner=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,20 @@ TextView  SH_date,total_qty_text;
         myCalendar = Calendar.getInstance();
 
 allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
+
+        poNoSpinner.clear();
+        poNoSpinner.add("All");
+
+        for(int i=0;i<allShipmentslist.size();i++)
+    if(!poNoSpinner.contains(allShipmentslist.get(i).getPoNo()))
+        poNoSpinner.add(allShipmentslist.get(i).getPoNo());
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                ShipmentsReport.this, android.R.layout.simple_spinner_item,  poNoSpinner);
+        PONO_edt.setAdapter(adapter);
+        PONO_edt.setSelection(0);
+
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
@@ -60,10 +78,10 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
         ponoperview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!PONO_edt.getText().toString().trim().equals(""))
+                if(!PONO_edt.getSelectedItem().toString().trim().equals(""))
                 {
-
-                    PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbyPONO(PONO_edt.getText().toString().trim());
+               if(!PONO_edt.getSelectedItem().equals("All"))
+               {  PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbyPONO(PONO_edt.getSelectedItem().toString().trim());
 
                if(PoNoShlist!=null&& PoNoShlist.size()!=0) {
                    fillAdapterData(PoNoShlist);
@@ -78,7 +96,13 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
                }
                 }
                 else{
-                    PONO_edt.setError("Empty");
+                   fillAdapterData(allShipmentslist);
+                   CalculateSum(  allShipmentslist);
+               }
+
+                }
+                else{
+                 //   PONO_edt.setError("Empty");
                 }
             }
         });

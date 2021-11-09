@@ -58,4 +58,6 @@ long getStoreQty(String Store);
     long  getItemQty();
     @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0'")
     List<StocktakeModel> getdateStoketakes (String date);
+
+
 }

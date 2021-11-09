@@ -84,7 +84,7 @@ ImportData importData;
     public static TextView itemrespons,    exportrespon,exportZonReprespon;
 public static    int   activityflage=1;
 
-  public    static  int Items_activityflage=1;
+  public    static  int Items_activityflage=1,flg=1;;
     private TextView companyNum,  username_show;
     //////
 
@@ -309,7 +309,7 @@ public static    int   activityflage=1;
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
                         hideProgressDialogWithTitle();
                  //   Toast.makeText(MainActivity.this,"gat all data",Toast.LENGTH_SHORT).show();
-                      showSweetDialog(MainActivity.this,1,"Done,All data is stored","");
+                        if(flg != 0) showSweetDialog(MainActivity.this,1,"Done,All data is stored","");
 
                     }
                     else     if (editable.toString().equals("nodata")) {
@@ -516,6 +516,8 @@ try {
                    }
                              break;
                case  R.id.itemcheckerlinear:
+                   animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                   itemcheckerlinear   .startAnimation(animation);
 
                    Intent intent9 = new Intent(MainActivity.this,ItemChecker.class);
                    startActivity(intent9);
@@ -524,9 +526,23 @@ try {
              case R.id.ReplacmentReverselinear:
                  animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                  ReplacmentReverselinear   .startAnimation(animation);
-                   Intent intent10 = new Intent(MainActivity.this,ReplenishmentReverse.class);
-                   startActivity(intent10);
-           }
+
+                 if( userPermissions==null) getUsernameAndpass();
+                 if (userPermissions.getMasterUser().equals("0")) {
+                     if (userPermissions.getRevRep_Open().equals("1"))
+                     {
+
+                         Intent intent10 = new Intent(MainActivity.this,ReplenishmentReverse.class);
+                   startActivity(intent10);}
+                     else
+                         showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
+
+
+                 }else{
+
+                     Intent intent10 = new Intent(MainActivity.this,ReplenishmentReverse.class);
+                     startActivity(intent10);}
+                 }
         }
     };
 
@@ -606,8 +622,10 @@ else
                 if( userPermissions==null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0"))
                     {
-                        if (CheckImportPermissitions() == true)
+                        if (CheckImportPermissitions() == true) {
+                            flg=1;
                             getAllItems();
+                        }
                         else
                             showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
                     }
