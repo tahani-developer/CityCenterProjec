@@ -151,26 +151,26 @@
     <string name="del_per">Sorry, No Permission To Enter ,Do you want to enter as MasterUser?</string>
 
 
-    <string name="F_D"> F_D</string>
-    <string name="LASTSPRICE"> LAST Price</string>
-    <string name="BUYERGGROUP"> BUY ERGGROUP</string>
-    <string name="DIVISION"> DIVISION</string>
-    <string name="SUBDIVISION"> SUB DIVISION</string>
-    <string name="CLASS">CLASS</string>
-    <string name="SSIZE"> SSIZE</string>
-    <string name="SEASON"> SEASON</string>
-    <string name="STYLECODE"> STYLE CODE</string>
-    <string name="SECTION"> SECTION</string>
-    <string name="BRANDNAME"> BRAND NAME</string>
-    <string name="COLORNAME"> COLOR NAME</string>
-    <string name="LENGTH">LENGTH</string>
-    <string name="ZONE">ZONE</string>
-    <string name="SHELF"> SHELF</string>
-    <string name="COLORCODE"> COLOR CODE</string>
-    <string name="TAXPERC"> TAX Percentage</string>
-    <string name="LLCPRICE"> LLC Price</string>
+    <string name="F_D"> f</string>
+    <string name="LASTSPRICE"> f</string>
+    <string name="BUYERGGROUP"> f</string>
+    <string name="DIVISION"> f</string>
+    <string name="SUBDIVISION"> f</string>
+    <string name="CLASS">f</string>
+    <string name="SSIZE"> f</string>
+    <string name="SEASON"> f</string>
+    <string name="STYLECODE"> f</string>
+    <string name="SECTION">f</string>
+    <string name="BRANDNAME"> f</string>
+    <string name="COLORNAME"> f</string>
+    <string name="LENGTH">f</string>
+    <string name="ZONE">f</string>
+    <string name="SHELF"> f</string>
+    <string name="COLORCODE"> f</string>
+    <string name="TAXPERC"> f</string>
+    <string name="LLCPRICE"> f</string>
 
-    <string name="AVGCOST"> AVG Cost </string>
+    <string name="AVGCOST">f </string>
 
     <string name="username"> Username:</string>
     <string name="perMsg">  You don\'t have permission,
@@ -206,7 +206,7 @@
     <string name="fillIp"> Fill IP</string>
     <string name="StartgetItemsInfo">Getting Items Info</string>
     <string name="dataStored">Done, All data has been stored</string>
-    <string name="netWorkError">NetWork Error</string>
+    <string name="netWorkError">Network Error</string>
     <string name="noInternet">No Internet</string>
     <string name="itemNotExist">This Item Doesn\'t Exist</string>
     <string name="kindDifferent">Item Kind Doesn\'t Match Zone Type</string>
@@ -227,6 +227,9 @@
     <string name="exportZones">Exporting Zones</string>
     <string name="exportShip">Exporting shipments</string>
     <string name="fillIpAndComNo">Fill IP and Company No.</string>
+
+    <string name="allStores">All Stores</string>
+
 
 
 </resources>

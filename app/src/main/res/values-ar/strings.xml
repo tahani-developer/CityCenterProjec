@@ -30,7 +30,7 @@
     <string name="enter_password">أدخل كلمة المرور</string>
     <string name="app_done">تم</string>
     <string name="edit">تعديل</string>
-    <string name="Zone">القسم </string>
+    <string name="Zone">الزون </string>
     <string name="NewShipment">طلبية جديدة</string>
     <string name="Replacement">التحويلات</string>
     <string name="ReplacementReverse">إعادة عملية تحويل</string>
@@ -101,8 +101,8 @@
     <string name="fill_setting">املأ الإعدادات</string>
     <string name="deletepo1">هل أنت متأكد من هذه الطلبية؟</string>
     <string name="sumQty">مجموع الكميات</string>
-    <string name="zoneqty">كمية القسم</string>
-    <string name="scanedqty">الكميةالمُختارة</string>
+    <string name="zoneqty">كمية الزون</string>
+    <string name="scanedqty">الكمية</string>
     <string name="storeqty">كمية المخزن</string>
     <string name="StockTake">جرد المستودع</string>
     <string name="itemcheck">التحقق من معلومات مادة</string>
@@ -117,7 +117,7 @@
     <string name="Reports">التقارير</string>
     <string name="frmoZone">من القسم</string>
     <string name="ToZone">إلى القسم</string>
-    <string name="ZoneReplacement">التحويل من قسم الى آخر</string>
+    <string name="ZoneReplacement">التحويل من زون الى آخر</string>
     <string name="msg">للتحويل إلى الأقسام الأُخرى</string>
     <string name="notvaildqty2">  لا توجد كمية كافية في </string>
     <string name="zonetype">القسم المُصَدِّر والمُستَقبِل غير متوافقان</string>
@@ -157,7 +157,7 @@
     <string name="nextFromZone"> القسم المُصَدِّر التالي </string>
     <string name="nexttoZone"> القسم المنقول له التالي </string>
     <string name="Zones">الأقسام</string>
-    <string name="addZone">إضافة قسم</string>
+    <string name="addZone">إضافة زون</string>
     <string name="turn_on_flashlight">تشغيل ضوء الفلاش</string>
     <string name="LASTSPRICE"> السعر النهائي</string>
 
@@ -216,5 +216,6 @@
     <string name="app_name">اربد سيتي سينتر</string>
     <string name="errorsaving">حدث خطأ أثناء عملية الحفظ</string>
     <string name="welcome">مرحبا !</string>
+    <string name="allStores">جميع المستودعات</string>
 
 </resources>

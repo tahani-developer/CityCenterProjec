@@ -28,6 +28,7 @@ public interface StoreDao {
 
     @Update
     public  void update(Store store);
+
     @Query("SELECT * FROM STORE_TABLE")
     List<Store> getall();
 

@@ -15,9 +15,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,7 @@ import com.example.irbidcitycenter.Adapters.ShipmentsReportAdapter;
 import com.example.irbidcitycenter.Adapters.StockTakeRepAdapter;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
+import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
@@ -45,6 +49,9 @@ public class StockTakeReport extends AppCompatActivity {
     private List<StocktakeModel> searchlist = new ArrayList<>();
     private List<StocktakeModel> allStoketakes = new ArrayList<>();
     private List<StocktakeModel> Stoketakes = new ArrayList<>();
+
+    private Spinner storeSpinner;
+    private ArrayList<String> spinnerArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +76,6 @@ public class StockTakeReport extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() != 0) {
-
 
                     search();
                 } else {
@@ -111,11 +117,84 @@ public class StockTakeReport extends AppCompatActivity {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+
+        ////Initialize Store Spinner
+        storeSpinner = findViewById(R.id.storeSpinner);
+
+        spinnerArray.clear();
+        spinnerArray.add(getString(R.string.allStores));
+
+        List<String> stores = my_dataBase.stocktakeDao().getStoresNames();
+
+        spinnerArray.addAll(stores);
+
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, spinnerArray
+        );
+
+        storeSpinner.setAdapter(spinnerAdapter);
+        storeSpinner.setSelection(0);
+
+        storeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (STR_search_edt.getText().toString().length() != 0) {
+                    search();
+                } else {
+                    searchByStore();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
+
+    private void searchByStore() {
+
+        if (storeSpinner.getSelectedItemPosition() == 0) {
+            Stoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());
+            fillAdapterData(Stoketakes);
+            Log.e("Stoketakesssize", Stoketakes.size() + "");
+            if (Stoketakes.size() == 0)
+                Toast.makeText(StockTakeReport.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
+            CalculateSum(Stoketakes);
+        } else {
+            searchlist.clear();
+            for (int i = 0; i < allStoketakes.size(); i++) {
+                if (allStoketakes.get(i).getDate().equals(STR_date.getText().toString())
+                        && storeSpinner.getSelectedItem().toString().contains(allStoketakes.get(i).getStore())) {
+
+                    searchlist.add(allStoketakes.get(i));
+
+                }
+            }
+
+            if (searchlist.size() > 0) {
+                fillAdapterData(searchlist);
+                CalculateSum(searchlist);
+                // tableRow.setVisibility(View.VISIBLE);
+            } else {
+                searchlist = new ArrayList<>();
+                fillAdapterData(searchlist);
+                total_qty_text.setText("");
+                //tableRow.setVisibility(View.GONE);
+
+                //  STR_search_edt.setText("");
+            }
+        }
+
+    }
+    //////////
 
     private void loadLanguage() {
         SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
-        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
+        String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage());
         Locale locale = new Locale(langCode);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -129,14 +208,22 @@ public class StockTakeReport extends AppCompatActivity {
 
         for (int i = 0; i < allStoketakes.size(); i++) {
 
-            if (allStoketakes.get(i).getDate().equals(STR_date.getText().toString())
-                    && (allStoketakes.get(i).getItemOcode().startsWith(searchED)
-                    || (allStoketakes.get(i).getItemName().toLowerCase().startsWith(searchED))
-                    || (allStoketakes.get(i).getZone().toLowerCase().startsWith(searchED))
-            ))
-                searchlist.add(allStoketakes.get(i));
-
-
+            if (storeSpinner.getSelectedItemPosition() == 0) {
+                if (allStoketakes.get(i).getDate().equals(STR_date.getText().toString())
+                        && (allStoketakes.get(i).getItemOcode().startsWith(searchED)
+                        || (allStoketakes.get(i).getItemName().toLowerCase().startsWith(searchED))
+                        || (allStoketakes.get(i).getZone().toLowerCase().startsWith(searchED))
+                ))
+                    searchlist.add(allStoketakes.get(i));
+            } else {
+                if (allStoketakes.get(i).getDate().equals(STR_date.getText().toString())
+                        && (storeSpinner.getSelectedItem().toString().contains(allStoketakes.get(i).getStore()))
+                        && ((allStoketakes.get(i).getItemOcode().startsWith(searchED)
+                        || (allStoketakes.get(i).getItemName().toLowerCase().startsWith(searchED))
+                        || (allStoketakes.get(i).getZone().toLowerCase().startsWith(searchED)))
+                ))
+                    searchlist.add(allStoketakes.get(i));
+            }
         }
 
 

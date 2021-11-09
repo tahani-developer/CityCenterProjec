@@ -608,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.StocktakeReport: {
                 if (userPermissions == null) getUsernameAndpass();
                 if (userPermissions.getMasterUser().equals("0")) {
-                    if (CheckviewStocktakeRep() == true) {
+                    if (CheckviewStocktakeRep()) {
                         Intent intent = new Intent(MainActivity.this, StockTakeReport.class);
                         startActivity(intent);
                     } else

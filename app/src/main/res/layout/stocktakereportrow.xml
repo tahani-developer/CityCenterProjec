@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -21,55 +21,47 @@
             android:textStyle="bold" />
 
 
-
-
         <TextView
             android:id="@+id/textView_zone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="10sp"
             android:layout_weight="1"
             android:gravity="center"
-
             android:textColor="@color/dark_blue_3"
+            android:textSize="10sp"
             android:textStyle="bold" />
-
-
 
 
         <TextView
             android:id="@+id/textView_itemcode1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="10sp"
             android:layout_weight=".9"
             android:gravity="center"
             android:textColor="@color/dark_blue_3"
-
+            android:textSize="10sp"
             android:textStyle="bold" />
-
 
 
         <TextView
             android:id="@+id/textView_itemname1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="10sp"
             android:layout_weight="1"
-            android:gravity="end|bottom"
+            android:gravity="center"
             android:textColor="@color/dark_blue_3"
+            android:textSize="10sp"
             android:textStyle="bold" />
-
 
 
         <TextView
             android:id="@+id/textView_qty1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="10sp"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/dark_blue_3"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
 
