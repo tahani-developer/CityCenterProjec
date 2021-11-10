@@ -1,6 +1,7 @@
 package com.example.irbidcitycenter.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +58,17 @@ public class ShipmentsReportAdapter extends BaseAdapter {
             boxno.setText(list.get(i).getBoxNo());
             qty.setText(list.get(i).getQty());
             isnew.setText(list.get(i).getIsNew());
-            itemname.setText(list.get(i).getItemname());
+           // itemname.setText(list.get(i).getItemname());
+if(list.get(i).getIsNew().equals("0"))
+{
+    itemname.setText("No");
+    itemname.setTextColor(Color.GREEN);
+}
+else
+{   itemname.setText("yes");
+    itemname.setTextColor(Color.RED);
 
-
+}
         }
         return convertView;
     }

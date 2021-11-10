@@ -20,7 +20,7 @@
     <string name="year">السنة</string>
     <string name="server_ip">رقم السيرفر</string>
     <string name="Items">عدد المواد</string>
-    <string name="ZoneCode">كود القسم</string>
+    <string name="ZoneCode">كود الفئة</string>
     <string name="setting">الإعدادات</string>
     <string name="signout">تسجيل الخروج</string>
     <string name="CONO">رقم الشركة:</string>
@@ -30,7 +30,7 @@
     <string name="enter_password">أدخل كلمة المرور</string>
     <string name="app_done">تم</string>
     <string name="edit">تعديل</string>
-    <string name="Zone">الزون </string>
+    <string name="Zone">الفئة </string>
     <string name="NewShipment">طلبية جديدة</string>
     <string name="Replacement">التحويلات</string>
     <string name="ReplacementReverse">إعادة عملية تحويل</string>
@@ -40,7 +40,7 @@
     <string name="delete3">"  الكمية =1، هل تريد حذف هذه المادة ؟"</string>
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
-    <string name="ZoneName">اسم القسم</string>
+    <string name="ZoneName">اسم الفئة</string>
     <string name="finish">إنهاء</string>
     <string name="recQty">الكمية المُدخلة</string>
     <string name="Itemname">اسم المادة</string>
@@ -81,7 +81,7 @@
     <string name="reduceqty">تعديل كمية المادة </string>
     <string name="qtyerror3">كمية غير صحيحة  </string>
     <string name="deleteitemt">حذف مادة </string>
-    <string name="deletezone"> حذف قسم </string>
+    <string name="deletezone"> حذف فئة </string>
     <string name="delete1">حذف  </string>
     <string name="oldqty"> الكمية السابقة </string>
     <string name="back">  عودة </string>
@@ -90,9 +90,9 @@
     <string name="dataRet">تم استرجاع البيانات</string>
     <string name="enter"> دخول </string>
     <string name="deleted"> تم الحذف بنجاح </string>
-    <string name="nextZone"> القسم التالي </string>
+    <string name="nextZone"> الفئة التالية </string>
     <string name="returndata"> هل تريد التراجع عن عملية الحذف ؟ </string>
-    <string name="deletezone1">هل أنت متأكد من حذف هذا القسم؟</string>
+    <string name="deletezone1">هل أنت متأكد من حذف هذه الفئة؟</string>
     <string name="deleteitem">هل تريد حذف هذه المادة؟</string>
     <string name="deletepo">حذف طلبية</string>
     <string name="deletebox">حذف صندوق</string>
@@ -101,7 +101,7 @@
     <string name="fill_setting">املأ الإعدادات</string>
     <string name="deletepo1">هل أنت متأكد من هذه الطلبية؟</string>
     <string name="sumQty">مجموع الكميات</string>
-    <string name="zoneqty">كمية الزون</string>
+    <string name="zoneqty">كمية الفئة</string>
     <string name="scanedqty">الكمية</string>
     <string name="storeqty">كمية المخزن</string>
     <string name="StockTake">جرد المستودع</string>
@@ -115,12 +115,12 @@
     <string name="date">التاريخ</string>
     <string name="preview">عرض</string>
     <string name="Reports">التقارير</string>
-    <string name="frmoZone">من القسم</string>
-    <string name="ToZone">إلى القسم</string>
-    <string name="ZoneReplacement">التحويل من زون الى آخر</string>
-    <string name="msg">للتحويل إلى الأقسام الأُخرى</string>
+    <string name="frmoZone">من الفئة</string>
+    <string name="ToZone">إلى الفئة</string>
+    <string name="ZoneReplacement">التحويل من فئة الى آخرى</string>
+    <string name="msg">للتحويل إلى الفئات الأُخرى</string>
     <string name="notvaildqty2">  لا توجد كمية كافية في </string>
-    <string name="zonetype">القسم المُصَدِّر والمُستَقبِل غير متوافقان</string>
+    <string name="zonetype">الفئة المُصَدِّرة والمُستَقبلة غير متوافقتان</string>
     <string name="prompt_email">البريد الإلكتروني</string>
     <string name="prompt_password">كلمة المرور</string>
     <string name="title_activity_login">تسجيل الدخول</string>
@@ -154,10 +154,10 @@
     <string name="AVGCOST"> متوسط التكلفة </string>
     <string name="falcons_soft">الصقور للبرمجيات</string>
     <string name="update_qty">تحديث الكمية</string>
-    <string name="nextFromZone"> القسم المُصَدِّر التالي </string>
-    <string name="nexttoZone"> القسم المنقول له التالي </string>
-    <string name="Zones">الأقسام</string>
-    <string name="addZone">إضافة زون</string>
+    <string name="nextFromZone"> الفئة المُصَدِّرة التالية </string>
+    <string name="nexttoZone"> الفئة المنقولة لها التالية </string>
+    <string name="Zones">الفئات</string>
+    <string name="addZone">إضافة فئة</string>
     <string name="turn_on_flashlight">تشغيل ضوء الفلاش</string>
     <string name="LASTSPRICE"> السعر النهائي</string>
 
@@ -183,13 +183,13 @@
     <string name="noItemCodeData">لا يوجد بيانات متوفرة لهذا الكود</string>
     <string name="cancelled">تم الإلغاء</string>
     <string name="noData">لا يوجد بيانات</string>
-    <string name="getZonesInfo">جاري تحميل معلومات الأقسام</string>
+    <string name="getZonesInfo">جاري تحميل معلومات الفئات</string>
     <string name="getUserPerm"> التأكد من صلاحيات المستخدم</string>
     <string name="exportRep"> تصدير جميع التحويلات</string>
     <string name="exportRevRep">تصدير عمليات إعادة التحويل</string>
     <string name="exportStockTake">تصدير عمليات الجرد</string>
-    <string name="exportZoneRep"> تصدير عمليات التحويل على الأقسام</string>
-    <string name="exportZones">تصدير الأقسام</string>
+    <string name="exportZoneRep"> تصدير عمليات التحويل على الفئات</string>
+    <string name="exportZones">تصدير االفئات</string>
     <string name="exportShip">تصدير جميع الطلبيات</string>
 
 
@@ -207,7 +207,7 @@
     <string name="SSIZE"> SSIZE</string>
     <string name="SEASON"> SEASON</string>
     <string name="STYLECODE"> STYLE CODE</string>
-    <string name="ZONE">ZONE</string>
+    <string name="ZONE">الفئة</string>
     <string name="SHELF"> SHELF</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>

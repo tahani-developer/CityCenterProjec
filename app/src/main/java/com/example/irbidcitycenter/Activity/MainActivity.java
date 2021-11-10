@@ -691,6 +691,12 @@ else
                 getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
                 break;
             }
+
+            case R.id.enLang: {
+                saveLanguage("en");
+                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                break;
+            }
         }
 
 

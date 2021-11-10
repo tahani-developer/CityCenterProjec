@@ -993,6 +993,9 @@ public class NewShipment extends AppCompatActivity {
                 } else {
                     Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
                 }
+                Db_boxedit.setText("");
+                Db_boxnumshow.setText("");
+                Db_Itemcountediteshow.setText("");
             }
         });
         Db_boxSearch.setOnClickListener(new View.OnClickListener() {
@@ -1023,9 +1026,20 @@ public class NewShipment extends AppCompatActivity {
                                 if (BbShip_list.get(x).getPoNo().equals(Dbsh_poedit.getText().toString().trim())) {
                                     Db_boxedit.setEnabled(true);
                                     Db_boxedit.requestFocus();
+
+                                    Db_boxedit.setText("");
+                                    Db_boxnumshow.setText("");
+                                    Db_Itemcountediteshow.setText("");
+
+
                                     break;
                                 } else {
                                     Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+
+                                    Db_boxedit.setText("");
+                                    Db_boxnumshow.setText("");
+                                    Db_Itemcountediteshow.setText("");
+
                                 }
 
                         } else {
@@ -1269,6 +1283,7 @@ public class NewShipment extends AppCompatActivity {
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
 
                         if (!DIsh_itemcodeedit.getText().toString().equals("")) {
+                            DS_delete.setEnabled(true);
                             int flage = 0;
                             long newqty;
                             for (int x = 0; x < BbShip_list.size(); x++)
@@ -1338,7 +1353,7 @@ public class NewShipment extends AppCompatActivity {
                                                             reducedshipmentsList.add(BbShip_list.get(ind));
                                                             BbShip_list.remove(ind);
                                                         }
-
+                                                        DS_delete.setEnabled(false);
                                                         cleardataOfdeleteitemdialog();
 
                                                         sweetAlertDialog.dismiss();
