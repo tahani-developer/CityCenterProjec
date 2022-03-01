@@ -1086,6 +1086,12 @@ if(!s.equals("")){
            //     getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                 break;
             }
+
+            case R.id.enLang: {
+                saveLanguage("en");
+                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                break;
+            }
         }
 
 
