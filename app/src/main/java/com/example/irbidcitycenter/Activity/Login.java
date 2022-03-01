@@ -8,25 +8,36 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.app.UiModeManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +60,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,6 +70,7 @@ import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Interfaces.OnHomePressedListener;
 
+import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.HomeWatcher;
 
 
@@ -71,6 +84,12 @@ import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -79,6 +98,7 @@ import java.util.Locale;
 import java.util.logging.Filter;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
@@ -87,6 +107,10 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
 public class Login extends AppCompatActivity {
+
+    final int TAKE_PHOTO = 1;
+
+    final int FROM_STORAGE = 2;
     public static UserPermissions userPermissions;
     EditText username, password;
     LinearLayout yearr, comLin, userrnum;
@@ -108,9 +132,9 @@ public class Login extends AppCompatActivity {
     public String SET_qtyup;
     public static TextView UserperRespons;
     public List<UserPermissions> DBUserPermissions = new ArrayList<>();
-    private TextView login;
-    //
-
+    public TextView login;
+    public static TextView  comRespon;
+    public static Dialog dialog;
     // To keep track of activity's window focus
     boolean currentFocus;
 
@@ -130,6 +154,21 @@ public class Login extends AppCompatActivity {
     private LockLayer lockLayer;
     private View lockView;
     Dialog authenticationdialog;
+
+    ImageView nav_header_imageView;
+
+
+    /////////////
+    ArrayList<String> companyList = new ArrayList<>();
+    List<CompanyInfo> DBcompany = new ArrayList<>();
+    ArrayList<String> companyinfo = new ArrayList<>();
+    ///////////
+
+
+
+
+   int  ON_DO_NOT_DISTURB_CALLBACK_CODE=1;
+
 
 
     @Override
@@ -238,13 +277,54 @@ public class Login extends AppCompatActivity {
 
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
+    private Bitmap convertByteArrayToBitmap(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         loadLanguage();
         setContentView(R.layout.activity_login);
         init();
+//        AudioManager  mode = (AudioManager) Login.this.getSystemService(Context.AUDIO_SERVICE);
+//        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+//
+//        mode.setRingerMode(AudioManager.EXTRA_RINGER_MODE);
+//
+
+        PutImage();
+         Log.e("hello","hello");
+
+         try {
+
+
+             appSettings = my_dataBase.settingDao().getallsetting();
+             DBUserPermissions = my_dataBase.userPermissionsDao().getAll();
+             userPermissions = new UserPermissions();
+             ImportData importData = new ImportData(Login.this);
+             if (appSettings.size() != 0)
+                 importData.getUserPermissions(1);
+         }catch (Exception e){}
+        nav_header_imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Log.e("jjjjj","jjjjjjj");
+                    uploadimageDialogconfirm();
+
+
+                }catch (Exception e){
+                    Toast.makeText(Login.this, "Storage Permission", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+
 
 
         selectedCompany.setOnClickListener(new View.OnClickListener() {
@@ -272,9 +352,7 @@ public class Login extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
 
-        appSettings = my_dataBase.settingDao().getallsetting();
-        DBUserPermissions = my_dataBase.userPermissionsDao().getAll();
-        userPermissions = new UserPermissions();
+
 
 
 // Hide both the navigation bar and the status bar.
@@ -289,17 +367,20 @@ public class Login extends AppCompatActivity {
 
 
         //1.THIS IS FOR APP LUNCHE AFTER SCREEN_ON
-        KeyguardManager.KeyguardLock lock = ((KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock(KEYGUARD_SERVICE);
-        PowerManager powerManager = ((PowerManager) getSystemService(Context.POWER_SERVICE));
-        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wake = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-
-        lock.disableKeyguard();
-        wake.acquire();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+//        KeyguardManager.KeyguardLock lock = ((KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE)).newKeyguardLock(KEYGUARD_SERVICE);
+//        PowerManager powerManager = ((PowerManager) getSystemService(Context.POWER_SERVICE));
+//        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wake = powerManager.newWakeLock(
+//                PowerManager.FULL_WAKE_LOCK |
+//                        PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+//
+//        lock.disableKeyguard();
+//        wake.acquire();
+//        getWindow().addFlags(
+//               WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+//                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+//                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         //END OF 1
 
 
@@ -413,9 +494,10 @@ public class Login extends AppCompatActivity {
 
                                     MainActivity.SET_userNO = username.getText().toString().trim();
                                     my_dataBase.settingDao().updateusernum(username.getText().toString().trim());
-                                    showAvilableCompany(userPermissions);
+                                   showAvilableCompany(userPermissions);
 
-
+                         /*           Intent intent = new Intent(Login.this, MainActivity.class);
+                                    startActivity(intent);*/
                                     Log.e("case3", "case3");
 
                                 } else {
@@ -447,8 +529,103 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+    private void openloginDailog2() {
 
 
+        logindialog = new Dialog(Login.this);
+        logindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        logindialog.setCancelable(false);
+        logindialog.setContentView(R.layout.logindailog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(logindialog.getWindow().getAttributes());
+        lp.gravity = Gravity.CENTER;
+        logindialog.getWindow().setAttributes(lp);
+
+        logindialog.show();
+
+        Button button = logindialog.findViewById(R.id.log_authentic);
+        TextView cancelbutton = logindialog.findViewById(R.id.log_cancel2);
+        EditText UsNa = logindialog.findViewById(R.id.log_usernum);
+        UsNa.requestFocus();
+
+        EditText pass = logindialog.findViewById(R.id.log_pass);
+        pass.setEnabled(true);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                UserPermissions userPerm = my_dataBase.userPermissionsDao().getUserPermissions(UsNa.getText().toString().trim());
+                if (userPerm != null) {
+                    if (userPerm.getUserPassword().equals(pass.getText().toString().trim())) {
+                        if (userPerm.getUserActive().equals("1")) {
+
+                            if (userPerm.getMasterUser().equals("1")) {
+
+                                selectImage();
+                                logindialog.dismiss();
+
+                            } else {
+                                showSweetDialog(Login.this, 3,"", "Sorry,You don't have permission to upload image");
+                                logindialog.dismiss();
+                            }
+                        }
+                            else {
+
+
+                            showSweetDialog(Login.this, 3, getResources().getString(R.string.activeuser), "");
+                            logindialog.dismiss();
+                        }
+                    } else pass.setError(getResources().getString(R.string.invalid_password));
+
+                } else {
+
+                    UsNa.setError(getResources().getString(R.string.invalid_username));
+
+                }
+
+
+            }
+        });
+        cancelbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logindialog.dismiss();
+            }
+        });
+        logindialog.show();
+
+
+    }
+    private void uploadimageDialogconfirm() {
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable() {
+            public void run() {
+                new SweetAlertDialog(Login.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(getResources().getString(R.string.confirm_title))
+                        .setContentText("do you want upload image?")
+                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                openloginDailog2();
+                                sweetAlertDialog.dismiss();
+                            }
+
+                        })
+                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                                sweetAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+
+
+
+    }
     private void openloginDailog() {
 
 
@@ -655,9 +832,11 @@ public class Login extends AppCompatActivity {
     }
 
     private void init() {
+        nav_header_imageView=findViewById(R.id.nav_header_imageView2);
         companyLin = findViewById(R.id.companyLin);
         show_UN = findViewById(R.id.show_UN);
         login = findViewById(R.id.login);
+        comRespon=findViewById(R.id.comRespon);
         UserperRespons = findViewById(R.id.UserperRespons);
         username = findViewById(R.id.username_input);
         password = findViewById(R.id.pass);
@@ -695,7 +874,25 @@ public class Login extends AppCompatActivity {
 
 
         settings = findViewById(R.id.setting);
+        comRespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals("")) {
+                    my_dataBase.itemDao().deleteall();
+                    my_dataBase.companyDao().insertAll(ImportData.companyInList);
+                }
+            }
+        });
         UserperRespons.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -734,8 +931,10 @@ public class Login extends AppCompatActivity {
     }
 
     private void showAvilableCompany(UserPermissions userPermissions3) {
-        ArrayList<String> companyInList = new ArrayList<>();
-        companyInList.clear();
+
+
+        companyinfo.clear();
+        companyList.clear();
         Log.e("ssssss", "sssss");
         final Dialog dialog = new Dialog(Login.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -756,25 +955,62 @@ public class Login extends AppCompatActivity {
         getListCom = dialog.findViewById(R.id.getListCom);
 
 
-        if (!userPermissions3.getCONO1().equals("")) companyInList.add(userPermissions3.getCONO1());
-        if (!userPermissions3.getCONO2().equals("")) companyInList.add(userPermissions3.getCONO2());
-        if (!userPermissions3.getCONO3().equals("")) companyInList.add(userPermissions3.getCONO3());
-        if (!userPermissions3.getCONO4().equals("")) companyInList.add(userPermissions3.getCONO4());
-        if (!userPermissions3.getCONO5().equals("")) companyInList.add(userPermissions3.getCONO5());
-        if (!userPermissions3.getCONO6().equals("")) companyInList.add(userPermissions3.getCONO6());
-        if (!userPermissions3.getCONO7().equals("")) companyInList.add(userPermissions3.getCONO7());
-        if (!userPermissions3.getCONO8().equals("")) companyInList.add(userPermissions3.getCONO8());
-        if (!userPermissions3.getCONO9().equals("")) companyInList.add(userPermissions3.getCONO9());
+        if (!userPermissions3.getCONO1().equals("")) companyList.add(userPermissions3.getCONO1());
+        if (!userPermissions3.getCONO2().equals("")) companyList.add(userPermissions3.getCONO2());
+        if (!userPermissions3.getCONO3().equals("")) companyList.add(userPermissions3.getCONO3());
+        if (!userPermissions3.getCONO4().equals("")) companyList.add(userPermissions3.getCONO4());
+        if (!userPermissions3.getCONO5().equals("")) companyList.add(userPermissions3.getCONO5());
+        if (!userPermissions3.getCONO6().equals("")) companyList.add(userPermissions3.getCONO6());
+        if (!userPermissions3.getCONO7().equals("")) companyList.add(userPermissions3.getCONO7());
+        if (!userPermissions3.getCONO8().equals("")) companyList.add(userPermissions3.getCONO8());
+        if (!userPermissions3.getCONO9().equals("")) companyList.add(userPermissions3.getCONO9());
         if (!userPermissions3.getCONO10().equals(""))
-            companyInList.add(userPermissions3.getCONO10());
+            companyList.add(userPermissions3.getCONO10());
 
-       /* if( companyInList.size()!=0) {
-            for (int i = 0; i < companyInList.size(); i++) {
-                nameOfEngi.add(companyInList.get(i).getCoNo() + "\t\t" + importData.companyInList.get(i).getCoYear() + "\t\t" + importData.companyInList.get(i).getCoNameA());
+       /* if( companyList.size()!=0) {
+            for (int i = 0; i < companyList.size(); i++) {
+                nameOfEngi.add(companyList.get(i).getCoNo() + "\t\t" + importData.companyList.get(i).getCoYear() + "\t\t" + importData.companyList.get(i).getCoNameA());
             }*/
 
+        //add company name
+
+        DBcompany=my_dataBase.companyDao().getAll();
+        Log.e("DBcompany",DBcompany.size()+"");
+        Log.e("companyList",companyList.size()+"");
+     /* for(int i= 0;i<companyList.size();i++)
+      {
+
+          for(int j= 0;j< DBcompany.size();j++)
+
+
+      {
+          if( DBcompany.get(j).getCoNo().trim().equals(companyList.get(i).trim()))
+              {
+                  Log.e("  companyinfo",  companyinfo.size()+"");
+                  companyinfo.add(companyList.get(i)+"  "+ DBcompany.get(j).getCoNameA());
+                    break;
+              }
+
+      }
+
+      }*/
+
+        for(int i= 0;i<companyList.size();i++) {
+
+                companyinfo.add(companyList.get(i)+"  "+within(companyList.get(i)));
+
+        }
+
+      //case: if company not in DBcompany
+ /*  if(companyinfo.size()!=companyList.size()){
+
+       for(int i= 0;i<companyList.size();i++)
+           if(!companyinfo.contains(companyList.get(i))){
+               companyinfo.add(companyList.get(i));
+           }
+   }*/
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                (Login.this, android.R.layout.simple_list_item_1, companyInList) {
+                (Login.this, android.R.layout.simple_list_item_1,companyinfo) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 /// Get the Item from ListView
@@ -789,8 +1025,14 @@ public class Login extends AppCompatActivity {
                 return view;
             }
         };
+try {
 
-        selectedCom = companyInList.get(0);
+        selectedCom = companyinfo.get(0);
+}
+
+   catch (Exception e){
+
+   }
 
         // DataBind ListView with items from ArrayAdapter
         listCompany.setAdapter(arrayAdapter);
@@ -804,10 +1046,10 @@ public class Login extends AppCompatActivity {
 
                 listCompany.setSelection(position);
 
-                selectedCom = companyInList.get(position);
+                selectedCom = companyinfo.get(position);
 
                 try {
-                    for (int ctr = 0; ctr <= companyInList.size(); ctr++) {
+                    for (int ctr = 0; ctr <= companyList.size(); ctr++) {
                         if (position == ctr) {
                             listCompany.getChildAt(ctr).setBackgroundColor(Color.YELLOW);
                         } else {
@@ -823,14 +1065,15 @@ public class Login extends AppCompatActivity {
 
             }
         });
-        Button btn_send = dialog.findViewById(R.id.btn_send);
 
+        Button btn_send = dialog.findViewById(R.id.btn_send);
+        if( companyinfo.size()==0)btn_send.setEnabled(false);
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-                my_dataBase.settingDao().updateCompanyInfo(selectedCom);
+                my_dataBase.settingDao().updateCompanyInfo(selectedCom.substring(0,selectedCom.toString().indexOf("  ")));
 
                 Intent intent = new Intent(Login.this, MainActivity.class);
                 startActivity(intent);
@@ -878,43 +1121,43 @@ public class Login extends AppCompatActivity {
 
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.e("heeere", "BACK");
-            activitySwitchFlag = true;
-            String Userno1;
-            {
-                appSettings = my_dataBase.settingDao().getallsetting();
-                Log.e("appSettings.size===", appSettings.size() + "");
-                if (appSettings.size() != 0) {
-                    Log.e("usernum===", appSettings.get(0).getUserNumber());
-                    userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(appSettings.get(0).getUserNumber());
-
-                }
-
-
-            }
-            //Log.e("userPermissions",userPermissions.getAddZone_Open());
-
-            if (userPermissions != null) {
-                Log.e("heeere8", "BACK");
-                if (userPermissions.getMasterUser() != null) {
-                    Log.e("heeere7", "BACK");
-                    if (
-                            userPermissions.getMasterUser().equals("1")) {
-                        Log.e("heeere22", "BACK");
-
-                        ExitDailog();
-
-                    } else {
-                        showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
-
-                    }
-
-                } else {
-                    showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
-
-                }
-
-            } else showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+//            Log.e("heeere", "BACK");
+//            activitySwitchFlag = true;
+//            String Userno1;
+//            {
+//                appSettings = my_dataBase.settingDao().getallsetting();
+//                Log.e("appSettings.size===", appSettings.size() + "");
+//                if (appSettings.size() != 0) {
+//                    Log.e("usernum===", appSettings.get(0).getUserNumber());
+//                    userPermissions = my_dataBase.userPermissionsDao().getUserPermissions(appSettings.get(0).getUserNumber());
+//
+//                }
+//
+//
+//            }
+//            //Log.e("userPermissions",userPermissions.getAddZone_Open());
+//
+//            if (userPermissions != null) {
+//                Log.e("heeere8", "BACK");
+//                if (userPermissions.getMasterUser() != null) {
+//                    Log.e("heeere7", "BACK");
+//                    if (
+//                            userPermissions.getMasterUser().equals("1")) {
+//                        Log.e("heeere22", "BACK");
+//
+//                        ExitDailog();
+//
+//                    } else {
+//                        showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+//
+//                    }
+//
+//                } else {
+//                    showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
+//
+//                }
+//
+//            } else showSweetDialog(Login.this, 0, getString(R.string.noPermToExit), "");
 
         }
         return true;
@@ -961,18 +1204,6 @@ public class Login extends AppCompatActivity {
 
 
         //openUthenticationDialog();
-    }
-
-   /*     Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.addCategory(Intent.CATEGORY_HOME);
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(homeIntent);*/
-
-
-    public void aaa(Activity activity) {
-        ActivityManager activityManager = (ActivityManager) activity
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.moveTaskToFront(getTaskId(), 0);
     }
 
     private void openUthenticationDialog() {
@@ -1260,10 +1491,11 @@ public class Login extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
-        final Dialog dialog = new Dialog(Login.this);
+        dialog = new Dialog(Login.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.ip_setting_dialog);
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.height = height / 2;
@@ -1274,12 +1506,16 @@ public class Login extends AppCompatActivity {
 
         final EditText ip = dialog.findViewById(R.id.ipEditText);
         final TextView editip = dialog.findViewById(R.id.editip);
+     //   final TextView refrshUserPer= dialog.findViewById(R.id.refrshUserPer);
+
         // ip.setEnabled(false);
         final EditText conNO = dialog.findViewById(R.id.cono);
         final EditText years = dialog.findViewById(R.id.storeNo_edit);
         final CheckBox qtyUP = (CheckBox) dialog.findViewById(R.id.qtycheck);
         final EditText usernum = dialog.findViewById(R.id.usernumber);
         final EditText deviceId = dialog.findViewById(R.id.deviceId);
+//        LinearLayout userPerLin= dialog.findViewById(R.id.userPerLin);
+
         comLin = dialog.findViewById(R.id.comLin);
         yearr = dialog.findViewById(R.id.yearrLin);
         userrnum = dialog.findViewById(R.id.userrnumLin);
@@ -1288,6 +1524,7 @@ public class Login extends AppCompatActivity {
         userrnum.setVisibility(View.GONE);
         years.setVisibility(View.GONE);
         usernum.setVisibility(View.GONE);
+        //userPerLin.setVisibility(View.GONE);
 
         ip.setEnabled(true);
         // conNO.setEnabled(false);
@@ -1341,7 +1578,7 @@ public class Login extends AppCompatActivity {
         });
         getDataZone();
         if (appSettings.size() != 0) {
-
+//            userPerLin.setVisibility(View.VISIBLE);
             ip.setText(appSettings.get(0).getIP());
             conNO.setText(appSettings.get(0).getCompanyNum());
             COMPANYNO = appSettings.get(0).getCompanyNum();
@@ -1353,8 +1590,8 @@ public class Login extends AppCompatActivity {
                 Log.e("deviceId", "" + e.getMessage());
             }
 
-            if (appSettings.get(0).getUpdateQTY().equals("1"))
-                qtyUP.setChecked(true);
+//            if (appSettings.get(0).getUpdateQTY().equals("1"))
+//                qtyUP.setChecked(true);
         }
 
 
@@ -1393,9 +1630,12 @@ public class Login extends AppCompatActivity {
 
 
                         saveData(setting);
+                        my_dataBase.itemDao().deleteall();
                         dialog.dismiss();
+                        clearData();
                         importData = new ImportData(Login.this);
-                        importData.getUserPermissions();
+                        importData.getUserPermissions(1);
+                        importData.getCompanyInfo();
 
 
                     } else {
@@ -1422,6 +1662,11 @@ public class Login extends AppCompatActivity {
 
     }
 
+    private void clearData() {
+        my_dataBase.zonsDataDao().deleteAll();
+        my_dataBase.allPOsDao().deleteAll();
+    }
+
     private void getDataZone() {
         appSettings = new ArrayList();
         try {
@@ -1445,7 +1690,6 @@ public class Login extends AppCompatActivity {
         generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule2), "");
 
     }
-
 
 //        for(int i=0;i<DBUserPermissions.size();i++) {
 //            if (DBUserPermissions.get(i).getUserNO().equals(Userno)) {
@@ -1484,5 +1728,242 @@ public class Login extends AppCompatActivity {
 //
 //            }
 //        }
+private void selectImage() {
+
+    final CharSequence[] items = {"Take Picture", "Select from Library", "Cancel"};
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+
+    builder.setTitle("Add Photo!");
+
+    builder.setItems(items, new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface dialog, int item) {
+
+            if (items[item].equals("Take Picture")) {
+
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Toast.makeText(getApplicationContext(), "Take Picture", Toast.LENGTH_SHORT).show();
+
+
+                try {
+                    startActivityForResult(intent, TAKE_PHOTO);
+                }catch (Exception e){
+                    Toast.makeText(Login.this, "Storage Permission", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+
+            else if (items[item].equals("Select from Library")) {
+
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                intent.setType("image/*");
+
+                Toast.makeText(getApplicationContext(), "Select from Library", Toast.LENGTH_SHORT).show();
+
+                   try {
+                       startActivityForResult(Intent.createChooser(intent, "Select File"), FROM_STORAGE);
+
+                   }catch (Exception e){
+                    Toast.makeText(Login.this, "Storage Permission", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            else if (items[item].equals("Cancel")) {
+
+                Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
+
+                dialog.dismiss();
+
+            }
+        }
+    });
+
+    builder.show();
 
 }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ON_DO_NOT_DISTURB_CALLBACK_CODE ) {
+            this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
+        }
+        File destination = null;
+
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == TAKE_PHOTO) {
+
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+                destination = new File(Environment.getExternalStorageDirectory(),
+
+                        System.currentTimeMillis() + ".jpg");
+
+                FileOutputStream fo;
+
+                try {
+
+                    destination.createNewFile();
+
+                    fo = new FileOutputStream(destination);
+
+                    fo.write(bytes.toByteArray());
+
+                    fo.close();
+
+                }
+                catch (FileNotFoundException e) {
+
+                    e.printStackTrace();
+
+                }
+                catch (IOException e) {
+
+                    e.printStackTrace();
+
+                }
+
+                ((ImageView) findViewById(R.id.nav_header_imageView2)).setImageBitmap(thumbnail);
+
+                PutImage();
+
+            }
+            else if (requestCode == FROM_STORAGE) {
+
+                Log.d("FROM_STORAGE ", " FROM_STORAGE");
+
+                Uri selectedImageUri = data.getData();
+                Log.e("selectedImageUri",selectedImageUri.getPath());
+                try {
+                    InputStream iStream =   getContentResolver().openInputStream(selectedImageUri);
+                    byte[] inputData = getBytes(iStream);
+                    my_dataBase.settingDao().updatmainimage(inputData);
+                } catch (Exception e){}
+                String[] projection = {MediaStore.MediaColumns.DATA};
+
+                CursorLoader cursorLoader = new CursorLoader(Login.this, selectedImageUri, projection, null, null, null);
+
+                Cursor cursor = cursorLoader.loadInBackground();
+
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+
+                cursor.moveToFirst();
+
+                String selectedImagePath = cursor.getString(column_index);
+
+                String fileNameSegments[] = selectedImagePath.split("/");
+
+                String fileName = fileNameSegments[fileNameSegments.length - 1];
+
+                Bitmap bm;
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFile(selectedImagePath, options);
+
+                final int REQUIRED_SIZE = 100;
+
+                int scale = 1;
+
+                while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale /
+                        2 >= REQUIRED_SIZE)
+
+                    scale *= 2;
+
+                options.inSampleSize = scale;
+
+                options.inJustDecodeBounds = false;
+
+                bm = BitmapFactory.decodeFile(selectedImagePath, options);
+
+
+                ((ImageView) findViewById(R.id.nav_header_imageView2)).setImageBitmap(bm);
+
+            }
+        }
+    }
+    public void PutImage(){
+        try {
+            byte[] imageBytes= my_dataBase.settingDao().getmainimage();
+
+
+            if (imageBytes != null)
+            {
+                Bitmap bmp= convertByteArrayToBitmap(imageBytes);
+                nav_header_imageView.setImageBitmap(bmp);
+            }
+        }catch (Exception e){
+
+        }
+    }
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    private String within(String s) {
+        for(int j= 0;j< DBcompany.size();j++){
+            if( DBcompany.get(j).getCoNo().trim().equals(s))
+            return DBcompany.get(j).getCoNameA();
+        }
+   return ""; }
+
+
+
+
+   //
+
+
+
+    private void requestMutePermissions() {
+        try {
+            if (Build.VERSION.SDK_INT < 23) {
+                AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            } else if( Build.VERSION.SDK_INT >= 23 ) {
+                this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
+            }
+        } catch ( SecurityException e ) {
+
+        }
+    }
+
+    private void requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp() {
+
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        // if user granted access else ask for permission
+        if ( notificationManager.isNotificationPolicyAccessGranted()) {
+            AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        } else{
+            // Open Setting screen to ask for permisssion
+            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivityForResult( intent, ON_DO_NOT_DISTURB_CALLBACK_CODE );
+        }
+    }
+
+
+
+
+}
+

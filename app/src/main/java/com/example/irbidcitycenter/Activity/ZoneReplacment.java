@@ -6,10 +6,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,7 +42,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.UserPermissions;
+import com.example.irbidcitycenter.Models.FlashlightProvider;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneRepLogs;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
@@ -42,20 +50,32 @@ import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
+import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
-import static com.example.irbidcitycenter.ImportData.itemdetalis;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
 public class ZoneReplacment extends AppCompatActivity {
+
+    private android.hardware.Camera cam;
+    private Camera.Parameters parameters;
+    private CameraManager camManager;
+//    android.hardware.Camera camera ;
+
     public static EditText fromzone, tozone, RZ_itemcode;
     TextView FromZoneName, ToZoneName;
     public static int fromZoneRepActivity = 1;
@@ -106,6 +126,9 @@ public class ZoneReplacment extends AppCompatActivity {
     private Animation animation;
     private String itemtype;
     private String Tozonetype = "", Fzonetype = "1";
+    TextView Zonescount,ZonestotalQty,AllZonestotalQty;
+    public static List<ZoneReplashmentModel> DBlistZoneSofRepZon;
+    AudioManager mode ;
 
     //
     @Override
@@ -114,6 +137,11 @@ public class ZoneReplacment extends AppCompatActivity {
         loadLanguage();
         setContentView(R.layout.activity_zone_replacment);
         init();
+       mode = (AudioManager) ZoneReplacment.this.getSystemService(Context.AUDIO_SERVICE);
+
+
+
+        CalculateTotalandCount();
         //ChecksavePermissition();
 
         fromzone.requestFocus();
@@ -134,15 +162,61 @@ public class ZoneReplacment extends AppCompatActivity {
         Configuration config = new Configuration();
         config.locale = locale;
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
     }
 
     TextView.OnKeyListener onKeyListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View view, int i, KeyEvent keyEvent) {
             if (i == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                        ZR_back.startAnimation(animation);
+                        new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.messageExit))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        if (LocalZoneReps.size() > 0) {
+
+                                            new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                                    .setContentText(getResources().getString(R.string.messageExit2))
+                                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                                            LocalZoneReps.clear();
+                                                            filladapter();
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            finish();
+                                                        }
+                                                    })
+                                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                            sweetAlertDialog.dismiss();
+                                                        }
+                                                    }).show();
+                                        } else {
+                                            sweetAlertDialog.dismiss();
+                                            finish();
+                                        }
+                                    }
+                                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismiss();
+                            }
+                        }).show();
+                    }
+                });
             }
-            if (i != KeyEvent.KEYCODE_ENTER) {
+           else if (i != KeyEvent.KEYCODE_ENTER) {
                 {
                     Log.e("log", "log");
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP)
@@ -151,18 +225,46 @@ public class ZoneReplacment extends AppCompatActivity {
                             case R.id.fromzoneedt:
                                 if (!fromzone.getText().toString().equals("")) {
                                     if (zoneExists(fromzone.getText().toString())) {
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         Fzonetype = itemtype;
                                         Log.e("fromzone", "fromzone");
                                         fromzone.setEnabled(false);
                                         tozone.setEnabled(true);
                                         tozone.requestFocus();
                                     } else {
-                                        fromzone.setError("Invalid");
+                                        //fromzone.setError("Invalid");
+
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+
+                                        showalertdaiog(ZoneReplacment.this,"Invalid Zone  "+fromzone.getText());
+                                     //  showSweetDialog(ZoneReplacment.this, 0, "", "Invalid Zone  "+fromzone.getText());
+                                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
+
                                         fromzone.setText("");
                                     }
 
                                 } else
-                                    fromzone.requestFocus();
+                                { fromzone.requestFocus();
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+
+
+                                }
                                 break;
 
                             case R.id.tozoneedt:
@@ -170,7 +272,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                     if (!tozone.getText().toString().equals(fromzone.getText().toString())) {
 
                                         if (zoneExists(tozone.getText().toString())) {
-
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                             Tozonetype = itemtype;
                                             Log.e("fromzonetype", fromzonetype + "  " + Tozonetype);
                                             if (Fzonetype.equals(Tozonetype)) {
@@ -180,6 +282,15 @@ public class ZoneReplacment extends AppCompatActivity {
 
                                             } else {
                                                 generalMethod.showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.zonetype));
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                // Vibrate for 1000 milliseconds
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                } else {
+                                                    //deprecated in API 26
+                                                    v.vibrate(1000);
+                                                }
 
                                                 tozone.setText("");
                                                 tozone.requestFocus();
@@ -188,25 +299,62 @@ public class ZoneReplacment extends AppCompatActivity {
 
 
                                         } else {
-                                            tozone.setError("Invalid");
+                                            showSweetDialog(ZoneReplacment.this, 0, "", "Invalid Zone  "+tozone.getText());
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000 milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
+
+
                                             tozone.setText("");
                                         }
 
                                     } else {
-                                        tozone.setError("Same Zone");
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        showalertdaiog(ZoneReplacment.this,"Same Zone!!");
+                                      //  showSweetDialog(ZoneReplacment.this, 0, "", "Same Zone!!");
+
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
+
                                         tozone.setText("");
                                         tozone.requestFocus();
                                     }
 
                                 } else
-                                    tozone.requestFocus();
+                                {    tozone.requestFocus();
+
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+
+
+                                }
                                 break;
 
 
                             case R.id.ZR_itemcodeedt:
+                                ZR_nexttoZone.setEnabled(true);
+                                ZR_nextZone.setEnabled(true);
                                 if (!RZ_itemcode.getText().toString().equals("")) {
-                                    ZR_nexttoZone.setEnabled(true);
-                                    ZR_nextZone.setEnabled(true);
+
                                     if (RZ_itemcode.getText().toString().length() <= 15) {
 
                                         if (LocalZoneReps.size() > 0) {
@@ -215,6 +363,7 @@ public class ZoneReplacment extends AppCompatActivity {
 
                                                 if (Long.parseLong(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
                                                     Log.e("case1", "case1");
+                                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     long x = Long.parseLong(LocalZoneReps.get(localitempostion).getQty()) + 1;
                                                     LocalZoneReps.get(localitempostion).setQty(x + "");
                                                     my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
@@ -223,7 +372,18 @@ public class ZoneReplacment extends AppCompatActivity {
                                                     RZ_itemcode.requestFocus();
                                                 } else {
                                                     Log.e("case2", "case2");
-                                                    showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                    mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                    showalertdaiog(ZoneReplacment.this,getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+
+                                                  //  showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                    // Vibrate for 1000 milliseconds
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                    } else {
+                                                        //deprecated in API 26
+                                                        v.vibrate(1000);
+                                                    }
                                                     RZ_itemcode.setText("");
                                                     RZ_itemcode.requestFocus();
                                                 }
@@ -233,6 +393,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                                 ZoneReplashmentModel replashmentModel = my_dataBase.zoneReplashmentDao().getReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim());
                                                 if (replashmentModel != null) {
                                                     if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                         Log.e("case3", "case3");
                                                         long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                         replashmentModel.setQty(x + "");
@@ -243,7 +404,19 @@ public class ZoneReplacment extends AppCompatActivity {
                                                         RZ_itemcode.requestFocus();
                                                     } else {
                                                         Log.e("case4", "case4");
-                                                        showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                        showalertdaiog(ZoneReplacment.this,getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+
+                                                       // showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                        // Vibrate for 1000 milliseconds
+                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                        } else {
+                                                            //deprecated in API 26
+                                                            v.vibrate(1000);
+                                                        }
+
                                                         RZ_itemcode.setText("");
                                                         RZ_itemcode.requestFocus();
                                                     }
@@ -264,6 +437,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                             if (replashmentModel != null) {
                                                 Log.e("case6", "case6");
                                                 if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
+                                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                     replashmentModel.setQty(x + "");
                                                     my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
@@ -272,7 +446,21 @@ public class ZoneReplacment extends AppCompatActivity {
                                                     RZ_itemcode.setText("");
                                                     RZ_itemcode.requestFocus();
                                                 } else {
-                                                    showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+
+                                                  //  showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                    mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                    showalertdaiog(ZoneReplacment.this,getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+
+
+                                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                    // Vibrate for 1000 milliseconds
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                    } else {
+                                                        //deprecated in API 26
+                                                        v.vibrate(1000);
+                                                    }
+
                                                     RZ_itemcode.setText("");
                                                     RZ_itemcode.requestFocus();
                                                 }
@@ -286,13 +474,36 @@ public class ZoneReplacment extends AppCompatActivity {
                                         }
 
                                     } else {
-                                        RZ_itemcode.setError("InValid");
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                                        // RZ_itemcode.setError("InValid");
+                                        showalertdaiog(ZoneReplacment.this,"InValid Item  "  );
+                                       // showSweetDialog(ZoneReplacment.this, 0, "", "InValid Item  "  + RZ_itemcode.getText());
+                                         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
                                         RZ_itemcode.setEnabled(true);
                                         RZ_itemcode.setText("");
                                         RZ_itemcode.requestFocus();
                                     }
                                 } else
-                                    RZ_itemcode.requestFocus();
+                                {  RZ_itemcode.requestFocus();
+
+                                       Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+
+                                }
                                 break;
 
                         }
@@ -366,47 +577,53 @@ public class ZoneReplacment extends AppCompatActivity {
 
                     break;
                 case R.id.ZR_back:
-                    animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
-                    ZR_back.startAnimation(animation);
-                    new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText(getResources().getString(R.string.confirm_title))
-                            .setContentText(getResources().getString(R.string.messageExit))
-                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+                            animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
+                            ZR_back.startAnimation(animation);
+                            new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.messageExit))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            if (LocalZoneReps.size() > 0) {
+
+                                                new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                                        .setTitleText(getResources().getString(R.string.confirm_title))
+                                                        .setContentText(getResources().getString(R.string.messageExit2))
+                                                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                                                LocalZoneReps.clear();
+                                                                filladapter();
+                                                                sweetAlertDialog.dismissWithAnimation();
+                                                                finish();
+                                                            }
+                                                        })
+                                                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                                sweetAlertDialog.dismiss();
+                                                            }
+                                                        }).show();
+                                            } else {
+                                                sweetAlertDialog.dismiss();
+                                                finish();
+                                            }
+                                        }
+                                    }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    if (LocalZoneReps.size() > 0) {
-
-                                        new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
-                                                .setTitleText(getResources().getString(R.string.confirm_title))
-                                                .setContentText(getResources().getString(R.string.messageExit2))
-                                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                                        LocalZoneReps.clear();
-                                                        filladapter();
-                                                        sweetAlertDialog.dismissWithAnimation();
-                                                        finish();
-                                                    }
-                                                })
-                                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                        sweetAlertDialog.dismiss();
-                                                    }
-                                                }).show();
-                                    } else {
-                                        sweetAlertDialog.dismiss();
-                                        finish();
-                                    }
+                                    sweetAlertDialog.dismiss();
                                 }
-                            }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.dismiss();
-                        }
-                    }).show();
+                            }).show();
+                                             }
+                    });
+
                     break;
                 case R.id.ZR_delete:
                     if (userPermissions == null) getUsernameAndpass();
@@ -441,42 +658,66 @@ public class ZoneReplacment extends AppCompatActivity {
                     }
                     break;
                 case R.id.ZR_save:
+
                     if (userPermissions == null) getUsernameAndpass();
                     animation = AnimationUtils.loadAnimation(ZoneReplacment.this, R.anim.modal_in);
                     ZR_save.startAnimation(animation);
 
+                    if (LocalZoneReps.size() > 0)
+
                     if (userPermissions.getMasterUser().equals("0")) {
                         if (userPermissions.getZoneRep_Save().equals("1")) {
-                            if (LocalZoneReps.size() > 0) exportdata();
-                            else
-                                generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
 
 
-                            ZR_nextZone.setEnabled(false);
-                            ZR_nexttoZone.setEnabled(false);
-                            tozone.setEnabled(false);
-                            RZ_itemcode.setEnabled(false);
+                   saveData();
+
+
+
                         } else {
-                            generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
 
+                            //generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+                            new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.del_per))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            authenticDailog2(4);
+                                            sweetAlertDialog.dismiss();
+                                        }
+
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
                         }
                     } else {
-                        if (LocalZoneReps.size() > 0) exportdata();
-                        else
-                            generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-
-
-                        ZR_nextZone.setEnabled(false);
-                        ZR_nexttoZone.setEnabled(false);
-                        tozone.setEnabled(false);
-                        RZ_itemcode.setEnabled(false);
+                       saveData();
                     }
+
+                    else
+                        generalMethod.showSweetDialog(ZoneReplacment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+
+
                     break;
             }
 
         }
     };
+public void saveData(){
+  exportdata();
 
+
+        ZR_nextZone.setEnabled(false);
+        ZR_nexttoZone.setEnabled(false);
+        tozone.setEnabled(false);
+        RZ_itemcode.setEnabled(false);
+
+}
     public void exportdata() {
         Log.e("exportdata", " exportdata");
         List<ZoneReplashmentModel> models = my_dataBase.zoneReplashmentDao().getAllZonesUnposted();
@@ -501,18 +742,48 @@ public class ZoneReplacment extends AppCompatActivity {
                     case R.id.fromzoneedt:
                         if (!fromzone.getText().toString().equals("")) {
                             if (zoneExists(fromzone.getText().toString())) {
+
+                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                 Fzonetype = itemtype;
                                 Log.e("fromzone", "fromzone");
                                 fromzone.setEnabled(false);
                                 tozone.setEnabled(true);
                                 tozone.requestFocus();
                             } else {
-                                fromzone.setError("Invalid");
+                                //fromzone.setError("Invalid");
+
+                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+
+                                showSweetDialog(ZoneReplacment.this, 0, "", "Invalid Zone  "+fromzone.getText());
+                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 1000 milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(1000);
+                                }
+
                                 fromzone.setText("");
                             }
 
                         } else
-                            fromzone.requestFocus();
+                        { fromzone.requestFocus();
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+
+
+                        }
                         break;
 
                     case R.id.tozoneedt:
@@ -520,7 +791,7 @@ public class ZoneReplacment extends AppCompatActivity {
                             if (!tozone.getText().toString().equals(fromzone.getText().toString())) {
 
                                 if (zoneExists(tozone.getText().toString())) {
-
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                     Tozonetype = itemtype;
                                     Log.e("fromzonetype", fromzonetype + "  " + Tozonetype);
                                     if (Fzonetype.equals(Tozonetype)) {
@@ -530,6 +801,15 @@ public class ZoneReplacment extends AppCompatActivity {
 
                                     } else {
                                         generalMethod.showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.zonetype));
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
 
                                         tozone.setText("");
                                         tozone.requestFocus();
@@ -538,25 +818,61 @@ public class ZoneReplacment extends AppCompatActivity {
 
 
                                 } else {
-                                    tozone.setError("Invalid");
+                                    showSweetDialog(ZoneReplacment.this, 0, "", "Invalid Zone  "+tozone.getText());
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+
+
                                     tozone.setText("");
                                 }
 
                             } else {
-                                tozone.setError("Same Zone");
+
+                                showSweetDialog(ZoneReplacment.this, 0, "", "Same Zone!!");
+                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 1000 milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(1000);
+                                }
+
                                 tozone.setText("");
                                 tozone.requestFocus();
                             }
 
                         } else
-                            tozone.requestFocus();
+                        {    tozone.requestFocus();
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+
+
+                        }
                         break;
 
 
                     case R.id.ZR_itemcodeedt:
+                        ZR_nexttoZone.setEnabled(true);
+                        ZR_nextZone.setEnabled(true);
                         if (!RZ_itemcode.getText().toString().equals("")) {
-                            ZR_nexttoZone.setEnabled(true);
-                            ZR_nextZone.setEnabled(true);
+
                             if (RZ_itemcode.getText().toString().length() <= 15) {
 
                                 if (LocalZoneReps.size() > 0) {
@@ -565,6 +881,7 @@ public class ZoneReplacment extends AppCompatActivity {
 
                                         if (Long.parseLong(LocalZoneReps.get(localitempostion).getRecQty()) > getQTYOFItem()) {
                                             Log.e("case1", "case1");
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                             long x = Long.parseLong(LocalZoneReps.get(localitempostion).getQty()) + 1;
                                             LocalZoneReps.get(localitempostion).setQty(x + "");
                                             my_dataBase.zoneReplashmentDao().updateqtyReplashment(LocalZoneReps.get(localitempostion).getFromZone(), LocalZoneReps.get(localitempostion).getToZone(), LocalZoneReps.get(localitempostion).getItemcode(), x + "");
@@ -573,7 +890,16 @@ public class ZoneReplacment extends AppCompatActivity {
                                             RZ_itemcode.requestFocus();
                                         } else {
                                             Log.e("case2", "case2");
-                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000 milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
                                             RZ_itemcode.setText("");
                                             RZ_itemcode.requestFocus();
                                         }
@@ -584,6 +910,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                         if (replashmentModel != null) {
                                             if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
                                                 Log.e("case3", "case3");
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 long x = Long.parseLong(replashmentModel.getQty()) + 1;
                                                 replashmentModel.setQty(x + "");
                                                 my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
@@ -593,7 +920,17 @@ public class ZoneReplacment extends AppCompatActivity {
                                                 RZ_itemcode.requestFocus();
                                             } else {
                                                 Log.e("case4", "case4");
-                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                // Vibrate for 1000 milliseconds
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                } else {
+                                                    //deprecated in API 26
+                                                    v.vibrate(1000);
+                                                }
+
                                                 RZ_itemcode.setText("");
                                                 RZ_itemcode.requestFocus();
                                             }
@@ -615,6 +952,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                         Log.e("case6", "case6");
                                         if (Long.parseLong(replashmentModel.getRecQty()) > getQTYOFItem()) {
                                             long x = Long.parseLong(replashmentModel.getQty()) + 1;
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                             replashmentModel.setQty(x + "");
                                             my_dataBase.zoneReplashmentDao().updateqtyReplashment(fromzone.getText().toString().trim(), tozone.getText().toString().trim(), RZ_itemcode.getText().toString().trim(), x + "");
                                             LocalZoneReps.add(replashmentModel);
@@ -622,7 +960,17 @@ public class ZoneReplacment extends AppCompatActivity {
                                             RZ_itemcode.setText("");
                                             RZ_itemcode.requestFocus();
                                         } else {
-                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + fromzone.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.notvaildqty2) + " " + RZ_itemcode.getText().toString() + " " + getResources().getString(R.string.msg));
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000 milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
+
                                             RZ_itemcode.setText("");
                                             RZ_itemcode.requestFocus();
                                         }
@@ -636,13 +984,34 @@ public class ZoneReplacment extends AppCompatActivity {
                                 }
 
                             } else {
-                                RZ_itemcode.setError("InValid");
+                                // RZ_itemcode.setError("InValid");
+                                showSweetDialog(ZoneReplacment.this, 0, "", "InValid Item  "  + RZ_itemcode.getText());
+                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 1000 milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(1000);
+                                }
                                 RZ_itemcode.setEnabled(true);
                                 RZ_itemcode.setText("");
                                 RZ_itemcode.requestFocus();
                             }
                         } else
-                            RZ_itemcode.requestFocus();
+                        {  RZ_itemcode.requestFocus();
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+
+                        }
                         break;
                 }
 
@@ -678,6 +1047,9 @@ public class ZoneReplacment extends AppCompatActivity {
         if (userPermissions == null) getUsernameAndpass();
         DBZoneReps.clear();
         LocalZoneReps.clear();
+        Zonescount=findViewById(R.id.Zonescount);
+        ZonestotalQty=findViewById(R.id.ZonestotalQty);
+        AllZonestotalQty=findViewById(R.id.AllZonestotalQty);
         ZR_itemkind = findViewById(R.id.ZR_itemkind);
         ZonRepdatarespon = findViewById(R.id.ZonRepdatarespon);
         ZR_nextZone = findViewById(R.id.ZR_nextZone);
@@ -687,7 +1059,12 @@ public class ZoneReplacment extends AppCompatActivity {
         ZR_save = findViewById(R.id.ZR_save);
         importData = new ImportData(ZoneReplacment.this);
         exportData = new ExportData(ZoneReplacment.this);
-        importData.getAllZones();
+
+
+    //    importData.getAllZones();
+
+
+
         generalMethod = new GeneralMethod(ZoneReplacment.this);
         zonelistview = findViewById(R.id.zonelist);
         my_dataBase = RoomAllData.getInstanceDataBase(ZoneReplacment.this);
@@ -723,57 +1100,6 @@ public class ZoneReplacment extends AppCompatActivity {
         }
 
 
-     /*   ZR_itemkind.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() != 0) {
-                if(   ZR_itemkind.getText().toString().equals("ITEMTYPE")){
-
-                    getzonetype();
-try {
-    if( itemdetalis.get(0).getZONETYPE().equals(fromzonetype )&&
-            itemdetalis.get(0).getZONETYPE().equals(tozonetype )) {
-        Log.e("msg", "msg");
-        filldata();
-    }
-    else{
-        generalMethod.showSweetDialog(ZoneReplacment.this,3,"",getResources().getString(R.string.zonetype));
-
-    }
-}catch (Exception e)
-{
-    Log.e("Exception==",e.getMessage());
-}
-                           RZ_itemcode.setText("");
-                            RZ_itemcode.requestFocus();
-
-                }
-                else if(   ZR_itemkind.getText().toString().equals("NetworkError"))
-                {
-                    generalMethod.showSweetDialog(ZoneReplacment.this,3,"No Internet Connection","");
-
-                }
-                else {
-                    generalMethod.showSweetDialog(ZoneReplacment.this,3,getResources().getString(R.string.existsBARCODE),"");
-
-                }
-            }
-
-
-
-
-            }
-        });*/
 
 
         ZonRepdatarespon.addTextChangedListener(new TextWatcher() {
@@ -791,11 +1117,32 @@ try {
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().length() != 0) {
+                    if(editable.toString().trim().equals("Internal Application Error")){
 
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(ZoneReplacment.this, 0, "Server Error", "");
+                            }
+                        });
+
+
+                         LocalZoneReps.clear();
+                        filladapter();
+
+                    }else
                     if (ZonRepdatarespon.getText().toString().equals("exported")) {
                         savedata("1");
-                        showSweetDialog(ZoneReplacment.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
-                        LocalZoneReps.clear();
+
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(ZoneReplacment.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                            }
+                        });
+
+
+                          LocalZoneReps.clear();
                         filladapter();
                         fromzone.setText("");
                         tozone.setText("");
@@ -840,7 +1187,7 @@ try {
                                 try {
                                     //   importData.getKindItem2(RZ_itemcode.getText().toString().trim());
                                     filldata();
-
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                 } catch (Exception e) {
                                     Log.e("Exception", e.getMessage());
                                 }
@@ -849,18 +1196,53 @@ try {
                                 RZ_itemcode.requestFocus();
                             }
                         } else {
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            Handler h = new Handler(Looper.getMainLooper());
+                            h.post(new Runnable() {
+                                public void run() {
+                        showalertdaiog(ZoneReplacment.this,getResources().getString(R.string.notvaildqty));
+                                    //generalMethod.showSweetDialog(ZoneReplacment.this, 0, "", getResources().getString(R.string.notvaildqty));
 
-                            Toast.makeText(ZoneReplacment.this, getResources().getString(R.string.notvaildqty), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+
                             RZ_itemcode.setText("");
                             RZ_itemcode.requestFocus();
                         }
 
 
                     } else {
-                        showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.existsBARCODE));
+                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showalertdaiog(ZoneReplacment.this,getResources().getString(R.string.existsBARCODE)+"  "+ RZ_itemcode.getText());
+
+                              //  showSweetDialog(ZoneReplacment.this, 3, "", getResources().getString(R.string.existsBARCODE)+"  "+ RZ_itemcode.getText());
+                                RZ_itemcode.setText("");
+                            }
+                        });
+
+                         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 1000 milliseconds
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            //deprecated in API 26
+                            v.vibrate(1000);
+                        }
 
 
-                        RZ_itemcode.setText("");
                         RZ_itemcode.requestFocus();
 
                     }
@@ -919,17 +1301,36 @@ try {
                 }
             } else {
                 RZ_itemcode.setEnabled(true);
+                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 1000 milliseconds
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(1000);
+                }
                 RZ_itemcode.setText("");
                 RZ_itemcode.requestFocus();
             }
         } else {
             RZ_itemcode.requestFocus();
+            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 1000 milliseconds
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                //deprecated in API 26
+                v.vibrate(1000);
+            }
         }
 
     }
 
     private void saveRaw(ZoneReplashmentModel replashmentModel) {
         my_dataBase.zoneReplashmentDao().insert(replashmentModel);
+        CalculateTotalandCount();
     }
 
     private void filladapter() {
@@ -937,6 +1338,8 @@ try {
 
         zoneRepAdapter = new ZonePerAdapterr(ZoneReplacment.this, LocalZoneReps);
         zonelistview.setAdapter(zoneRepAdapter);
+
+        CalculateTotalandCount();
     }
 
     private void OpenDeleteDailog() {
@@ -968,13 +1371,14 @@ try {
                                           @Override
                                           public void onClick(View view) {
                                               getzonefromDB();
-
-                                              if (zones2.size() > 0) {
-
-                                                  authenticDailog(2);
-
-                                              } else
-                                                  Toast.makeText(ZoneReplacment.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
+                                              authenticDailog(2);
+//                                              if (zones2.size() > 0)
+//                                              {
+//
+//                                                  authenticDailog(2);
+//
+//                                              } else
+//                                                  Toast.makeText(ZoneReplacment.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
                                           }
                                       }
         );
@@ -982,6 +1386,7 @@ try {
         dialog.findViewById(R.id.dialogcancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CalculateTotalandCount();
                 dialog.dismiss();
             }
         });
@@ -1029,6 +1434,7 @@ try {
         dialog.findViewById(R.id.dialogcancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CalculateTotalandCount();
                 dialog.dismiss();
             }
         });
@@ -1056,7 +1462,8 @@ try {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())) {
+                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())
+                        ||    checkIfUserWhoLoginIsMaster(ZoneReplacment.this,UsNa.getText().toString().trim(),pass.getText().toString().trim())){
                     if (enterflage == 1)
                         openDeleteZoneDailog();
                     else
@@ -1108,6 +1515,11 @@ try {
                     isMaster = my_dataBase.userPermissionsDao().getIsMaster(UsNa.getText().toString().trim(), pass.getText().toString().trim());
 
                     if (isMaster != null && isMaster.equals("1")) {
+                        if (enterflage == 4) {
+                            authenticationdialog.dismiss();
+                           saveData();
+
+                        }else
                         if (enterflage == 1) {
                             openDeleteZoneDailog();
                             authenticationdialog.dismiss();
@@ -1208,7 +1620,44 @@ try {
                 return false;
             }
         });
+        ZR_DZzonecode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
 
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (ZR_DZzonecode.getText().toString().equals(""))
+                            ZR_DZzonecode.requestFocus();
+                        else {
+
+                            if (zones.contains(ZR_DZzonecode.getText().toString().trim())) {
+                                //FILL DATA OF SELECT ZONE
+
+
+                                try {
+                                    //set zone barecode
+                                    ZR_DZzonebarecodehow.setText(ZR_DZzonecode.getText().toString());
+
+                                    //set qty of zone
+                                    long sumqty = my_dataBase.zoneReplashmentDao().GetQtyOfZone(ZR_DZzonecode.getText().toString());
+                                    ZR_DZqtyshow.setText(sumqty + "");
+
+
+                                } catch (Exception e) {
+
+                                }
+                            } else {
+                                Toast.makeText(ZoneReplacment.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
+                                ZR_DZzonecode.setText("");
+                                ZR_DZzonebarecodehow.setText("");
+                                ZR_DZqtyshow.setText("");
+                            }
+                        }
+                    }
+                }
+                return true;    }
+        });
         ZR_DZsearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1524,6 +1973,32 @@ try {
                 return false;
             }
         });
+
+        ZRDI_ZONEcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!ZRDI_ZONEcode.getText().toString().equals("")) {
+                            if (isEx()) {
+                                ZRDI_itemcode.setEnabled(true);
+                                ZRDI_itemcode.requestFocus();
+
+                            } else {
+                                ZRDI_ZONEcode.setError("INvalid");
+                                ZRDI_ZONEcode.setText("");
+                            }
+
+                        } else {
+                            ZRDI_ZONEcode.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
         Deleteitemdialog.findViewById(R.id.ZR_DIclose_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1734,6 +2209,126 @@ try {
 
                 return false;
             }
+        });
+
+        ZRDI_itemcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!ZRDI_itemcode.getText().toString().equals("")) {
+                            if (ismatch()) {
+                                String x = getpreQty(zones2.get(ind).getToZone(), zones2.get(ind).getItemcode());
+                                ZRDI_preQTY.setText(x);
+
+
+                                sumOfQTY = Long.parseLong(zones2.get(ind).getQty());
+                                if (sumOfQTY > 1) {
+                                    sumOfQTY -= 1;
+                                    // oldQTY.setText( sumOfQTY+"" );
+
+                                    ZRDI_itemcodeshow.setText(ZRDI_itemcode.getText().toString());
+
+
+                                    zones2.get(ind).setQty(sumOfQTY + "");
+                                    if (ReducedItemlist.size() > 0) {
+
+
+                                        if (Exists(zones2.get(ind).getToZone(), zones2.get(ind).getItemcode())) {
+                                            Log.e("ReducedItemlistsumOfQTY", sumOfQTY + "");
+                                            Log.e("updated", zones2.get(ind).getItemcode());
+                                            Log.e("ReducedItemlistQTY", zones2.get(ind).getQty() + "");
+                                            Log.e("pos_item_inreducelist", "" + pos_item_inreducelist);
+                                            ReducedItemlist.remove(pos_item_inreducelist);
+                                            ReducedItemlist.add(zones2.get(ind));
+                                            //   ReducedItemlist.get(pos_item_inreducelist).setQty(sumOfQTY+"");
+
+                                        } else {
+                                            zones2.get(ind).setQty(sumOfQTY + "");
+                                            ReducedItemlist.add(zones2.get(ind));
+                                            Log.e("ReducedItemlistQTY", zones2.get(ind).getQty() + "");
+                                            Log.e("added", zones2.get(ind).getItemcode());
+                                            Log.e("ReducedItemlistsumOfQTY", sumOfQTY + "");
+
+
+                                        }
+                                    } else {
+                                        Log.e("elseadded", zones2.get(ind).getItemcode());
+                                        Log.e("ReducedItemlistQTY", zones2.get(ind).getQty() + "");
+                                        ReducedItemlist.add(zones2.get(ind));
+                                    }
+
+                                    //  sumOfQTY -= 1;
+
+                                    ZRDI_qtyshow.setText(sumOfQTY + "");
+                                    ZRDI_zoneshow.setText(zones2.get(ind).getToZone());
+
+                                    deletebtn.setEnabled(true);
+                                    ZRDI_itemcode.setText("");
+                                    ZRDI_itemcode.requestFocus();
+
+                                }//end of if(sumOfQTY >1)
+                                else {
+                                    new SweetAlertDialog(ZoneReplacment.this, SweetAlertDialog.BUTTON_CONFIRM)
+                                            .setTitleText(getResources().getString(R.string.confirm_title))
+                                            .setContentText(getResources().getString(R.string.delete3))
+                                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    Log.e("ReducedItemlist", ReducedItemlist.size() + "");
+                                                    if (ReducedItemlist.size() > 0) {
+                                                        if (Exists(zones2.get(ind).getToZone(), zones2.get(ind).getItemcode())) {
+                                                            ReducedItemlist.get(pos_item_inreducelist).setQty("0");
+                                                            zones2.remove(ind);
+
+                                                        } else {
+                                                            Log.e("zones2", "==zones2");
+
+                                                            zones2.get(ind).setQty("0");
+                                                            ReducedItemlist.add(zones2.get(ind));
+                                                            zones2.remove(ind);
+                                                            //   ReducedItemlist.get(pos_item_inreducelist).setQty("0");
+                                                        }
+                                                    } else {
+                                                        Log.e("elzones2", "==zones2");
+                                                        zones2.get(ind).setQty("0");
+                                                        ReducedItemlist.add(zones2.get(ind));
+                                                        zones2.remove(ind);
+                                                    }
+
+                                                    cleardataOfDailog();
+                                                    sweetAlertDialog.dismiss();
+                                                }
+                                            })
+                                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismiss();
+                                                }
+                                            })
+                                            .show();
+
+                                    ZRDI_itemcodeshow.setText(ZRDI_itemcode.getText().toString());
+                                    ZRDI_qtyshow.setText("1");
+                                    ZRDI_ZONEcode.setText(zones2.get(ind).getToZone());
+                                    deletebtn.setEnabled(true);
+                                    ZRDI_itemcode.setText("");
+                                    ZRDI_itemcode.requestFocus();
+
+                                }
+                            } else {
+                                ZRDI_itemcode.setError("Invalid");
+                                ZRDI_itemcode.setText("");
+                            }
+                        } else
+                            ZRDI_itemcode.requestFocus();
+
+                    }
+                }
+
+                return true;    }
         });
         deletebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2044,5 +2639,106 @@ try {
             } else ZR_Delete.setEnabled(true);
         }
     }
+
+    void CalculateTotalandCount(){
+
+
+        int zoncount=0,zonsqty=0,allzonsqty=0;
+        for(int i=0;i<  LocalZoneReps.size();i++)
+            allzonsqty+= Integer.parseInt(LocalZoneReps.get(i).getQty());
+
+        AllZonestotalQty
+                .setText(allzonsqty+"");
+
+
+//
+        DBlistZoneSofRepZon =my_dataBase.zoneReplashmentDao().getAllZonesUnposted();
+        Set<String> set = new HashSet<String>();
+        Log.e("DBlistZoneSize", DBlistZoneSofRepZon.size()+"");
+        for (int i = 0; i < DBlistZoneSofRepZon.size(); i++) {
+            Log.e("setcontent", DBlistZoneSofRepZon.get(i).getToZone());
+            set.add(DBlistZoneSofRepZon.get(i).getToZone());
+        }
+        for (String s1 : set) {
+            //   Log.e("setcontent", s1);
+        }
+
+        Zonescount.setText(set.size()+"");
+
+
+        for(int i = 0; i< DBlistZoneSofRepZon.size(); i++)
+            zonsqty+= Integer.parseInt(DBlistZoneSofRepZon.get(i).getQty());
+        ZonestotalQty.setText( zonsqty+"");
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mode = (AudioManager) ZoneReplacment.this.getSystemService(Context.AUDIO_SERVICE);
+
+    }
+    public void flashLightOn() {
+
+        try {
+            if (getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_CAMERA_FLASH)) {
+                cam = Camera.open();
+                Parameters p = cam.getParameters();
+                p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+                cam.setParameters(p);
+                cam.startPreview();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getBaseContext(), "Exception flashLightOn()",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void flashLightOff() {
+        try {
+            if (getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_CAMERA_FLASH)) {
+
+                cam.stopPreview();
+                cam.release();
+                cam = null;
+                Log.e("ddd2===","dddd");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getBaseContext(), "Exception flashLightOff",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+    public  void showalertdaiog(Context context,String Msg){
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+
+                .setContentText(Msg)
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        sweetAlertDialog.dismiss();
+                    }
+                }).show();
+
+    }
+//public void scanNow() {
+//    IntentIntegrator integrator = new IntentIntegrator(getActivity());
+//    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);//ONE_D_COD E_TYPES
+//    integrator.setPrompt("Scan a barcode");
+//    Camera cam = Camera.open();
+//    Camera.Parameters p = cam.getParameters();
+//    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//    cam.setParameters(p);
+//    cam.startPreview();
+//    integrator.setScanningRectangle(10, 10);
+//    integrator.setResultDisplayDuration(0);
+//    integrator.setWide(); // Wide scanning rectangle, may work better for 1D barcodes
+//    integrator.setCameraId(0);
+//    ;        // Use a specific camera of the device
+//    integrator.initiateScan();
+//}
 }
 

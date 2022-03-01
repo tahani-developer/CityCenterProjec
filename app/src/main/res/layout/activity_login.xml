@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/layer1"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -30,7 +31,7 @@
             android:background="@color/dark_blue_3"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,13 +55,13 @@
                 android:textColor="@color/layer6"
                 android:textSize="16sp" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/nav_header_imageView"
+            <ImageView
+                android:id="@+id/nav_header_imageView2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
 
-                android:src="@drawable/irbid_city_center"
+                android:saveEnabled="true"
+
                 app:civ_border_width="1dp" />
             <!--            android:src="@drawable/irbid"-->
 
@@ -165,7 +166,11 @@
                 android:layout_marginStart="17dp"
                 app:srcCompat="@drawable/ic_person_black_24dp" />
 
-
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   android:visibility="gone"
+    android:id="@+id/comRespon"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -187,7 +192,7 @@
                 android:maxLines="1"
 
                 android:padding="6dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
 

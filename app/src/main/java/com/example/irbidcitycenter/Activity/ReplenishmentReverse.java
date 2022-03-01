@@ -5,11 +5,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -35,6 +40,7 @@ import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
 import com.example.irbidcitycenter.Models.AllItems;
+import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.ReplashmentReversLogs;
 import com.example.irbidcitycenter.Models.ReplenishmentReverseModel;
 import com.example.irbidcitycenter.Models.appSettings;
@@ -42,14 +48,17 @@ import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
+import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
@@ -81,6 +90,8 @@ public class ReplenishmentReverse extends AppCompatActivity {
     private Animation animation;
     public static List<ReplenishmentReverseModel> DB_Reversreplist =new ArrayList<>();;
     private List<ReplenishmentReverseModel> UnPostedreplacementlist;
+    public static List<ReplenishmentReverseModel> DBlistReplacements;
+    TextView Zonescount,ZonestotalQty,AllZonestotalQty;
     ExportData exportData;
     List<String>DB_store;
     private ArrayList<ReplenishmentReverseModel> deleted_DBzone;
@@ -99,17 +110,22 @@ LinearLayout zoneLin;
     public static    TextView RepRev_exportstate,RepRev_Itemrespons;
     List<String> FromArray = new ArrayList<>();
     List<String> ToArray = new ArrayList<>();
+    AudioManager mode ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadLanguage();
         setContentView(R.layout.activity_replenishment_reverse);
         init();
+        mode = (AudioManager) ReplenishmentReverse.this.getSystemService(Context.AUDIO_SERVICE);
+        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+        mode.playSoundEffect(AudioManager.RINGER_MODE_NORMAL);
 
 //my_dataBase.repReversDao().deleteALL();
         AllstocktakeDBlist.clear();
 
-        AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
+        AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll2());
 
 
         if (AllstocktakeDBlist.size() == 0) {
@@ -119,9 +135,15 @@ LinearLayout zoneLin;
                     .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            MainActivity.flg=0;
-                            importData.getAllItems();
-                            sweetAlertDialog.dismiss();
+
+try {
+    importData.getAllItems(2);
+    sweetAlertDialog.dismiss();
+} catch (Exception e){
+    Toast.makeText(ReplenishmentReverse.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+    sweetAlertDialog.dismiss();
+}
+
 
                         }
                     })
@@ -172,9 +194,57 @@ LinearLayout zoneLin;
 
 
             if (i == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        animation = AnimationUtils.loadAnimation(ReplenishmentReverse.this, R.anim.modal_in);
+                        backBtn.startAnimation(animation);
 
-            }
+                        new SweetAlertDialog(ReplenishmentReverse.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.messageExit))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        if (replacementlist.size() > 0) {
+
+                                            new SweetAlertDialog(ReplenishmentReverse.this, SweetAlertDialog.WARNING_TYPE)
+                                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                                    .setContentText(getResources().getString(R.string.messageExit2))
+                                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                                            replacementlist.clear();
+                                                            adapter.notifyDataSetChanged();
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            finish();
+                                                        }
+                                                    })
+                                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                            sweetAlertDialog.dismiss();
+                                                        }
+                                                    }).show();
+                                        }
+                                        else
+                                        {
+                                            sweetAlertDialog.dismiss();
+                                            finish();
+                                        }
+                                    }
+                                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismiss();
+                            }
+                        }).show();            }
+                });
+
+
+            }else
 
             if (i != KeyEvent.KEYCODE_ENTER) {
 
@@ -227,7 +297,7 @@ LinearLayout zoneLin;
                                                 replacementlist.get(position).setRecQty((sum + ""));
                                                 my_dataBase.repReversDao().updateQTY(FromNo,replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
 
-
+                                                 mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 RepRev_itemcodeedt.setText("");
                                                 RepRev_itemcodeedt.requestFocus();
                                                 fillAdapter();
@@ -239,10 +309,24 @@ LinearLayout zoneLin;
                                         }
                                         else {
                                             Log.e("not in db", "not in db");
-                                            if (ItemExists()) {
+                                            if (ItemExists(RepRev_itemcodeedt.getText().toString())) {
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
                                                 filldata();
                                             }else{
-                                                RepRev_itemcodeedt.setError("InValid");
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                                                showalertdaiog(ReplenishmentReverse.this,  "Invalid Item  "+RepRev_itemcodeedt.getText().toString());
+
+
+                                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                // Vibrate for 1000 milliseconds
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                } else {
+                                                    //deprecated in API 26
+                                                    v.vibrate(1000);
+                                                }
                                                 RepRev_itemcodeedt.setEnabled(true);
                                                 RepRev_itemcodeedt.setText("");
                                                 RepRev_itemcodeedt.requestFocus();
@@ -252,7 +336,19 @@ LinearLayout zoneLin;
 
                                         }
                                     } else {
-                                        RepRev_itemcodeedt.setError("InValid");
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        showalertdaiog(ReplenishmentReverse.this,  "Invalid Item  ");
+
+
+
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
                                         RepRev_itemcodeedt.setEnabled(true);
                                         RepRev_itemcodeedt.setText("");
                                         RepRev_itemcodeedt.requestFocus();
@@ -265,7 +361,19 @@ LinearLayout zoneLin;
                                 }
 
                                 else
-                                    RepRev_itemcodeedt.requestFocus();
+                                { RepRev_itemcodeedt.requestFocus();
+
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+
+                                }
                                 break;
                         }
                     return true;
@@ -283,10 +391,10 @@ LinearLayout zoneLin;
                 switch (textView.getId()) {
 
 
-                        case R.id.RepRev_itemcodeedt:
+                    case R.id.RepRev_itemcodeedt:
 
-                            if (!RepRev_itemcodeedt.getText().toString().equals("")) {
-
+                        if (!RepRev_itemcodeedt.getText().toString().equals("")) {
+                            if(fromSpinner.getSelectedItem()!=null&& toSpinner.getSelectedItem()!=null)   {
                                 if (RepRev_itemcodeedt.getText().toString().length() <= 15) {
                                     fromSpinner.setEnabled(false);
                                     toSpinner.setEnabled(false);
@@ -324,46 +432,87 @@ LinearLayout zoneLin;
                                         long sum = Long.parseLong(replacementlist.get(position).getRecQty()) + Long.parseLong("1");
                                         Log.e("aaasum ", sum + "");
 
-                                        //     if (sum <= Long.parseLong(replacementlist.get(position).getQty()))
                                         {
                                             replacementlist.get(position).setRecQty((sum + ""));
-                                            my_dataBase.repReversDao().updateQTY(replacementlist.get(position).getFrom(),replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
+                                            my_dataBase.repReversDao().updateQTY(FromNo,replacementlist.get(position).getItemcode(), replacementlist.get(position).getRecQty());
 
-
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                             RepRev_itemcodeedt.setText("");
                                             RepRev_itemcodeedt.requestFocus();
                                             fillAdapter();
                                             Log.e("heree", "here2");
                                         }
-                                      /*  else {
-                                            showSweetDialog(Replacement.this, 3, "", getResources().getString(R.string.notvaildqty));
-
-                                            fillAdapter();
-                                            zone.setEnabled(false);
-                                            itemcode.setText("");
-                                            itemcode.requestFocus();
-                                        }*/
 
 
-                                    } else {
+
+                                    }
+                                    else {
                                         Log.e("not in db", "not in db");
-                                        if (ItemExists()) {
+                                        if (ItemExists(RepRev_itemcodeedt.getText().toString())) {
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
                                             filldata();
+                                        }else{
+                                            showSweetDialog(ReplenishmentReverse.this, 0, "", "Invalid Item  "+RepRev_itemcodeedt.getText().toString());
+
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000 milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
+                                            RepRev_itemcodeedt.setEnabled(true);
+                                            RepRev_itemcodeedt.setText("");
+                                            RepRev_itemcodeedt.requestFocus();
                                         }
                                         ZoneReplacment.fromZoneRepActivity = 20;
 
 
                                     }
                                 } else {
-                                    RepRev_itemcodeedt.setError("InValid");
+
+                                    showSweetDialog(ReplenishmentReverse.this, 0, "", "Invalid Item  "+RepRev_itemcodeedt.getText().toString());
+
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
                                     RepRev_itemcodeedt.setEnabled(true);
                                     RepRev_itemcodeedt.setText("");
                                     RepRev_itemcodeedt.requestFocus();
 
                                 }
-                            } else
-                                RepRev_itemcodeedt.requestFocus();
-                            break;
+                            }
+                            else{
+
+                            }
+                        }
+
+                        else
+                        { RepRev_itemcodeedt.requestFocus();
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+
+                        }
+                        break;
 
                 }
 
@@ -463,8 +612,13 @@ LinearLayout zoneLin;
                   break;
                 case R.id.RepRev_save:
 
+                    if (replacementlist.size() > 0) {  savedata();}
 
-                    savedata();
+                    else {
+                        generalMethod.showSweetDialog(ReplenishmentReverse.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+                    }
+
+
                   break;
                 case R.id.RepRev_delete:
                     if( userPermissions==null) getUsernameAndpass();
@@ -674,10 +828,101 @@ LinearLayout zoneLin;
 
             });
 
+            DRepRev_itemcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                    if (i != KeyEvent.ACTION_UP) {
 
+                        if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                                || i == EditorInfo.IME_NULL) {
+                            if (!DRepRev_itemcode.getText().toString().equals("")) {
+                                if (isExists(2, spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")), DRepRev_itemcode.getText().toString().trim())) {
+
+
+                                    long preqty = Long.parseLong(getpreQty( spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")), DRepRev_itemcode.getText().toString().trim()));
+                                    DRepRev_preQTY.setText(preqty + "");
+                                    long sumqty = Long.parseLong(DB_Reversreplist.get(indexDBitem).getRecQty());
+                                    if (sumqty > 1) {
+
+                                        sumqty--;
+                                        DB_Reversreplist.get(indexDBitem).setRecQty(sumqty + "");
+                                        DRepRev_qtyshow.setText(DB_Reversreplist.get(indexDBitem).getRecQty());
+
+                                        DRepRev_itemcodeshow.setText(DRepRev_itemcode.getText().toString().trim());
+
+                                        if (isExistsInReducedlist()) {
+                                            Log.e("Case1==","Case1");
+                                            reducedqtyitemlist.get(indexOfReduceditem).setRecQty(sumqty + "");
+                                        }
+                                        else {
+                                            Log.e("Case2==","Case2");
+                                            reducedqtyitemlist.add(DB_Reversreplist.get(indexDBitem));
+                                        }
+                                        DRepRev_itemcode.setText("");
+                                        DRepRev_itemcode.requestFocus();
+                                    } else {
+                                        new SweetAlertDialog(ReplenishmentReverse.this, SweetAlertDialog.BUTTON_CONFIRM)
+                                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                                .setContentText(getResources().getString(R.string.delete3))
+                                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        DB_Reversreplist.get(indexDBitem).setRecQty("0");
+                                                        DRepRev_preQTY.setText("1");
+                                                        DRepRev_qtyshow.setText("1");
+
+                                                        DRepRev_itemcodeshow.setText(DRepRev_itemcode.getText().toString().trim());
+
+                                                        if (isExistsInReducedlist())
+                                                            reducedqtyitemlist.get(indexOfReduceditem).setRecQty("0");
+                                                        else
+                                                            reducedqtyitemlist.add(DB_replistcopy.get(indexDBitem));
+
+                                                        DB_Reversreplist.remove(indexDBitem);
+                                                        // DB_replistcopy.remove(indexDBitem);
+                                                        DRepRev_itemcode.setText("");
+
+                                                        DRepRev_qtyshow.setText("");
+
+                                                        DRepRev_itemcodeshow.setText("");
+                                                        DRepRev_preQTY.setText("");
+                                                        sweetAlertDialog.dismiss();
+                                                    }
+                                                })
+                                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismiss();
+                                                        DRepRev_preQTY.setText("1");
+                                                        DRepRev_qtyshow.setText("1");
+
+                                                        DRepRev_itemcodeshow.setText(DRepRev_itemcode.getText().toString().trim());
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                    DRepRev_delete.setEnabled(true);
+                                }else{
+                                    DRepRev_itemcode.setError("InValid");
+                                    DRepRev_itemcode.setText("");
+                                    DRepRev_qtyshow.setText("");
+                                    DRepRev_itemcodeshow.setText("");
+                                }
+                            }
+
+                        } else {
+                            DRepRev_itemcode.requestFocus();
+                        }
+                        }
+
+
+                    return true;    }
+            });
             dialog.findViewById(R.id.DZRE_close_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    dialog.dismiss();
                     authenticationdialog.dismiss();
                     dialog.dismiss();
                 }
@@ -685,17 +930,21 @@ LinearLayout zoneLin;
             dialog.findViewById(R.id.DRepRev_dialogsave).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(reducedqtyitemlist.size()>0) {
+                    if (reducedqtyitemlist.size() > 0) {
                         checkLocalList();
                         addReplashmentLogs();
                         for (int i = 0; i < reducedqtyitemlist.size(); i++) {
                             if (reducedqtyitemlist.get(i).getRecQty().equals("0"))
-                                my_dataBase.repReversDao().deleteDbReplacement( reducedqtyitemlist.get(i).getItemcode(), reducedqtyitemlist.get(i).getFrom());
+                                my_dataBase.repReversDao().deleteDbReplacement(reducedqtyitemlist.get(i).getItemcode(), reducedqtyitemlist.get(i).getFrom());
                             else
                                 my_dataBase.repReversDao().updateDBQTY(reducedqtyitemlist.get(i).getRecQty(), reducedqtyitemlist.get(i).getItemcode(), reducedqtyitemlist.get(i).getFrom());
                         }
-                        Toast.makeText(ReplenishmentReverse.this,"Done",Toast.LENGTH_LONG).show();   }
-                    else{
+                        Toast.makeText(ReplenishmentReverse.this, "Done", Toast.LENGTH_LONG).show();
+                        CalculateTotalandCount();
+
+                    }
+
+                  else{
                         Toast.makeText(ReplenishmentReverse.this,"NO data changed",Toast.LENGTH_SHORT).show();
                     }
 
@@ -922,7 +1171,6 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
 
 
 
-                if (replacementlist.size() > 0) {
                     fromSpinner.setEnabled(true);
                     toSpinner.setEnabled(true);
 
@@ -937,9 +1185,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                     exportData();
 
                     RepRev_itemcodeedt.setText("");
-                } else {
-                    generalMethod.showSweetDialog(ReplenishmentReverse.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-                }
+
 
 
 
@@ -981,6 +1227,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
     private void SaveRow(ReplenishmentReverseModel replacement) {
         Log.e("SaveRow","replacement"+replacement.getDeviceId());
         my_dataBase.repReversDao().insert(replacement);
+        CalculateTotalandCount();
     }
     public boolean CaseDuplicates(ReplenishmentReverseModel replacement) {
         boolean flag = false;
@@ -1031,6 +1278,10 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
 //        fillSp();
 //    }
     private void init() {
+
+        Zonescount=findViewById(R.id.Zonescount);
+        ZonestotalQty=findViewById(R.id.ZonestotalQty);
+        AllZonestotalQty=findViewById(R.id.AllZonestotalQty);
         replacementlist.clear();
         RepRev_Itemrespons=findViewById(R.id.RepRev_Itemrespons);
         RepRev_exportstate=findViewById(R.id.RepRev_exportstate);
@@ -1130,10 +1381,29 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().length() != 0) {
+                    if(editable.toString().trim().equals("Access violation at address")){
+                        replacementlist.clear();
+                        fillAdapter();
+                    }
+                  else  if(editable.toString().trim().equals("Internal Application Error")){
+                        showSweetDialog(ReplenishmentReverse.this, 0, "Server Error", "");
+
+                        replacementlist.clear();
+                        fillAdapter();
+                        adapter.notifyDataSetChanged();
+
+                    }else
                     if (editable.toString().trim().equals("exported")) {
                         { //saveData(1);
                             my_dataBase.repReversDao().updateReplashmentPosted();
-                            showSweetDialog(ReplenishmentReverse.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+
+
+
+
+                                    showSweetDialog(ReplenishmentReverse.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+
+
+
 
                             replacementlist.clear();
                             fillAdapter();
@@ -1171,22 +1441,28 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().equals("")) {
+                    if (editable.toString().equals("Internal Application Error")) {
 
+                                            showSweetDialog(ReplenishmentReverse.this, 1, "Internal Application Error", "");
+
+                    }else
                     if (editable.toString().equals("ItemOCode")) {
                         Log.e("herea","aaaaa");
                         my_dataBase.itemDao().deleteall();
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
+                        AllstocktakeDBlist.clear();
                         AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
-                        Handler h = new Handler(Looper.getMainLooper());
-                        h.post(new Runnable() {
-                            public void run() {
-                                try {
-                                    showSweetDialog(ReplenishmentReverse.this, 1, "Done,All data is stored", "");
-                                } catch (WindowManager.BadTokenException e) {
-                                    //use a log message
-                                }
-                            }
-                        });
+
+
+                                            showSweetDialog(ReplenishmentReverse.this, 1, "Done,All data is stored", "");
+
+
+
+
+
+                    }
+                    else{
+
                     }
 
                     }
@@ -1200,13 +1476,14 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
         replacmentRecycler.setLayoutManager(new LinearLayoutManager(ReplenishmentReverse.this));
         adapter = new RepReverseAdapter(replacementlist, ReplenishmentReverse.this);
         replacmentRecycler.setAdapter(adapter);
+        CalculateTotalandCount();
     }
 
     public void ScanCode(View view) {
     }
-    public  boolean ItemExists(){
+    public  boolean ItemExists(String itemcode){
 
-        boolean flage=false;
+       /* boolean flage=false;
 
 
         for (int x1 = 0; x1 < AllstocktakeDBlist.size(); x1++) {
@@ -1219,7 +1496,12 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
             }
         }
 
-        return flage;
+        return flage;*/
+        String item= my_dataBase.itemDao().getitem2( itemcode);
+        if(item!=null)
+            return true;
+        else
+            return false;
 
     }
     private void getStors() {
@@ -1258,7 +1540,9 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword()))   {
+                if(UsNa.getText().toString().trim().equals(userPermissions.getUserNO())&&pass.getText().toString().trim().equals(userPermissions.getUserPassword())
+                        ||     checkIfUserWhoLoginIsMaster(ReplenishmentReverse.this,UsNa.getText().toString().trim(),pass.getText().toString().trim())
+                ){
                      openDeleteItemsDailog();
 
 
@@ -1431,6 +1715,55 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
         });
         authenticationdialog.show();
 
+
+    }
+    void CalculateTotalandCount(){
+
+        int zoncount=0,zonsqty=0,allzonsqty=0;
+        for(int i=0;i<  replacementlist.size();i++)
+            allzonsqty+= Integer.parseInt(replacementlist.get(i).getRecQty());
+
+        AllZonestotalQty
+                .setText(allzonsqty+"");
+
+
+//
+        DBlistReplacements =my_dataBase.repReversDao().getallReplacement();
+        Set<String> set = new HashSet<String>();
+        Log.e("DBlistZoneSize", DBlistReplacements.size()+"");
+        for (int i = 0; i < DBlistReplacements.size(); i++) {
+            Log.e("setcontent", DBlistReplacements.get(i).getZone());
+            set.add(DBlistReplacements.get(i).getZone());
+        }
+        for (String s1 : set) {
+            //   Log.e("setcontent", s1);
+        }
+
+        Zonescount.setText(set.size()+"");
+
+
+        for(int i = 0; i< DBlistReplacements.size(); i++)
+            zonsqty+= Integer.parseInt(DBlistReplacements.get(i).getRecQty());
+        ZonestotalQty.setText( zonsqty+"");
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mode = (AudioManager) ReplenishmentReverse.this.getSystemService(Context.AUDIO_SERVICE);
+
+    }
+    public  void showalertdaiog(Context context,String Msg){
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+
+                .setContentText(Msg)
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        sweetAlertDialog.dismiss();
+                    }
+                }).show();
 
     }
 }

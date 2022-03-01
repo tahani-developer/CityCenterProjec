@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -28,8 +29,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="center"
+android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -38,7 +41,7 @@
             android:id="@+id/ok"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+
             android:layout_marginTop="5dp"
             android:layout_marginBottom="2dp"
             android:background="@drawable/done_button"
@@ -49,12 +52,15 @@
             app:layout_constraintTop_toTopOf="parent"
 
             />
-
+<TextView
+    android:layout_width="30dp"
+    android:layout_height="wrap_content"
+    />
         <Button
             android:id="@+id/cancel"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+
             android:layout_marginTop="5dp"
             android:layout_marginBottom="2dp"
             android:background="@drawable/cancel_button"

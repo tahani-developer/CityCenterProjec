@@ -61,6 +61,17 @@ public  class Shipment {
     @ColumnInfo(name = "DEVICEID")
     String deviceId;
 
+    @ColumnInfo(name = "receivedBox")
+    String receivedBox;
+
+    public String getReceivedBox() {
+        return this.receivedBox;
+    }
+
+    public void setReceivedBox(final String receivedBox) {
+        this.receivedBox = receivedBox;
+    }
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -186,6 +197,8 @@ public  class Shipment {
             obj.put("ITEMNAME", Itemname);
             obj.put("POQTY", Poqty);
             obj.put("IsNew",IsNew);
+
+            obj.put("RCVBOXNO",receivedBox);
                obj.put("DEVICEID", deviceId);
 
 

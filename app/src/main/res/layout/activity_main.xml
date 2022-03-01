@@ -34,7 +34,7 @@
         android:id="@+id/mainlyout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/layer7"
+        android:background="@color/layer1"
         android:orientation="vertical">
 
         <LinearLayout
@@ -52,150 +52,316 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="20dp"
-                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/CONO"
-                        android:textColor="@color/white" />
-
-                    <TextView
-                        android:id="@+id/companyNum"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textColor="@color/white" />
-
-                    <TextView
-                        android:id="@+id/RepRevExportsatate"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/username"
-                        android:textColor="@color/white" />
-
-                    <TextView
-                        android:id="@+id/addzoneexportstate"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/username_show"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:textColor="@color/white" />
-                </LinearLayout>
 
             </androidx.appcompat.widget.Toolbar>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/RepRevExportsatate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <androidx.cardview.widget.CardView
-
-                    android:id="@+id/saleCardView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="20dp"
-                    android:elevation="3dp"
-                    app:cardBackgroundColor="@color/orange"
-                    app:cardCornerRadius="15dp"
-                    app:cardPreventCornerOverlap="false">
-
-                    <RelativeLayout
-                        android:id="@+id/list_container_bg"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/irbid">
-
-                        <LinearLayout
-                            android:id="@+id/nav_header"
+                android:visibility="gone" />
+            <TextView
+                android:id="@+id/addzoneexportstate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+            <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/dark_blue_3"
-                            android:gravity="center"
+                            android:layout_weight="1.9"
                             android:orientation="vertical"
-                            android:padding="16dp">
+                            android:visibility="visible">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/nav_header_imageView"
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="170dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/logo"
+                    >
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:padding="4dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:padding="4dp">
+
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/irbid_city_center"
-                                app:civ_border_width="1dp" />
+                                android:fontFamily="@font/poppins_medium"
+                                android:gravity="center"
+                                android:text="@string/CONO2"
+                                android:textColor="@color/white" />
 
                             <TextView
-                                android:id="@+id/nav_header_textView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="serif"
-                                android:paddingTop="16dp"
-                                android:text="@string/falcons_soft"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                                android:textColor="@color/yelow" />
 
-                            <TextView
-                                android:id="@+id/shipmentsrespon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:visibility="gone" />
-
-                            <TextView
-                                android:id="@+id/stocksrespon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:visibility="gone" />
-
-                            <TextView
-                                android:id="@+id/ST_itemrespons"
-                                android:layout_width="match_parent"
+                                android:layout_width="3dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:visibility="gone" />
+                                android:gravity="center" />
 
                             <TextView
-                                android:id="@+id/replashmentssrespon"
+                                android:id="@+id/companyNum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:visibility="gone" />
-
-                            <TextView
-                                android:id="@+id/zonesrespon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:visibility="gone" />
+                                android:gravity="center"
+                                android:textColor="@color/white" />
                         </LinearLayout>
-                        <!--Add cardview contents-->
 
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/poppins_medium"
+                                android:gravity="center"
+                                android:text="@string/username"
+                                android:textColor="@color/white" />
 
 
+                            <TextView
+
+                                android:layout_width="3dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                />
+                            <TextView
+                                android:id="@+id/username_show"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:textColor="@color/white" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+                            <RadioGroup
+                                android:layout_width="match_parent"
+                                android:orientation="horizontal"
+                                android:layout_height="match_parent">
+                                <RadioButton
+                                    android:onClick="onRadioButtonClicked"
+                                    android:id="@+id/Lang_ER"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent">
+
+                                </RadioButton>
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:background="@drawable/vector1"
+                                    android:layout_height="match_parent">
+
+                                </TextView>
+                                <RadioButton
+                                    android:id="@+id/Lang_En"
+                                    android:onClick="onRadioButtonClicked"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent">
+
+                                </RadioButton>
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:background="@drawable/victor2"
+                                    android:layout_height="match_parent"/>
+
+                            </RadioGroup>
+                            <Button
+                                android:id="@+id/button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="NightModeON"
+                                android:text="@string/night_mode_on"
+                                android:visibility="gone"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <Button
+                                android:id="@+id/button2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:onClick="NightModeOFF"
+                                android:text="@string/night_mode_off"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/button" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/uploadimageLin"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+
+
+
+                            <TextView
+                                android:id="@+id/getzonerespon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:visibility="gone"
+                         />
+
+
+                            <TextView
+                                android:id="@+id/uploadimage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/uploadimage"
+                                android:textColor="@color/red" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/logout2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/logout"
+                                android:textColor="@color/red" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:padding="3dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/exits2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="@string/exits"
+                                android:textColor="@color/red" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight="2"-->
+<!--                android:orientation="vertical"-->
+<!--                android:visibility="visible">-->
+
+<!--                <androidx.cardview.widget.CardView-->
+
+<!--                    android:id="@+id/saleCardView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="20dp"-->
+<!--                    android:elevation="3dp"-->
+<!--                    app:cardBackgroundColor="@color/orange"-->
+<!--                    app:cardCornerRadius="15dp"-->
+<!--                    app:cardPreventCornerOverlap="false">-->
+
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/list_container_bg"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:background="@drawable/irbid">-->
+
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/nav_header"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:background="@color/dark_blue_3"-->
+<!--                            android:gravity="center"-->
+<!--                            android:orientation="vertical"-->
+<!--                            android:padding="16dp">-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/nav_header_textView"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:fontFamily="serif"-->
+<!--                                android:paddingTop="16dp"-->
+<!--                                android:text="@string/falcons_soft"-->
+<!--                                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                                android:textColor="@color/yelow" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/shipmentsrespon"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:visibility="gone" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/stocksrespon"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:visibility="gone" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/ST_itemrespons"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:layout_weight="1"-->
+<!--                                android:visibility="gone" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/replashmentssrespon"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:visibility="gone" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/zonesrespon"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:visibility="gone" />-->
+
+<!--                            <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                                android:id="@+id/nav_header_imageView"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:src="@drawable/irbid"-->
+<!--                                app:civ_border_width="1dp" />-->
+<!--                        </LinearLayout>-->
+<!--                        &lt;!&ndash;Add cardview contents&ndash;&gt;-->
+
+<!--                    </RelativeLayout>-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -227,9 +393,9 @@
                             android:id="@+id/hipmentlinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -248,8 +414,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/red" />
 
                             <TextView
@@ -280,9 +446,9 @@
                             android:id="@+id/zoneLinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -302,8 +468,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/yelow" />
 
                             <TextView
@@ -334,9 +500,9 @@
                             android:id="@+id/Replacmentlinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -355,8 +521,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/dark_blue_3" />
 
                             <TextView
@@ -389,9 +555,9 @@
                             android:id="@+id/ReplacmentReverselinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -410,8 +576,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/dark_blue_3" />
 
                             <TextView
@@ -444,9 +610,9 @@
                             android:id="@+id/zoneReplacmentlinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -465,8 +631,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/orange" />
 
                             <TextView
@@ -499,9 +665,9 @@
                             android:id="@+id/Stocktakelinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -521,8 +687,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="#008000" />
 
                             <TextView
@@ -562,9 +728,9 @@
                             android:id="@+id/itemcheckerlinear"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
                             android:background="@drawable/back_white_container"
                             android:elevation="3dp"
@@ -583,8 +749,8 @@
                             <TextView
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:background="@color/red" />
 
                             <TextView
@@ -621,4 +787,40 @@
         app:headerLayout="@layout/nav_header_main"
         app:itemTextColor="@color/dark_blue_3"
         app:menu="@menu/main_menu" />
+
+
+                                <TextView
+                                    android:id="@+id/stocksrespon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/ST_itemrespons"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/replashmentssrespon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/zonesrespon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone" />
+
+
+    <TextView
+                                    android:id="@+id/shipmentsrespon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone" />
+
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

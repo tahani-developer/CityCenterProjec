@@ -24,6 +24,7 @@ import static com.example.irbidcitycenter.Activity.NewShipment.DIsh_poedit;
 import static com.example.irbidcitycenter.Activity.NewShipment.DIsh_poediteshow;
 import static com.example.irbidcitycenter.Activity.NewShipment.DIsh_preQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.DIsh_qtyedit;
+import static com.example.irbidcitycenter.Activity.NewShipment.DS_delete1;
 import static com.example.irbidcitycenter.Activity.NewShipment.DS_poedit;
 import static com.example.irbidcitycenter.Activity.NewShipment.Db_boxedit;
 import static com.example.irbidcitycenter.Activity.NewShipment.Dbsh_poedit;
@@ -92,6 +93,7 @@ public class D_SH_PosearchAdapter extends BaseAdapter {
                     db_posearchdialog.dismiss();
                 } else if (dailogNum == 1) {
                     DS_poedit.setText(items.get(position));
+                    NewShipment.DS_delete1.setEnabled(true);
                     Log.e("dailogNum==1", "dailogNum==1");
                     db_posearchdialog.dismiss();
                     filldeletePOdialogDATA();

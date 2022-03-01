@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/layer1"
     tools:context=".Activity.ItemChecker">
 
 
@@ -31,7 +32,7 @@
             android:gravity="center"
             android:padding="3dp"
             android:text="@string/itemCode"
-            android:textColor="@color/dark_blue_3"
+            android:textColor="@color/white"
             android:textSize="14sp" />
 
         <EditText
@@ -40,7 +41,8 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:background="@drawable/back_border_edit"
+
+            android:background="@drawable/edittext_back"
             android:elevation="2dp"
             android:gravity="center"
             android:inputType="text"
@@ -108,7 +110,7 @@
 
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textStyle="bold" />
 
                     <TextView
@@ -118,7 +120,7 @@
                         android:layout_weight="1"
                         android:padding="2dp"
                         android:text="@string/item_details"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -149,15 +151,15 @@
                         android:gravity="center"
                         android:inputType="text"
                         android:padding="3dp"
-                        android:text="@string/itemCode"
-                        android:textColor="@color/dark_blue_3"
+                        android:text="@string/itembarcode"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/ITC_itemcodeshow"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -200,14 +202,14 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/F_D"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/ITC_F_D"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_back"
                         android:elevation="2dp"
@@ -250,7 +252,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/Itemname"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -294,7 +296,58 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+android:visibility="gone"
+                    android:layout_margin="5dp"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:text="@string/discountpercentage"
+                        android:textColor="@color/dark_blue_3"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/ITC_discountpercentage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_back"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                     android:textStyle="bold"
+                        android:textColor="@color/red"
+                        android:textSize="14sp" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -313,7 +366,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/TAXPERC"
-                        android:textColor="@color/colorPrimaryDark"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -375,7 +428,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/saleprice"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -438,7 +491,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/AVGCOST"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -492,6 +545,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
+                    android:id="@+id/LLCPRICELin"
                     android:layout_weight=".5"
                     android:orientation="horizontal">
 
@@ -505,7 +559,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/LLCPRICE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -543,7 +597,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
+android:id="@+id/LASTSPRICELin"
                     android:layout_margin="5dp"
                     android:layout_weight=".5"
                     android:orientation="horizontal">
@@ -558,7 +612,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/LASTSPRICE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -609,7 +663,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/BUYERGGROUP"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -660,7 +714,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/DIVISION"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -711,7 +765,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/SUBDIVISION"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -762,7 +816,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/CLASS"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -813,7 +867,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/SSIZE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -864,7 +918,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/SEASON"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -915,7 +969,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/STYLECODE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -966,7 +1020,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/SECTION"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1017,7 +1071,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/BRANDNAME"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1068,7 +1122,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/COLORNAME"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1119,7 +1173,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/LENGTH"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1170,7 +1224,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/COLORCODE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1221,7 +1275,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/ZONE"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1272,7 +1326,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/SHELF"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -1322,7 +1376,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/freeze"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView

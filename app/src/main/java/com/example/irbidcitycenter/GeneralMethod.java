@@ -20,6 +20,7 @@ import java.util.List;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.NewShipment.colsedialog;
+import static com.example.irbidcitycenter.Activity.NewShipment.respon;
 
 public class GeneralMethod {
     public  Context myContext;
@@ -142,8 +143,8 @@ public class GeneralMethod {
             ip.setText(appSettingsList.get(0).getIP());
             conNO.setText(appSettingsList.get(0).getCompanyNum());
             years.setText(appSettingsList.get(0).getYears());
-            if (appSettingsList.get(0).getUpdateQTY().equals("1"))
-                qtyUP.setChecked(true);
+//            if (appSettingsList.get(0).getUpdateQTY().equals("1"))
+//                qtyUP.setChecked(true);
         }
         //****************************
         dialog.findViewById(R.id.saveSetting).setOnClickListener(new View.OnClickListener() {
@@ -183,6 +184,19 @@ public class GeneralMethod {
     private void deletesettings(){
         if(appSettingsList.size()!=0)
             my_dataBase.settingDao().deleteALL();
+    }
+
+    public static boolean  checkIfUserWhoLoginIsMaster(Context context,String username,String pass){
+RoomAllData my_dataBase=  RoomAllData.getInstanceDataBase(context);
+
+      String s=  my_dataBase.userPermissionsDao().getIsMaster(username,pass);
+if(s!=null)
+    if(s.equals("1"))
+            return true;
+        else
+            return false;
+        else
+    return false;
     }
 
 }

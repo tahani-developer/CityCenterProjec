@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/layer1"
     tools:context=".Activity.ZoneReplacment">
 
     <ScrollView
@@ -17,19 +18,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="6"
             android:orientation="vertical">
 
 
-            <!--            <ScrollView-->
-            <!--                android:layout_width="fill_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:layout_weight="5"-->
-            <!--                android:fillViewport="true">-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="7"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -57,7 +53,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/frmoZone"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <EditText
@@ -66,7 +62,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/back_border_edit"
+                        android:background="@drawable/edittext_back"
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"
@@ -128,7 +124,7 @@
                         android:inputType="text"
                         android:padding="3dp"
                         android:text="@string/ToZone"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <EditText
@@ -137,7 +133,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/back_border_edit"
+                        android:background="@drawable/edittext_back"
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"
@@ -199,7 +195,7 @@
                         android:gravity="center"
                         android:padding="3dp"
                         android:text="@string/itemCode"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <EditText
@@ -208,7 +204,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/back_border_edit"
+                        android:background="@drawable/edittext_back"
                         android:elevation="2dp"
                         android:gravity="center"
                         android:inputType="text"
@@ -236,7 +232,7 @@
                         android:gravity="center"
                         android:padding="3dp"
                         android:text="@string/Qty"
-                        android:textColor="@color/dark_blue_3"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                     <TextView
@@ -251,7 +247,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/back_border_edit"
+                        android:background="@drawable/edittext_back"
                         android:elevation="2dp"
                         android:enabled="false"
                         android:gravity="center"
@@ -267,8 +263,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
-
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
@@ -290,7 +284,7 @@
                         android:id="@+id/ZR_nextZone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right"
+                        android:layout_gravity="end"
                         android:layout_weight="3"
                         android:background="@drawable/back_border_edit"
                         android:text="@string/nextFromZone"
@@ -308,7 +302,7 @@
                         android:id="@+id/ZR_nextToZone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right"
+                        android:layout_gravity="end"
                         android:layout_weight="3"
                         android:background="@drawable/back_border_edit"
                         android:text="@string/nexttoZone"
@@ -322,48 +316,20 @@
                         android:layout_weight="5" />
 
                 </LinearLayout>
-                <!--        <LinearLayout-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="match_parent"-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
 
-
-                <!--            android:layout_weight="1"-->
-                <!--            android:orientation="horizontal">-->
-                <!--            <TextView-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="match_parent"-->
-                <!--                android:layout_weight="1">-->
-
-                <!--            </TextView>-->
-                <!--            <TextView-->
-                <!--                android:id="@+id/ZonRepdatarespon0"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="match_parent"-->
-                <!--                android:visibility="gone">-->
-                <!--            </TextView>-->
-                <!--            <Button-->
-
-                <!--                android:id="@+id/ZR_nextZonem"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="match_parent"-->
-                <!--                android:layout_gravity="end"-->
-                <!--                android:layout_weight="5"-->
-                <!--                android:background="@drawable/back_border_edit"-->
-                <!--                android:text="@string/nextZone"-->
-                <!--                android:textAllCaps="false"-->
-                <!--                android:textColor="@color/dark_blue_3"-->
-                <!--                android:textSize="12sp" />-->
-
-
-                <!--        </LinearLayout>-->
+                    android:orientation="horizontal">
+                </LinearLayout>
             </LinearLayout>
-            <!--            </ScrollView>-->
+
 
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="10"
                 android:background="@drawable/back_border_dark"
                 android:gravity="top"
                 android:padding="3dp">
@@ -373,7 +339,7 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="2dp"
+
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/frmoZone"
@@ -412,7 +378,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -425,13 +391,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="5"
                     android:orientation="vertical">
 
 
@@ -440,31 +406,136 @@
 
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.5">
+                        android:layout_weight="1.7">
 
                     </androidx.recyclerview.widget.RecyclerView>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="10"
+
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="3dp">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/back_border_dark"
+                            android:padding="3dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"
+                                android:layout_weight="1"
+                                android:gravity="left"
+                                android:padding="4dp"
+                                android:text="@string/total_qty"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/AllZonestotalQty"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="15sp"
+
+                                />
+
+
+                        </TableRow>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+
+
+                        android:elevation="2dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="3dp">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+
+                            android:background="@drawable/back_border_dark"
+                            android:padding="3dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/Zonescount"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/Zonescount"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edittext_back"
+                                android:gravity="center"
+                                android:textColor="@color/dark_blue_3"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/ZonestotalQty"
+                                android:textColor="@color/white"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/ZonestotalQty"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edittext_back"
+                                android:gravity="center"
+                                android:textColor="@color/dark_blue_3"
+                                android:textSize="15sp" />
+
+                        </TableRow>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+
                         android:gravity="center"
                         android:orientation="horizontal"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintVertical_bias="1.0">
 
-                        <Button
-                            android:id="@+id/ZR_save"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="3dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/done_button"
-                            android:gravity="center"
-                            android:text="@string/save"
-                            android:textAllCaps="false"
-                            android:textSize="18sp" />
 
                         <Button
                             android:id="@+id/ZR_back"
@@ -481,6 +552,17 @@
                             android:textSize="18sp"
 
                             />
+                        <Button
+                            android:id="@+id/ZR_save"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="3dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/done_button"
+                            android:gravity="center"
+                            android:text="@string/save"
+                            android:textAllCaps="false"
+                            android:textSize="18sp" />
 
                         <Button
                             android:id="@+id/ZR_delete"

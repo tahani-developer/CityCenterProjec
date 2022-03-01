@@ -22,6 +22,37 @@ String userNumber;
 
     @ColumnInfo(name = "DEVICEID")
     String deviceId;
+
+
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] logoimage;
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] mainimage;
+
+    public byte[] getMainimage() {
+        return this.mainimage;
+    }
+
+    public void setMainimage(final byte[] mainimage) {
+        this.mainimage = mainimage;
+    }
+
+    public int getSERIALZONE() {
+        return this.SERIALZONE;
+    }
+
+    public void setSERIALZONE(final int SERIALZONE) {
+        this.SERIALZONE = SERIALZONE;
+    }
+
+    public byte[] getLogoimage() {
+        return this.logoimage;
+    }
+
+    public void setLogoimage(final byte[] logoimage) {
+        this.logoimage = logoimage;
+    }
+
     public appSettings(String IP, String companyNum, String years, String updateQTY, String userNumber) {
         this.IP = IP;
         CompanyNum = companyNum;

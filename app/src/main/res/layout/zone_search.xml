@@ -21,7 +21,7 @@
         android:orientation="horizontal">
         <TextView
 
-            android:visibility="visible"
+            android:visibility="invisible"
             android:text="@string/CONO"
             android:layout_weight="3"
             android:gravity="center"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"/>
         <TextView
             android:id="@+id/headerComp12"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:text="@string/COYear"
             android:layout_weight="3"
             android:textColor="@color/dark_blue_3"
@@ -42,7 +42,7 @@
             android:gravity="center"/>
         <TextView
             android:id="@+id/headerComp"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:layout_weight="2"
             android:text="@string/ComName"
             android:textColor="@color/dark_blue_3"

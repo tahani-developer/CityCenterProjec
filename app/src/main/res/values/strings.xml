@@ -16,6 +16,7 @@
     <string name="server_ip">Server Ip</string>
     <string name="IP_PORT">IP PORT</string>
     <string name="CONO">CoNo:</string>
+    <string name="CONO2">CoNo:</string>
     <string name="year">Year</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -56,7 +57,7 @@
     <string name="finish">Finish</string>
     <string name="recQty">recQty</string>
     <string name="invalidPONO">Invalid PO number</string>
-    <string name="existsBARCODE">BareCode not exists</string>
+    <string name="reqired_filledexistsBARCODE">BareCode not exists</string>
     <string name="Itemname">Item Name</string>
     <string name="app_done">Done</string>
     <string name="Differ">Differ</string>
@@ -130,7 +131,7 @@
     <string name="saleprice">Sale Price</string>
     <string name="aviqty">AVI Qty</string>
     <string name="search1">Search by ItemName or ItemCode</string>
-
+    <string name="search2">Search by ItemCode</string>
     <string name="total_qty">Total_Qty</string>
     <string name="IsNew">IsNew</string>
     <string name="date">Date</string>
@@ -141,6 +142,7 @@
     <string name="Reports">Reports</string>
     <string name="shipmentReport">Shipments Report</string>
     <string name="StocktakeReport">StockTake Report</string>
+    <string name="zoneReport">Zone Report</string>
     <string name="msg">To Transfer to other zones</string>
     <string name="zonetype">FromZone and ToZone are not of the same category</string>
     <string name="Msg1"> Item Table is Empty, do you want to import Items?</string>
@@ -149,16 +151,16 @@
     <string name="activeuser">Sorry, No Permission (Not Active User)</string>
     <string name="userexists"> This user is not recognized</string>
     <string name="del_per">Sorry, No Permission To Enter ,Do you want to enter as MasterUser?</string>
-
-
+    <string name="Empty">Empty</string>
+    <string name="discountpercentage">discount percentage</string>
     <string name="F_D"> Original Price</string>
-    <string name="LASTSPRICE"> LASTS PRICE</string>
+    <string name="LASTSPRICE"> purchase Price</string>
     <string name="BUYERGGROUP"> Years</string>
-    <string name="DIVISION"> Season</string>
+    <string name="DIVISION"> Season Code</string>
     <string name="SUBDIVISION"> Category Desc</string>
     <string name="CLASS">Dept Desc</string>
     <string name="SSIZE"> Invoice Date</string>
-    <string name="SEASON"> Season Code</string>
+    <string name="SEASON"> Season Desc</string>
     <string name="STYLECODE"> Item Master</string>
     <string name="SECTION"> Size Desc</string>
     <string name="BRANDNAME"> Brand Desc</string>
@@ -170,7 +172,7 @@
     <string name="TAXPERC"> Tax Price</string>
     <string name="LLCPRICE"> LLC Price</string>
     <string name="freeze"> Freez</string>
-
+    <string name="itembarcode"> Barcode</string>
     <string name="AVGCOST"> Avg Cost </string>
 
     <string name="username"> Username:</string>
@@ -178,16 +180,16 @@
         but you can login if you enter the correct password</string>
 
     <string name="logout">Log Out</string>
+    <string name="uploadimage">Upload Image</string>
 
-
-    <string name="stockNum" >Stock No</string>
-    <string name="stockName" >Stock Name</string>
-
+    <string name="stockNum">Stock No</string>
+    <string name="stockName">Stock Name</string>
+    <string name="invalid">InValid</string>
     <string name="selected_language">English</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
     <string name="userNum">User Number</string>
-    <string name="enter_login_info">Please enter your login information</string>
+    <string name="enter_login_info">Please, Enter Your Login Info</string>
     <string name="userNo">User No</string>
     <string name="deviceId">Device Id</string>
 
@@ -230,7 +232,11 @@
     <string name="fillIpAndComNo">Fill IP and Company No.</string>
 
     <string name="allStores">All Stores</string>
+    <string name="ZonestotalQty">Zones Total Qty</string>
+    <string name="Zonescount">Zones Count</string>
+    <string name="exits">Exit</string>
 
 
-
+    <string name="night_mode_off">NIGHT MODE OFF</string>
+    <string name="night_mode_on">NIGHT MODE ON</string>
 </resources>

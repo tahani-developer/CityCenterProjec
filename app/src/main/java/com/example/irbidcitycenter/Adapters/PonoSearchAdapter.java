@@ -16,16 +16,16 @@ import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.irbidcitycenter.Activity.NewShipment.dialog2;
 
 public class PonoSearchAdapter extends RecyclerView.Adapter<PonoSearchAdapter.SearchViewHolder1> {
-    private ArrayList<String> list;
+    private List<String> list;
     Context shipment;
     GeneralMethod generalMethod;
 
-    public PonoSearchAdapter(Context shipment, ArrayList<String> list) {
+    public PonoSearchAdapter(Context shipment, List<String> list) {
         this.list = list;
         this.shipment = shipment;
     }
@@ -81,7 +81,9 @@ public class PonoSearchAdapter extends RecyclerView.Adapter<PonoSearchAdapter.Se
                                                                         public void onClick(View view) {
                                                                             NewShipment.ponotag = ponumber.getTag().toString();
                                                                             NewShipment.colsedialog(2);
+
                                                                             NewShipment.fillPoEdittext();
+
                                                                             dialog.dismiss();
 
 

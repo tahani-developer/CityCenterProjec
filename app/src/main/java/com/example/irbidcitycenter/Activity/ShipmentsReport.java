@@ -45,6 +45,7 @@ TextView  SH_date,total_qty_text;
     Calendar myCalendar;
     EditText search_edt;
          Spinner PONO_edt;
+    EditText         box;
     Button perview ,ponoperview;
     List<Shipment> shipments;
     public RoomAllData my_dataBase;
@@ -58,51 +59,82 @@ TextView  SH_date,total_qty_text;
         super.onCreate(savedInstanceState);
         loadLanguage();
         setContentView(R.layout.activity_shipments_report);
+
         init();
+
+
+
+        fillSp();
+        fillpOSp();
         myCalendar = Calendar.getInstance();
 
-allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
 
-        poNoSpinner.clear();
-        poNoSpinner.add("All");
-
-        for(int i=0;i<allShipmentslist.size();i++)
-    if(!poNoSpinner.contains(allShipmentslist.get(i).getPoNo()))
-        poNoSpinner.add(allShipmentslist.get(i).getPoNo());
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                ShipmentsReport.this, android.R.layout.simple_spinner_item,  poNoSpinner);
-        PONO_edt.setAdapter(adapter);
-        PONO_edt.setSelection(0);
 
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
         SH_date.setText(today);
-        ponoperview.setOnClickListener(new View.OnClickListener() {
+
+
+        allShipmentslist.clear();
+        allShipmentslist=my_dataBase.shipmentDao(). getdateshipments(SH_date.getText().toString());
+            fillAdapterData(allShipmentslist);
+        CalculateSum(  allShipmentslist);
+
+
+
+
+        perview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!PONO_edt.getSelectedItem().toString().trim().equals(""))
                 {
-               if(!PONO_edt.getSelectedItem().equals("All"))
-               {  PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbyPONO(PONO_edt.getSelectedItem().toString().trim());
+               if(!PONO_edt.getSelectedItem().equals("All")
+               &&!box.getText().toString().trim().equals(""))
+               {  Log.e("er1==","er");
+                   PoNoShlist.clear();
+                   PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbyPONO(SH_date.getText().toString(),PONO_edt.getSelectedItem().toString().trim(),box.getText().toString().trim());
 
                if(PoNoShlist!=null&& PoNoShlist.size()!=0) {
                    fillAdapterData(PoNoShlist);
                    CalculateSum(  PoNoShlist);
+                   Log.e("er2==","er");
                }
 
                 else {
-                   Toast.makeText(ShipmentsReport.this, "No Data for this po", Toast.LENGTH_SHORT).show();
+                    Log.e("er==","er");
+                   Toast.makeText(ShipmentsReport.this, "No Data", Toast.LENGTH_SHORT).show();
                    PoNoShlist=new ArrayList<>();
                    fillAdapterData(PoNoShlist);
 
                }
                 }
-                else{
-                   fillAdapterData(allShipmentslist);
-                   CalculateSum(  allShipmentslist);
+                else  if(PONO_edt.getSelectedItem().equals("All")
+                       &&!box.getText().toString().trim().equals("")){
+
+                   PoNoShlist.clear();
+                   PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbydate_box(SH_date.getText().toString(),box.getText().toString().trim());
+                   fillAdapterData(PoNoShlist);
+                   CalculateSum(  PoNoShlist);
+
+               }
+                else  if(!PONO_edt.getSelectedItem().equals("All")
+                       &&box.getText().toString().trim().equals("")){
+                   Log.e("er4==","er");
+                   PoNoShlist.clear();
+                   PoNoShlist=    my_dataBase.shipmentDao().getShipmentsbydate_pono(SH_date.getText().toString(),PONO_edt.getSelectedItem().toString().trim());
+                   fillAdapterData(PoNoShlist);
+                   CalculateSum(  PoNoShlist);
+
+               }
+                else {
+                   Log.e("er3==","er");
+                   PoNoShlist.clear();
+                   PoNoShlist  =my_dataBase.shipmentDao(). getdateshipments(SH_date.getText().toString());
+                   fillAdapterData(PoNoShlist);
+                   CalculateSum(  PoNoShlist);
+
+
                }
 
                 }
@@ -120,17 +152,163 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
             }
         });
 
-        perview.setOnClickListener(new View.OnClickListener() {
+//        perview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                shipments= my_dataBase.shipmentDao().getshipmentsbydate_po_box( SH_date.getText().toString(),box.getSelectedItem().toString(),PONO_edt.getSelectedItem().toString());
+//          fillAdapterData(shipments);
+//                Log.e("shipmentssize",shipments.size()+"");
+//                if(   shipments.size()==0)
+//                    Toast.makeText(ShipmentsReport.this,"No Data",Toast.LENGTH_SHORT).show();
+//                CalculateSum(  shipments);
+//            }
+//        });
+
+
+
+//        box.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int i, KeyEvent keyEvent) {
+//                if (i == KeyEvent.KEYCODE_BACK) {
+//                    onBackPressed();
+//
+//                } else if (i != KeyEvent.KEYCODE_ENTER) {
+//                    if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+//                        if (!box.getText().toString().equals("")) {
+//                            if (!PONO_edt.getSelectedItem().toString().trim().equals("")) {
+//                                if (!PONO_edt.getSelectedItem().equals("All")
+//                                        && !box.getText().toString().trim().equals("")) {
+//                                    Log.e("er1==", "er");
+//                                    PoNoShlist.clear();
+//                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbyPONO(SH_date.getText().toString(), PONO_edt.getSelectedItem().toString().trim(), box.getText().toString().trim());
+//
+//                                    if (PoNoShlist != null && PoNoShlist.size() != 0) {
+//                                        fillAdapterData(PoNoShlist);
+//                                        CalculateSum(PoNoShlist);
+//                                        Log.e("er2==", "er");
+//                                    } else {
+//                                        Log.e("er==", "er");
+//                                        Toast.makeText(ShipmentsReport.this, "No Data", Toast.LENGTH_SHORT).show();
+//                                        PoNoShlist = new ArrayList<>();
+//                                        fillAdapterData(PoNoShlist);
+//
+//                                    }
+//                                } else if (PONO_edt.getSelectedItem().equals("All")
+//                                        && !box.getText().toString().trim().equals("")) {
+//
+//                                    PoNoShlist.clear();
+//                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbydate_box(SH_date.getText().toString(), box.getText().toString().trim());
+//                                    fillAdapterData(PoNoShlist);
+//                                    CalculateSum(PoNoShlist);
+//
+//                                } else if (!PONO_edt.getSelectedItem().equals("All")
+//                                        && box.getText().toString().trim().equals("")) {
+//                                    Log.e("er4==", "er");
+//                                    PoNoShlist.clear();
+//                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbydate_pono(SH_date.getText().toString(), PONO_edt.getSelectedItem().toString().trim());
+//                                    fillAdapterData(PoNoShlist);
+//                                    CalculateSum(PoNoShlist);
+//
+//                                } else {
+//                                    Log.e("er3==", "er");
+//                                    PoNoShlist.clear();
+//                                    PoNoShlist = my_dataBase.shipmentDao().getdateshipments(SH_date.getText().toString());
+//                                    fillAdapterData(PoNoShlist);
+//                                    CalculateSum(PoNoShlist);
+//
+//
+//                                }
+//
+//                            } else {
+//                                //   PONO_edt.setError("Empty");
+//                            }
+//                        }
+//
+//                    } else {
+//                        box.requestFocus();
+//                    }
+//                }
+//                return true;
+//            }
+//                return false;
+//        }
+//        });
+
+
+        box.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View view) {
-                shipments= my_dataBase.shipmentDao().getdateshipments( SH_date.getText().toString());
-          fillAdapterData(shipments);
-                Log.e("shipmentssize",shipments.size()+"");
-                if(   shipments.size()==0)
-                    Toast.makeText(ShipmentsReport.this,"No Data",Toast.LENGTH_SHORT).show();
-                CalculateSum(  shipments);
-            }
-        });
+            public boolean onKey(View v, int i, KeyEvent KeyEvent) {
+                if (i == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+
+                }
+
+                else
+                if (i != KeyEvent.KEYCODE_ENTER) {
+                    if (KeyEvent.getAction() == KeyEvent.ACTION_UP) {
+                        if (!box.getText().toString().equals("")) {
+                            if (!PONO_edt.getSelectedItem().toString().trim().equals("")) {
+                                if (!PONO_edt.getSelectedItem().equals("All")
+                                        && !box.getText().toString().trim().equals("")) {
+                                    Log.e("er1==", "er");
+                                    PoNoShlist.clear();
+                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbyPONO(SH_date.getText().toString(), PONO_edt.getSelectedItem().toString().trim(), box.getText().toString().trim());
+
+                                    if (PoNoShlist != null && PoNoShlist.size() != 0) {
+                                        fillAdapterData(PoNoShlist);
+                                        CalculateSum(PoNoShlist);
+                                        Log.e("er2==", "er");
+                                    } else {
+                                        Log.e("er==", "er");
+                                        Toast.makeText(ShipmentsReport.this, "No Data", Toast.LENGTH_SHORT).show();
+                                        PoNoShlist = new ArrayList<>();
+                                        fillAdapterData(PoNoShlist);
+
+                                    }
+                                } else if (PONO_edt.getSelectedItem().equals("All")
+                                        && !box.getText().toString().trim().equals("")) {
+
+                                    PoNoShlist.clear();
+                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbydate_box(SH_date.getText().toString(), box.getText().toString().trim());
+                                    fillAdapterData(PoNoShlist);
+                                    CalculateSum(PoNoShlist);
+
+                                } else if (!PONO_edt.getSelectedItem().equals("All")
+                                        && box.getText().toString().trim().equals("")) {
+                                    Log.e("er4==", "er");
+                                    PoNoShlist.clear();
+                                    PoNoShlist = my_dataBase.shipmentDao().getShipmentsbydate_pono(SH_date.getText().toString(), PONO_edt.getSelectedItem().toString().trim());
+                                    fillAdapterData(PoNoShlist);
+                                    CalculateSum(PoNoShlist);
+
+                                } else {
+                                    Log.e("er3==", "er");
+                                    PoNoShlist.clear();
+                                    PoNoShlist = my_dataBase.shipmentDao().getdateshipments(SH_date.getText().toString());
+                                    fillAdapterData(PoNoShlist);
+                                    CalculateSum(PoNoShlist);
+
+
+                                }
+
+                            } else {
+                                //   PONO_edt.setError("Empty");
+                            }
+
+                            box.setText("");
+                        }else {
+                            box.requestFocus();
+                        }
+
+                    }
+
+
+
+
+         return true;
+
+                }  return false;}
+                  });
 
     }
 
@@ -168,6 +346,7 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
 
         }};
     private void init() {
+        box=findViewById(R.id.box);
         ponoperview=findViewById(R.id.PONO_preview);
         PONO_edt=findViewById(R.id.PONUMBER);
         search_edt=findViewById(R.id.search_edt);
@@ -266,6 +445,7 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
     private void fillAdapterData(List<Shipment> searchlist) {
         ShipmentsReportAdapter reportAdapter=new ShipmentsReportAdapter(searchlist,ShipmentsReport.this);
         listView.setAdapter(reportAdapter);
+        CalculateSum(searchlist);
     }
     private void CalculateSum(List<Shipment> Shipmentslist){
        long sum=0;
@@ -283,6 +463,39 @@ allShipmentslist=my_dataBase.shipmentDao(). getUnpostedShipment("0");
                 .getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.moveTaskToFront(getTaskId(), 0);
         //openUthenticationDialog();
+
+    }
+    private void fillSp() {
+
+        List<String> list=my_dataBase.shipmentDao().getboxes2();
+
+        list.add(0,"All");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item,list );
+
+        //box.setAdapter(adapter);
+
+
+        Log.e("sss1","sss1");
+
+
+    }
+    private void fillpOSp() {
+
+        List<String> list=my_dataBase.shipmentDao().getallpo();
+
+        list.add(0,"All");
+
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item,list );
+
+        PONO_edt.setAdapter(adapter);
+
+
+        Log.e("sss1","sss1");
+
 
     }
     }

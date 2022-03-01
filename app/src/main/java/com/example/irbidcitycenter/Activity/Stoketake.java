@@ -9,9 +9,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,6 +56,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
+import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.ImportData.zoneinfo;
 
 import static com.example.irbidcitycenter.Activity.AddZone.flage3;
@@ -112,7 +117,7 @@ public class Stoketake extends AppCompatActivity {
     ExportData exportData;
 
     private Animation animation;
-
+    AudioManager mode ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +125,15 @@ public class Stoketake extends AppCompatActivity {
         loadLanguage();
         setContentView(R.layout.activity_stoketake);
         init();
+        mode = (AudioManager) Stoketake.this.getSystemService(Context.AUDIO_SERVICE);
+        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
         AllstocktakeDBlist.clear();
 
-        AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
+
+                AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll2());
+
+
         if (AllstocktakeDBlist.size() == 0) {
             new SweetAlertDialog(Stoketake.this, SweetAlertDialog.BUTTON_CONFIRM)
                     .setTitleText(getResources().getString(R.string.confirm_title))
@@ -130,8 +141,18 @@ public class Stoketake extends AppCompatActivity {
                     .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            importData.getAllItems();
-                            sweetAlertDialog.dismiss();
+
+
+                            try {
+                                importData.getAllItems(1);
+                                sweetAlertDialog.dismiss();
+                            } catch (Exception e){
+                                Toast.makeText(Stoketake.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                sweetAlertDialog.dismiss();
+                            }
+
+
+
                         }
                     })
                     .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
@@ -211,11 +232,57 @@ public class Stoketake extends AppCompatActivity {
 
 
             if (i == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
 
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                        backButton.startAnimation(animation);
+                        new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.messageExit))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        if (stocktakelist.size() > 0) {
+
+                                            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+                                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                                    .setContentText(getResources().getString(R.string.messageExit2))
+                                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                                            stocktakelist.clear();
+                                                            stocktakeAdapter.notifyDataSetChanged();
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            finish();
+                                                        }
+                                                    })
+                                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                            sweetAlertDialog.dismiss();
+                                                        }
+                                                    }).show();
+                                        } else {
+                                            sweetAlertDialog.dismiss();
+                                            finish();
+                                        }
+                                    }
+                                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismiss();
+                            }
+                        }).show();
+                    }
+                });
             }
 
-            if (i != KeyEvent.KEYCODE_ENTER) {
+          else  if (i != KeyEvent.KEYCODE_ENTER) {
 
                 {
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP)
@@ -225,7 +292,9 @@ public class Stoketake extends AppCompatActivity {
                                 if (!zonecode.getText().toString().trim().equals("")) {
 //                                 if(zoneExists(zonecode.getText().toString()))
 //                                 {
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                     Log.e("zoneedt", zonecode.getText().toString());
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                     itemOcode.setEnabled(true);
                                     itemOcode.requestFocus();
                                     getZoneSumQty();
@@ -237,6 +306,14 @@ public class Stoketake extends AppCompatActivity {
 //                                 }
 
                                 } else {
+                                     Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
                                     zonecode.requestFocus();
                                     Log.e("zoneedt===", zonecode.getText().toString());
                                 }
@@ -248,7 +325,7 @@ public class Stoketake extends AppCompatActivity {
 
                                     if (itemOcode.getText().toString().length() <= 15) {
                                         zonecode.setEnabled(false);
-
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         itemname.setText("");
                                         stocktakelist.clear();
                                         Log.e("itemcode", itemOcode.getText().toString());
@@ -258,6 +335,7 @@ public class Stoketake extends AppCompatActivity {
 
 
                                             if (ItemExistsLocal()) {
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 long sum = Long.parseLong(stocktakelist.get(localitempostion).getQty()) + 1;
                                                 stocktakelist.get(localitempostion).setQty(sum + "");
                                                 int z = my_dataBase.stocktakeDao().IncreasQty(stocktakelist.get(localitempostion).getQty(), stocktakelist.get(localitempostion).getZone(), stocktakelist.get(localitempostion).getItemOcode(), stocktakelist.get(localitempostion).getStore());
@@ -282,6 +360,7 @@ public class Stoketake extends AppCompatActivity {
 
                                                 StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                                 if (stocktakeModel != null) {
+                                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                     Log.e("notnull", "notnull");
                                                     long sum = Long.parseLong(stocktakeModel.getQty()) + 1;
                                                     stocktakeModel.setQty(sum + "");
@@ -295,14 +374,25 @@ public class Stoketake extends AppCompatActivity {
                                                     getZoneSumQty();
                                                     getStoreSumQty();
                                                 }
-                                            } else if (ItemExists()) {
+                                            } else if (ItemExists(itemOcode.getText().toString())) {
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 filldata();
 
                                                 itemOcode.setText("");
                                                 itemOcode.requestFocus();
                                                 break;
                                             } else {
-                                                itemOcode.setError("Invalid");
+                                                showalertdaiog(Stoketake.this,"InValid Item  "+ itemOcode.getText());
+                                             //   showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                // Vibrate for 1000 milliseconds
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                } else {
+                                                    //deprecated in API 26
+                                                    v.vibrate(1000);
+                                                }
                                                 itemOcode.setText("");
                                             }
                                         } else {
@@ -311,6 +401,7 @@ public class Stoketake extends AppCompatActivity {
                                             Log.e("checkdatabase", "checkdatabase");
                                             StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                             if (stocktakeModel != null) {
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 Log.e("notnull", "notnull");
                                                 long sum = Long.parseLong(stocktakeModel.getQty()) + 1;
                                                 stocktakeModel.setQty(sum + "");
@@ -328,28 +419,61 @@ public class Stoketake extends AppCompatActivity {
 
 
                                             //check AllstocktakeDBlist
-                                            else if (ItemExists()) {
+                                            else if (ItemExists(itemOcode.getText().toString())) {
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                                 filldata();
 
                                                 itemOcode.setText("");
+
                                                 itemOcode.requestFocus();
                                                 break;
                                             } else {
-                                                itemOcode.setError("Invalid");
+                                                showalertdaiog(Stoketake.this,"InValid Item  "+ itemOcode.getText());
+                                             //   showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                                // Vibrate for 1000 milliseconds
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                                } else {
+                                                    //deprecated in API 26
+                                                    v.vibrate(1000);
+                                                }
                                                 itemOcode.setText("");
                                             }
                                         }
 
 
                                     } else {
-                                        itemOcode.setError("Invalid");
+                                        showalertdaiog(Stoketake.this,"InValid Item  ");
+                                    //    showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
                                         itemOcode.setText("");
                                         itemOcode.setEnabled(true);
                                         itemOcode.requestFocus();
 
                                     }
                                 } else
-                                    itemOcode.requestFocus();
+                                {  itemOcode.requestFocus();
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000 milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+                                }
                                 break;
                         }
                     return true;
@@ -426,8 +550,8 @@ public class Stoketake extends AppCompatActivity {
 
          return flage;
       }*/
-    public boolean ItemExists() {
-
+    public boolean ItemExists( String itemOcode) {
+/*
         boolean flage = false;
 
 
@@ -441,7 +565,13 @@ public class Stoketake extends AppCompatActivity {
             }
         }
 
-        return flage;
+        return flage;*/
+        String item= my_dataBase.itemDao().getitem2( itemOcode);
+       if(item!=null)
+           return true;
+       else
+           return false;
+
 
     }
 
@@ -456,43 +586,38 @@ public class Stoketake extends AppCompatActivity {
                     if (userPermissions == null) getUsernameAndpass();
                     animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
                     saveButton.startAnimation(animation);
-
+                    if (stocktakelist.size() > 0) {
                     if (userPermissions.getMasterUser().equals("0")) {
                         if (userPermissions.getStockTake_Save().equals("1")) {
 
-                            Log.e("ST_save", "ST_save");
-                            MainActivity.activityflage = 2;
-                            if (stocktakelist.size() > 0) {
-                                exportdata();
-                                clearAll();
-                            } else {
-
-                                generalMethod.showSweetDialog(Stoketake.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-
-                            }
-
-                            //  MainActivity.activityflage=2;
-                            // exportdata();
-                            clearAll();
+                        saveData();
                         } else {
-                            generalMethod.showSweetDialog(Stoketake.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+                           // generalMethod.showSweetDialog(Stoketake.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.savePermission));
+                            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.del_per))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            authenticDailog2(4);
+                                            sweetAlertDialog.dismiss();
+                                        }
 
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
                         }
                     } else {
-                        Log.e("ST_save", "ST_save");
-                        MainActivity.activityflage = 2;
-                        if (stocktakelist.size() > 0) {
-                            exportdata();
-                            clearAll();
-                        } else {
+                        saveData();
 
-                            generalMethod.showSweetDialog(Stoketake.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
+                    }} else {
 
-                        }
-
-                        //  MainActivity.activityflage=2;
-                        // exportdata();
-                        clearAll();
+                        generalMethod.showSweetDialog(Stoketake.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
 
                     }
                     break;
@@ -543,47 +668,56 @@ public class Stoketake extends AppCompatActivity {
                     total_zoneqty_text.setText("0");
                     break;
                 case R.id.ST_cancel:
-                    animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
-                    backButton.startAnimation(animation);
-                    new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText(getResources().getString(R.string.confirm_title))
-                            .setContentText(getResources().getString(R.string.messageExit))
-                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+
+
+
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+                            animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+                            backButton.startAnimation(animation);
+                            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.messageExit))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            if (stocktakelist.size() > 0) {
+
+                                                new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+                                                        .setTitleText(getResources().getString(R.string.confirm_title))
+                                                        .setContentText(getResources().getString(R.string.messageExit2))
+                                                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                                                                stocktakelist.clear();
+                                                                stocktakeAdapter.notifyDataSetChanged();
+                                                                sweetAlertDialog.dismissWithAnimation();
+                                                                finish();
+                                                            }
+                                                        })
+                                                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                                sweetAlertDialog.dismiss();
+                                                            }
+                                                        }).show();
+                                            } else {
+                                                sweetAlertDialog.dismiss();
+                                                finish();
+                                            }
+                                        }
+                                    }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
                                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    if (stocktakelist.size() > 0) {
-
-                                        new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
-                                                .setTitleText(getResources().getString(R.string.confirm_title))
-                                                .setContentText(getResources().getString(R.string.messageExit2))
-                                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                                        stocktakelist.clear();
-                                                        stocktakeAdapter.notifyDataSetChanged();
-                                                        sweetAlertDialog.dismissWithAnimation();
-                                                        finish();
-                                                    }
-                                                })
-                                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                        sweetAlertDialog.dismiss();
-                                                    }
-                                                }).show();
-                                    } else {
-                                        sweetAlertDialog.dismiss();
-                                        finish();
-                                    }
+                                    sweetAlertDialog.dismiss();
                                 }
-                            }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.dismiss();
+                            }).show();
                         }
-                    }).show();
+                    });
+
                     break;
             }
         }
@@ -627,7 +761,9 @@ public class Stoketake extends AppCompatActivity {
                         if (!zonecode.getText().toString().trim().equals("")) {
 //                                 if(zoneExists(zonecode.getText().toString()))
 //                                 {
+                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                             Log.e("zoneedt", zonecode.getText().toString());
+                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                             itemOcode.setEnabled(true);
                             itemOcode.requestFocus();
                             getZoneSumQty();
@@ -639,6 +775,15 @@ public class Stoketake extends AppCompatActivity {
 //                                 }
 
                         } else {
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
                             zonecode.requestFocus();
                             Log.e("zoneedt===", zonecode.getText().toString());
                         }
@@ -646,11 +791,11 @@ public class Stoketake extends AppCompatActivity {
                         break;
                     case R.id.ST_itemcodeedt:
 
-                        if (!itemOcode.getText().toString().trim().equals("")) {
+                        if (!itemOcode.getText().toString().equals("")) {
 
                             if (itemOcode.getText().toString().length() <= 15) {
                                 zonecode.setEnabled(false);
-
+                                mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                 itemname.setText("");
                                 stocktakelist.clear();
                                 Log.e("itemcode", itemOcode.getText().toString());
@@ -660,6 +805,7 @@ public class Stoketake extends AppCompatActivity {
 
 
                                     if (ItemExistsLocal()) {
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         long sum = Long.parseLong(stocktakelist.get(localitempostion).getQty()) + 1;
                                         stocktakelist.get(localitempostion).setQty(sum + "");
                                         int z = my_dataBase.stocktakeDao().IncreasQty(stocktakelist.get(localitempostion).getQty(), stocktakelist.get(localitempostion).getZone(), stocktakelist.get(localitempostion).getItemOcode(), stocktakelist.get(localitempostion).getStore());
@@ -684,6 +830,7 @@ public class Stoketake extends AppCompatActivity {
 
                                         StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                         if (stocktakeModel != null) {
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                             Log.e("notnull", "notnull");
                                             long sum = Long.parseLong(stocktakeModel.getQty()) + 1;
                                             stocktakeModel.setQty(sum + "");
@@ -697,14 +844,24 @@ public class Stoketake extends AppCompatActivity {
                                             getZoneSumQty();
                                             getStoreSumQty();
                                         }
-                                    } else if (ItemExists()) {
+                                    } else if (ItemExists(itemOcode.getText().toString())) {
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         filldata();
 
                                         itemOcode.setText("");
                                         itemOcode.requestFocus();
                                         break;
                                     } else {
-                                        itemOcode.setError("Invalid");
+                                        showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
                                         itemOcode.setText("");
                                     }
                                 } else {
@@ -713,6 +870,7 @@ public class Stoketake extends AppCompatActivity {
                                     Log.e("checkdatabase", "checkdatabase");
                                     StocktakeModel stocktakeModel = my_dataBase.stocktakeDao().getstockObj(StoreSpinner.getSelectedItem().toString().substring(0, StoreSpinner.getSelectedItem().toString().indexOf(" ")), zonecode.getText().toString().trim(), itemOcode.getText().toString().trim());
                                     if (stocktakeModel != null) {
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         Log.e("notnull", "notnull");
                                         long sum = Long.parseLong(stocktakeModel.getQty()) + 1;
                                         stocktakeModel.setQty(sum + "");
@@ -730,28 +888,60 @@ public class Stoketake extends AppCompatActivity {
 
 
                                     //check AllstocktakeDBlist
-                                    else if (ItemExists()) {
+                                    else if (ItemExists(itemOcode.getText().toString())) {
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                         filldata();
 
                                         itemOcode.setText("");
+
                                         itemOcode.requestFocus();
                                         break;
                                     } else {
-                                        itemOcode.setError("Invalid");
+                                        showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+                                        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
                                         itemOcode.setText("");
                                     }
                                 }
 
 
                             } else {
-                                itemOcode.setError("Invalid");
+
+                                showSweetDialog(Stoketake.this, 3, "","InValid Item  "+ itemOcode.getText());
+
+                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 1000 milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(1000);
+                                }
                                 itemOcode.setText("");
                                 itemOcode.setEnabled(true);
                                 itemOcode.requestFocus();
 
                             }
                         } else
-                            itemOcode.requestFocus();
+                        {  itemOcode.requestFocus();
+                            mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000 milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000);
+                            }
+                        }
                         break;
 
                 }
@@ -786,7 +976,7 @@ public class Stoketake extends AppCompatActivity {
 
     private void init() {
         if (userPermissions == null) getUsernameAndpass();
-        MainActivity.Items_activityflage = 2;
+
         stocktakelist.clear();
         exportData = new ExportData(Stoketake.this);
         total_zoneqty_text = findViewById(R.id.total_zoneqty_text);
@@ -846,14 +1036,30 @@ public class Stoketake extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().equals("")) {
+                    if (editable.toString().equals("Internal Application Error")) {
 
+
+
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                try {
+                                    showSweetDialog(Stoketake.this, 3, "Internal Application Error", "");
+                                } catch (WindowManager.BadTokenException e) {
+                                    //use a log message
+                                }
+                            }
+                        });
+
+                    }else
                     if (editable.toString().equals("ItemOCode")) {
-                        Log.e("herea", "aaaaa");
+
                         my_dataBase.itemDao().deleteall();
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
+                        AllstocktakeDBlist.clear();
                         AllstocktakeDBlist.addAll(my_dataBase.itemDao().getAll());
-                        hideProgressDialogWithTitle();
-                        Log.e("herea4", "aaaaa");
+
+
                         Handler h = new Handler(Looper.getMainLooper());
                         h.post(new Runnable() {
                             public void run() {
@@ -868,7 +1074,7 @@ public class Stoketake extends AppCompatActivity {
 
                     } else if (editable.toString().equals("nodata")) {
                         //  Toast.makeText(Stoketake.this,"NetWork Error",Toast.LENGTH_SHORT).show();
-                        hideProgressDialogWithTitle();
+
                         Handler h = new Handler(Looper.getMainLooper());
 
                         h.post(new Runnable() {
@@ -884,7 +1090,7 @@ public class Stoketake extends AppCompatActivity {
                         });
 
                     } else {
-                        hideProgressDialogWithTitle();
+
                         Handler h = new Handler(Looper.getMainLooper());
 
                         h.post(new Runnable() {
@@ -920,13 +1126,35 @@ public class Stoketake extends AppCompatActivity {
 
 
                 if (editable.toString().length() != 0) {
+                    if(editable.toString().trim().equals("Internal Application Error")){
+
+
+
+
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(Stoketake.this, 0, "Server Error", "");
+                            }
+                        });
+
+
+                        stocktakelist.clear();
+                        filladapter();
+                    }else
                     if (editable.toString().trim().equals("exported")) {
                         savedata("1");
                         try {
 
                             stocktakelist.clear();
                             filladapter();
-                            showSweetDialog(Stoketake.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                            Handler h = new Handler(Looper.getMainLooper());
+                            h.post(new Runnable() {
+                                public void run() {
+                                    showSweetDialog(Stoketake.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+
+                                }
+                            });
 
                             zonecode.setEnabled(true);
                             zonecode.requestFocus();
@@ -1176,7 +1404,8 @@ public class Stoketake extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())) {
+                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())
+                        ||     checkIfUserWhoLoginIsMaster(Stoketake.this,UsNa.getText().toString().trim(),pass.getText().toString().trim())){
                     if (enterflage == 1)
                         openDeleteitemDailog();
                     else if (enterflage == 2) openDeleteZoneDailog();
@@ -1239,6 +1468,10 @@ public class Stoketake extends AppCompatActivity {
                         } else if (enterflage == 2) {
                             openDeleteZoneDailog();
                             authenticationdialog.dismiss();
+                        }else if (enterflage ==4) {
+                            authenticationdialog.dismiss();
+                           saveData();
+
                         }
 
 
@@ -1264,7 +1497,18 @@ public class Stoketake extends AppCompatActivity {
 
 
     }
+    private void  saveData(){
+        Log.e("ST_save", "ST_save");
+        MainActivity.activityflage = 2;
 
+            exportdata();
+            clearAll();
+
+
+        //  MainActivity.activityflage=2;
+        // exportdata();
+        clearAll();
+    }
     private void copylist() {
         DB_stocktakecopy.clear();
         List<String> zon = new ArrayList<>();
@@ -1493,6 +1737,125 @@ public class Stoketake extends AppCompatActivity {
                 return false;
             }
         });
+
+
+
+        ST_ZONEcod.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!ST_ZONEcod.getText().toString().equals("")) {
+                            if (isExists(1, ST_ZONEcod.getText().toString().trim(), spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")), "")) {
+                                ST_itemcode.setEnabled(true);
+                                ST_itemcode.requestFocus();
+                                Log.e("a1", "a1");
+
+                            } else {
+                                ST_ZONEcod.setText("");
+                                ST_ZONEcod.setError("invalid");
+                                Log.e("a2", "a2");
+                            }
+
+                        } else {
+                            Log.e("a3", "a3");
+                            ST_ZONEcod.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+                ST_itemcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!ST_itemcode.getText().toString().equals("")) {
+                            if (isExists(2, ST_ZONEcod.getText().toString().trim(), spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")), ST_itemcode.getText().toString().trim())) {
+                                long preqty = Long.parseLong(getpreQty(spinner2.getSelectedItem().toString().substring(0, spinner2.getSelectedItem().toString().indexOf(" ")), ST_ZONEcod.getText().toString().trim(), ST_itemcode.getText().toString().trim()));
+                                ST_preQTY.setText(preqty + "");
+                                long sumqty = Long.parseLong(DB_stocktake.get(indexDBitem).getQty());
+                                if (sumqty > 1) {
+
+                                    sumqty--;
+
+                                    DB_stocktake.get(indexDBitem).setQty(sumqty + "");
+                                    ST_qtyshows.setText(DB_stocktake.get(indexDBitem).getQty());
+                                    ST_zoneshow.setText(ST_ZONEcod.getText().toString().trim());
+                                    ST_itemcodeshow.setText(ST_itemcode.getText().toString().trim());
+
+                                    if (isExistsInReducedlist())
+                                        ST_reducedqtyitemlist.get(indexOfReduceditem).setQty(sumqty + "");
+                                    else
+                                        ST_reducedqtyitemlist.add(DB_stocktake.get(indexDBitem));
+                                    ST_itemcode.setText("");
+                                    ST_itemcode.requestFocus();
+                                } else {
+                                    new SweetAlertDialog(Stoketake.this, SweetAlertDialog.BUTTON_CONFIRM)
+                                            .setTitleText(getResources().getString(R.string.confirm_title))
+                                            .setContentText(getResources().getString(R.string.delete3))
+                                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    DB_stocktake.get(indexDBitem).setQty("0");
+                                                    ST_preQTY.setText("1");
+                                                    ST_qtyshows.setText("1");
+                                                    ST_zoneshow.setText(ST_ZONEcod.getText().toString().trim());
+                                                    ST_itemcodeshow.setText(ST_itemcode.getText().toString().trim());
+
+                                                    if (isExistsInReducedlist())
+                                                        ST_reducedqtyitemlist.get(indexOfReduceditem).setQty("0");
+                                                    else
+                                                        ST_reducedqtyitemlist.add(DB_stocktake.get(indexDBitem));
+
+
+                                                    DB_stocktake.remove(indexDBitem);
+                                                    ST_itemcode.setText("");
+                                                    ST_ZONEcod.setText("");
+                                                    ST_qtyshows.setText("");
+                                                    ST_zoneshow.setText("");
+                                                    ST_itemcodeshow.setText("");
+                                                    ST_preQTY.setText("");
+                                                    sweetAlertDialog.dismiss();
+                                                }
+                                            })
+                                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismiss();
+                                                    ST_itemcode.setText("");
+                                                    ST_preQTY.setText("");
+                                                }
+                                            })
+                                            .show();
+                                }
+                                DIRE_deleteitem.setEnabled(true);
+                            } else {
+                                ST_itemcode.setText("");
+                                ST_itemcode.setError("invalid");
+                                ST_qtyshows.setText("");
+                                ST_zoneshow.setText("");
+                                ST_itemcodeshow.setText("");
+                                ST_preQTY.setText("");
+                            }
+
+                        } else {
+                            ST_itemcode.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+
+
 
         DIRE_dialogsave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1783,7 +2146,32 @@ public class Stoketake extends AppCompatActivity {
                 return false;
             }
         });
+        ST_ZONEcode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
 
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!ST_ZONEcode.getText().toString().equals("")) {
+                            if (isExists(1, ST_ZONEcode.getText().toString().trim(), spinner.getSelectedItem().toString().substring(0, spinner.getSelectedItem().toString().indexOf(" ")), "")) {
+                                ST_zonecodeshow.setText(ST_ZONEcode.getText().toString().trim());
+
+                                getqtyofDBzone();
+                                ST_delete.setEnabled(true);
+                            } else {
+                                ST_ZONEcode.setText("");
+                                ST_ZONEcode.setError("invalid");
+                            }
+
+                        } else {
+                            ST_ZONEcode.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
 
         dialog.findViewById(R.id.DZRE_close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2077,5 +2465,24 @@ public class Stoketake extends AppCompatActivity {
         if (zoneinfo != null && zoneinfo.isShowing()) {
             zoneinfo.cancel();
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mode = (AudioManager) Stoketake.this.getSystemService(Context.AUDIO_SERVICE);
+
+    }
+    public  void showalertdaiog(Context context,String Msg){
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+
+                .setContentText(Msg)
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        sweetAlertDialog.dismiss();
+                    }
+                }).show();
+
     }
 }

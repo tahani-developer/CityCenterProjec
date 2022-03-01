@@ -20,10 +20,17 @@ public interface ItemDao {
 
     @Query("SELECT * FROM ITEM_TABLE")
     List<AllItems>   getAll();
-
+    @Query("SELECT * FROM ITEM_TABLE LIMIT 3")
+    List<AllItems>   getAll2();
     @Query("Delete FROM ITEM_TABLE")
   void deleteall();
     @Query("SELECT * FROM ITEM_TABLE WHERE ITEMOCODE= :itemcode ")
   AllItems getitem(String itemcode);
+    @Query("SELECT ITEMOCODE FROM ITEM_TABLE WHERE ITEMOCODE= :itemcode ")
+    String getitem2(String itemcode);
+    @Query("SELECT COUNT(*) FROM ITEM_TABLE")
+    int getcount();
+
+
 
 }

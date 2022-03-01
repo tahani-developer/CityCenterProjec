@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLinearAdapter"
     android:layout_width="320dp"
-    android:layout_height="350dp"
-    android:background="@color/layer7"
+    android:layout_height="375dp"
+    android:background="@color/layer1"
     android:layoutDirection="locale"
     android:orientation="vertical"
     android:padding="2dp"
@@ -53,7 +53,7 @@
 
                     android:layout_gravity="center_horizontal"
                     android:text="@string/settings_ip"
-                    android:textColor="@color/colorblue_dark"
+                    android:textColor="@color/white"
 
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -88,7 +88,7 @@
                         android:gravity="center_vertical"
 
                         android:text="@string/server_ip"
-                        android:textColor="@color/colorblue_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
 
                         android:textStyle="bold" />
@@ -168,7 +168,7 @@
                         android:gravity="center_vertical"
 
                         android:text="@string/CONO"
-                        android:textColor="@color/colorblue_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
 
                         android:textStyle="bold" />
@@ -286,7 +286,7 @@
                         android:text="@string/userNo"
 
 
-                        android:textColor="@color/colorblue_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
 
                         android:textStyle="bold" />
@@ -327,7 +327,7 @@
                         android:text="@string/deviceId"
 
 
-                        android:textColor="@color/colorblue_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
 
                         android:textStyle="bold" />
@@ -352,6 +352,7 @@
                         />
 
                 </LinearLayout>
+
             </LinearLayout>
 
         </RelativeLayout>

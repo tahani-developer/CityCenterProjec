@@ -39,6 +39,11 @@
                     android:icon="@drawable/ic_baseline_description_24"
                     android:title="@string/StocktakeReport"
                     app:showAsAction="always" />
+                <item
+                    android:id="@+id/zoneReport"
+                    android:icon="@drawable/ic_baseline_description_24"
+                    android:title="@string/zoneReport"
+                    app:showAsAction="always" />
 
             </menu>
 
@@ -51,10 +56,15 @@
 
         <item
             android:id="@+id/logout"
-            android:icon="@drawable/ic_logout"
+            android:icon="@drawable/ic_baseline_exit_to_app_24"
+
             android:title="@string/logout"
             app:showAsAction="always" />
-
+        <item
+            android:id="@+id/exits"
+            android:icon="@drawable/ic_baseline_exit_to_app_24"
+            android:title="@string/exits"
+            app:showAsAction="always" />
 
     </group>
 

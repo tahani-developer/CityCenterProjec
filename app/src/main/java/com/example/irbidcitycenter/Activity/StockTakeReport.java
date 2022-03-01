@@ -14,21 +14,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.irbidcitycenter.Adapters.ShipmentsReportAdapter;
 import com.example.irbidcitycenter.Adapters.StockTakeRepAdapter;
-import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
-import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 
@@ -45,14 +43,14 @@ public class StockTakeReport extends AppCompatActivity {
     Button STR_preview;
     RoomAllData my_dataBase;
     ListView listView;
-    TextView STR_search_edt;
+    EditText STR_search_edt,ZONESpinner;
     private List<StocktakeModel> searchlist = new ArrayList<>();
     private List<StocktakeModel> allStoketakes = new ArrayList<>();
     private List<StocktakeModel> Stoketakes = new ArrayList<>();
 
     private Spinner storeSpinner;
-    private ArrayList<String> spinnerArray = new ArrayList<>();
-
+    private ArrayList<String> StorespinnerArray = new ArrayList<>();
+    private ArrayList<String> zonespinnerArray = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +84,10 @@ public class StockTakeReport extends AppCompatActivity {
                 }
             }
         });
-
+        ZONESpinner=findViewById(R.id.ZONESpinner);
 
         my_dataBase = RoomAllData.getInstanceDataBase(StockTakeReport.this);
-        allStoketakes = my_dataBase.stocktakeDao().getall();
+
         STR_preview = findViewById(R.id.STR_preview);
         STR_date = findViewById(R.id.STR_date);
         myCalendar = Calendar.getInstance();
@@ -98,15 +96,51 @@ public class StockTakeReport extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
         STR_date.setText(today);
+
+
+        allStoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());
+
+        fillAdapterData(allStoketakes);
+CalculateSum(allStoketakes);
+
         STR_preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Stoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());
+                if(!storeSpinner.getSelectedItem().equals("All")
+                        &&!ZONESpinner.getText().toString().trim().equals(""))
+                {
+                    Stoketakes.clear();
+                    Log.e("Store==", storeSpinner.getSelectedItem().toString() + "--");
+                    Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_zone(STR_date.getText().toString(), storeSpinner.getSelectedItem().toString(),ZONESpinner.getText().toString().trim());
                 fillAdapterData(Stoketakes);
+
                 Log.e("Stoketakesssize", Stoketakes.size() + "");
                 if (Stoketakes.size() == 0)
                     Toast.makeText(StockTakeReport.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
-                CalculateSum(Stoketakes);
+                CalculateSum(Stoketakes);}
+                else if(storeSpinner.getSelectedItem().equals("All")
+                        &&!ZONESpinner.getText().toString().trim().equals(""))
+                {
+                    Stoketakes.clear();
+                    Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_zone2(STR_date.getText().toString(),ZONESpinner.getText().toString().trim());
+                    fillAdapterData(Stoketakes);
+                    CalculateSum(Stoketakes);
+
+                }else if(!storeSpinner.getSelectedItem().equals("All")
+                            &&ZONESpinner.getText().toString().trim().equals("")){
+                    Stoketakes.clear();
+                    Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_store(STR_date.getText().toString(), storeSpinner.getSelectedItem().toString());
+                    fillAdapterData(Stoketakes);
+                    CalculateSum(Stoketakes);
+                }
+
+                else
+                {
+                    Stoketakes.clear();
+                    Stoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());
+                    fillAdapterData(Stoketakes);
+                    CalculateSum(Stoketakes);
+                }
             }
         });
         STR_date.setOnClickListener(new View.OnClickListener() {
@@ -122,22 +156,30 @@ public class StockTakeReport extends AppCompatActivity {
         ////Initialize Store Spinner
         storeSpinner = findViewById(R.id.storeSpinner);
 
-        spinnerArray.clear();
-        spinnerArray.add(getString(R.string.allStores));
+        StorespinnerArray.clear();
+        zonespinnerArray.clear();
+        StorespinnerArray.add(0,"All");
 
         List<String> stores = my_dataBase.stocktakeDao().getStoresNames();
-
-        spinnerArray.addAll(stores);
+        List<String> zonespinnerArray = my_dataBase.stocktakeDao().getzones();
+        zonespinnerArray.add(0,"All");
+        StorespinnerArray.addAll(stores);
 
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_dropdown_item, spinnerArray
+                this, android.R.layout.simple_spinner_dropdown_item, StorespinnerArray
         );
 
         storeSpinner.setAdapter(spinnerAdapter);
         storeSpinner.setSelection(0);
 
-        storeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, zonespinnerArray
+        );
+    //    ZONESpinner.setAdapter(spinnerAdapter2);
+
+      /*  storeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (STR_search_edt.getText().toString().length() != 0) {
@@ -152,7 +194,77 @@ public class StockTakeReport extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
+
+
+        ZONESpinner.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int i, KeyEvent keyEvent) {
+                if (i == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+
+                }
+
+                else
+                if (i != KeyEvent.KEYCODE_ENTER){
+                    if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                        if(!ZONESpinner.getText().toString().equals(""))
+                        {
+                            if(!storeSpinner.getSelectedItem().equals("All")
+                                    &&!ZONESpinner.getText().toString().trim().equals(""))
+                            {
+                                Stoketakes.clear();
+                                Log.e("Store==", storeSpinner.getSelectedItem().toString() + "--");
+                                Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_zone(STR_date.getText().toString(), storeSpinner.getSelectedItem().toString(),ZONESpinner.getText().toString().trim());
+                                fillAdapterData(Stoketakes);
+
+                                Log.e("Stoketakesssize", Stoketakes.size() + "");
+                                if (Stoketakes.size() == 0)
+                                    Toast.makeText(StockTakeReport.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();
+                                CalculateSum(Stoketakes);}
+                            else if(storeSpinner.getSelectedItem().equals("All")
+                                    &&!ZONESpinner.getText().toString().trim().equals(""))
+                            {
+                                Stoketakes.clear();
+                                Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_zone2(STR_date.getText().toString(),ZONESpinner.getText().toString().trim());
+                                fillAdapterData(Stoketakes);
+                                CalculateSum(Stoketakes);
+
+                            }else if(!storeSpinner.getSelectedItem().equals("All")
+                                    &&ZONESpinner.getText().toString().trim().equals("")){
+                                Stoketakes.clear();
+                                Stoketakes = my_dataBase.stocktakeDao().getStoketakesbydate_store(STR_date.getText().toString(), storeSpinner.getSelectedItem().toString());
+                                fillAdapterData(Stoketakes);
+                                CalculateSum(Stoketakes);
+                            }
+
+                            else
+                            {
+                                Stoketakes.clear();
+                                Stoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());
+                                fillAdapterData(Stoketakes);
+                                CalculateSum(Stoketakes);
+                            }
+                            ZONESpinner.setText("");
+                        }
+                        else
+                        {
+                            ZONESpinner.requestFocus();
+                        }
+                    }
+
+                    return true;
+                }
+                return false;
+        }
+    });
+
+
+
+
+
+
+
     }
 
     private void searchByStore() {

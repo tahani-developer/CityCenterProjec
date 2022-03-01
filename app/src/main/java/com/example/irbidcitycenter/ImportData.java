@@ -17,6 +17,7 @@ import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Activity.ReplenishmentReverse;
 import com.example.irbidcitycenter.Activity.Stoketake;
 import com.example.irbidcitycenter.Models.AllItems;
+import com.example.irbidcitycenter.Models.AllPOs;
 import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.ItemInfo;
 import com.example.irbidcitycenter.Models.ReplacementModel;
@@ -25,6 +26,7 @@ import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import com.example.irbidcitycenter.Models.Shipment;
+import com.example.irbidcitycenter.Models.ZonsData;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -57,9 +59,9 @@ import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.ItemChecker.ItC_itemcode;
 import static com.example.irbidcitycenter.Activity.ItemChecker.itemRES;
 import static com.example.irbidcitycenter.Activity.ItemChecker.stockqrtRes;
-import static com.example.irbidcitycenter.Activity.Login.getListCom;
-import static com.example.irbidcitycenter.Activity.MainActivity.flg;
+
 import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
+import static com.example.irbidcitycenter.Activity.NewShipment.PONO_respon;
 import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
 import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
@@ -79,12 +81,14 @@ import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZR_respon;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromZoneRepActivity;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.fromzone;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
 public class ImportData {
     public static int actvityflage = 1;
     SweetAlertDialog pdVoucher;
-    public static ArrayList<ZoneModel> listAllZone = new ArrayList<>();
+    public static List<ZonsData> listAllZone = new ArrayList<>();
+    public static ArrayList<ZonsData> WebSerlistAllZone = new ArrayList<>();
     public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
     public static ArrayList<ZoneModel> itemdetalis = new ArrayList<>();
     public static ArrayList<UserPermissions> UserPermissions = new ArrayList<>();
@@ -98,7 +102,7 @@ public class ImportData {
     public static String zonetype;
     public static List<Store> Storelist = new ArrayList<>();
     public static ArrayList<String> BoxNolist = new ArrayList<>();
-    public static ArrayList<String> PoNolist = new ArrayList<>();
+    public static ArrayList<AllPOs> PoNolist = new ArrayList<>();
     public static List<Shipment> POdetailslist = new ArrayList<>();
     public static List<ReplacementModel> stocksQty = new ArrayList<>();
     public static List<ZoneModel> listQtyZone = new ArrayList<>();
@@ -108,6 +112,7 @@ public class ImportData {
     public static List<ItemInfo> itemInfos = new ArrayList<>();
     public JSONArray jsonArrayPo;
     public JSONObject stringNoObject;
+    public static String linkbarcode;
 
 //
 
@@ -115,7 +120,7 @@ public class ImportData {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private int max = 50;
-    public static SweetAlertDialog pdUserPer, pditeminfo, storeinfo, zoneinfo;
+    public static SweetAlertDialog pdUserPer, pditeminfo, storeinfo, zoneinfo,pditem;
     private int timer = 1;
 
     private void showProgressDialogWithTitle(String title, String substring) {
@@ -193,7 +198,7 @@ public class ImportData {
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
-    public void getUserPermissions(){
+    public void getUserPermissions(int act_flag){
         UserPermissions.clear();
         pdUserPer = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdUserPer.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -201,23 +206,36 @@ public class ImportData {
         pdUserPer.setCancelable(false);
         pdUserPer.show();
         if(!ipAddress.equals(""))
-            new JSONTask_getAllUserPermissions().execute();
+            new JSONTask_getAllUserPermissions(act_flag).execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
-    public void getAllItems(){
+    public void getAllItems(int act_flag){
+        try {
 
 
-        AllImportItemlist.clear();
-        progressDialog = new ProgressDialog(context);
-        Log.e("context",context.getClass().getName().toString());
-       showProgressDialogWithTitle("Importing Data","Please Wait");
-        AllstocktakeDBlist.clear();
-        if(!ipAddress.equals(""))
-            new  JSONTask_getAllItems().execute();
-        else
-            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
-    }
+            pditem = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            pditem.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+            pditem.setTitleText(" Start get Data");
+            pditem.setCancelable(false);
+            pditem.show();
+            AllImportItemlist.clear();
+            Log.e("context", context.getClass().getName().toString());
+
+            AllstocktakeDBlist.clear();
+
+
+            if (!ipAddress.equals(""))
+                new JSONTask_getAllItems(context, act_flag).execute();
+            else
+                Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+
+        }catch (Exception e){
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+        }
 
     public void getItemInfo(){
         pditeminfo = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
@@ -280,7 +298,7 @@ else
         zoneinfo.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
         zoneinfo.setTitleText(" Start get Zones Info");
         zoneinfo.setCancelable(false);
-
+        WebSerlistAllZone.clear();
         zoneinfo.show();
         if(!ipAddress.equals(""))
         {
@@ -302,6 +320,8 @@ else
 
     }
     public void getKindItem(String itemNo) {
+        linkbarcode="";
+        Log.e("getKindItem",""+itemNo);
         if(!ipAddress.equals(""))
         {
             new JSONTask_getItemKind(itemNo).execute();
@@ -323,6 +343,7 @@ else
     }
 
     public void getCompanyInfo() {
+        companyInList.clear();
         if(!ipAddress.equals(""))
         {
             try {
@@ -510,7 +531,8 @@ else
 
                  //   http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
 
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+convertToEnglish(itemNo.trim());
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetItemData?CONO=" + CONO.trim()+"&&ITEMCODE="+itemNo.trim();
+                    linkbarcode=itemNo.trim();
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
@@ -734,10 +756,10 @@ Log.e("Exception===",e.getMessage());
                             companyInList.add(requestDetail);
                         }
                         if (companyInList.size() != 0) {
-                            getListCom.setText("fill");
+                        //    getListCom.setText("fill");
                         }
 
-
+                        Login.comRespon.setText("CoNo");
 //                            itemKintText.setText(requestDetail.getZONETYPE());
 
 
@@ -750,11 +772,7 @@ Log.e("Exception===",e.getMessage());
 
             }
             else {
-                if (MainActivity.setflage == 0)
-                    itemKintText.setText("NOTEXIST");
-                else
-                    if(MainActivity.setflage == 1)
-                    itemKintText1.setText("NOTEXIST");
+
             }
         }
     }
@@ -873,18 +891,20 @@ Log.e("Exception===",e.getMessage());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        ZoneModel itemZone = new ZoneModel();
+                        ZonsData itemZone = new ZonsData();
                         try {
                             itemZone.setZoneCode(result.getString("ZONENO"));
                             itemZone.setZONENAME(result.getString("ZONENAME"));
                             itemZone.setZONETYPE(result.getString("ZONETYPE"));
 
-                            listAllZone.add(itemZone);
+                            WebSerlistAllZone.add(itemZone);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-
+                    MainActivity.getzonerespon.setText("ZONENO");
 
                 }
             }
@@ -1013,7 +1033,9 @@ Log.e("Exception===",e.getMessage());
                                 shipment.setBarcode(jsonObject1.getString("ItemOCode"));
                                 shipment.setPoqty(jsonObject1.getString("Qty"));
                                 shipment.setItemname(jsonObject1.getString("ItemNameA"));
-                                shipment.setBoxNo(jsonObject1.getString("Hints"));
+                               shipment.setBoxNo(jsonObject1.getString("Hints"));
+                            //    shipment.setBoxNo("6666");
+
                                 POdetailslist.add(shipment);
                             }
                         } catch (JSONException e) {
@@ -1021,16 +1043,6 @@ Log.e("Exception===",e.getMessage());
                         }
 
 
-                        //NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
-                        itemname.setText(POdetailslist.get(0).getItemname());
-                        Log.e("itemname",itemname.getText().toString());
-                        PoQTY.setText(POdetailslist.get(0).getPoqty());
-                        poqty = POdetailslist.get(0).getPoqty();
-                        //
-
-
-
-                        posize = POdetailslist.size();
                         NewShipment.respon.setText("ItemOCode");
 
                     }
@@ -1158,7 +1170,9 @@ Log.e("Exception===",e.getMessage());
 
 
 
-                        if (array.length()>0)for (int i = 0; i < array.length(); i++) {
+                        if (array.length()>0)
+
+                            for (int i = 0; i < array.length(); i++) {
                             try {
                                 jsonObject1 = array.getJSONObject(i);
                             } catch (JSONException e) {
@@ -1172,16 +1186,15 @@ Log.e("Exception===",e.getMessage());
                                 e.printStackTrace();
                             }
                         }
-                        NewShipment.boxnorespon.setText("BOXNO");
-                        if (NewShipment.boxnorespon.getText().length() > 0) {
-                            NewShipment.boxno.setEnabled(true);
-                            NewShipment.boxno.requestFocus();
-                        }
+
+
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                    }
+                        NewShipment.boxnorespon.setText("BOXNO");    }
                     else if (respon.contains("No Parameter Found")) {
                         NewShipment.boxnorespon.setText("Not");
                     }
@@ -1609,7 +1622,18 @@ Log.e("Exception===",e.getMessage());
 
             if (respon != null) {
                 if (respon.length() != 0) {
-                    if (respon.contains("PONO")) {
+
+                    if (respon.contains("Not Connected To DB")){
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+
+                                Toast.makeText(context, "Not Connected To DB", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                    }
+                   else if (respon.contains("PONO")) {
                         JSONArray array = null;
 
 
@@ -1620,23 +1644,30 @@ Log.e("Exception===",e.getMessage());
                         }
 
 
-                        if (array.length()>0)for (int i = 0; i < array.length(); i++) {
+                        if (array.length()>0)
+
+                            for (int i = 0; i < array.length(); i++) {
+
                             try {
+
                                 jsonObject1 = array.getJSONObject(i);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
                             try {
+                                AllPOs allPOs = new AllPOs();
+                                allPOs.setPoNum(jsonObject1.getString("PONO"));
+                                PoNolist.add(allPOs);
 
-                                PoNolist.add(jsonObject1.getString("PONO"));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-
-
-                    }
+                        PONO_respon.setText("PONO");
+                     }
 
                 }
 
@@ -1740,7 +1771,7 @@ Log.e("Exception===",e.getMessage());
                 return null;
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("Exception", "" + e.getMessage());
+                Log.e("itemException3==", "" + e.getMessage());
              //   hideProgressDialogWithTitle();
              pditeminfo.dismiss();
                 return null;
@@ -1838,7 +1869,20 @@ Log.e("Exception===",e.getMessage());
 
     private class  JSONTask_getAllItems extends AsyncTask<String, String, String> {
 
-        private String custId = "", JsonResponse;
+        Context context;
+        int flag;
+
+        public JSONTask_getAllItems(final Context context, final int flag) {
+            this.flag = flag;
+            if (flag == 0) {
+                this.context = (MainActivity) context;
+            } else if (flag == 1) {
+                this.context = (Stoketake) context;
+            } else if (flag == 2) {
+                this.context = (ReplenishmentReverse) context;
+            }
+        }
+
 
         @Override
         protected void onPreExecute() {
@@ -1859,13 +1903,13 @@ Log.e("Exception===",e.getMessage());
                     Log.e("link", "" + link);
                 }
             } catch (Exception e) {
-                Log.e("Exception",""+e.getMessage());
+                Log.e("itemException4===",""+e.getMessage());
                 Handler h = new Handler(Looper.getMainLooper());
                 h.post(new Runnable() {
                     public void run() {
                       //  pdVoucher.dismissWithAnimation();
                         //hide Progressbar after finishing process
-                        hideProgressDialogWithTitle();
+                        pditem.dismissWithAnimation();
                       //  Toast.makeText(context, "check Connection", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -1914,14 +1958,17 @@ Log.e("Exception===",e.getMessage());
 
             }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
             catch (HttpHostConnectException ex) {
-                ex.printStackTrace();
+
+              //  The target server failed to respond
+              Log.e("itemExceptionhere==",ex.getMessage()+"");
 //                progressDialog.dismiss();
 
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
+                Handler h2 = new Handler(Looper.getMainLooper());
+                h2.post(new Runnable() {
                     public void run() {
-                        hideProgressDialogWithTitle();
-                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                        pditem.dismissWithAnimation();
+                        Toast.makeText(context, "No Internet", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -1929,8 +1976,23 @@ Log.e("Exception===",e.getMessage());
                 return null;
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("Exception", "" + e.getMessage());
-                hideProgressDialogWithTitle();
+                Log.e("itemException2===", "" + e.getMessage());
+
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        //  pdVoucher.dismissWithAnimation();
+                        //hide Progressbar after finishing process
+                        pditem.dismissWithAnimation();
+                        // The target server failed to respond
+                      //  Toast.makeText(MainActivity.this, "The target server failed to respond", Toast.LENGTH_SHORT).show();
+                        showSweetDialog(context, 0, "The target server failed to respond", "");
+
+
+                    }
+                });
+
 //                progressDialog.dismiss();
                 return null;
             }
@@ -1945,10 +2007,28 @@ Log.e("Exception===",e.getMessage());
             super.onPostExecute(respon);
             String d="";
             JSONObject jsonObject1 = null;
-         //   pdVoucher.dismissWithAnimation();
-            //hide Progressbar after finishing process
-          //  hideProgressDialogWithTitle();
+try {
+    Handler h = new Handler(Looper.getMainLooper());
+    h.post(new Runnable() {
+        public void run() {
+
+            pditem.dismissWithAnimation();
+        }
+    });
+}catch (Exception e){
+
+}
             if (respon != null) {
+
+                if(respon.contains("Internal Application Error")){
+
+                    if(flag==0)       itemrespons.setText("Internal Application Error");
+                    else     if(flag==1)     St_Itemrespons.setText("Internal Application Error");
+
+                    else    if(flag==2) RepRev_Itemrespons.setText("Internal Application Error");
+
+
+                }else
                 if (respon.contains("ItemOCode")) {
 
                     if (respon.length() != 0) {
@@ -1967,27 +2047,6 @@ Log.e("Exception===",e.getMessage());
                                 allItems.setItemNameA(jsonObject1.getString("ItemNameA"));
 
 
-
-                                allItems.setSalePrice(jsonObject1.getString("SalePrice"));
-                                allItems.setLFCPrice(jsonObject1.getString("LFCPrice"));
-                                allItems.setLLCPrice(jsonObject1.getString("LLCPrice"));
-
-
-                                allItems.setOrdLvl(jsonObject1.getString("OrdLvl"));
-                                allItems.setAVG_Cost(jsonObject1.getString("AVG_Cost"));
-                                allItems.setLifo(jsonObject1.getString("Lifo"));
-                                allItems.setFifo(jsonObject1.getString("Fifo"));
-                                allItems.setItemG(jsonObject1.getString("ItemG"));
-
-                                allItems.setItemK(jsonObject1.getString("ItemK"));
-                                allItems.setItemM(jsonObject1.getString("ItemM"));
-                                allItems.setItemU(jsonObject1.getString("ItemU"));
-                                allItems.setItemL(jsonObject1.getString("ItemL"));
-
-                                allItems.setIStatus(jsonObject1.getString("IStatus"));
-                                allItems.setF_D(jsonObject1.getString("F_D"));
-                                allItems.setITEMGS(jsonObject1.getString("ITEMGS"));
-
                              AllImportItemlist.add(allItems);
                             }
 
@@ -1998,27 +2057,26 @@ Log.e("Exception===",e.getMessage());
 
                     }
 
-             if(MainActivity.Items_activityflage==1)       itemrespons.setText("ItemOCode");
-            else        St_Itemrespons.setText("ItemOCode");
+             if(flag==0)       itemrespons.setText("ItemOCode");
+            else     if(flag==1)     St_Itemrespons.setText("ItemOCode");
 
-                   if(flg==0) RepRev_Itemrespons.setText("ItemOCode");
+                else    if(flag==2) RepRev_Itemrespons.setText("ItemOCode");
 
-                    Log.e("itemrespons",itemrespons.getText().toString()+d);
-
-                    Log.e("itemrespons",itemrespons.getText().toString()+d);
                 }
                 else {
 
-                    if(MainActivity.Items_activityflage==1)  itemrespons.setText("nodata");
-                    else    St_Itemrespons.setText("nodata");
+                    if(flag==0)  itemrespons.setText("nodata");
+                    else if(flag==1)     St_Itemrespons.setText("nodata");
+                    else    if(flag==2) RepRev_Itemrespons.setText("nodata");
 
                 }
 
             }
             else {
-                if(MainActivity.Items_activityflage==1)
+                if(flag==0)
                     itemrespons.setText("nodata");
-                else    St_Itemrespons.setText("nodata");
+                else if(flag==1)  St_Itemrespons.setText("nodata");
+                else    if(flag==2)RepRev_Itemrespons.setText("nodata");
             }
         }
 
@@ -2142,6 +2200,8 @@ Log.e("Exception===",e.getMessage());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+
                     }
 
 
@@ -2281,8 +2341,11 @@ Log.e("Exception===",e.getMessage());
     public class  JSONTask_getAllUserPermissions extends AsyncTask<String, String, String> {
 
         private String itemNo = "", JsonResponse;
+       int flag;
+        public JSONTask_getAllUserPermissions( final int flag) {
 
-        public JSONTask_getAllUserPermissions() {
+
+            this.flag = flag;
             this.itemNo = itemNo;
         }
 
@@ -2445,7 +2508,16 @@ Log.e("Exception===",e.getMessage());
                             UserPermissions.add(requestDetail);
                             Log.e("here UserPermissions"," UserPermissions");
                         }
+                if(flag==2){
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+                           Login.dialog.dismiss();
+                            showSweetDialog(context,1,"","Data Refresh Sucessfuly");
+                        }
+                    });
 
+                }
 
                     }
                     catch (JSONException e) {

@@ -146,6 +146,7 @@ public class ReplenishmentReverseModel {
     public JSONObject getJSONObjectDelphi() {
         JSONObject obj = new JSONObject();
         try {
+            obj.put("VHFNO", SERIAL);
             obj.put("FROMSTR", From);
             obj.put("TOSTR", To);
             obj.put("ZONE", Zone);

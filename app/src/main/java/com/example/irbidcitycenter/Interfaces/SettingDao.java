@@ -3,6 +3,7 @@ package com.example.irbidcitycenter.Interfaces;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Ignore;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -19,12 +20,14 @@ public interface SettingDao {
     void update(appSettings appSettings);
     @Delete
     void delete(appSettings appSettings);
+    @Query ("update SETTINGS_TABLE set  logoimage ='' ")
+    void  updatelogo();
 
 
     @Query("Delete from SETTINGS_TABLE")
     void deleteALL();
-
-    @Query ("select * from SETTINGS_TABLE")
+@Ignore
+    @Query ("select COMPANYNO,DEVICEID,IP_ADDRESS,USERNO,SERIALZONE from SETTINGS_TABLE")
     List<appSettings> getallsetting();
 
     @Query ("select IP_ADDRESS from SETTINGS_TABLE")
@@ -42,5 +45,15 @@ public interface SettingDao {
 
     @Query ("select USERNO from SETTINGS_TABLE")
     String getUserNo();
+
+    @Query ("update SETTINGS_TABLE set logoimage=:logo ")
+    void  updatimage(byte[] logo);
+    @Query ("update SETTINGS_TABLE set mainimage=:logo ")
+    void  updatmainimage(byte[] logo);
+    @Query ("select logoimage From SETTINGS_TABLE")
+    byte[] getlogo();
+
+    @Query ("select mainimage From SETTINGS_TABLE")
+    byte[] getmainimage();
 
 }

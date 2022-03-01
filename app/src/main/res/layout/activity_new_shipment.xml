@@ -4,21 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/layer1"
     tools:context=".Activity.NewShipment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/layer7"
+        android:background="@color/layer1"
         android:orientation="vertical">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/layer1"
             android:layout_weight="5"
             android:elevation="2dp"
             android:gravity="center"
@@ -48,19 +50,22 @@
 
                     android:padding="3dp"
                     android:text="@string/pono"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
 
                     />
 
                 <EditText
+
                     android:id="@+id/poNotxt"
+                    android:cursorVisible="true"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/back_border_edit"
-                    android:gravity="center"
+                    android:textAlignment="viewStart"
+                    android:background="@drawable/edittext_back"
+                    android:imeOptions="actionDone"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="3dp"
@@ -112,17 +117,18 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/boxnum"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/boxNotxt"
+                    android:textAlignment="viewStart"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/back_border_edit"
-                    android:gravity="center"
+                    android:background="@drawable/edittext_back"
+                    android:cursorVisible="true"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="3dp"
@@ -157,9 +163,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:elevation="2dp"
-                    android:gravity="center"
+                    android:textAlignment="viewStart"
                     android:text="@string/barcode"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
@@ -168,11 +174,12 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/back_border_edit"
+                    android:background="@drawable/edittext_back"
                     android:gravity="center"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="3dp"
+                    android:cursorVisible="true"
                     android:textColor="@color/dark_blue_3"
                     android:textCursorDrawable="@color/red"
                     android:textSize="14sp" />
@@ -211,7 +218,7 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/recQty"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
@@ -220,11 +227,12 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/back_border_edit"
-                    android:gravity="center"
+                    android:background="@drawable/edittext_back"
+                    android:textAlignment="viewStart"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="3dp"
+
                     android:text="1"
                     android:textColor="@color/dark_blue_3"
                     android:textSize="14sp" />
@@ -275,7 +283,7 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/Poqty"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="12sp" />
 
                 <EditText
@@ -284,9 +292,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/back_border_edit"
+                    android:background="@drawable/edittext_back"
                     android:enabled="false"
-                    android:gravity="center"
+                    android:textAlignment="viewStart"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="3dp"
@@ -302,7 +310,7 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/Itemname"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="12sp" />
 
 
@@ -312,10 +320,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="2"
-                    android:background="@drawable/back_border_edit"
+                    android:background="@drawable/edittext_back"
                     android:enabled="false"
-                    android:gravity="center"
 
+                    android:textAlignment="viewStart"
                     android:inputType="text"
                     android:isScrollContainer="true"
                     android:maxLines="1"
@@ -340,7 +348,7 @@
                     android:id="@+id/nextbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:layout_weight=".5"
                     android:background="@drawable/back_border_edit"
                     android:text="@string/nextBox"
@@ -355,6 +363,7 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/HorizontalScroll"
             android:fillViewport="true"
             android:padding="3dp">
 
@@ -372,6 +381,11 @@
                     android:gravity="bottom"
                     android:padding="3dp">
 
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/PONO_respon"
+                        android:visibility="gone"/>
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
@@ -432,7 +446,7 @@
                         android:layout_margin="2dp"
                         android:layout_weight=".4"
 
-                        android:gravity="right" />
+                        android:gravity="end" />
 
                 </LinearLayout>
 
@@ -463,6 +477,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:layout_weight="7"
             android:gravity="center"
             android:orientation="vertical">
@@ -504,7 +519,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="3dp"
@@ -532,7 +547,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="3dp"
@@ -559,7 +574,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="3dp"
@@ -624,7 +639,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="3dp"
@@ -650,7 +665,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="1dp"
@@ -677,7 +692,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/back_border_edit"
                         android:enabled="false"
-                        android:gravity="center"
+                        android:textAlignment="viewStart"
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="1dp"

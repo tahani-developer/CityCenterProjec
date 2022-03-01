@@ -7,7 +7,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
+import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.Activity.Replacement;
@@ -17,11 +25,12 @@ import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
-
+import com.example.irbidcitycenter.Models.RequestQueueSingleton;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -55,6 +64,7 @@ import static com.example.irbidcitycenter.Activity.Replacement.poststateRE;
 import static com.example.irbidcitycenter.Activity.ReplenishmentReverse.RepRev_exportstate;
 import static com.example.irbidcitycenter.Activity.Stoketake.datarespon;
 import static com.example.irbidcitycenter.Activity.ZoneReplacment.ZonRepdatarespon;
+import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 public class ExportData {
     private Context context;
@@ -103,6 +113,7 @@ public class ExportData {
 
         new JSONTask_AddReplacment(replacementlist).execute();
     }
+
     public void exportReversReplacementList(List<ReplenishmentReverseModel>replacementlist) {
         getReversReplacmentObject(replacementlist);
         pdRepRev = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
@@ -351,7 +362,23 @@ public class ExportData {
             Log.e("onPostExecute",""+result);
             pdVoucher.dismissWithAnimation();
             if (result != null && !result.equals("")) {
-                if(result.contains("Saved Successfully"))
+                if(result.contains("Internal Application Error")){
+                    if(typeExportZone==1)
+                    {
+                        Log.e("Application Error","Application Error");
+                    exportStateText.setText("Internal Application Error");}
+                    else{
+                        Handler h2 = new Handler(Looper.getMainLooper());
+                        h2.post(new Runnable() {
+                            public void run() {
+
+                                showSweetDialog(context, 0, "Server Error", "");
+
+                            }
+                        });
+                    }
+                }
+             else    if(result.contains("Saved Successfully"))
                 {
                     if(typeExportZone==1)
                     {
@@ -529,6 +556,10 @@ public class ExportData {
 
 
             if (result != null && !result.equals("")) {
+                if(result.contains("Internal Application Error"))
+                {
+                    ZonRepdatarespon.setText("Internal Application Error");
+                }else
                 if(result.contains("Saved Successfully"))
                 {
                     Log.e("activityflage",activityflage+"");
@@ -557,7 +588,7 @@ public class ExportData {
 
             }
             else {
-                Log.e("ellllse","ellse");
+
                 if(activityflage==0)
                     ZonRepdatarespon.setText("not");
                 else
@@ -656,6 +687,10 @@ public class ExportData {
 
 
             if (result != null && !result.equals("")) {
+
+                if(result.contains("Internal Application Error")){
+                    datarespon.setText("Internal Application Error");
+                }else
                 if(result.contains("Saved Successfully"))
                 {
 
@@ -787,8 +822,15 @@ public class ExportData {
             pdshipmant.dismissWithAnimation();
 
 
-
             if (result != null && !result.equals("")) {
+
+                if(result.contains("Internal Application Error")){
+                    if( !exportFromMainAct)
+                        poststate.setText("Internal Application Error");
+
+
+                }else
+
                 if(result.contains("Saved Successfully"))
                     {
                         if( !exportFromMainAct)
@@ -858,7 +900,7 @@ else{
               if (!ipAddress.equals("")) {
 
                   http:
-//localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
+    //localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
                   link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrTransFer";
 
 
@@ -866,7 +908,12 @@ else{
               }
           } catch (Exception e) {
               //progressDialog.dismiss();
-              pdRepla.dismissWithAnimation();
+              Handler h = new Handler(Looper.getMainLooper());
+              h.post(new Runnable() {
+                  public void run() {
+                      pdRepla.dismissWithAnimation();  }
+              });
+
 
           }
 
@@ -876,6 +923,14 @@ else{
               try {
                   request.setURI(new URI(link));
               } catch (URISyntaxException e) {
+
+                  Handler h = new Handler(Looper.getMainLooper());
+                  h.post(new Runnable() {
+                      public void run() {
+                          pdRepla.dismissWithAnimation();  }
+                  });
+
+
                   e.printStackTrace();
               }
 
@@ -904,6 +959,15 @@ else{
 
 
           } catch (Exception e) {
+
+              Handler h = new Handler(Looper.getMainLooper());
+              h.post(new Runnable() {
+                  public void run() {
+                      pdRepla.dismissWithAnimation();  }
+              });
+
+
+              e.printStackTrace();
           }
           return JsonResponse;
       }
@@ -916,6 +980,14 @@ else{
           pdRepla.dismissWithAnimation();
 
           if (result != null && !result.equals("")) {
+              if(result.contains("Internal Application Error")){
+
+                  if( !exportFromMainAct)
+                      poststateRE.setText("Internal Application Error");
+
+              }
+
+              else
               if (result.contains("Saved Successfully")) {
                 //  poststateRE.setText("exported");
                   if( !exportFromMainAct)
@@ -925,6 +997,15 @@ else{
 
 
                   exportStockTakeList(listAllStock);}
+
+
+               //  new JSONTask_Transfer().execute();
+             SweetAlertDialog     saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+                  saving .getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+                  saving .setTitleText("saving");
+                  saving .setCancelable(false);
+                  saving .show();
+                  JSONTask_ExportTrans(    saving);
               }
 
               else
@@ -1045,7 +1126,17 @@ else{
             pdRepRev.dismissWithAnimation();
 
             if (result != null && !result.equals("")) {
-                if (result.contains("Saved Successfully")) {
+                if (result.contains("Internal Application Error")){
+                    if(!exportFromMainAct2)
+                        RepRev_exportstate.setText("Internal Application Error");
+
+
+                }
+
+                else if(result.contains("Access violation at address")){
+                    RepRev_exportstate.setText("Access violation at address");
+                }
+                   else if (result.contains("Saved Successfully")) {
                     //  poststateRE.setText("exported");
 
                    if(!exportFromMainAct2)
@@ -1054,7 +1145,12 @@ else{
              else  RepRevExportsatate.setText("exported");
 
 
-
+                    SweetAlertDialog     saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+                    saving .getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+                    saving .setTitleText("saving");
+                    saving .setCancelable(false);
+                    saving .show();
+                    JSONTask_ExportTrans(    saving);
                 }
                 else
                 {
@@ -1084,6 +1180,152 @@ else{
 
     }
 
-  }
+
+
+    public class  JSONTask_Transfer extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+
+
+        public JSONTask_Transfer() {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+
+            URLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                    //  "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO
+                    //localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO;
+
+
+                    Log.e("URL_TO_HIT", "" + link);
+                }
+            } catch (Exception e) {
+                //progressDialog.dismiss();
+
+
+            }
+
+            try {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost request = new HttpPost();
+                try {
+                    request.setURI(new URI(link));
+                } catch (URISyntaxException e) {
+
+
+                    e.printStackTrace();
+                }
+
+
+            } catch (Exception e) {
+
+
+                e.printStackTrace();
+            }
+            return JsonResponse;
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            super.onPostExecute(result);
+//            progressDialog.dismiss();
+            Log.e("JSONTaskAddReplacment", "" + result);
+
+
+            if (result != null && !result.equals("")) {
+
+
+                if (result.contains("Saved Successfully")) {
+                    Log.e("JSONTaskAddReplacment", "" + "Saved Successfully");
+
+
+                }
+
+
+            }
+
+        }
+    }
+
+    public void JSONTask_ExportTrans(SweetAlertDialog savingDialog) {
+        String url = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO;
+        Log.e("Export Trans URL ", url);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("ExportTrans Response", response.toString());
+                if (response.toString().contains("Saved Successfully")) {
+
+                    savingDialog.dismissWithAnimation();
+                    //exportAllState.setText("exported");
+
+
+                    showSweetDialog(context, 1, context.getResources().getString(R.string.savedSuccsesfule), "");
+
+
+
+                } else if (response.toString().contains("server error")) {
+                    savingDialog.dismissWithAnimation();
+                    showSweetDialog(context, 0, "Internal server error", "");
+                } else if (response.toString().contains("unique constraint")) {
+                    savingDialog.dismissWithAnimation();
+                    Log.e("unique response", response.toString() + "");
+                    showSweetDialog(context, 0, "Unique Constraint", "");
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                savingDialog.dismissWithAnimation();
+
+                if ((error.getMessage() + "").contains("value too large for column \"A2021_295\""))
+                    showSweetDialog(context, 0, "Server Error!", "Value too large for column \"A2021_295\"");
+                else
+                    showSweetDialog(context, 0, context.getString(R.string.checkCon), "");
+
+                Log.e("ExportTrans Error ", error.getMessage() + "");
+            }
+        });
+
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 30000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 3;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+
+        RequestQueueSingleton.getInstance(context.getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+
+    }
+
+
+}
 
 

@@ -59,9 +59,24 @@ long getStoreQty(String Store);
     @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0'")
     List<StocktakeModel> getdateStoketakes(String date);
 
+
+    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0' AND ZONECODE= :Zone AND StoreName= :store")
+    List<StocktakeModel> getStoketakesbydate_zone(String date,String store,String Zone);
+
     @Query("SELECT DISTINCT STORE FROM STOCKTAKE_TABLE")
     List<String> getStoresNo();
 
     @Query("SELECT DISTINCT StoreName FROM STOCKTAKE_TABLE")
     List<String> getStoresNames();
+
+    @Query("SELECT DISTINCT ZONECODE FROM STOCKTAKE_TABLE")
+    List<String> getzones();
+
+    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0' AND ZONECODE= :Zone")
+    List<StocktakeModel> getStoketakesbydate_zone2(String date,String Zone);
+
+    @Query("SELECT * FROM STOCKTAKE_TABLE WHERE DATE= :date AND ISPOSTED='0' AND StoreName= :store")
+    List<StocktakeModel> getStoketakesbydate_store(String date,String store);
+
+
 }

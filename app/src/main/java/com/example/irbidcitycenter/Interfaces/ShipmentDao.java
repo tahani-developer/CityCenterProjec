@@ -15,6 +15,7 @@ import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.Models.ZoneModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.irbidcitycenter.Activity.NewShipment.barcodeofrow;
@@ -59,14 +60,16 @@ public interface ShipmentDao {
     @Query ("select * from SHIPMENT_TABLE WHERE ISPOSTED='0' AND PONO= :po")
     List<Shipment> getlastShipments(String po);
 
-    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE)")
+    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE) AND ISPOSTED= '0'")
     Shipment getlastbox();
-
-    @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po")
-    List<Shipment> getPOShipments(String po);
+    @Query ("select * from SHIPMENT_TABLE WHERE SERIAL= (SELECT MAX(SERIAL) FROM SHIPMENT_TABLE)")
+    Shipment getlastbox2();
 
     @Query ("select * from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED= '0'")
-    List<Shipment> getShipmentsbyPONO(String po);
+    List<Shipment> getPOShipments(String po);
+
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :Date AND PONO= :po AND BOXNO= :Box AND ISPOSTED= '0'")
+    List<Shipment> getShipmentsbyPONO(String Date, String po, String Box);
 
     @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE PONO= :po AND ISPOSTED= '0'")
    long getsumofqty(String po);
@@ -81,12 +84,18 @@ public interface ShipmentDao {
     long getsumofitemsqty(String po);
     //
     @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po")
+    long getsumofboxitemsqty3(String po,String box);
+
+    @Query ("select SUM( CAST(QTY AS LONG)) from SHIPMENT_TABLE WHERE BOXNO= :box AND PONO= :po AND ISPOSTED='0'")
     long getsumofboxitemsqty2(String po,String box);
 
     @Query("Delete from SHIPMENT_TABLE WHERE BARECODE= :barcode AND PONO= :po AND BOXNO= :box AND ISPOSTED='0'")
     void deleteshipment(String barcode,String po,String box);
     @Query ("select BOXNO from SHIPMENT_TABLE")
     List<String>getboxes();
+
+    @Query ("select  BOXNO from SHIPMENT_TABLE WHERE ISPOSTED='0'")
+    List<String>getboxes2();
 
 
     @Query("SELECT DISTINCT PONO FROM  SHIPMENT_TABLE WHERE ISPOSTED='0'")
@@ -103,5 +112,13 @@ public interface ShipmentDao {
     List<Shipment> getBoxsShipments(String po,String box);
     @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :date AND ISPOSTED='0'")
     List<Shipment> getdateshipments(String date);
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :date AND PONO= :po AND BOXNO= :box AND  ISPOSTED='0'")
+    List<Shipment> getshipmentsbydate_po_box(String date,String box,String po);
+
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :Date AND BOXNO= :Box AND ISPOSTED= '0'")
+    List<Shipment> getShipmentsbydate_box(String Date,String Box);
+    @Query ("select * from SHIPMENT_TABLE WHERE SHIPMENTDATE= :Date AND PONO= :po AND ISPOSTED= '0'")
+    List<Shipment> getShipmentsbydate_pono(String Date, String po);
+
 
 }

@@ -15,14 +15,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.net.http.DelegatingSSLSession;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,6 +55,7 @@ import com.example.irbidcitycenter.Adapters.PonoSearchAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.AllPOs;
 import com.example.irbidcitycenter.Models.PO;
 import com.example.irbidcitycenter.Models.ShipmentLogs;
 import com.example.irbidcitycenter.Models.UserPermissions;
@@ -61,6 +70,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
 import com.example.irbidcitycenter.Models.Shipment;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +83,7 @@ import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.Adapters.ShipmentAdapter.sum;
+import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.GeneralMethod.convertToEnglish;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.BoxNolist;
@@ -92,6 +103,7 @@ public class NewShipment extends AppCompatActivity {
     public static int CheckFlag = 0;
     public static Dialog db_posearchdialog, db_boxsearchdialog;
     public Button next;
+    public static  Button DS_delete1;
     public Button save;
     public static TextView respon;
     public static TextView boxnorespon, DS_poediteshow, DS_boxcountediteshow, DS_Itemcountediteshow, Db_boxSearch, Dbsh_poSearch;
@@ -100,7 +112,7 @@ public class NewShipment extends AppCompatActivity {
     public static EditText boxno, itemname, PoQTY, poststate, DIsh_poedit, DIsh_boxedit, DIsh_itemcodeedit;
     public static EditText barcode, Db_boxedit, Dbsh_poedit;
     public TextView barcodescan;
-    public static TextView DIsh_boxSearch;
+    public static TextView DIsh_boxSearch,PONO_respon;
     EditText qty, currentpo, currentbox, itemscounts;
     public static Dialog dialog1, dialog2;
     public static String ponotag;
@@ -158,9 +170,10 @@ public class NewShipment extends AppCompatActivity {
     public String deviceId = "";
     Button Ship_delete;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
-
+    AudioManager mode ;
     private Animation animation;
-
+  HorizontalScrollView HorizontalScroll;
+    public static List<String>allPOs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,29 +186,17 @@ public class NewShipment extends AppCompatActivity {
         UserNo = my_dataBase.settingDao().getUserNo();
         Log.e("usenumber", UserNo);
         init();
-        next.setEnabled(false);
-        //  checkFinishPermission();
-        //checkDeletePermission();
+        try {
+            mode = (AudioManager)NewShipment.this.getSystemService(Context.AUDIO_SERVICE);
+            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+        }catch (Exception e){
+            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+        }
+
         fillLastBoxinfo();
+        next.setEnabled(false);
 
-// my_dataBase.shipmentDao().deleteALL();
-        // shipmentsList=my_dataBase.shipmentDao().getallShipment();
-        //   filladapter(shipmentsList);
-/////////////TESTING CODE
-    /* Shipment  shipment=new Shipment();
-        shipment.setPoNo("1");
-        shipment.setQty("1");
-        shipment.setBarcode("123458997658087");
-        shipment.setBoxNo("box22");
-        shipment.setDiffer("22");
-
-        for (int i=0;i<50;i++)
-            shipmentList.add(shipment);
-        filladapter(shipmentList);*/
-        //
-
-
-        //save.setEnabled(false);
         pono.requestFocus();
         boxno.setEnabled(false);
         barcode.setEnabled(false);
@@ -209,7 +210,7 @@ public class NewShipment extends AppCompatActivity {
                 searchBoxList.clear();
                 boxno.setText("");
                 barcode.setText("");
-                if (PoNolist.size() != 0) {
+                if ( allPOs.size() != 0) {
                     showdailogponumber();
                 } else
                     Toast.makeText(NewShipment.this, getResources().getString(R.string.nopo), Toast.LENGTH_LONG).show();
@@ -253,91 +254,43 @@ public class NewShipment extends AppCompatActivity {
                 animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
                 save.startAnimation(animation);
 
-
+                if (localList.size() != 0) {
                 if (userPermissions.getMasterUser().equals("0")) {
                     if (userPermissions.getSHIP_Save().equals("1")) {
 
-                        if (localList.size() != 0) {
-                            shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
-                            Log.e("shipmentsListsize", shipmentsList.size() + "");
-                            for (int i = 0; i < shipmentsList.size(); i++)
-                                if (shipmentsList.get(i).getDeviceId() == null)
-                                    shipmentsList.get(i).setDeviceId(deviceId);
-                            exportData(shipmentsList);
-
-                            localList.clear();
-                            shipmentsList.clear();
-                            PoQTY.setText("");
-                            itemname.setText("");
-                            next.setEnabled(false);
-                        } else {
-
-                            generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-
-                        }
-                        if (adapter != null) adapter.notifyDataSetChanged();
-                        pono.setText("");
-                        pono.setEnabled(true);
-                        pono.requestFocus();
-                        boxno.setText("");
-                        barcode.setText("");
-                        boxno.setEnabled(false);
-                        barcode.setEnabled(false);
-                        qty.setEnabled(false);
-                        PoQTY.setText("");
-                        itemname.setText("");
-                        ////
-
-                        searchView1.setEnabled(true);
-                        importData.BoxNolist.clear();
-                        importData.POdetailslist.clear();
-                        clearPOinfo();
-                        clearLastBoxinfo();
+                        saveData();
 
                     } else {
-                        generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.savePermission), "");
+                      //  generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.savePermission), "");
 
+                        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                .setContentText(getResources().getString(R.string.del_per))
+                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        authenticDailog2(4);
+
+                                        sweetAlertDialog.dismiss();
+                                    }
+
+                                })
+                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                })
+                                .show();
                     }
 
 
                 } else {
-                    if (localList.size() != 0) {
-                        shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
-                        Log.e("shipmentsListsize", shipmentsList.size() + "");
-                        for (int i = 0; i < shipmentsList.size(); i++)
-                            if (shipmentsList.get(i).getDeviceId() == null)
-                                shipmentsList.get(i).setDeviceId(deviceId);
-                        exportData(shipmentsList);
+                    saveData();
 
-                        localList.clear();
-                        shipmentsList.clear();
-                        PoQTY.setText("");
-                        itemname.setText("");
-                        next.setEnabled(false);
+                }} else {
 
-                    } else {
-
-                        generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
-
-                    }
-                    if (adapter != null) adapter.notifyDataSetChanged();
-                    pono.setText("");
-                    pono.setEnabled(true);
-                    pono.requestFocus();
-                    boxno.setText("");
-                    barcode.setText("");
-                    boxno.setEnabled(false);
-                    barcode.setEnabled(false);
-                    qty.setEnabled(false);
-                    ////
-
-                    searchView1.setEnabled(true);
-                    importData.BoxNolist.clear();
-                    importData.POdetailslist.clear();
-                    PoQTY.setText("");
-                    itemname.setText("");
-                    clearPOinfo();
-                    clearLastBoxinfo();
+                    generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.warning), getResources().getString(R.string.fillYourList));
 
                 }
 
@@ -377,63 +330,73 @@ public class NewShipment extends AppCompatActivity {
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
-                findViewById(R.id.cancel).startAnimation(animation);
+                try {
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable() {
+                        public void run() {
+                            animation = AnimationUtils.loadAnimation(NewShipment.this, R.anim.modal_in);
+                            findViewById(R.id.cancel).startAnimation(animation);
 
-                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText(getResources().getString(R.string.confirm_title))
-                        .setContentText(getResources().getString(R.string.messageExit))
-                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                if (localList.size() != 0) {
-                                    new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
-                                            .setTitleText(getResources().getString(R.string.confirm_title))
-                                            .setContentText(getResources().getString(R.string.messageExit2))
-                                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                                @Override
-                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                    sweetAlertDialog.dismissWithAnimation();
-
-                                                    localList.clear();
-                                                    filladapter(localList);
+                            new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.confirm_title))
+                                    .setContentText(getResources().getString(R.string.messageExit))
+                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
 
 
-                                                    Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
+                                            if (localList.size() != 0) {
+                                                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                                        .setTitleText(getResources().getString(R.string.confirm_title))
+                                                        .setContentText(getResources().getString(R.string.messageExit2))
+                                                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                                sweetAlertDialog.dismissWithAnimation();
 
-                                                }
-                                            })
-                                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                                @Override
-                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                    sweetAlertDialog.dismiss();
-                                                }
-                                            })
-                                            .show();
+                                                                localList.clear();
+                                                                filladapter(localList);
 
-                                } else {
-                                    sweetAlertDialog.dismiss();
-                                    Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
 
-                                }
-                            }
+                                                                Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                                                startActivity(intent);
+                                                                finish();
 
-                        })
-                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                barcode.setEnabled(true);
-                                sweetAlertDialog.dismiss();
-                            }
-                        })
-                        .show();
+                                                            }
+                                                        })
+                                                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                                sweetAlertDialog.dismiss();
+                                                            }
+                                                        })
+                                                        .show();
 
+                                            } else {
+                                                sweetAlertDialog.dismiss();
+                                                Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
+
+                                            }
+                                        }
+
+                                    })
+                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                            barcode.setEnabled(true);
+                                            sweetAlertDialog.dismiss();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    });
+
+
+                }catch (Exception e){
+
+                }
             }
         });
 
@@ -489,6 +452,7 @@ public class NewShipment extends AppCompatActivity {
         Configuration config = new Configuration();
         config.locale = locale;
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
     }
 
     private void checkFinishPermission() {
@@ -619,7 +583,8 @@ public class NewShipment extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())) {
+                if (UsNa.getText().toString().trim().equals(userPermissions.getUserNO()) && pass.getText().toString().trim().equals(userPermissions.getUserPassword())
+                    ||checkIfUserWhoLoginIsMaster(NewShipment.this,UsNa.getText().toString().trim(),pass.getText().toString().trim())){
                     if (enterflage == 1)
                         openDeleteItemDailog();
                     else if (enterflage == 2) openDeleteBoxDailog();
@@ -642,6 +607,8 @@ public class NewShipment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 authenticationdialog.dismiss();
+                fillPOinfo(pono.getText().toString().trim());
+
             }
         });
         authenticationdialog.show();
@@ -690,6 +657,11 @@ public class NewShipment extends AppCompatActivity {
                             openDeletePoDailog();
                             authenticationdialog.dismiss();
                         }
+                        else if (enterflage == 4) {
+                            authenticationdialog.dismiss();
+                            saveData();
+
+                        }
                     } else {
                         generalMethod.showSweetDialog(NewShipment.this, 3, getResources().getString(R.string.Permission), "");
 
@@ -711,7 +683,40 @@ public class NewShipment extends AppCompatActivity {
 
 
     }
+    private void   saveData(){
 
+            shipmentsList = my_dataBase.shipmentDao().getUnpostedShipment("0");
+            Log.e("shipmentsListsize", shipmentsList.size() + "");
+            for (int i = 0; i < shipmentsList.size(); i++)
+                if (shipmentsList.get(i).getDeviceId() == null)
+                    shipmentsList.get(i).setDeviceId(deviceId);
+            exportData(shipmentsList);
+
+            localList.clear();
+            shipmentsList.clear();
+            PoQTY.setText("");
+            itemname.setText("");
+            next.setEnabled(false);
+
+        if (adapter != null) adapter.notifyDataSetChanged();
+        pono.setText("");
+        pono.setEnabled(true);
+        pono.requestFocus();
+        boxno.setText("");
+        barcode.setText("");
+        boxno.setEnabled(false);
+        barcode.setEnabled(false);
+        qty.setEnabled(false);
+        PoQTY.setText("");
+        itemname.setText("");
+        ////
+
+        searchView1.setEnabled(true);
+        importData.BoxNolist.clear();
+        importData.POdetailslist.clear();
+        fillPOinfo(pono.getText().toString().trim());
+        clearLastBoxinfo();
+    }
     private void openDeletePoDailog() {
         deletedPOList.clear();
         allpo = my_dataBase.shipmentDao().getallpo();
@@ -725,7 +730,7 @@ public class NewShipment extends AppCompatActivity {
         deletePOdialog.getWindow().setAttributes(lp);
 
         deletePOdialog.show();
-        Button DS_delete = deletePOdialog.findViewById(R.id.DS_delete);
+   DS_delete1 = deletePOdialog.findViewById(R.id.DS_delete);
         Button DS_cancel = deletePOdialog.findViewById(R.id.DS_cancel);
         Button DS_dialogsave = deletePOdialog.findViewById(R.id.DS_dialogsave);
         DS_poedit = deletePOdialog.findViewById(R.id.DS_poedit);
@@ -733,6 +738,7 @@ public class NewShipment extends AppCompatActivity {
         DS_boxcountediteshow = deletePOdialog.findViewById(R.id.DS_boxcountediteshow);
         DS_Itemcountediteshow = deletePOdialog.findViewById(R.id.DS_Itemcountediteshow);
         DS_poedit.requestFocus();
+        DS_delete1.setEnabled(false);
         DS_poedit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -745,9 +751,10 @@ public class NewShipment extends AppCompatActivity {
 
                                 filldeletePOdialogDATA();
 
-
+                                DS_delete1.setEnabled(true);
                             } else {
                                 Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                                DS_poedit.setText("");
                             }
 
                         } else {
@@ -759,7 +766,33 @@ public class NewShipment extends AppCompatActivity {
                 return false;
             }
         });
+        DS_poedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
 
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!DS_poedit.getText().toString().equals("")) {
+                            if (allpo.contains(DS_poedit.getText().toString().trim())) {
+
+
+                                filldeletePOdialogDATA();
+
+                                DS_delete1.setEnabled(true);
+                            } else {
+                                Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                                DS_poedit.setText("");
+                            }
+
+                        } else {
+                            DS_poedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
         deletePOdialog.findViewById(R.id.DS_BACK).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -774,12 +807,16 @@ public class NewShipment extends AppCompatActivity {
 
                 dailogNum = 1;
                 searchDBpoDailog(allpo);
+
             }
         });
-        DS_delete.setOnClickListener(new View.OnClickListener() {
+        DS_delete1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+
+
+              if(!DS_poedit.getText().toString().equals(""))
+              {   new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText(getResources().getString(R.string.confirm_title))
                         .setContentText(getResources().getString(R.string.deletepo1))
                         .setConfirmButton(getResources().getString(R.string.yes),
@@ -804,6 +841,10 @@ public class NewShipment extends AppCompatActivity {
                         })
                         .show();
             }
+
+
+            }
+
         });
 
         DS_cancel.setOnClickListener(new View.OnClickListener() {
@@ -847,7 +888,7 @@ public class NewShipment extends AppCompatActivity {
                     for (int i = 0; i < deletedPOList.size(); i++)
                         my_dataBase.shipmentDao().deletePO(deletedPOList.get(i));
                     fillLastBoxinfo();
-                    clearPOinfo();
+                    fillPOinfo(pono.getText().toString().trim());
                     Toast.makeText(NewShipment.this, getString(R.string.app_done), Toast.LENGTH_LONG).show();
                 } else
                     Toast.makeText(NewShipment.this, getString(R.string.nODataChanged), Toast.LENGTH_SHORT).show();
@@ -991,7 +1032,8 @@ public class NewShipment extends AppCompatActivity {
                     dailogNum = 2;
                     searchDBpoDailog(listponame);
                 } else {
-                    Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                    searchDBpoDailog(listponame);
+                  //  Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -1008,10 +1050,14 @@ public class NewShipment extends AppCompatActivity {
                     dailogNum = 2;
                     searchDBboxDailog(listboxname);
                 } else {
-                    Toast.makeText(NewShipment.this, getString(R.string.noBoxData), Toast.LENGTH_SHORT).show();
+                    searchDBboxDailog(listboxname);
+                    //Toast.makeText(NewShipment.this, getString(R.string.noBoxData), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+
+
         Dbsh_poedit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -1026,6 +1072,7 @@ public class NewShipment extends AppCompatActivity {
                                     break;
                                 } else {
                                     Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                                    Dbsh_poedit.setText("");
                                 }
 
                         } else {
@@ -1046,15 +1093,24 @@ public class NewShipment extends AppCompatActivity {
 
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                         if (!Db_boxedit.getText().toString().trim().equals("")) {
-                            Db_boxnumshow.setText(Db_boxedit.getText().toString().trim());
+
                             long allqtys = my_dataBase.shipmentDao().getsumofboxitemsqty(Dbsh_poedit.getText().toString().trim(), Db_boxedit.getText().toString().trim());
-                            Db_Itemcountediteshow.setText("" + allqtys);
-                        } else {
+                         if(allqtys!=0)
+                         {Db_Itemcountediteshow.setText("" + allqtys);
+
+                             Db_boxnumshow.setText(Db_boxedit.getText().toString().trim());
+                         }
+                         else {
                             Toast.makeText(NewShipment.this, getString(R.string.noBoxData), Toast.LENGTH_SHORT).show();
+
+                             Db_boxedit.setText("");
                         }
 
-                    } else {
-                        Db_boxedit.requestFocus();
+                        } else {
+                            Db_boxedit.requestFocus();
+                        }
+
+
                     }
                     return true;
                 }
@@ -1063,6 +1119,64 @@ public class NewShipment extends AppCompatActivity {
 
             }
         });
+
+        Dbsh_poedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!Dbsh_poedit.getText().toString().trim().equals("")) {
+                            for (int x = 0; x < BbShip_list.size(); x++)
+                                if (BbShip_list.get(x).getPoNo().equals(Dbsh_poedit.getText().toString().trim())) {
+                                    Db_boxedit.setEnabled(true);
+                                    Db_boxedit.requestFocus();
+                                    break;
+                                } else {
+                                    Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                                    Dbsh_poedit.setText("");
+                                }
+
+                        } else {
+                            Dbsh_poedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+        Db_boxedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!Db_boxedit.getText().toString().trim().equals("")) {
+
+                            long allqtys = my_dataBase.shipmentDao().getsumofboxitemsqty(Dbsh_poedit.getText().toString().trim(), Db_boxedit.getText().toString().trim());
+                            if(allqtys!=0)
+                            {Db_Itemcountediteshow.setText("" + allqtys);
+
+                                Db_boxnumshow.setText(Db_boxedit.getText().toString().trim());
+                            }
+                            else {
+                                Toast.makeText(NewShipment.this, getString(R.string.noBoxData), Toast.LENGTH_SHORT).show();
+
+                                Db_boxedit.setText("");
+                            }
+
+                        } else {
+                            Db_boxedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
         Db_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1109,7 +1223,7 @@ public class NewShipment extends AppCompatActivity {
                     checkLocalList(2);
                     deletedBoxes.clear();
                     fillLastBoxinfo();
-                    clearPOinfo();
+                    fillPOinfo(pono.getText().toString().trim());
                     Toast.makeText(NewShipment.this, getString(R.string.app_done), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(NewShipment.this, getString(R.string.nODataChanged), Toast.LENGTH_SHORT).show();
@@ -1119,6 +1233,12 @@ public class NewShipment extends AppCompatActivity {
                 authenticationdialog.dismiss();
             }
         });
+
+
+
+
+
+
     }
 
     private void addDeleteBoxsLoges() {
@@ -1173,6 +1293,7 @@ public class NewShipment extends AppCompatActivity {
         DIsh_boxedit.setEnabled(false);
         DIsh_boxSearch.setEnabled(false);
         DIsh_itemcodeedit.setEnabled(false);
+        DS_delete.setEnabled(false);
         deleteitemdialog.findViewById(R.id.DIsh_BACK).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1191,10 +1312,11 @@ public class NewShipment extends AppCompatActivity {
                 dailogNum = 0;
                 searchDBpoDailog(listponame);
 
+
             }
         });
 
-        deleteitemdialog.findViewById(R.id.DIsh_boxSearch).setOnClickListener(new View.OnClickListener() {
+        DIsh_boxSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listboxname.clear();
@@ -1208,6 +1330,9 @@ public class NewShipment extends AppCompatActivity {
 
             }
         });
+
+
+
         DIsh_poedit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -1215,6 +1340,7 @@ public class NewShipment extends AppCompatActivity {
 
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                         if (!DIsh_poedit.getText().toString().equals("")) {
+                            DIsh_boxSearch.setEnabled(true);
                             for (int x = 0; x < BbShip_list.size(); x++)
                                 if (BbShip_list.get(x).getPoNo().contains(DIsh_poedit.getText().toString().trim())) {
                                     DIsh_boxedit.setEnabled(true);
@@ -1234,7 +1360,6 @@ public class NewShipment extends AppCompatActivity {
 
             }
         });
-
         DIsh_boxedit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -1271,6 +1396,7 @@ public class NewShipment extends AppCompatActivity {
                         if (!DIsh_itemcodeedit.getText().toString().equals("")) {
                             int flage = 0;
                             long newqty;
+                            DS_delete.setEnabled(true);
                             for (int x = 0; x < BbShip_list.size(); x++)
                                 if (BbShip_list.get(x).getPoNo().equals(DIsh_poedit.getText().toString().trim())
                                         && BbShip_list.get(x).getBoxNo().equals(DIsh_boxedit.getText().toString().trim())
@@ -1342,6 +1468,7 @@ public class NewShipment extends AppCompatActivity {
                                                         cleardataOfdeleteitemdialog();
 
                                                         sweetAlertDialog.dismiss();
+                                                        DS_delete.setEnabled(false);
                                                     }
                                                 })
                                                 .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
@@ -1370,6 +1497,176 @@ public class NewShipment extends AppCompatActivity {
             }
 
         });
+
+        DIsh_poedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!DIsh_poedit.getText().toString().equals("")) {
+                            DIsh_boxSearch.setEnabled(true);
+                            for (int x = 0; x < BbShip_list.size(); x++)
+                                if (BbShip_list.get(x).getPoNo().contains(DIsh_poedit.getText().toString().trim())) {
+                                    DIsh_boxedit.setEnabled(true);
+                                    DIsh_boxedit.requestFocus();
+                                    break;
+                                } else {
+                                    Toast.makeText(NewShipment.this, getString(R.string.noPoData), Toast.LENGTH_SHORT).show();
+                                }
+
+                        } else {
+                            DIsh_poedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+
+        DIsh_boxedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!DIsh_boxedit.getText().toString().equals("")) {
+                            for (int x = 0; x < BbShip_list.size(); x++)
+                                if (BbShip_list.get(x).getPoNo().equals(DIsh_poedit.getText().toString().trim()) && BbShip_list.get(x).getBoxNo().equals(DIsh_boxedit.getText().toString().trim())) {
+                                    DIsh_itemcodeedit.setEnabled(true);
+                                    DIsh_itemcodeedit.requestFocus();
+                                    break;
+                                } else {
+                                    Toast.makeText(NewShipment.this, getString(R.string.noBoxData), Toast.LENGTH_SHORT).show();
+                                }
+
+                        } else {
+                            DIsh_boxedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+        DIsh_itemcodeedit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int i, KeyEvent event) {
+                if (i != KeyEvent.ACTION_UP) {
+
+                    if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
+                            || i == EditorInfo.IME_NULL) {
+                        if (!DIsh_itemcodeedit.getText().toString().equals("")) {
+                            int flage = 0;
+                            long newqty;
+                            DS_delete.setEnabled(true);
+                            for (int x = 0; x < BbShip_list.size(); x++)
+                                if (BbShip_list.get(x).getPoNo().equals(DIsh_poedit.getText().toString().trim())
+                                        && BbShip_list.get(x).getBoxNo().equals(DIsh_boxedit.getText().toString().trim())
+                                        && BbShip_list.get(x).getBarcode().equals(DIsh_itemcodeedit.getText().toString().trim())) {
+                                    ind = x;
+                                    flage = 0;
+                                    newqty = Long.parseLong(BbShip_list.get(x).getQty());
+                                    if (newqty > 1) {
+                                        newqty -= 1;
+                                        BbShip_list.get(x).setQty(newqty + "");
+                                        if (BbShip_list.get(x).getDiffer() != null && !BbShip_list.get(x).getDiffer().equals(""))
+                                            BbShip_list.get(x).setDiffer(String.valueOf(Long.parseLong(BbShip_list.get(x).getDiffer()) - 1));
+                                        DIsh_poediteshow.setText(DIsh_poedit.getText().toString().trim());
+                                        DIsh_boxcountediteshow.setText(DIsh_boxedit.getText().toString().trim());
+                                        DIsh_Itemcodeediteshow.setText(DIsh_itemcodeedit.getText().toString().trim());
+                                        String pre = getpreQty(BbShip_list.get(x).getPoNo(), BbShip_list.get(x).getBoxNo(), BbShip_list.get(x).getBarcode());
+                                        DIsh_preQTY.setText(pre);
+                                        DIsh_qtyedit.setText(BbShip_list.get(x).getQty());
+                                        flage = 0;
+                                        if (reducedshipmentsList.size() == 0)
+                                            reducedshipmentsList.add(BbShip_list.get(x));
+
+                                        else {
+
+                                            if (exists(BbShip_list.get(x).getPoNo(), BbShip_list.get(x).getBoxNo(), BbShip_list.get(x).getBarcode()) == 0)
+                                                reducedshipmentsList.add(BbShip_list.get(x));
+                                            else {
+                                                reducedshipmentsList.get(exists_index).setQty(newqty + "");
+                                                reducedshipmentsList.get(exists_index).setDiffer(String.valueOf(Long.parseLong(reducedshipmentsList.get(exists_index).getDiffer()) - 1));
+                                            }
+                                        }
+                                    } else {
+                                        DIsh_preQTY.setText("1");
+                                        DIsh_poediteshow.setText(DIsh_poedit.getText().toString().trim());
+                                        DIsh_boxcountediteshow.setText(DIsh_boxedit.getText().toString().trim());
+                                        DIsh_Itemcodeediteshow.setText(DIsh_itemcodeedit.getText().toString().trim());
+                                        DIsh_qtyedit.setText("1");
+
+                                        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.BUTTON_CONFIRM)
+                                                .setTitleText(getResources().getString(R.string.confirm_title))
+                                                .setContentText(getResources().getString(R.string.delete3))
+                                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                                                        if (reducedshipmentsList.size() > 0) {
+
+                                                            if (exists(BbShip_list.get(ind).getPoNo(), BbShip_list.get(ind).getBoxNo(), BbShip_list.get(ind).getBarcode()) == 0) {
+                                                                BbShip_list.get(ind).setQty("0");
+                                                                reducedshipmentsList.add(BbShip_list.get(ind));
+                                                                BbShip_list.remove(ind);
+
+
+                                                            } else {
+                                                                reducedshipmentsList.remove(exists_index);
+                                                                BbShip_list.get(ind).setQty("0");
+                                                                reducedshipmentsList.add(BbShip_list.get(ind));
+                                                                BbShip_list.remove(ind);
+
+                                                            }
+
+
+                                                        } else {
+                                                            BbShip_list.get(ind).setQty("0");
+                                                            reducedshipmentsList.add(BbShip_list.get(ind));
+                                                            BbShip_list.remove(ind);
+                                                        }
+
+                                                        cleardataOfdeleteitemdialog();
+
+                                                        sweetAlertDialog.dismiss();
+                                                        DS_delete.setEnabled(false);
+                                                    }
+                                                })
+                                                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismiss();
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                    break;
+
+                                } else {
+                                    flage = 1;
+                                }
+                            if (flage == 1)
+                                Toast.makeText(NewShipment.this, getString(R.string.noItemCodeData), Toast.LENGTH_LONG).show();
+                            DIsh_itemcodeedit.setText("");
+                        } else {
+                            DIsh_itemcodeedit.requestFocus();
+                        }
+                    }
+                }
+
+                return true;    }
+        });
+
+
+
+
+
+
         DS_dialogsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1420,7 +1717,8 @@ public class NewShipment extends AppCompatActivity {
                     authenticationdialog.dismiss();
                     Toast.makeText(NewShipment.this, getString(R.string.app_done), Toast.LENGTH_LONG).show();
                     fillLastBoxinfo();
-                    clearPOinfo();
+                    fillPOinfo(pono.getText().toString());
+                    //clearPOinfo();
                 } else {
                     Toast.makeText(NewShipment.this, getString(R.string.nODataChanged), Toast.LENGTH_SHORT).show();
                     deleteitemdialog.dismiss();
@@ -1430,7 +1728,6 @@ public class NewShipment extends AppCompatActivity {
 
             }
         });
-
         DS_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1514,6 +1811,11 @@ public class NewShipment extends AppCompatActivity {
                         .show();
             }
         });
+
+
+
+
+
     }
 
 
@@ -1706,8 +2008,9 @@ public class NewShipment extends AppCompatActivity {
 
             }
 
-            if (i != KeyEvent.KEYCODE_ENTER) {
+           else if (i != KeyEvent.KEYCODE_ENTER) {
                 {
+
                     if (keyEvent.getAction() == KeyEvent.ACTION_UP)
 
                         switch (view.getId()) {
@@ -1719,15 +2022,28 @@ public class NewShipment extends AppCompatActivity {
                                     getboxData();
                                     next.setEnabled(false);
 
-                                } else
+                                } else {
                                     pono.requestFocus();
+                                    try {
 
 
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000 milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000);
+                                        }
+                                    }catch (Exception e){
+                                        Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                                 break;
                             }
                             case R.id.boxNotxt: {
-                                next.setEnabled(false);
-                                Log.e("", barcode.getText().toString());
+                                next.setEnabled(true);
+
                                 pono.setEnabled(false);
                                 if (!boxno.getText().toString().trim().equals("")) {
                                     if (checkboxvalidty()) {
@@ -1739,12 +2055,39 @@ public class NewShipment extends AppCompatActivity {
 
 
                                     } else {
-                                        showconfirmBoxNoDialog();
+                                        try {
 
+
+                                            if (mode != null)
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000  milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
+                                            Log.e("ar==", "ar");
+
+                                            showconfirmBoxNoDialog();
+                                        }catch (Exception e){
+                                            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                        }
 
                                     }
                                 } else
-                                    boxno.requestFocus();
+                                { boxno.requestFocus();
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000  milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000 , VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000 );
+                                    }
+
+                                }
 
 
                                 break;
@@ -1770,15 +2113,49 @@ public class NewShipment extends AppCompatActivity {
                                         boxno.setEnabled(false);
                                         // getPOdetails();
                                     } else {
-                                        barcode.setError("InValid");
+
+
+                                      try {
+
+
+                                        if(mode!=null)  mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                        showalertdaiog(NewShipment.this,"Invalid Item  ");
+                                        //showSweetDialog(NewShipment.this,0,"","Invalid Item  "+barcode.getText());
+
+                                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                        // Vibrate for 1000  milliseconds
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            v.vibrate(VibrationEffect.createOneShot(1000 , VibrationEffect.DEFAULT_AMPLITUDE));
+                                        } else {
+                                            //deprecated in API 26
+                                            v.vibrate(1000 );
+                                        }
                                         barcode.setText("");
                                         barcode.setEnabled(true);
-                                        barcode.requestFocus();
+                                        barcode.requestFocus();}
+                                      catch (Exception e){
+                                          Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                      }
                                     }
                                 } else
-
+                                {
                                     barcode.requestFocus();
-                                //   }
+
+                                    try {
+
+
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                    // Vibrate for 1000  milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000 , VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000 );
+                                    }
+                                 }catch (Exception e){
+                                        Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                                 break;
 
 
@@ -1786,6 +2163,7 @@ public class NewShipment extends AppCompatActivity {
 
                         }
                 }
+
                 return true;
             }
             return false;
@@ -1799,7 +2177,7 @@ public class NewShipment extends AppCompatActivity {
 
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-            // Log.e("onEditorAction",""+keyEvent.getAction()+"\t"+i);
+          // Log.e("onEditorAction",""+keyEvent.getAction()+"\t"+i);
             if (i != KeyEvent.ACTION_UP) {
 
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT || i == EditorInfo.IME_ACTION_SEARCH
@@ -1812,14 +2190,15 @@ public class NewShipment extends AppCompatActivity {
                                 getboxData();
                                 next.setEnabled(false);
 
-                            } else
+                            } else {
                                 pono.requestFocus();
 
 
+                            }
                             break;
                         }
                         case R.id.boxNotxt: {
-                            next.setEnabled(false);
+                            next.setEnabled(true);
                             Log.e("", barcode.getText().toString());
                             pono.setEnabled(false);
                             if (!boxno.getText().toString().trim().equals("")) {
@@ -1832,12 +2211,16 @@ public class NewShipment extends AppCompatActivity {
 
 
                                 } else {
+
                                     showconfirmBoxNoDialog();
 
 
                                 }
                             } else
-                                boxno.requestFocus();
+                            { boxno.requestFocus();
+
+
+                            }
 
 
                             break;
@@ -1863,17 +2246,20 @@ public class NewShipment extends AppCompatActivity {
                                     boxno.setEnabled(false);
                                     // getPOdetails();
                                 } else {
-                                    barcode.setError("InValid");
+                                    //  barcode.setError(getResources().getString(R.string.invalid));
+                                    showSweetDialog(NewShipment.this,0,"","Invalid Item  "+barcode.getText());
+
+
                                     barcode.setText("");
                                     barcode.setEnabled(true);
                                     barcode.requestFocus();
                                 }
                             } else
-
+                            {
                                 barcode.requestFocus();
-                            //   }
-                            break;
 
+                            }
+                            break;
 
                         }
 
@@ -1896,59 +2282,65 @@ public class NewShipment extends AppCompatActivity {
 
 
     private void showExitDialog() {
-        new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getResources().getString(R.string.confirm_title))
-                .setContentText(getResources().getString(R.string.messageExit))
-                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable() {
+            public void run() {
+                new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(getResources().getString(R.string.confirm_title))
+                        .setContentText(getResources().getString(R.string.messageExit))
+                        .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
 
 
-                        if (localList.size() != 0) {
-                            new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
-                                    .setTitleText(getResources().getString(R.string.confirm_title))
-                                    .setContentText(getResources().getString(R.string.messageExit2))
-                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                            sweetAlertDialog.dismissWithAnimation();
+                                if (localList.size() != 0) {
+                                    new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText(getResources().getString(R.string.confirm_title))
+                                            .setContentText(getResources().getString(R.string.messageExit2))
+                                            .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismissWithAnimation();
 
-                                            localList.clear();
-                                            filladapter(localList);
+                                                    localList.clear();
+                                                    filladapter(localList);
 
 
                                           /*  Intent intent = new Intent(NewShipment.this, MainActivity.class);
                                             startActivity(intent);*/
-                                            finish();
+                                                    finish();
 
-                                        }
-                                    })
-                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                        @Override
-                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                            sweetAlertDialog.dismiss();
-                                        }
-                                    })
-                                    .show();
+                                                }
+                                            })
+                                            .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismiss();
+                                                }
+                                            })
+                                            .show();
 
-                        } else {
-                            sweetAlertDialog.dismiss();
-                            Intent intent = new Intent(NewShipment.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                } else {
+                                    sweetAlertDialog.dismiss();
+                                    Intent intent = new Intent(NewShipment.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
 
-                        }
-                    }
+                                }
+                            }
 
-                })
-                .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        barcode.setEnabled(true);
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .show();
+                        })
+                        .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                barcode.setEnabled(true);
+                                sweetAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
+                     }
+        });
+
 
 
     }
@@ -1957,7 +2349,7 @@ public class NewShipment extends AppCompatActivity {
     private void showconfirmBoxNoDialog() {
         new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText(getResources().getString(R.string.confirm_title))
-                .setContentText(getResources().getString(R.string.boxconfirm))
+                .setContentText(getResources().getString(R.string.boxconfirm)+" "+boxno.getText().toString())
                 .setConfirmButton(getResources().getString(R.string.yes),
                         new SweetAlertDialog.OnSweetClickListener() {
                             @Override
@@ -1967,18 +2359,29 @@ public class NewShipment extends AppCompatActivity {
                                 barcode.requestFocus();
 
                                 sweetAlertDialog.dismiss();
+                                try {
+                                    if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
+                                }catch (Exception e){
+                                    Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                }
 
                             }
                         })
                 .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        try {
 
+
+                        if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                         boxno.setText("");
                         boxno.setEnabled(true);
                         boxno.requestFocus();
                         sweetAlertDialog.dismiss();
+                        }catch (Exception e){
+                            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();
@@ -2023,8 +2426,8 @@ public class NewShipment extends AppCompatActivity {
             updateAdpapter();
 
             updateRow(localList.get(pos).getBarcode(), localList.get(pos).getPoNo(), localList.get(pos).getBoxNo(), localList.get(pos).getQty(), localList.get(pos).getDiffer());
-
-
+            fillLastBoxinfo();
+            fillPOinfo(pono.getText().toString().trim());
             barcode.setText("");
             barcode.setEnabled(true);
             barcode.requestFocus();
@@ -2052,7 +2455,8 @@ public class NewShipment extends AppCompatActivity {
                 //localList.add();
 
                 updateRow(localList.get(pos).getBarcode(), localList.get(pos).getPoNo(), localList.get(pos).getBoxNo(), localList.get(pos).getQty(), localList.get(pos).getDiffer());
-
+                fillLastBoxinfo();
+                fillPOinfo(pono.getText().toString().trim());
 //            Log.e("shipment.getQty",shipment.getQty());
 
                 barcode.setText("");
@@ -2199,7 +2603,8 @@ public class NewShipment extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(NewShipment.this));
         adapter = new ShipmentAdapter(NewShipment.this, shipmentList);
         recyclerView.setAdapter(adapter);
-
+           fillLastBoxinfo();
+        fillPOinfo(pono.getText().toString().trim());
     }
 
     public void ScanCode(View view) {
@@ -2258,14 +2663,29 @@ public class NewShipment extends AppCompatActivity {
         }
     }
 
-    public void fillLastBoxinfo() {
+    public void fillLastBoxinfo2() {
+        Log.e("fillLastBoxinfo", "fillLastBoxinfo");
         try {
 
             Shipment shipment = my_dataBase.shipmentDao().getlastbox();
-            lastpo.setText(shipment.getPoNo().toString());
+         if(shipment!=null) {  lastpo.setText(shipment.getPoNo().toString());
             lastbox.setText(shipment.getBoxNo().toString());
             long sum = my_dataBase.shipmentDao().getsumofboxitemsqty2(shipment.getPoNo(), shipment.getBoxNo());
-            itemcount.setText(sum + "");
+            itemcount.setText(sum + "");}
+        } catch (Exception e) {
+            Log.e("", e.getMessage());
+        }
+
+    }
+    public void fillLastBoxinfo() {
+        Log.e("fillLastBoxinfo2", "fillLastBoxinfo2");
+        try {
+
+            Shipment shipment = my_dataBase.shipmentDao().getlastbox2();
+            if(shipment!=null) {  lastpo.setText(shipment.getPoNo().toString());
+                lastbox.setText(shipment.getBoxNo().toString());
+                long sum = my_dataBase.shipmentDao().getsumofboxitemsqty3(shipment.getPoNo(), shipment.getBoxNo());
+                itemcount.setText(sum + "");}
         } catch (Exception e) {
             Log.e("", e.getMessage());
         }
@@ -2273,7 +2693,7 @@ public class NewShipment extends AppCompatActivity {
     }
 
     public void fillPOinfo(String s) {
-
+              clearPOinfo();
         try {
             numBOx.clear();
 
@@ -2357,11 +2777,35 @@ public class NewShipment extends AppCompatActivity {
         if (userPermissions == null) getUsernameAndpass();
         MainActivity.exportFromMainAct = false;
         localList.clear();
+        HorizontalScroll=findViewById(R.id.HorizontalScroll);
+        HorizontalScroll.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                 barcode.requestFocus();
+               // HorizontalScroll.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        HorizontalScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                barcode.requestFocus();
+            }
+        });
         exportData = new ExportData(NewShipment.this);
         importData = new ImportData(NewShipment.this);
         poststate = findViewById(R.id.poststate);
         Ship_delete = findViewById(R.id.Ship_delete);
-        getPoNu();
+        allPOs=new ArrayList();
+        allPOs=my_dataBase.allPOsDao().getAll();
+       if(allPOs.size()==0) {
+
+           getPoNu();
+
+       }
+        PONO_respon= findViewById(R.id.PONO_respon);
         next = findViewById(R.id.nextbox);
         boxnorespon = findViewById(R.id.boxnorespon);
         respon = findViewById(R.id.respon);
@@ -2377,6 +2821,27 @@ public class NewShipment extends AppCompatActivity {
         searchView2 = findViewById(R.id.boxnoSearch);
         ponoClose = findViewById(R.id.ponoClose);
         // ponoClose.setVisibility(View.GONE);
+        PONO_respon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                 if( s.length()!=0){
+                     my_dataBase.allPOsDao().deleteAll();
+                     my_dataBase.allPOsDao().insertAll( PoNolist);
+                     NewShipment.allPOs=my_dataBase.allPOsDao().getAll();
+
+                 }
+            }
+        });
         ponoClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2447,20 +2912,39 @@ public class NewShipment extends AppCompatActivity {
                         newshipment = new Shipment();
                         newshipment.setPoNo(convertToEnglish(pono.getText().toString().trim()));
                         newshipment.setBoxNo(convertToEnglish(boxno.getText().toString().trim()));
+                        newshipment.setReceivedBox("");
                         newshipment.setBarcode(convertToEnglish(barcode.getText().toString().trim()));
                         newshipment.setUserNO(UserNo);
+
+
+
+                        if(barcode.getText().toString().trim().length() <= 15)    {
                         if (CheckNewShipmentObject(newshipment) == false
                                 && !barcode.getText().equals("")
                                 && barcode.getText().toString().trim().length() <= 15) {
-                            Log.e("barcodehere", barcode.getText().toString());
-                            showConfirmBarcodeDailog();
 
+
+                            try {
+
+
+                            Log.e("barcodehere", barcode.getText().toString());
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            // Vibrate for 1000  milliseconds
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(1000 , VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                //deprecated in API 26
+                                v.vibrate(1000 );
+                            }
+                            if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            showConfirmBarcodeDailog();
+                            }catch (Exception e){
+                                Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                            }
 
                         } else {
                             Log.e("aya", "=======");
-                            barcode.setText("");
-                            barcode.setEnabled(true);
-                            barcode.requestFocus();
+
 
 
                             if (list.size() > 0) {
@@ -2485,6 +2969,7 @@ public class NewShipment extends AppCompatActivity {
                                     newShipment.setPoNo(list.get(0).getPoNo());
                                     newShipment.setBoxNo(list.get(0).getBoxNo());
                                     newShipment.setBarcode(list.get(0).getBarcode());
+                                    newShipment.setReceivedBox("");
                                     newShipment.setPoqty("1");
                                     newShipment.setDeviceId(deviceId);
                                     newShipment.setDiffer("");
@@ -2499,6 +2984,15 @@ public class NewShipment extends AppCompatActivity {
                                     filladapter(localList);
                                     Log.e("CheckIsExistsINDB2", "true2");
                                     my_dataBase.shipmentDao().insert(newShipment);
+
+
+
+                                    barcode.setText("");
+                                    barcode.setEnabled(true);
+                                    barcode.requestFocus();
+
+
+
                                 } else {
 
 
@@ -2507,23 +3001,93 @@ public class NewShipment extends AppCompatActivity {
                                     Log.e("CheckIsExistsINDB2", "true3");
                                     updateRow(list.get(0).getBarcode(), list.get(0).getPoNo(), list.get(0).getBoxNo(), list.get(0).getQty(), "0");
                                     filladapter(localList);
+                                    barcode.setText("");
+                                    barcode.setEnabled(true);
+                                    barcode.requestFocus();
 
                                 }
                             } else {
+
+                                //   barcode.setError(getResources().getString(R.string.invalid));
+                                Handler h = new Handler(Looper.getMainLooper());
+                                h.post(new Runnable() {
+                                    public void run() {
+                                        showSweetDialog(NewShipment.this, 0, "", "Invalid Item  " + barcode.getText());
+                                        barcode.setText("");
+                                        barcode.setEnabled(true);
+                                        barcode.requestFocus();
+                                    }
+                                });
+
+                                try {
+                                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                                    // Vibrate for 1000  milliseconds
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    } else {
+                                        //deprecated in API 26
+                                        v.vibrate(1000);
+                                    }
+                                }catch (Exception e){
+                                    Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }}else {
+                            try {
+                                if (mode != null)
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Handler h = new Handler(Looper.getMainLooper());
+                                h.post(new Runnable() {
+                                    public void run() {
+
+                                        showalertdaiog(NewShipment.this, "Invalid Item  " );
+
+                                    }
+                                });
+
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 1000  milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(1000);
+                                }
                                 barcode.setText("");
-                                barcode.setError("Invalid");
+                                barcode.setEnabled(true);
+                                barcode.requestFocus();
+
+                            }catch (Exception e){
+                                Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
                             }
 
-
-                        }
-
-                        //  barcode.setText("");
+                            //  barcode.setText("");
                         /*    barcode.setEnabled(true);
                             barcode.requestFocus();*/
+                        }
                     }
                     if (editable.toString().equals("ItemOCode")) {
 
                         try {
+
+
+
+
+
+                            //NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
+                            itemname.setText(POdetailslist.get(0).getItemname());
+                            Log.e("itemname",itemname.getText().toString());
+                            PoQTY.setText(POdetailslist.get(0).getPoqty());
+                            ImportData.poqty = POdetailslist.get(0).getPoqty();
+                            //
+
+
+
+                            ImportData.posize = POdetailslist.size();
+
+
                             Log.e("afterTextChanged", "" + POdetailslist.get(0).getPoqty() + "");
                             if (Long.parseLong(POdetailslist.get(0).getPoqty()) > 0) {
                                 sum = Long.parseLong(POdetailslist.get(0).getPoqty().toString());
@@ -2547,7 +3111,7 @@ public class NewShipment extends AppCompatActivity {
                                     PoQTY.setText(POdetailslist.get(0).getPoqty());
                                     itemname.setText(POdetailslist.get(0).getItemname());
                                     shipment.setItemname(POdetailslist.get(0).getItemname());
-
+                                    shipment.setReceivedBox(convertToEnglish(POdetailslist.get(0).getBoxNo()));
                                     shipment.setUserNO(UserNo);
                                     long differ = getDiff(qty);
                                     if (differ > 0)
@@ -2572,18 +3136,70 @@ public class NewShipment extends AppCompatActivity {
 
 
                                         filladapter(localList);
+
+                                        barcode.setText("");
+                                        barcode.setEnabled(true);
+                                        barcode.requestFocus();
+
                                     } else {
                                         barcode.setText("");
-                                        barcode.setError("Invalid");
+                                        try {
+
+
+                                            if (mode != null)
+                                                mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                            //  barcode.setError(getResources().getString(R.string.invalid));
+                                            Handler h = new Handler(Looper.getMainLooper());
+                                            h.post(new Runnable() {
+                                                public void run() {
+                                                    showalertdaiog(NewShipment.this, "Invalid Item  " + barcode.getText());
+
+                                                }
+                                            });
+
+                                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                            // Vibrate for 1000  milliseconds
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                            } else {
+                                                //deprecated in API 26
+                                                v.vibrate(1000);
+                                            }
+
+                                        }catch (Exception e){
+                                            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                        }
+                                        barcode.setText("");
+                                        barcode.setEnabled(true);
+                                        barcode.requestFocus();
+
                                     }
-                                    barcode.setText("");
-                                    barcode.setEnabled(true);
-                                    barcode.requestFocus();
-
-
                                 }
                             } else {
-                                Toast.makeText(NewShipment.this, getResources().getString(R.string.notvaildqty), Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(NewShipment.this, getResources().getString(R.string.notvaildqty), Toast.LENGTH_SHORT).show();
+                                if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                Handler h = new Handler(Looper.getMainLooper());
+                                h.post(new Runnable() {
+                                    public void run() {
+                                        showalertdaiog(NewShipment.this,getResources().getString(R.string.notvaildqty));
+
+                                    }
+                                });
+                try {
+
+
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    // Vibrate for 1000  milliseconds
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        //deprecated in API 26
+                        v.vibrate(1000);
+                    }
+                }catch (Exception e){
+                    Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                }
+
 
                                 barcode.setText("");
                                 barcode.setEnabled(true);
@@ -2618,10 +3234,33 @@ public class NewShipment extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().length() != 0) {
+                    if(editable.toString().trim().equals("Internal Application Error")){
+
+
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(NewShipment.this, 0, "Server Error", "");
+                            }
+                        });
+                        localList.clear();
+
+                        filladapter(localList);
+                        if (adapter != null) adapter.notifyDataSetChanged();
+
+                    }else
                     if (editable.toString().trim().equals("exported")) {
                         Log.e("poststate", editable.toString());
-                        showSweetDialog(NewShipment.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
-                        saved = true;
+
+
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(NewShipment.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                            }
+                        });
+
+                             saved = true;
                         my_dataBase.shipmentDao().updateShipmentPosted();
                         localList.clear();
 
@@ -2666,12 +3305,36 @@ public class NewShipment extends AppCompatActivity {
 
                 if (editable.toString().length() != 0) {
                     if (editable.toString().equals("Not")) {
-                        NewShipment.pono.setError("Invalid");
-                        NewShipment.pono.setText("");
 
+                        try {
+
+
+                        if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                       // NewShipment.pono.setError(getResources().getString(R.string.invalid));
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+
+                                showalertdaiog(NewShipment.this,"Invalid Po  "+ NewShipment.pono.getText());
+                                NewShipment.pono.setText("");
+                            }
+                        });
+
+                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 1000  milliseconds
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            v.vibrate(VibrationEffect.createOneShot(1000 , VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            //deprecated in API 26
+                            v.vibrate(1000 );
+                        }
+                        }catch (Exception e){
+                            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                        }
 
                     } else {
-                        if (boxnorespon.getText().equals("BOXNO")) {
+                        if (editable.toString().equals("BOXNO")) {
+
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
 
@@ -2696,19 +3359,14 @@ public class NewShipment extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0)
 
-                    clearPOinfo();
+
                 fillPOinfo(pono.getText().toString().trim());
+
                 Log.e("localList", localList.size() + "");
                 try {
 
                     localList.clear();
                     List<Shipment> shipments = new ArrayList<>();
-            /* Shipment shipment ;
-            shipment = my_dataBase.shipmentDao().getlastShipment(pono.getText().toString().trim());
-            if(shipment!=null){
-                localList.add(shipment);
-                Log.e("localList",localList.size()+"");
-                filladapter(localList);*/
                     shipments = my_dataBase.shipmentDao().getlastShipments(pono.getText().toString().trim());
 
                     if (shipments.size() > 0) {
@@ -2739,7 +3397,7 @@ public class NewShipment extends AppCompatActivity {
         if (!barcode.getText().equals("")) {
             new SweetAlertDialog(NewShipment.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText(getResources().getString(R.string.confirm_title))
-                    .setContentText(getResources().getString(R.string.barcodeconfirm))
+                    .setContentText(getResources().getString(R.string.barcodeconfirm)+" "+barcode.getText().toString())
                     .setConfirmButton(getResources().getString(R.string.yes),
                             new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
@@ -2772,6 +3430,15 @@ public class NewShipment extends AppCompatActivity {
                                     CheckFlag = 0;
                                     //FinishProcessFlag=0;
 
+                                    try {
+
+
+                                        if (mode != null)
+                                            mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                    }catch (Exception e){
+                                        Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }
                             })
                     .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
@@ -2782,7 +3449,15 @@ public class NewShipment extends AppCompatActivity {
                             barcode.setText("");
                             barcode.setEnabled(true);
                             barcode.requestFocus();
-                            // FinishProcessFlag=0;
+                            try {
+
+
+                                if (mode != null)
+                                    mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+                            }catch (Exception e){
+                                Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
                     .show();
@@ -2839,7 +3514,7 @@ public class NewShipment extends AppCompatActivity {
 
 
         recyclerView1.setLayoutManager(new LinearLayoutManager(NewShipment.this));
-        ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, PoNolist);
+        ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, allPOs);
         recyclerView1.setAdapter(ponoSearchAdapter);
         Button btndialog = (Button) dialog2.findViewById(R.id.cancelbtndialog);
         btndialog.setOnClickListener(new View.OnClickListener() {
@@ -2866,14 +3541,15 @@ public class NewShipment extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 Log.e("afterText", editText.getText().toString());
                 if (editText.getText().toString().trim().equals("")) {
-                    ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, PoNolist);
+                    ponoSearchAdapter = new PonoSearchAdapter(NewShipment.this, allPOs);
                     recyclerView1.setAdapter(ponoSearchAdapter);
 
                 } else {
                     searcharrayAdapter.clear();
-                    for (int i = 0; i < PoNolist.size(); i++) {
-                        if (editText.getText().toString().trim().equals(PoNolist.get(i)))
-                            searcharrayAdapter.add(PoNolist.get(i));
+                    for (int i = 0; i < allPOs.size(); i++) {
+                        if (editText.getText().toString().trim().equals(allPOs
+                                .get(i)))
+                            searcharrayAdapter.add(allPOs.get(i));
 
 
                     }
@@ -2975,7 +3651,7 @@ public class NewShipment extends AppCompatActivity {
 
     public static void fillPoEdittext() {
         try {
-            pono.setText(PoNolist.get(Integer.parseInt(ponotag)));
+            pono.setText(allPOs.get(Integer.parseInt(ponotag)));
 
             getboxData();
             boxno.setEnabled(true);
@@ -2988,17 +3664,18 @@ public class NewShipment extends AppCompatActivity {
 
     public static void fillBoxEdittext() {
         boxno.setText(searchBoxList.get(Integer.parseInt(boxnotag)));
+
         barcode.setEnabled(true);
         barcode.requestFocus();
     }
 
 
     private void saveRow(Shipment shipment) {
-        if (!boxno.getText().toString().trim().equals(""))
             my_dataBase.shipmentDao().insert(shipment);
-        else
-            boxno.setError("Empty");
 
+
+        fillLastBoxinfo();
+        fillPOinfo(pono.getText().toString().trim());
     }
 
     private void updateRow(String barcpde, String po, String box, String qty, String dif) {
@@ -3018,6 +3695,7 @@ public class NewShipment extends AppCompatActivity {
     public boolean checkboxvalidty() {
 
         checkBoxIsIndatabase();
+
         if (importData.BoxNolist.contains(convertToEnglish(boxno.getText().toString().trim()))
                 || AllBoxesInDB.contains(convertToEnglish(boxno.getText().toString().trim()))) {
             Log.e("checkboxvalidty1", boxno.getText().toString());
@@ -3071,4 +3749,30 @@ public class NewShipment extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mode = (AudioManager) NewShipment.this.getSystemService(Context.AUDIO_SERVICE);
+
+    }
+
+    public  void showalertdaiog(Context context,String Msg){
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+
+                .setContentText(Msg)
+                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        try {
+
+
+                        if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        sweetAlertDialog.dismiss();
+                        }catch (Exception e){
+                            Toast.makeText(NewShipment.this,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
+
+    }
 }

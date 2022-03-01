@@ -11,8 +11,9 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/nav_header_imageView"
         android:layout_width="100dp"
+          android:background="@drawable/irbid"
         android:layout_height="100dp"
-        android:src="@drawable/irbid_city_center" />
+        />
 
     <TextView
         android:id="@+id/nav_header_textView"

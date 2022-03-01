@@ -9,9 +9,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -70,7 +74,7 @@ public class ItemChecker extends AppCompatActivity {
     COLORNAME,  ITC_itemcodeshow,
     LENGTH ,
     COLORCODE,
-    ZONE ,ITC_freeze,
+    ZONE ,ITC_freeze,discountpercentage,
     SHELF ;;
     public static  EditText ItC_itemcode;
     public TextView itemname,itemkind,saleprice,qty;
@@ -79,8 +83,9 @@ public class ItemChecker extends AppCompatActivity {
  ImportData importData;
  RecyclerView  recyclerView;
     private StockInfoqtyAdapter adapter;
-LinearLayout avgcostLin, headerLin;
-
+LinearLayout avgcostLin, headerLin, LASTSPRICELin,LLCPRICELin;
+    private String dis_per="";
+    AudioManager mode ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,26 +94,29 @@ LinearLayout avgcostLin, headerLin;
 
 
         init();
+        mode = (AudioManager)ItemChecker.this.getSystemService(Context.AUDIO_SERVICE);
+        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         headerLin.setVisibility(View.INVISIBLE);
         try {
             if(userPermissions.getMasterUser().equals("0") )
                 if(userPermissions.getVIEWCost().equals("0") )
                 {
                     avgcostLin .setVisibility(View.GONE);
-                LASTSPRICE.setVisibility(View.GONE);
-
+                LASTSPRICELin.setVisibility(View.GONE);
+                    LLCPRICELin.setVisibility(View.GONE);
 
                 }
                 else
             {  avgcostLin.setVisibility(View.VISIBLE);
-                LASTSPRICE.setVisibility(View.VISIBLE);
-
+                LASTSPRICELin.setVisibility(View.VISIBLE);
+                LLCPRICELin.setVisibility(View.VISIBLE);
             }
 
             else
             {
                 avgcostLin .setVisibility(View.VISIBLE);
-                LASTSPRICE.setVisibility(View.VISIBLE);
+                LASTSPRICELin.setVisibility(View.VISIBLE);
+                LLCPRICELin.setVisibility(View.VISIBLE);
             }
         }catch (Exception e){
 
@@ -142,14 +150,21 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
         if (i == KeyEvent.KEYCODE_BACK) {
-            onBackPressed();
+            try {
+                onBackPressed();
+            }catch (Exception e){
+
+            }
+
 
         }
 
 
-        if (i != KeyEvent.KEYCODE_ENTER) {
+  else      if (i != KeyEvent.KEYCODE_ENTER) {
 
             {
+
+
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP)
                     switch (view.getId()) {
                         case R.id.ItC_itemcode: {
@@ -165,6 +180,14 @@ TextView.OnKeyListener onKeyListener=new View.OnKeyListener() {
                             else{
                                 clearData();
                                 ItC_itemcode.requestFocus();
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 500 milliseconds
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    //deprecated in API 26
+                                    v.vibrate(500);
+                                }
                             }
 
 
@@ -206,15 +229,18 @@ void clearData(){
     COLORNAME.setText("");
     LENGTH .setText("");
     COLORCODE .setText("");
-
+    discountpercentage.setText("");
     ZONE.setText("");
     SHELF .setText("");
 
 
 }
     private void init() {
+        discountpercentage=findViewById(R.id.ITC_discountpercentage);
         ITC_freeze=findViewById(R.id.ITC_freeze);
         headerLin=findViewById(R.id. headerLin);
+        LASTSPRICELin=findViewById(R.id.LASTSPRICELin);
+        LLCPRICELin =findViewById(R.id. LLCPRICELin);
         avgcostLin=findViewById(R.id.avgcostLin);
         recyclerView=findViewById(R.id.stockQty);
         itemRES = findViewById(R.id.itemRES);
@@ -303,7 +329,8 @@ void clearData(){
                         COLORNAME.setText(itemInfos.get(0).getCOLORNAME());
                         LENGTH .setText(itemInfos.get(0).getLENGTH());
                         COLORCODE .setText(itemInfos.get(0).getCOLORCODE());
-
+                        //dis_per=1-(offerprice-posprice);
+                        discountpercentage.setText(dis_per);
                         if(itemInfos.get(0).getFREEZ().equals("1"))
                         {
                             ITC_freeze.setText("Yes");
@@ -335,10 +362,24 @@ void clearData(){
                    catch (Exception e){
 
                    }
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(ItemChecker.this,0,"","No Data For this Item  "+ ItC_itemcode.getText());
+                                ItC_itemcode.setText("");
+                            }
+                        });
+                         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 500 milliseconds
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            //deprecated in API 26
+                            v.vibrate(500);
+                        }
 
-                     //   showSweetDialog(ItemChecker.this,0,"","No Data For this Item");
-                          ItC_itemcode.setError("Invalid");
-                        ItC_itemcode.setText("");
+                       //   ItC_itemcode.setError("Invalid");
+
                         Log.e("ca:","ca");
                         ItC_itemcode.requestFocus();
 
@@ -352,9 +393,14 @@ void clearData(){
                                      }
                         });
 
+                        Handler h1 = new Handler(Looper.getMainLooper());
+                        h1.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(ItemChecker.this,0,"","Check Connection");
 
-                       showSweetDialog(ItemChecker.this,0,"","Check Connection");
-                        ItC_itemcode.setText("");
+                            }
+                        });
+                         ItC_itemcode.setText("");
                         ItC_itemcode.requestFocus();
                     }
             }}

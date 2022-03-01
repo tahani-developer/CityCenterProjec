@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:layout_width="330dp"
-    android:layout_height="340dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:background="@color/layer1"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
@@ -29,8 +30,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/store"
-            android:textColor="@color/dark_blue_3"
+            android:text="@string/store2"
+
+            android:textColor="@color/white"
             android:padding="3dp"
             android:layout_marginTop="5dp"
             android:layout_weight="3"
@@ -174,6 +176,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:background="@drawable/back_border_dark"
             android:gravity="bottom"
             android:padding="3dp">
@@ -229,6 +233,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/back_border_dark"
             android:gravity="bottom"
+            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:padding="3dp">
 
             <TextView
@@ -293,9 +299,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_marginEnd="3dp"
+        android:layout_marginStart="3dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <TextView
 
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            />
         <Button
 
             android:id="@+id/DIRE_dialogsave"
@@ -309,7 +321,7 @@
             android:textColor="@color/dark_blue_3"
             android:textSize="12sp" />
         <TextView
-            android:layout_width="3dp"
+            android:layout_width="5dp"
             android:layout_height="match_parent"
             />
         <Button
@@ -326,7 +338,7 @@
             android:textSize="12sp"
             />
         <TextView
-            android:layout_width="3dp"
+            android:layout_width="5dp"
             android:layout_height="match_parent"
             />
         <Button
@@ -340,7 +352,11 @@
             android:gravity="center"
             android:textColor="@color/red"
             android:background="@drawable/cancel_button"/>
+        <TextView
 
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            />
     </LinearLayout>
 
     <LinearLayout

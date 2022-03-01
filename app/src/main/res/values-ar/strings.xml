@@ -20,27 +20,28 @@
     <string name="year">السنة</string>
     <string name="server_ip">رقم السيرفر</string>
     <string name="Items">عدد المواد</string>
-    <string name="ZoneCode">كود القسم</string>
+    <string name="ZoneCode">كود الرف</string>
     <string name="setting">الإعدادات</string>
     <string name="signout">تسجيل الخروج</string>
     <string name="CONO">رقم الشركة:</string>
+    <string name="CONO2">الشركة:</string>
     <string name="action_sign_in">تسجيل الدخول أو إنشاء حساب جديد</string>
     <string name="invalid_username">رقم المستخدم غير صحيح</string>
     <string name="invalid_password">كلمة المرور غير صحيحة</string>
     <string name="enter_password">أدخل كلمة المرور</string>
     <string name="app_done">تم</string>
     <string name="edit">تعديل</string>
-    <string name="Zone">الزون </string>
+    <string name="Zone">الرف </string>
     <string name="NewShipment">طلبية جديدة</string>
     <string name="Replacement">التحويلات</string>
-    <string name="ReplacementReverse">إعادة عملية تحويل</string>
+    <string name="ReplacementReverse"> تحويل عكسي </string>
     <string name="login">تسجيل الدخول</string>
     <string name="nextBox">الصندوق التالي</string>
     <string name="confirm">هل أنت متأكد من اختيار هذا العنصر؟</string>
     <string name="delete3">"  الكمية =1، هل تريد حذف هذه المادة ؟"</string>
     <string name="yes">نعم</string>
     <string name="Import">استيراد</string>
-    <string name="ZoneName">اسم القسم</string>
+    <string name="ZoneName">اسم الرف</string>
     <string name="finish">إنهاء</string>
     <string name="recQty">الكمية المُدخلة</string>
     <string name="Itemname">اسم المادة</string>
@@ -81,7 +82,7 @@
     <string name="reduceqty">تعديل كمية المادة </string>
     <string name="qtyerror3">كمية غير صحيحة  </string>
     <string name="deleteitemt">حذف مادة </string>
-    <string name="deletezone"> حذف قسم </string>
+    <string name="deletezone"> حذف رف </string>
     <string name="delete1">حذف  </string>
     <string name="oldqty"> الكمية السابقة </string>
     <string name="back">  عودة </string>
@@ -90,37 +91,38 @@
     <string name="dataRet">تم استرجاع البيانات</string>
     <string name="enter"> دخول </string>
     <string name="deleted"> تم الحذف بنجاح </string>
-    <string name="nextZone"> القسم التالي </string>
+    <string name="nextZone"> الرف التالي </string>
     <string name="returndata"> هل تريد التراجع عن عملية الحذف ؟ </string>
-    <string name="deletezone1">هل أنت متأكد من حذف هذا القسم؟</string>
+    <string name="deletezone1">هل أنت متأكد من حذف هذا الرف؟</string>
     <string name="deleteitem">هل تريد حذف هذه المادة؟</string>
     <string name="deletepo">حذف طلبية</string>
     <string name="deletebox">حذف صندوق</string>
     <string name="store">إلى المخزن </string>
     <string name="store2"> المخزن</string>
     <string name="fill_setting">املأ الإعدادات</string>
-    <string name="deletepo1">هل أنت متأكد من هذه الطلبية؟</string>
+    <string name="deletepo1">هل أنت متأكد من حذف هذه الطلبية؟</string>
     <string name="sumQty">مجموع الكميات</string>
     <string name="zoneqty">كمية الزون</string>
     <string name="scanedqty">الكمية</string>
     <string name="storeqty">كمية المخزن</string>
-    <string name="StockTake">جرد المستودع</string>
+    <string name="StockTake">الجرد </string>
     <string name="itemcheck">التحقق من معلومات مادة</string>
     <string name="Itemkind">نوع المادة</string>
     <string name="saleprice">سعر البيع</string>
     <string name="aviqty">الكمية المتوفرة</string>
     <string name="search1">البحث باستخدام اسم أو كود المادة</string>
+    <string name="search2">البحث باستخدام كود المادة</string>
     <string name="total_qty">مجموع الكميات</string>
-    <string name="IsNew">جديد</string>
+    <string name="IsNew">مادة جديدة</string>
     <string name="date">التاريخ</string>
     <string name="preview">عرض</string>
     <string name="Reports">التقارير</string>
-    <string name="frmoZone">من القسم</string>
-    <string name="ToZone">إلى القسم</string>
-    <string name="ZoneReplacement">التحويل من زون الى آخر</string>
-    <string name="msg">للتحويل إلى الأقسام الأُخرى</string>
+    <string name="frmoZone">من الرف</string>
+    <string name="ToZone">إلى الرف</string>
+    <string name="ZoneReplacement">التحويل بين الرفوف </string>
+    <string name="msg">للتحويل إلى الفئات الأُخرى</string>
     <string name="notvaildqty2">  لا توجد كمية كافية في </string>
-    <string name="zonetype">القسم المُصَدِّر والمُستَقبِل غير متوافقان</string>
+    <string name="zonetype">الرف المُصَدِّرة والمُستَقبِلة غير متوافقتان</string>
     <string name="prompt_email">البريد الإلكتروني</string>
     <string name="prompt_password">كلمة المرور</string>
     <string name="title_activity_login">تسجيل الدخول</string>
@@ -128,6 +130,7 @@
     <string name="existsBARCODE">الباركود غير صحيح</string>
     <string name="Login">تسجيل الدخول</string>
     <string name="logout">تسجيل الخروج</string>
+    <string name="uploadimage">تحميل صورة</string>
     <string name="username">اسم المستخدم:</string>
     <string name="Permission">لا يوجد لديك صلاحية للدخول</string>
     <string name="activeuser">ليست لديك صلاحية للدخول</string>
@@ -148,24 +151,21 @@
     <string name="language">اللغة</string>
     <string name="shipmentReport">تقرير الطلبيات</string>
     <string name="StocktakeReport">تقرير عمليات الجرد</string>
+    <string name="zoneReport">تقرير الرفوف</string>
     <string name="required2">يرجى تعبئة الحقل</string>
     <string name="item_details">تفاصيل المادة</string>
-    <string name="TAXPERC"> نسبة الضريبة</string>
-    <string name="AVGCOST"> متوسط التكلفة </string>
+
+
     <string name="falcons_soft">الصقور للبرمجيات</string>
     <string name="update_qty">تحديث الكمية</string>
-    <string name="nextFromZone"> القسم المُصَدِّر التالي </string>
-    <string name="nexttoZone"> القسم المنقول له التالي </string>
-    <string name="Zones">الأقسام</string>
-    <string name="addZone">إضافة زون</string>
+    <string name="nextFromZone"> تغيير الرف المصدر </string>
+    <string name="nexttoZone"> تغيير الرف المستلم </string>
+    <string name="Zones">الفئات</string>
+    <string name="addZone">إدارة الرفوف</string>
     <string name="turn_on_flashlight">تشغيل ضوء الفلاش</string>
-    <string name="LASTSPRICE"> السعر النهائي</string>
 
-    <string name="SECTION"> القسم</string>
-    <string name="BRANDNAME"> اسم الماركة</string>
-    <string name="COLORNAME"> اللون</string>
-    <string name="LENGTH">الطول</string>
-    <string name="COLORCODE"> كود اللون</string>
+
+
     <string name="stockNum">رقم المستودع</string>
     <string name="stockName">اسم المستودع</string>
     <string name="del_per">ليس هنالك صلاحية، هل تريد الدخول كمستخدم رئيسي؟</string>
@@ -174,7 +174,7 @@
     <string name="netWorkError">خطأ في الشبكة</string>
     <string name="noInternet">لا يوجد انترنت</string>
     <string name="itemNotExist">المادة غير موجودة</string>
-    <string name="kindDifferent">نوع المادة لا يتوافق مع نوع القسم</string>
+    <string name="kindDifferent">نوع المادة لا يتوافق مع نوع الرف</string>
     <string name="noPermToExit">لا يوجد صلاحية للخروج</string>
     <string name="checkCon">تحقق من الاتصال</string>
     <string name="noPoData">لا يتوفر معلومات لهذه الطلبية في قاعدة البينات</string>
@@ -188,8 +188,8 @@
     <string name="exportRep"> تصدير جميع التحويلات</string>
     <string name="exportRevRep">تصدير عمليات إعادة التحويل</string>
     <string name="exportStockTake">تصدير عمليات الجرد</string>
-    <string name="exportZoneRep"> تصدير عمليات التحويل على الأقسام</string>
-    <string name="exportZones">تصدير الأقسام</string>
+    <string name="exportZoneRep"> تصدير عمليات التحويل على الفئات</string>
+    <string name="exportZones">تصدير الفئات</string>
     <string name="exportShip">تصدير جميع الطلبيات</string>
 
 
@@ -198,17 +198,33 @@
     <string name="IP_PORT">مَنفذ IP</string>
     <string name="fillIp"> املأ الIP</string>
     <string name="fillIpAndComNo">املأ معلومات الIP ورقم الشركة</string>
-    <string name="F_D"> F_D</string>
-    <string name="LLCPRICE">LLC Price</string>
-    <string name="BUYERGGROUP"> BUY ERGGROUP</string>
-    <string name="DIVISION"> DIVISION</string>
-    <string name="SUBDIVISION"> SUB DIVISION</string>
-    <string name="CLASS">CLASS</string>
-    <string name="SSIZE"> SSIZE</string>
-    <string name="SEASON"> SEASON</string>
-    <string name="STYLECODE"> STYLE CODE</string>
-    <string name="ZONE">ZONE</string>
-    <string name="SHELF"> SHELF</string>
+    <string name="discountpercentage">discount percentage</string>
+    <string name="F_D"> Original Price</string>
+    <string name="LASTSPRICE"> purchase Price</string>
+    <string name="BUYERGGROUP"> Years</string>
+    <string name="DIVISION"> Season Code</string>
+    <string name="SUBDIVISION"> Category Desc</string>
+    <string name="CLASS">Dept Desc</string>
+    <string name="SSIZE"> Invoice Date</string>
+    <string name="SEASON"> Season Desc</string>
+    <string name="STYLECODE"> Item Master</string>
+    <string name="SECTION"> Size Desc</string>
+    <string name="BRANDNAME"> Brand Desc</string>
+    <string name="COLORNAME"> Style Code</string>
+    <string name="LENGTH">Color</string>
+    <string name="ZONE">Family code</string>
+    <string name="SHELF"> Family Desc</string>
+    <string name="COLORCODE"> Sub Dept Desc</string>
+    <string name="TAXPERC"> Tax Price</string>
+    <string name="LLCPRICE"> LLC Price</string>
+    <string name="freeze"> Freez</string>
+    <string name="itembarcode"> Barcode</string>
+    <string name="AVGCOST"> Avg Cost </string>
+
+
+    <string name="Empty">حقل فارغ</string>
+
+    <string name="invalid" >غير صحيح</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
     <string name="invalidPONO">رقم الطلبية غير صحيح</string>
@@ -218,4 +234,7 @@
     <string name="welcome">مرحبا !</string>
     <string name="allStores">جميع المستودعات</string>
 
+    <string name="ZonestotalQty">مجموع كمية الرف</string>
+    <string name="Zonescount">عدد الرفوف</string>
+    <string name="exits"> خروج</string>
 </resources>
