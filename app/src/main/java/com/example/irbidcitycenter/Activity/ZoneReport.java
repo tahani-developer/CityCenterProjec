@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.irbidcitycenter.Adapters.ZoneReportAdapter;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.R;
@@ -66,7 +67,7 @@ RoomAllData mydatabase;
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
-        ZRep_date.setText(today);
+        ZRep_date.setText(GeneralMethod.convertToEnglish(today));
         addZones.clear();
         addZones=mydatabase.zoneDao().getzoneByDate( ZRep_date.getText().toString());
             fillAdapterData(addZones);
@@ -84,7 +85,7 @@ RoomAllData mydatabase;
                 zoneReportAdapter=new ZoneReportAdapter(DateZones,ZoneReport.this);
 
                 listView.setAdapter(zoneReportAdapter);
-                Log.e("Stoketakesssize", DateZones.size() + "");
+                Log.e("DateZones==", DateZones.size() + "");
                 if (DateZones.size() == 0)
                     Toast.makeText(ZoneReport.this, getString(R.string.noData), Toast.LENGTH_SHORT).show();}
 

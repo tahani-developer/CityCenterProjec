@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
+        android:padding="2dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
@@ -36,8 +37,9 @@
             android:padding="3dp"
             android:layout_marginTop="7dp"
             />
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/DZRE_storespinner"
+            android:theme="@style/Spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

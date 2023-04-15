@@ -86,7 +86,7 @@
     <string name="Qty">Qty</string>
     <string name="selectCompany">Select Company</string>
     <string name="edit"> Edit Ip Address</string>
-    <string name="version">v 3.9</string>
+    <string name="version">v 4.2</string>
     <string name="ComName">Com Name</string>
     <string name="COYear">COYear</string>
     <string name="Login">Login</string>
@@ -235,8 +235,11 @@
     <string name="ZonestotalQty">Zones Total Qty</string>
     <string name="Zonescount">Zones Count</string>
     <string name="exits">Exit</string>
+    <string name="existsBARCODE">InValid Barcode</string>
 
 
     <string name="night_mode_off">NIGHT MODE OFF</string>
     <string name="night_mode_on">NIGHT MODE ON</string>
+    <string name="backupData">Backup Data</string>
+    <string name="backup_failed">Backup Failed</string>
 </resources>

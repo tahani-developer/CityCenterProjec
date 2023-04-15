@@ -45,7 +45,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -73,6 +76,7 @@ public class ExportData {
     SweetAlertDialog pdVoucher,pdshipmant,pdRepla,pdstock,pdzone,pdRepRev;
     JSONObject vouchersObject;
     JSONObject ShipmentObject;
+    Set<String> setVoucher=new HashSet<>();
     JSONObject ReplacmentObject,StockObject,ZoneRepObject,ReplacmentReverseObject;
     private JSONArray jsonArrayShipment;
     private JSONArray jsonArrayReplacement,jsonArrayStock,jsonArrayZoneRep,jsonArrayReversRep;
@@ -84,6 +88,7 @@ public class ExportData {
     public  List<ReplenishmentReverseModel> listAllReplacmentRevers =new ArrayList<>();
     int typeExportZone=0;
     int typeExportShipment=0;
+    SweetAlertDialog     saving;
     int typeExportReplacement=0;
     public ExportData(Context context) {
         this.context = context;
@@ -125,7 +130,7 @@ public class ExportData {
         new JSONTask_AddReversReplacment(replacementlist).execute();
     }
 
-    public void exportStockTakeList(List<StocktakeModel>Stocktakelist) {
+    public  void  exportStockTakeList(List<StocktakeModel>Stocktakelist) {
         getStocktakeObject(Stocktakelist);
         pdstock = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pdstock.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -845,10 +850,10 @@ public class ExportData {
                     }
                     else
 
-                        {
-                            poststate.setText("not");
-                        }
-
+                {    if( !exportFromMainAct)
+                    poststate.setText("not");
+                else
+                    sh_res.setText("not");}
                    // exportReplacementList(listAllReplacment);
 
 
@@ -995,17 +1000,39 @@ else{
                   else
                   {    re_res.setText("exported");
 
+                       exportStockTakeList(listAllStock);
 
-                  exportStockTakeList(listAllStock);}
+
+                  }
+
+                  setVoucher.clear();
+                    for (int i = 0; i < replacementList.size(); i++)
+                        setVoucher.add(replacementList.get(i).getSERIALZONE()+"");
+
+                    if(setVoucher.size()>0) {
+                        saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+                        saving.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+                        saving.setTitleText("saving");
+                        saving.setCancelable(false);
+                        saving.show();
+                        Iterator<String> it = setVoucher.iterator();
+                        while (it.hasNext()) {
+                            String value = it.next();
+                            System.out.println(value);
+                            Log.e("ithasNext?=", it.hasNext() + "");
+                            if (it.hasNext())
+                                new JSONTask_Transfer2(1, value).execute();
+                            else new JSONTask_Transfer2(0, value).execute();
+                        }
+                }
 
 
-               //  new JSONTask_Transfer().execute();
-             SweetAlertDialog     saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
-                  saving .getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-                  saving .setTitleText("saving");
-                  saving .setCancelable(false);
-                  saving .show();
-                  JSONTask_ExportTrans(    saving);
+//             SweetAlertDialog     saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+//                  saving .getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+//                  saving .setTitleText("saving");
+//                  saving .setCancelable(false);
+//                  saving .show();
+//                  JSONTask_ExportTrans(  1 , saving);
               }
 
               else
@@ -1015,7 +1042,7 @@ else{
                       poststateRE.setText("not");
                    else
                   { re_res.setText("not");
-                      exportStockTakeList(listAllStock);
+                 exportStockTakeList(listAllStock);
                   }
 
               }
@@ -1093,6 +1120,7 @@ else{
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("CONO", CONO.trim()));
                 nameValuePairs.add(new BasicNameValuePair("JSONSTR", ReplacmentReverseObject.toString().trim()));
+                nameValuePairs.add(new BasicNameValuePair("IQ","0"));
                 Log.e("JSONSTR", ReplacmentReverseObject.toString());
                 request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = client.execute(request);
@@ -1145,12 +1173,27 @@ else{
              else  RepRevExportsatate.setText("exported");
 
 
-                    SweetAlertDialog     saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
-                    saving .getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
-                    saving .setTitleText("saving");
-                    saving .setCancelable(false);
-                    saving .show();
-                    JSONTask_ExportTrans(    saving);
+                    setVoucher.clear();
+                    for (int i = 0; i < replacementList.size(); i++)
+                        setVoucher.add(replacementList.get(i).getSERIAL()+"");
+
+                    if(setVoucher.size()>0) {
+                        saving = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+                        saving.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+                        saving.setTitleText("saving");
+                        saving.setCancelable(false);
+                        saving.show();
+                        Iterator<String> it = setVoucher.iterator();
+                        while (it.hasNext()) {
+                            String value = it.next();
+                            System.out.println(value);
+                            Log.e("ithasNext?=", it.hasNext() + "");
+                            if (it.hasNext())
+                                new JSONTask_Transfer2(1, value).execute();
+                            else new JSONTask_Transfer2(0, value).execute();
+                        }
+                    }
+
                 }
                 else
                 {
@@ -1209,7 +1252,7 @@ else{
 
                     //  "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO
                     //localhost:8082/IrTransFer?CONO=290&JSONSTR={"JSN":[{"ITEMCODE":"4032900116167","FROMSTR":"1","TOSTR":"2","QTY":"10","ZONE":"50"},{"ITEMCODE":"7614900001130","FROMSTR":"1","TOSTR":"2","QTY":"30","ZONE":"51"}]}
-                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO;
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS?CONO=" + CONO.trim();
 
 
                     Log.e("URL_TO_HIT", "" + link);
@@ -1253,7 +1296,6 @@ else{
                 if (result.contains("Saved Successfully")) {
                     Log.e("JSONTaskAddReplacment", "" + "Saved Successfully");
 
-
                 }
 
 
@@ -1262,23 +1304,173 @@ else{
         }
     }
 
-    public void JSONTask_ExportTrans(SweetAlertDialog savingDialog) {
-        String url = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO=" + CONO;
+    public class  JSONTask_Transfer2 extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        String VHFNO="";
+        int flage;
+
+        public JSONTask_Transfer2(int flage,String VHFNO) {
+            this.flage= flage;
+            this.VHFNO = VHFNO;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+
+            URLConnection connection = null;
+            BufferedReader reader = null;
+
+            try {
+                if (!ipAddress.equals("")) {
+
+                       link = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS?CONO=" + CONO.trim()+"&VHFNO=" +VHFNO;
+
+
+                    Log.e("URL_TO_HIT", "" + link);
+                }
+            } catch (Exception e) {
+                saving.dismiss();
+
+
+            }
+            try {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost request = new HttpPost();
+                try {
+                    request.setURI(new URI(link));
+                } catch (URISyntaxException e) {
+                    saving.dismiss();
+                    e.printStackTrace();
+                }
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                nameValuePairs.add(new BasicNameValuePair("CONO", CONO));
+
+
+
+
+                request.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                JsonResponse = sb.toString();
+                Log.e("JsonResponse", "ExportSerial" + JsonResponse);
+
+
+                //*******************************************
+
+
+            } catch (Exception e) {
+                saving.dismiss();
+            }
+            return JsonResponse;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            super.onPostExecute(result);
+//            progressDialog.dismiss();
+            Log.e("JSONTaskAddReplacment", "" + result);
+
+            if(flage==0) {saving.dismissWithAnimation();}
+            if (result != null && !result.equals("")) {
+
+
+
+                Log.e("ExportTrans Response", result.toString());
+
+                if (result.toString().contains("Saved Successfully")) {
+
+
+                    //exportAllState.setText("exported");
+
+
+                    if(flage==0)
+
+                    {
+                        showSweetDialog(context, 1, context.getResources().getString(R.string.savedSuccsesfule), "");
+
+                    }
+                    if  (   exportFromMainAct) {
+                        if(flage==0)
+
+                        {
+                            ImportData importData = new ImportData(context);
+                            importData.New_getAllPoDetalis();
+                        }
+
+                     //   importData.New_getAllZons();
+                    }
+
+                } else if (result.toString().contains("server error")) {
+
+                    if(flage==0)   showSweetDialog(context, 0, "Internal server error", "");
+                } else if (result.toString().contains("unique constraint")) {
+
+                    Log.e("unique response", result.toString() + "");
+                    if(flage==0)  showSweetDialog(context, 0, "Unique Constraint", "");
+
+                }else
+                {
+                    if(flage==0)   showSweetDialog(context, 0, result.toString() + "", "");
+                }
+
+
+            }else
+            {
+                if(flage==0)     showSweetDialog(context, 0, result.toString() + "", "");
+            }
+
+        }
+    }
+
+    public void JSONTask_ExportTrans(int x,SweetAlertDialog savingDialog) {
+        String url = "http://" + ipAddress.trim() + headerDll.trim() + "/EXPORTTRANS" + "?CONO="+CONO ;
         Log.e("Export Trans URL ", url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                savingDialog.dismissWithAnimation();
                 Log.e("ExportTrans Response", response.toString());
+
                 if (response.toString().contains("Saved Successfully")) {
 
                     savingDialog.dismissWithAnimation();
                     //exportAllState.setText("exported");
 
 
-                    showSweetDialog(context, 1, context.getResources().getString(R.string.savedSuccsesfule), "");
-
-
+                showSweetDialog(context, 1, context.getResources().getString(R.string.savedSuccsesfule), "");
+                  if  (   exportFromMainAct) {
+                      ImportData importData = new ImportData(context);
+                      importData.New_getAllPoDetalis();
+                      importData.New_getAllZons();
+                  }
 
                 } else if (response.toString().contains("server error")) {
                     savingDialog.dismissWithAnimation();
@@ -1288,6 +1480,9 @@ else{
                     Log.e("unique response", response.toString() + "");
                     showSweetDialog(context, 0, "Unique Constraint", "");
 
+                }else
+                {
+                    showSweetDialog(context, 0, response.toString() + "", "");
                 }
             }
         }, new Response.ErrorListener() {
@@ -1295,10 +1490,10 @@ else{
             public void onErrorResponse(VolleyError error) {
                 savingDialog.dismissWithAnimation();
 
-                if ((error.getMessage() + "").contains("value too large for column \"A2021_295\""))
-                    showSweetDialog(context, 0, "Server Error!", "Value too large for column \"A2021_295\"");
+                if ((error.getMessage() + "").contains("value too large for column "))
+                    showSweetDialog(context, 0, "Server Error!", "Value too large for column ");
                 else
-                    showSweetDialog(context, 0, context.getString(R.string.checkCon), "");
+                    showSweetDialog(context, 0, error.getMessage() + "", "");
 
                 Log.e("ExportTrans Error ", error.getMessage() + "");
             }

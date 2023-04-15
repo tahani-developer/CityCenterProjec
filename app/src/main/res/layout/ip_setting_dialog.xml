@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLinearAdapter"
     android:layout_width="320dp"
-    android:layout_height="375dp"
+    android:layout_height="wrap_content"
     android:background="@color/layer1"
     android:layoutDirection="locale"
     android:orientation="vertical"
@@ -13,6 +13,7 @@
 
 
     <LinearLayout
+        android:background="@color/layer1"
         android:id="@+id/lineardetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +22,6 @@
         android:layoutDirection="locale"
         android:orientation="horizontal"
         android:padding="5dp"
-
-
         android:textDirection="locale">
 
         <RelativeLayout
@@ -358,6 +357,7 @@
         </RelativeLayout>
     </LinearLayout>
     <LinearLayout
+        android:background="@color/layer1"
         android:layout_width="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
@@ -367,7 +367,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-
+        android:background="@color/layer1"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:gravity="center_horizontal">

@@ -2,6 +2,7 @@ package com.example.irbidcitycenter.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
+import com.example.irbidcitycenter.Models.NewZonsData;
 import com.example.irbidcitycenter.Models.ReplashmentLogs;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.R;
@@ -80,7 +83,7 @@ import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.Activity.AddZone.validateKind;
 import static com.example.irbidcitycenter.Activity.AddZone.validItem;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
-import static com.example.irbidcitycenter.ImportData.listQtyZone;
+import static com.example.irbidcitycenter.ImportData.New_listQtyZone;
 import static com.example.irbidcitycenter.Activity.AddZone.flage3;
 import static com.example.irbidcitycenter.ImportData.zoneinfo;
 public class Replacement extends AppCompatActivity {
@@ -121,7 +124,7 @@ public class Replacement extends AppCompatActivity {
    List<ReplacementModel>deleted_DBzone;
     private Dialog authenticationdialog;
     List<String> spinnerArray = new ArrayList<>();
-    public static  Spinner spinner,spinner2;
+    public static AppCompatSpinner spinner,spinner2;
     public static ArrayList<ReplacementModel> replacementlist = new ArrayList<>();
     public List<ReplacementModel> UnPostedreplacementlist = new ArrayList<>();
     public static ArrayList<Store> Storelistt = new ArrayList<>();
@@ -226,12 +229,12 @@ public class Replacement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         loadLanguage();
         setContentView(R.layout.activity_replacement);
-        init();
-      //  disableScanner();
+     init();
+//      //  disableScanner();
         mode = (AudioManager)Replacement.this.getSystemService(Context.AUDIO_SERVICE);
         mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-
-
+//
+//
         //  CalculateTotalandCount();
         actvityflage=1;
     //    ChecksavePermissition();
@@ -239,37 +242,54 @@ public class Replacement extends AppCompatActivity {
         Storelist.clear();
         Storelist=  my_dataBase.storeDao().getall();
 
+        List<String>AllowedStors=new ArrayList<>();
        if(Storelist.size()>0) {
            Log.e("sss","sss");
            for (int i = 0; i < Storelist.size(); i++) {
-              if(Storelist.get(i).getSTOREKIND().equals("0")) FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-               if(Storelist.get(i).getSTOREKIND().equals("1"))    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+              if(Storelist.get(i).getSTOREKIND().equals("0")){
+                  {
+                      AllowedStors = generalMethod.GetAllowedStore();
+
+                      Log.e("AllowedStors==", AllowedStors.size() + "");
+                      if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+                          FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                  }
+              }
+               {
+                   if (Storelist.get(i).getSTOREKIND().equals("1"))
+                   { AllowedStors=  generalMethod.GetAllowedStore();
+
+                   Log.e("AllowedStors==",AllowedStors.size()+"");
+                   if(AllowedStors.contains(Storelist.get(i).getSTORENO()))
+                       ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());}
+               }
 
            }
            fillSp();
        }
-
-
+//
+//
       else
      if( Storelist.size()==0)
           {getStors();
            Log.e("sss4","sss4");}
-
-
-
-
-
+//
+//
+//
+//
+//
         zone.setEnabled(true);
         zone.requestFocus();
         itemcode.setEnabled(false);
         recqty.setEnabled(false);
 
+//
 
-        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         UserNo=my_dataBase.settingDao().getUserNo();
-
-
-
+//
+//
+//
 findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
@@ -282,16 +302,15 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         if(adapter!=null) adapter.notifyDataSetChanged();
     }
 });
+//
+// try {
+//
 
- try {
-
-     fromSpinner.setSelection(0);
-     toSpinner.setSelection(1);
      toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
              // your code her
-
+Log.e(" toSpinner.setOnItemSelectedListener"," toSpinner.setOnItemSelectedListener");
              if (toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem())) {
                  showSweetDialog(Replacement.this, 3, getResources().getString(R.string.samestore), "");
                  if (fromSpinner.getSelectedItemPosition() != 1) toSpinner.setSelection(1);
@@ -309,6 +328,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
          public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
              // your code her
 
+             Log.e("  fromSpinner.setOnItemSelectedListener","  fromSpinner.setOnItemSelectedListener");
              if (toSpinner.getSelectedItem().toString().equals(fromSpinner.getSelectedItem())) {
                  showSweetDialog(Replacement.this, 3, getResources().getString(R.string.samestore), "");
                  if (toSpinner.getSelectedItemPosition() != 0) fromSpinner.setSelection(0);
@@ -324,10 +344,12 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
          }
 
      });
- }catch (Exception e){}
-
-
-
+// }catch (Exception e){
+//     Log.e("Exception,Exception==",e.getMessage());
+// }
+//
+//
+//
         Re_delete .setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -365,7 +387,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
         }
     });
-
+//
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -409,8 +431,8 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                 }
             }
         });
-
-
+//
+//
         findViewById(R.id.Re_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -467,7 +489,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
             }
         });
-
+//
 
     }
 
@@ -1690,7 +1712,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
     private void getStors() {
         actvityflage=1;
-        importData.getStore();
+        importData.getStore(1);
     }
 
     public void exportData() {
@@ -1698,7 +1720,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
             exportData.exportReplacementList(UnPostedreplacementlist);
         }catch (Exception e){
-
+            Log.e("Exception3===",e.getMessage());
             // test
         }
 
@@ -1725,13 +1747,13 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
     }
     private void init() {
-
+        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
         Zonescount=findViewById(R.id.Zonescount);
 
         ZonestotalQty=findViewById(R.id.ZonestotalQty);
         AllZonestotalQty=findViewById(R.id.AllZonestotalQty);
         if( userPermissions==null)  getUsernameAndpass();
-        my_dataBase = RoomAllData.getInstanceDataBase(Replacement.this);
+
         replacementlist.clear();
         poststateRE = findViewById(R.id.poststatRE);
         MainActivity.setflage = 1;
@@ -1740,13 +1762,13 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
         importData = new ImportData(Replacement.this);
         //listAllZone.clear();
      //   importData.getAllZones();
-        listQtyZone.clear();
+        New_listQtyZone.clear();
         appSettings=new ArrayList();
         try {
             appSettings=my_dataBase.settingDao().getallsetting();
         }
         catch (Exception e){
-
+Log.e("Exception2===",e.getMessage());
         }
         Re_delete  =findViewById(R.id.Re_delete);
         fromSpinner = findViewById(R.id.fromspinner);
@@ -1791,13 +1813,31 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         respon.setText("");
                     } else {
                         if (editable.toString().equals("fill")) {
+                            Log.e("afterTextChanged", "" + editable.toString());
                             for (int i = 0; i < Storelist.size(); i++) {
-                                if (Storelist.get(i).getSTOREKIND().equals("0"))
-                                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-                                if (Storelist.get(i).getSTOREKIND().equals("1"))
+                                if (Storelist.get(i).getSTOREKIND().equals("0")) {
+
+                                    {
+                                        List<String> AllowedStors = generalMethod.GetAllowedStore();
+
+                                        if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+                                            FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+                                    }
+
+                                }   if (Storelist.get(i).getSTOREKIND().equals("1")) {
+
+                                    {     List<String>AllowedStors=  generalMethod.GetAllowedStore();
+
+
+                                        if(AllowedStors.contains(Storelist.get(i).getSTORENO()))
+
                                     ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
 
+                                    }
+                                }
                             }
+                            my_dataBase.storeDao().insertAll(Storelist);
                             fillSp();
                         }
                         zone.requestFocus();
@@ -1878,7 +1918,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             my_dataBase.replacementDao().updateReplashmentPosted();
 
 
-                                    showSweetDialog(Replacement.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+//                                    showSweetDialog(Replacement.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
 
 
 
@@ -1894,11 +1934,24 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         //saveData(0);
                       replacementlist.clear();
                     fillAdapter();
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(Replacement.this, 0, "Not Saved", "");
+                            }
+                        });
                       adapter.notifyDataSetChanged();
                     }
                     else{
                         replacementlist.clear();
                         fillAdapter();
+                        adapter.notifyDataSetChanged();
+                        Handler h = new Handler(Looper.getMainLooper());
+                        h.post(new Runnable() {
+                            public void run() {
+                                showSweetDialog(Replacement.this, 0, "Not Saved", "");
+                            }
+                        });
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -1922,7 +1975,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     Log.e("afterTextChanged",qtyrespons.getText().toString());
                     if (qtyrespons.getText().toString().equals("QTY"))
                     {
-                       if(Long.parseLong(listQtyZone.get(0).getQty())>0)
+                       if(Long.parseLong(New_listQtyZone.get(0).getQTY())>0)
                         {
                             try {
 
@@ -1932,7 +1985,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
 
                             } catch (Exception e) {
-                                Log.e("Exception", e.getMessage());
+                                Log.e("Exception1==", e.getMessage());
                             }
 
                             recqty.setText("1");
@@ -1971,7 +2024,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                     else
                     { mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-                                showalertdaiog(Replacement.this,  getResources().getString(R.string.existsBARCODE)+"  "+itemcode.getText());
+                             showalertdaiog(Replacement.this,  getResources().getString(R.string.existsBARCODE)+"  "+itemcode.getText());
                                 itemcode.setText("");
 
                           recqty.setEnabled(false);
@@ -2003,13 +2056,23 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
     private void fillSp() {
 
+        //
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, FromArray);
 
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, ToArray);
+
+
+
+
+
+
         fromSpinner.setAdapter(adapter);
         toSpinner.setAdapter(adapter2);
+        fromSpinner.setSelection(0);
+    if(ToArray.size()>1)    toSpinner.setSelection(1);
        // toSpinner.setSelection(1);
         Log.e("sss1","sss1");
 
@@ -2168,7 +2231,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                         } else {
                             Log.e("not in db", "not in db");
                             ZoneReplacment.fromZoneRepActivity = 0;
-                            importData.getQty();
+                            New_importqtyData();
 
                         }
                     }
@@ -2215,8 +2278,21 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
 
     }};
 
+    private void importqtyData() {
+        importData.getQty();
+    }
 
-
+    private void New_importqtyData() {
+NewZonsData newZonsData =my_dataBase.newZonsDataDao().getqty(zone.getText().toString().trim(),itemcode.getText().toString().trim());
+if(newZonsData!=null )
+{
+    ImportData.New_listQtyZone.clear();
+    ImportData.New_listQtyZone.add(newZonsData);
+    qtyrespons.setText("QTY");
+}else{
+    qtyrespons.setText("nodata");
+}
+    }
 
     EditText.OnEditorActionListener onEditAction = new EditText.OnEditorActionListener() {
         @Override
@@ -2226,13 +2302,15 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                 switch (textView.getId()) {
                     case R.id.zoneedt:
                         Log.e("ZONEHERE", zone.getText().toString() + "");
-                        if (!zone.getText().toString().equals(""))
+                        if(FromArray.size()!=0 && ToArray.size()!=0)
+
+                        if (!zone.getText().toString().equals("")) {
                             if (searchZone(zone.getText().toString().trim())) {
                                 Log.e("zone", zone.getText().toString());
                             } else {
 
 
-                                generalMethod.showSweetDialog(Replacement.this, 0, "", "Invalid Zone  "+zone.getText());
+                                generalMethod.showSweetDialog(Replacement.this, 0, "", "Invalid Zone  " + zone.getText());
 
                                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 // Vibrate for 1000 milliseconds
@@ -2245,8 +2323,9 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                 Log.e("elsezone", zone.getText().toString());
                                 zone.setText("");
                             }
-                        else
-                        {   zone.requestFocus();
+                        }
+                        else {
+                            zone.requestFocus();
                             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             // Vibrate for 1000 milliseconds
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -2257,6 +2336,12 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                             }
 
                         }
+                else
+                        {
+                            showalertdaiog(Replacement.this, "Empty  Stors List !!  ");
+                        }
+
+
                         break;
                     case R.id.itemcodeedt:
 
@@ -2330,7 +2415,7 @@ findViewById(R.id.nextZone).setOnClickListener(new View.OnClickListener() {
                                 } else {
                                     Log.e("not in db", "not in db");
                                     ZoneReplacment.fromZoneRepActivity = 0;
-                                    importData.getQty();
+                                    New_importqtyData();
 
                                 }
                             }
@@ -2438,7 +2523,7 @@ return  false;
        { replacement.setRecQty(Qty);
             replacement.setUserNO(UserNo);
             Log.e("replacement","1=="+qty.getText().toString());
-            replacement.setQty( listQtyZone.get(0).getQty());
+            replacement.setQty( New_listQtyZone.get(0).getQTY());
             Log.e("replacement","2=="+replacement.getQty());
             replacement.setIsPosted("0");
             replacement.setUserNO(UserNo);
@@ -2502,12 +2587,12 @@ return  false;
 
     private void updateQTYOfZone() {
         String d="";
-        for (int i = 0; i < listQtyZone.size(); i++) {
-            if (itemcode.getText().toString().trim().equals(listQtyZone.get(i).getItemCode().trim())
-                    && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
+        for (int i = 0; i < New_listQtyZone.size(); i++) {
+            if (itemcode.getText().toString().trim().equals(New_listQtyZone.get(i).getITEMCODE().trim())
+                    && zone.getText().toString().trim().equals(New_listQtyZone.get(i).getZONENO().trim())) {
                 {
-                    listQtyZone.get(i).setQty(Long.parseLong(listQtyZone.get(i).getQty()) -Long.parseLong( Qty)+"");
-                    d=listQtyZone.get(i).getQty();
+                    New_listQtyZone.get(i).setQTY(Long.parseLong(New_listQtyZone.get(i).getQTY()) -Long.parseLong( Qty)+"");
+                    d= New_listQtyZone.get(i).getQTY();
                 }
             }}
        Log.e(" updateQTYOfZone()",d) ;
@@ -2615,11 +2700,11 @@ return  false;
 
   public  boolean checkQtyValidate(String recqty) {
         Log.e("checkQtyValidate","heckQtyValidate");
-        for (int i = 0; i < listQtyZone.size(); i++) {
+        for (int i = 0; i < New_listQtyZone.size(); i++) {
             Log.e("checkQtyValidate","for");
-            if (itemcode.getText().toString().trim().equals(listQtyZone.get(i).getItemCode().trim())
-                    && zone.getText().toString().trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
-                if (Long.parseLong(recqty) <= Long.parseLong(listQtyZone.get(i).getQty()))
+            if (itemcode.getText().toString().trim().equals(New_listQtyZone.get(i).getITEMCODE().trim())
+                    && zone.getText().toString().trim().equals(New_listQtyZone.get(i).getZONENO().trim())) {
+                if (Long.parseLong(recqty) <= Long.parseLong(New_listQtyZone.get(i).getQTY()))
                 {
 
                     return true;

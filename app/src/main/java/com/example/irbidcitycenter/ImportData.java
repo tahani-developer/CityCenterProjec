@@ -1,26 +1,45 @@
 package com.example.irbidcitycenter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.irbidcitycenter.Activity.AddZone;
 import com.example.irbidcitycenter.Activity.Login;
 import com.example.irbidcitycenter.Activity.MainActivity;
 import com.example.irbidcitycenter.Activity.NewShipment;
 import com.example.irbidcitycenter.Activity.Replacement;
+
+
 import com.example.irbidcitycenter.Activity.ReplenishmentReverse;
 import com.example.irbidcitycenter.Activity.Stoketake;
+import com.example.irbidcitycenter.Activity.ZoneReplacment;
+import com.example.irbidcitycenter.Interfaces.ApiService;
 import com.example.irbidcitycenter.Models.AllItems;
 import com.example.irbidcitycenter.Models.AllPOs;
 import com.example.irbidcitycenter.Models.CompanyInfo;
 import com.example.irbidcitycenter.Models.ItemInfo;
+import com.example.irbidcitycenter.Models.NewAllPOsInfo;
+import com.example.irbidcitycenter.Models.NewZonsData;
 import com.example.irbidcitycenter.Models.ReplacementModel;
+import com.example.irbidcitycenter.Models.RetrofitInstance;
 import com.example.irbidcitycenter.Models.Store;
 import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.ZoneModel;
@@ -51,7 +70,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKind;
 import static com.example.irbidcitycenter.Activity.AddZone.itemKintText;
 
@@ -60,10 +89,9 @@ import static com.example.irbidcitycenter.Activity.ItemChecker.ItC_itemcode;
 import static com.example.irbidcitycenter.Activity.ItemChecker.itemRES;
 import static com.example.irbidcitycenter.Activity.ItemChecker.stockqrtRes;
 
+import static com.example.irbidcitycenter.Activity.MainActivity.Respon_arrayList;
 import static com.example.irbidcitycenter.Activity.MainActivity.itemrespons;
 import static com.example.irbidcitycenter.Activity.NewShipment.PONO_respon;
-import static com.example.irbidcitycenter.Activity.NewShipment.PoQTY;
-import static com.example.irbidcitycenter.Activity.NewShipment.itemname;
 import static com.example.irbidcitycenter.Activity.NewShipment.poNo;
 import static com.example.irbidcitycenter.Activity.Replacement.itemKintText1;
 import static com.example.irbidcitycenter.Activity.Replacement.itemcode;
@@ -85,11 +113,18 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 
 
 public class ImportData {
+ ApiService   myAPI;
+    String msgbuilder1="",msgbuilder2="",msgbuilder3="";
     public static int actvityflage = 1;
     SweetAlertDialog pdVoucher;
     public static List<ZonsData> listAllZone = new ArrayList<>();
     public static ArrayList<ZonsData> WebSerlistAllZone = new ArrayList<>();
     public static ArrayList<ZoneModel> Zoneslist = new ArrayList<>();
+
+    public static ArrayList<NewZonsData> NewZoneslist = new ArrayList<>();
+    public static List<NewAllPOsInfo> NewPOdetailslist = new ArrayList<>();
+
+
     public static ArrayList<ZoneModel> itemdetalis = new ArrayList<>();
     public static ArrayList<UserPermissions> UserPermissions = new ArrayList<>();
     public static int posize;
@@ -101,11 +136,15 @@ public class ImportData {
     public RoomAllData my_dataBase;
     public static String zonetype;
     public static List<Store> Storelist = new ArrayList<>();
-    public static ArrayList<String> BoxNolist = new ArrayList<>();
+    public static List<String> BoxNolist = new ArrayList<>();
     public static ArrayList<AllPOs> PoNolist = new ArrayList<>();
-    public static List<Shipment> POdetailslist = new ArrayList<>();
+    public static List<NewAllPOsInfo> POdetailslist = new ArrayList<>();
     public static List<ReplacementModel> stocksQty = new ArrayList<>();
-    public static List<ZoneModel> listQtyZone = new ArrayList<>();
+    public static List<NewZonsData> New_listQtyZone = new ArrayList<>();
+
+
+
+
     public static ArrayList<CompanyInfo> companyInList = new ArrayList<>();
     public static String barcode = "";
     public static List<AllItems> AllImportItemlist = new ArrayList<>();
@@ -117,6 +156,7 @@ public class ImportData {
 //
 
     static ProgressDialog progressDialog;
+    static SweetAlertDialog POs_progressDialog,Zons_progressDialog;
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private int max = 50;
@@ -179,8 +219,16 @@ public class ImportData {
         my_dataBase = RoomAllData.getInstanceDataBase(context);
         try {
             getIpAddress();
+       link = "http://" + ipAddress.trim()  + headerDll.trim();
+        //    link = "http://10.0.0.22:8085" ;
+          //  link ="http://80.90.172.150:8085/falcons/JRD.dll/";
+           Retrofit retrofit = RetrofitInstance.getInstance(link);
+
+
+            myAPI = retrofit.create(ApiService.class);
+
         } catch (Exception e) {
-            Toast.makeText(context, "Fill Ip and Company No", Toast.LENGTH_SHORT).show();
+         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -226,7 +274,9 @@ public class ImportData {
 
 
             if (!ipAddress.equals(""))
-                new JSONTask_getAllItems(context, act_flag).execute();
+               // new JSONTask_getAllItems(context, act_flag).execute();
+                //AllItems_fetchCallData(act_flag);
+                AllItems_fetchCallData2(act_flag);
             else
                 Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
 
@@ -250,11 +300,11 @@ public class ImportData {
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
     public void getQty() {
-        listQtyZone.clear();
+        New_listQtyZone.clear();
             new  JSONTask_getQTYOFZone().execute();
 
     }
-    public void getStore() {
+    public void getStore(int falge) {
         storeinfo = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         storeinfo.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
         storeinfo.setTitleText(" Start get Stores Info");
@@ -262,7 +312,7 @@ public class ImportData {
         storeinfo.show();
 
         if(!ipAddress.equals(""))
-        new JSONTask_getAllStoreData().execute();
+        new JSONTask_getAllStoreData(falge).execute();
         else
         Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
     }
@@ -274,7 +324,11 @@ public class ImportData {
         new JSONTask_getAllPOboxNO().execute();
         else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+
+
     }
+
+
     public void getPOdetails() {
         Log.e("getPOdetails","getPOdetails");
         //new JSONTaskGetPOdetails(context,cono,pono).execute();
@@ -330,7 +384,40 @@ else
             Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
         }
     }
+    public void New_getAllPoDetalis() {
 
+
+        POs_progressDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        POs_progressDialog.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        POs_progressDialog.setTitleText(" Start get POs details");
+        POs_progressDialog.setCancelable(false);
+        POs_progressDialog.show();
+
+        Log.e("New_getAllPoDetalis","New_getAllPoDetalis");
+
+        if(!ipAddress.equals(""))
+        {
+            new JSONTaskNew_getAllPoDetalis().execute();
+        }
+        else {
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void New_getAllZons() {
+        Zons_progressDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        Zons_progressDialog.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+        Zons_progressDialog.setTitleText(" Start get POs details");
+        Zons_progressDialog.setCancelable(false);
+        Zons_progressDialog.show();
+
+        if(!ipAddress.equals(""))
+        {
+            new JSONTaskNew_getAllZons().execute();
+        }
+        else {
+            Toast.makeText(context, "Fill Ip", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void getKindItem2(String itemNo) {
         if(!ipAddress.equals(""))
@@ -737,7 +824,7 @@ Log.e("Exception===",e.getMessage());
                 //    "CoYear": "2021",
                 //    "CoNameA": "Al Rayyan Plastic Factory 2017"
                 //  },
-
+                companyInList.clear();
                 if (result.contains("CoNo")) {
                     try {
                         CompanyInfo requestDetail = new CompanyInfo();
@@ -1036,7 +1123,7 @@ Log.e("Exception===",e.getMessage());
                                shipment.setBoxNo(jsonObject1.getString("Hints"));
                             //    shipment.setBoxNo("6666");
 
-                                POdetailslist.add(shipment);
+                                //POdetailslist.add(shipment);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1206,7 +1293,11 @@ Log.e("Exception===",e.getMessage());
 
     }
         private class JSONTask_getAllStoreData extends AsyncTask<String, String, String> {
+         int   actvityflage;
 
+            public JSONTask_getAllStoreData(final int actvityflage) {
+                this.actvityflage = actvityflage;
+            }
 
             Store store;
 
@@ -1323,10 +1414,15 @@ Log.e("Exception===",e.getMessage());
                                         store.setSTOREKIND(jsonObject1.getString("STOREKIND"));
                                         Storelist.add(store);
                                     }
-                              if( Replacement.actvityflage==1)
+                              if( actvityflage==1)
                                   Replacement.respon.setText("fill");
-                              else if(Replacement.actvityflage==3)
+                              else if(actvityflage==3)
                                   ReplenishmentReverse.RepRev_storrespon.setText("fill");
+                              else if(actvityflage==4)
+                                  AddZone.storrespon.setText("fill");
+                              else if(actvityflage==5)
+                                  ZoneReplacment.storrespon.setText("fill");
+
                                   else
                                   Stoketake.respone.setText("fill");
 
@@ -1342,12 +1438,17 @@ Log.e("Exception===",e.getMessage());
                     }
                 } else {
 
-                    if( Replacement.actvityflage==1)
+                    if( actvityflage==1)
                         Replacement.respon.setText("nodata");
 
-                    else if(Replacement.actvityflage==3)  ReplenishmentReverse.RepRev_storrespon.setText("nodata");
-                       else
-                           Stoketake.respone.setText("fill");
+                    else if(actvityflage==3)  ReplenishmentReverse.RepRev_storrespon.setText("nodata");
+                    else if(actvityflage==4)
+                        AddZone.storrespon.setText("nodata");
+                    else if(actvityflage==5)
+                        ZoneReplacment.storrespon.setText("fill");
+
+                    else
+                           Stoketake.respone.setText("nodata");
 
                 }
             }
@@ -1477,7 +1578,7 @@ Log.e("Exception===",e.getMessage());
                                 zoneModel.setItemCode(jsonObject1.getString("ITEMCODE"));
                                 zoneModel.setQty(jsonObject1.getString("QTY"));
                                 d=jsonObject1.getString("QTY");
-                                listQtyZone.add(zoneModel);
+                               // listQtyZone.add(zoneModel);
                             }
 
                         } catch (JSONException e) {
@@ -1786,6 +1887,7 @@ Log.e("Exception===",e.getMessage());
         protected void onPostExecute(String respon) {
             super.onPostExecute(respon);
             String d="";
+            pditeminfo.dismiss();
             JSONObject jsonObject1 = null;
 
 
@@ -1937,9 +2039,11 @@ Log.e("Exception===",e.getMessage());
                 StringBuffer sb = new StringBuffer("");
                 String line = "";
                 Log.e("finalJson***Import", sb.toString());
+                Log.e("in==", in.lines()+"");
+                int y=0;
+               while ((line = in.readLine()) != null ) {
+              sb.append(line);
 
-                while ((line = in.readLine()) != null) {
-                    sb.append(line);
                 }
 
                 in.close();
@@ -2041,7 +2145,7 @@ try {
 
                                AllItems allItems= new  AllItems ();
                                 jsonObject1 = requestArray.getJSONObject(i);
-                                allItems.setItemOcode(jsonObject1.getString("ItemOCode"));
+                                allItems.setItemOCode(jsonObject1.getString("ItemOCode"));
                                 allItems.setItemNCode(jsonObject1.getString("ItemNCode"));
                                 allItems.setItemNameE(jsonObject1.getString("ItemNameE"));
                                 allItems.setItemNameA(jsonObject1.getString("ItemNameA"));
@@ -2433,6 +2537,12 @@ try {
             if (result != null) {
                 if (result.contains("USERNO")) {
                     try {
+
+
+//                            "COSTORE1":"1;2;",
+//                                "COSTORE2":"","COSTORE3":"3;10;","COSTORE4":"","COSTORE5":"",
+//                                "COSTORE6":"","COSTORE7":"","COSTORE8":"","COSTORE9":"","COSTORE10":"2;3;"}
+
                         Log.e("here UserPermissions1"," UserPermissions1");
                         UserPermissions requestDetail = new UserPermissions();
                         JSONArray requestArray = null;
@@ -2503,6 +2613,19 @@ try {
                             requestDetail.setST_RepOpen(infoDetail.get("RSTOCKTAKE").toString());
                             requestDetail.setRevRep_Open(infoDetail.get("OREVERSE").toString());
                             requestDetail.setVIEWCost(infoDetail.get("OVIEWCOST").toString());
+
+                            ///STORE PER
+                            requestDetail.setCOSTORE1(infoDetail.get("COSTORE1").toString());
+                            requestDetail.setCOSTORE2(infoDetail.get("COSTORE2").toString());
+                            requestDetail.setCOSTORE3(infoDetail.get("COSTORE3").toString());
+                            requestDetail.setCOSTORE4(infoDetail.get("COSTORE4").toString());
+                            requestDetail.setCOSTORE5(infoDetail.get("COSTORE5").toString());
+
+                            requestDetail.setCOSTORE6(infoDetail.get("COSTORE6").toString());
+                            requestDetail.setCOSTORE7(infoDetail.get("COSTORE7").toString());
+                            requestDetail.setCOSTORE8(infoDetail.get("COSTORE8").toString());
+                            requestDetail.setCOSTORE9(infoDetail.get("COSTORE9").toString());
+                            requestDetail.setCOSTORE10(infoDetail.get("COSTORE10").toString());
                            // requestDetail.setRepRev_LocalDelete(infoDetail.get("OREVERSE").toString());
 
                             UserPermissions.add(requestDetail);
@@ -2680,6 +2803,485 @@ try {
         }
 
     }
+
+    //new for offline version
+    private class JSONTaskNew_getAllZons extends AsyncTask<String, String, JSONArray> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    //http://10.0.0.22:8085/IrGetAllZoneDataW?CONO=304
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetAllZoneDataW?CONO=" +CONO.trim();
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                Zons_progressDialog.dismiss();
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                JSONArray parentObject = new JSONArray(finalJson);
+
+                return parentObject;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+                Zons_progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                Zons_progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray array) {
+            super.onPostExecute(array);
+
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                public void run() {
+
+                    Zons_progressDialog.dismiss();         }
+            });
+            JSONObject result = null;
+
+            NewZoneslist.clear();
+            if (array != null ) {
+                if (array.length() != 0) {
+                    Respon_arrayList.add(1);
+
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            result = array.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        NewZonsData itemZone = new NewZonsData();
+                        try {
+
+                            itemZone.setZONENO(result.getString("ZONENO"));
+                            itemZone.setITEMCODE(result.getString("ITEMCODE"));
+                            itemZone.setQTY(result.getString("QTY"));
+
+                            NewZoneslist.add(itemZone);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    my_dataBase.newZonsDataDao().deleteAll();
+                    my_dataBase.newZonsDataDao().insertAll(NewZoneslist);
+
+                }  else   Respon_arrayList.add(0);
+            } else   Respon_arrayList.add(0);
+if(!Respon_arrayList.contains(0))
+            showSweetDialog(context, 1, "Done,All data is stored", "");
+else {
+   if(Respon_arrayList.size()==3) {
+       if (Respon_arrayList.get(0).equals(1))
+           msgbuilder1 = "-Items Data Saved \n";
+       else
+           msgbuilder1 = "-Items Data does Not Saved \n";
+       if (Respon_arrayList.get(1).equals(1))
+           msgbuilder2 = "-Po's Info's Saved \n";
+       else
+           msgbuilder2 = "-Po's Data does Not Saved \n";
+       if (Respon_arrayList.get(2).equals(1))
+           msgbuilder3 = "-Zone Data Saved \n";
+       else
+           msgbuilder3 = "-Zone Data does Not Saved \n";
+   }
+    if(Respon_arrayList.size()==2){
+        if (Respon_arrayList.get(0).equals(1))
+            msgbuilder2 = "-Po's Info's Saved \n";
+        else
+            msgbuilder2 = "-Po's Data does Not Saved \n";
+        if (Respon_arrayList.get(1).equals(1))
+            msgbuilder3 = "-Zone Data Saved \n";
+        else
+            msgbuilder3 = "-Zone Data does Not Saved \n";
+    }
+    Handler h1 = new Handler(Looper.getMainLooper());
+    h1.post(new Runnable() {
+        public void run() {
+
+//
+//            AlertDialog alertDialog = new AlertDialog.Builder(context)
+////set icon
+//                    .setIcon(context.getResources().getDrawable(R.drawable.ic_baseline_warning_24))
+////set title
+//                    .setTitle("")
+////set message
+//                    .setMessage(msgbuilder)
+////set positive button
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                        }
+//                    })
+//
+//
+//                    .show();
+
+            openResponDialog(msgbuilder1,msgbuilder2,msgbuilder3);
+                  }
+    });
+
+
+
+   // showSweetDialog(context, 0,msgbuilder+"", "");
+}
+
+        }
+    }
+    private void openResponDialog(String s1,String s2,String s3) {
+        final Dialog dialog1 = new Dialog(context);
+        dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog1.setCancelable(false);
+        dialog1.setContentView(R.layout.respondailog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog1.getWindow().getAttributes());
+
+        lp.gravity = Gravity.CENTER;
+        dialog1.getWindow().setAttributes(lp);
+
+
+        TextView textView1 = dialog1.findViewById(R.id.text1);
+        TextView textView2 = dialog1.findViewById(R.id.text2);
+        TextView textView3 = dialog1.findViewById(R.id.text3);
+        textView1.setText(s1);
+       if(s1.contains("Not")) textView1.setTextColor(context.getColor(R.color.red));
+        if(s2.contains("Not")) textView2.setTextColor(context.getColor(R.color.red));
+        if(s3.contains("Not")) textView3.setTextColor(context.getColor(R.color.red));
+
+
+        textView2.setText(s2);
+        textView3.setText(s3);
+
+        Button donebutton = dialog1.findViewById(R.id.done);
+
+        donebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                    dialog1.dismiss();
+
+            }
+        });
+
+
+        dialog1.show();
+    }
+    //new for offline version
+    private class JSONTaskNew_getAllPoDetalis extends AsyncTask<String, String, JSONArray> {
+
+        private String custId = "", JsonResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            try {
+                if (!ipAddress.equals("")) {
+                    //http://10.0.0.22:8085/IrGetPoDTLS?CONO=304
+
+                    link = "http://" + ipAddress.trim() + headerDll.trim() + "/IrGetPoDTLS?CONO=" + CONO.trim();
+                    Log.e("link", "" + link);
+                }
+            } catch (Exception e) {
+                POs_progressDialog.dismiss();
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+                Log.e("finalJson***Import", finalJson);
+
+
+                JSONArray parentObject = new JSONArray(finalJson);
+
+                return parentObject;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+                POs_progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(context, "Ip Connection Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+          POs_progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray array) {
+            super.onPostExecute(array);
+
+
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                public void run() {
+
+                    POs_progressDialog.dismiss();
+                }
+            });
+            JSONObject result = null;
+            NewPOdetailslist.clear();
+
+            if (array != null ) {
+                if (array.length() != 0) {
+
+
+                    Respon_arrayList.add(1);
+
+                    for (int i = 0; i < array.length(); i++) {
+                        try {
+                            result = array.getJSONObject(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        NewAllPOsInfo shipment = new NewAllPOsInfo();
+                        try {
+
+                            shipment.setPONO(result.getString("PONO"));
+                            shipment.setITEMCODE(result.getString("ITEMCODE"));
+                            shipment.setQTY(result.getString("QTY"));
+                            shipment.setBOXNO(result.getString("BOXNO"));
+                            NewPOdetailslist.add(shipment);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+
+                }else   Respon_arrayList.add(0);
+            } else Respon_arrayList.add(0);
+
+          New_getAllZons();
+            my_dataBase.newAllPOsInfoDao().deleteAll();
+            my_dataBase.newAllPOsInfoDao().insertAll(NewPOdetailslist);
+        }
+    }
+
+
+    public void AllItems_fetchCallData(int flag) {
+        Log.e("AllItems_fetchCallData", "AllItems_fetchCallData" );
+        Call<List<AllItems>> myData = myAPI.gatItemInfoDetail(CONO);
+
+        myData.enqueue(new Callback<List<AllItems>>() {
+            @Override
+            public void onResponse(Call<List<AllItems>> call, Response<List<AllItems>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(context,  response.message()+",,call=="+call.request(), Toast.LENGTH_SHORT).show();
+                    Log.e("onResponse333", "not=" + response.message());
+                    pditem.dismissWithAnimation();
+                    if(flag==0)  itemrespons.setText("nodata");
+                    else if(flag==1)     St_Itemrespons.setText("nodata");
+                    else    if(flag==2) RepRev_Itemrespons.setText("nodata");
+                } else {
+
+                    AllImportItemlist.clear();
+                    AllImportItemlist.addAll(response.body());
+                    if(flag==0)       itemrespons.setText("ItemOCode");
+                    else     if(flag==1)     St_Itemrespons.setText("ItemOCode");
+
+                    else    if(flag==2) RepRev_Itemrespons.setText("ItemOCode");
+                    Log.e("onResponse", "=" + response.body().get(0).getItemNCode());
+                    pditem.dismissWithAnimation();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AllItems>> call, Throwable throwable) {
+                Log.e("onFailure===", "" + throwable.getMessage()+",,call=="+call.request());
+               Toast.makeText(context, "Items are not saved ,throwable "+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if(flag==0)  itemrespons.setText("nodata");
+                else if(flag==1)     St_Itemrespons.setText("nodata");
+                else    if(flag==2) RepRev_Itemrespons.setText("nodata");
+                pditem.dismissWithAnimation();
+            }
+        });
+    }
+
+    public void   AllItems_fetchCallData2(int flag ) {
+        try {
+
+
+            Observable observable = myAPI.gatItemInfoDetail2(CONO)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+
+            Observer<List<AllItems>> observer = new Observer<List<AllItems>>() {
+
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(List<AllItems> jenralData) {
+                    AllImportItemlist.clear();
+                    AllImportItemlist.addAll(jenralData);
+                    if (flag == 0) itemrespons.setText("ItemOCode");
+                    else if (flag == 1) St_Itemrespons.setText("ItemOCode");
+
+                    else if (flag == 2) RepRev_Itemrespons.setText("ItemOCode");
+                    Log.e("onResponse", "=" + jenralData.get(0).getItemNCode());
+                    pditem.dismissWithAnimation();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                    Log.e("onError===", e.getMessage() + "");
+                 //   Log.e("onFailure===", "" + e.getMessage() + ",,call==" + call.request());
+                    Toast.makeText(context, "Items are not saved ,throwable " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    if (flag == 0) itemrespons.setText("nodata");
+                    else if (flag == 1) St_Itemrespons.setText("nodata");
+                    else if (flag == 2) RepRev_Itemrespons.setText("nodata");
+                    pditem.dismissWithAnimation();
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            };
+            observable.subscribe(observer);
+
+
+        } catch (Exception e) {
+            Log.e("Exception===", e.getMessage() + "");
+        }
+
+    }
+
+
+
 }
 
 

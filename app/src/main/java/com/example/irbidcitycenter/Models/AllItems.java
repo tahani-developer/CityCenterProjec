@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "ITEM_TABLE")
 public  class AllItems {
     @PrimaryKey(autoGenerate = true)
@@ -16,48 +18,64 @@ public  class AllItems {
     public void setSERIAL(int SERIAL) {
         this.SERIAL = SERIAL;
     }
-
+@SerializedName("ItemNameE")
     @ColumnInfo(name = "ITEMNAMEE")
     String ItemNameE;
+    @SerializedName("ItemOCode")
     @ColumnInfo(name = "ITEMOCODE")
-    String ItemOcode;
+    String ItemOCode;
+    @SerializedName("ItemNCode")
     @ColumnInfo(name = "ItemNCode")
     String ItemNCode;
-
+    @SerializedName("ItemNameA")
     @ColumnInfo(name = "ItemNameA")
     String ItemNameA;
+    @SerializedName("LLCPrice")
     @ColumnInfo(name = "LLCPrice")
     String LLCPrice;
     @ColumnInfo(name = "LFCPrice")
+    @SerializedName("LFCPrice")
     String LFCPrice;
     @ColumnInfo(name = "SalePrice")
+    @SerializedName("SalePrice")
     String SalePrice;
 
+    @SerializedName("OrdLvl")
     @ColumnInfo(name = "OrdLvl")
     String OrdLvl;
+    @SerializedName("AVG_Cost")
     @ColumnInfo(name = "AVG_Cost")
     String AVG_Cost;
+
+    @SerializedName("Fifo")
     @ColumnInfo(name = "Fifo")
     String Fifo;
+    @SerializedName("Lifo")
     @ColumnInfo(name = "Lifo")
     String Lifo;
+    @SerializedName("ItemG")
     @ColumnInfo(name = "ItemG")
     String ItemG;
-
+    @SerializedName("ItemK")
     @ColumnInfo(name = "ItemK")
     String ItemK;
+    @SerializedName("ItemM")
     @ColumnInfo(name = "ItemM")
     String ItemM;
+    @SerializedName("ItemU")
     @ColumnInfo(name = "ItemU")
     String ItemU;
+    @SerializedName("IStatus")
     @ColumnInfo(name = "IStatus")
     String IStatus;
+    @SerializedName("ItemL")
     @ColumnInfo(name = "ItemL")
     String ItemL;
 
-
+    @SerializedName("F_D")
     @ColumnInfo(name = "F_D")
     String   F_D;
+    @SerializedName("ITEMGS")
     @ColumnInfo(name = "ITEMGS")
     String    ITEMGS;
 
@@ -206,11 +224,11 @@ public  class AllItems {
         this.ITEMGS = ITEMGS;
     }
 
-    public String getItemOcode() {
-        return ItemOcode;
+    public String getItemOCode() {
+        return this.ItemOCode;
     }
 
-    public void setItemOcode(String itemOcode) {
-        ItemOcode = itemOcode;
+    public void setItemOCode(final String itemOCode) {
+        this.ItemOCode = itemOCode;
     }
 }

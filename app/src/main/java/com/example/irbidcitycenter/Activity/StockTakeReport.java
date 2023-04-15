@@ -4,6 +4,7 @@ import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.StockTakeRepAdapter;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.StocktakeModel;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
@@ -48,7 +50,7 @@ public class StockTakeReport extends AppCompatActivity {
     private List<StocktakeModel> allStoketakes = new ArrayList<>();
     private List<StocktakeModel> Stoketakes = new ArrayList<>();
 
-    private Spinner storeSpinner;
+    private AppCompatSpinner storeSpinner;
     private ArrayList<String> StorespinnerArray = new ArrayList<>();
     private ArrayList<String> zonespinnerArray = new ArrayList<>();
     @Override
@@ -95,7 +97,7 @@ public class StockTakeReport extends AppCompatActivity {
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
-        STR_date.setText(today);
+        STR_date.setText(GeneralMethod.convertToEnglish(today));
 
 
         allStoketakes = my_dataBase.stocktakeDao().getdateStoketakes(STR_date.getText().toString());

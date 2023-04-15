@@ -50,7 +50,7 @@
                 android:background="@drawable/back_border_edit2"
                 android:text="@string/Import"
                 android:textColor="@color/dark_blue_3" />
-            >
+
         </LinearLayout>
 
         <LinearLayout
@@ -76,11 +76,12 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/store2"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
-                <Spinner
+                <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/storespinner"
+                    android:theme="@style/Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
@@ -117,7 +118,7 @@
                     android:inputType="text"
                     android:padding="3dp"
                     android:text="@string/ZoneCode"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
@@ -167,7 +168,7 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/itemCode"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
@@ -220,7 +221,7 @@
                     android:inputType="text"
                     android:padding="3dp"
                     android:text="@string/Itemname"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <TextView
@@ -281,7 +282,7 @@
                     android:gravity="center"
                     android:padding="3dp"
                     android:text="@string/recQty"
-                    android:textColor="@color/dark_blue_3"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <EditText
@@ -335,6 +336,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginBottom="1dp"
                 android:orientation="horizontal">
 
                 <TextView

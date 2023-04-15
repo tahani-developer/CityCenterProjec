@@ -9,38 +9,46 @@
             android:id="@+id/menu_setting"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/setting"
+            android:iconTint="@color/white_dark"
             app:showAsAction="always" />
 
 
         <item
             android:id="@+id/menu_export"
+            android:iconTint="@color/white_dark"
             android:icon="@drawable/ic_arrow_export_black_24dp"
             android:title="@string/export"
             app:showAsAction="always" />
 
         <item
             android:id="@+id/menu_import"
+            android:iconTint="@color/white_dark"
             android:icon="@drawable/ic_baseline_arrow_downward_24"
             android:title="@string/Import"
             app:showAsAction="always" />
         <item
             android:id="@+id/Reports"
+            android:iconTint="@color/white_dark"
+
             android:icon="@drawable/ic_baseline_description_24"
             android:title="@string/Reports"
             app:showAsAction="always">
             <menu>
                 <item
                     android:id="@+id/shipmentReports"
+                    android:iconTint="@color/white_dark"
                     android:icon="@drawable/ic_baseline_description_24"
                     android:title="@string/shipmentReport"
                     app:showAsAction="always" />
                 <item
                     android:id="@+id/StocktakeReport"
+                    android:iconTint="@color/white_dark"
                     android:icon="@drawable/ic_baseline_description_24"
                     android:title="@string/StocktakeReport"
                     app:showAsAction="always" />
                 <item
                     android:id="@+id/zoneReport"
+                    android:iconTint="@color/white_dark"
                     android:icon="@drawable/ic_baseline_description_24"
                     android:title="@string/zoneReport"
                     app:showAsAction="always" />
@@ -57,14 +65,20 @@
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_baseline_exit_to_app_24"
-
+            android:iconTint="@color/white_dark"
             android:title="@string/logout"
             app:showAsAction="always" />
         <item
             android:id="@+id/exits"
+            android:iconTint="@color/white_dark"
             android:icon="@drawable/ic_baseline_exit_to_app_24"
             android:title="@string/exits"
             app:showAsAction="always" />
+        <item
+            android:id="@+id/nav_backup_data"
+            android:icon="@drawable/ic_backup_black_24dp"
+            android:title="@string/backupData" />
+
 
     </group>
 
@@ -72,6 +86,7 @@
 
         <item
             android:id="@+id/menu_about"
+            android:iconTint="@color/white_dark"
             android:icon="@drawable/ic_info_outline_black_24dp"
             android:title="@string/about"
             app:showAsAction="always" />
@@ -83,6 +98,7 @@
 
         <item
             android:id="@+id/language"
+
             android:title="@string/language"
             app:showAsAction="always">
 

@@ -33,6 +33,17 @@ public class ZoneReplashmentModel {
     String deviceId;
     @ColumnInfo(name = "ISPOSTED")
     String IsPosted;
+    @ColumnInfo(name = "StoreID")
+    String StoreID;
+
+    public String getStoreID() {
+        return this.StoreID;
+    }
+
+    public void setStoreID(final String storeID) {
+        this.StoreID = storeID;
+    }
+
     public ZoneReplashmentModel() {
     }
 

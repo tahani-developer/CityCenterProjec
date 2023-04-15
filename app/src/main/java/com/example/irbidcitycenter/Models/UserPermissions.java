@@ -111,6 +111,29 @@ public class UserPermissions {
     @ColumnInfo(name = "RepRev_LocalDelete")
     String RepRev_LocalDelete;
 
+
+    ///new store perimsssion
+    @ColumnInfo(name = "COSTORE1",defaultValue = "")
+    String COSTORE1;
+    @ColumnInfo(name = "COSTORE2",defaultValue = "")
+    String COSTORE2;
+    @ColumnInfo(name = "COSTORE3",defaultValue = "")
+    String COSTORE3;
+    @ColumnInfo(name = "COSTORE4",defaultValue = "")
+    String COSTORE4;
+    @ColumnInfo(name = "COSTORE5",defaultValue = "")
+    String COSTORE5;
+    @ColumnInfo(name = "COSTORE6",defaultValue = "")
+    String COSTORE6;
+    @ColumnInfo(name = "COSTORE7",defaultValue = "")
+    String COSTORE7;
+    @ColumnInfo(name = "COSTORE8",defaultValue = "")
+    String COSTORE8;
+    @ColumnInfo(name = "COSTORE9",defaultValue = "")
+    String COSTORE9;
+    @ColumnInfo(name = "COSTORE10",defaultValue = "")
+    String COSTORE10;
+
     public String getRevRep_Open() {
         return RevRep_Open;
     }
@@ -454,4 +477,83 @@ public class UserPermissions {
         ZoneRep_UpdateQty = zoneRep_UpdateQty;
     }
 
+    public String getCOSTORE1() {
+        return this.COSTORE1;
+    }
+
+    public void setCOSTORE1(final String COSTORE1) {
+        this.COSTORE1 = COSTORE1;
+    }
+
+    public String getCOSTORE2() {
+        return this.COSTORE2;
+    }
+
+    public void setCOSTORE2(final String COSTORE2) {
+        this.COSTORE2 = COSTORE2;
+    }
+
+    public String getCOSTORE3() {
+        return this.COSTORE3;
+    }
+
+    public void setCOSTORE3(final String COSTORE3) {
+        this.COSTORE3 = COSTORE3;
+    }
+
+    public String getCOSTORE4() {
+        return this.COSTORE4;
+    }
+
+    public void setCOSTORE4(final String COSTORE4) {
+        this.COSTORE4 = COSTORE4;
+    }
+
+    public String getCOSTORE5() {
+        return this.COSTORE5;
+    }
+
+    public void setCOSTORE5(final String COSTORE5) {
+        this.COSTORE5 = COSTORE5;
+    }
+
+    public String getCOSTORE6() {
+        return this.COSTORE6;
+    }
+
+    public void setCOSTORE6(final String COSTORE6) {
+        this.COSTORE6 = COSTORE6;
+    }
+
+    public String getCOSTORE7() {
+        return this.COSTORE7;
+    }
+
+    public void setCOSTORE7(final String COSTORE7) {
+        this.COSTORE7 = COSTORE7;
+    }
+
+    public String getCOSTORE8() {
+        return this.COSTORE8;
+    }
+
+    public void setCOSTORE8(final String COSTORE8) {
+        this.COSTORE8 = COSTORE8;
+    }
+
+    public String getCOSTORE9() {
+        return this.COSTORE9;
+    }
+
+    public void setCOSTORE9(final String COSTORE9) {
+        this.COSTORE9 = COSTORE9;
+    }
+
+    public String getCOSTORE10() {
+        return this.COSTORE10;
+    }
+
+    public void setCOSTORE10(final String COSTORE10) {
+        this.COSTORE10 = COSTORE10;
+    }
 }

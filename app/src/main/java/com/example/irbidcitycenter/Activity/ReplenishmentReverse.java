@@ -1,6 +1,7 @@
 package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,7 +69,7 @@ import static com.example.irbidcitycenter.ImportData.storeinfo;
 
 public class ReplenishmentReverse extends AppCompatActivity {
 
-    Spinner fromSpinner, toSpinner;
+    AppCompatSpinner fromSpinner, toSpinner;
     EditText RepRev_itemcodeedt;
     private String From, To, FromNo, ToNo, Itemcode;
     ReplenishmentReverseModel replacement;
@@ -95,7 +96,7 @@ public class ReplenishmentReverse extends AppCompatActivity {
     ExportData exportData;
     List<String>DB_store;
     private ArrayList<ReplenishmentReverseModel> deleted_DBzone;
-    private Spinner spinner;
+    private AppCompatSpinner spinner;
     private EditText DRepRev_itemcode;
     private TextView DRepRev_itemcodeshow;
     private Button DRepRev_delete;
@@ -162,9 +163,21 @@ try {
         if (Storelist.size() > 0) {
             Log.e("sss", "sss");
             for (int i = 0; i < Storelist.size(); i++) {
-                if(Storelist.get(i).getSTOREKIND().equals("1")) FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-                if(Storelist.get(i).getSTOREKIND().equals("0"))    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                if(Storelist.get(i).getSTOREKIND().equals("1"))
+                {
+                    List<String> AllowedStors = generalMethod.GetAllowedStore();
 
+                    if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+                }
+                if(Storelist.get(i).getSTOREKIND().equals("0")) {
+                    List<String> AllowedStors = generalMethod.GetAllowedStore();
+
+                    if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+
+                    ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                }
             }
             fillSp2();
         } else if (Storelist.size() == 0) {
@@ -1346,11 +1359,23 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                             for (int i = 0; i < Storelist.size(); i++) {
 
 
-                                if (Storelist.get(i).getSTOREKIND().equals("1"))
+                                if (Storelist.get(i).getSTOREKIND().equals("1")) {
+                                    List<String> AllowedStors = generalMethod.GetAllowedStore();
+
+                                    if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+
                                     FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
-                                if (Storelist.get(i).getSTOREKIND().equals("0"))
+
+
+                                }   if (Storelist.get(i).getSTOREKIND().equals("0")) {
+                                    List<String> AllowedStors = generalMethod.GetAllowedStore();
+
+                                    if (AllowedStors.contains(Storelist.get(i).getSTORENO()))
+
                                     ToArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
 
+
+                                }
                             }
 
                             fillSp2();
@@ -1386,7 +1411,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                         fillAdapter();
                     }
                   else  if(editable.toString().trim().equals("Internal Application Error")){
-                        showSweetDialog(ReplenishmentReverse.this, 0, "Server Error", "");
+                    showSweetDialog(ReplenishmentReverse.this, 0, "Server Error", "");
 
                         replacementlist.clear();
                         fillAdapter();
@@ -1400,7 +1425,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
 
 
 
-                                    showSweetDialog(ReplenishmentReverse.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+//                                    showSweetDialog(ReplenishmentReverse.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
 
 
 
@@ -1419,7 +1444,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
                         adapter.notifyDataSetChanged();
                     }
                     else{
-                       // Toast.makeText(ReplenishmentReverse.this,"Server Error",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ReplenishmentReverse.this,"Server Error",Toast.LENGTH_SHORT).show();
                         replacementlist.clear();
                         fillAdapter();
                         adapter.notifyDataSetChanged();
@@ -1506,7 +1531,7 @@ Log.e("reducedqtyitemlist==",reducedqtyitemlist.size()+"");
     }
     private void getStors() {
         Replacement.actvityflage=3;
-        importData.getStore();
+        importData.getStore(3);
     }
 
     @Override

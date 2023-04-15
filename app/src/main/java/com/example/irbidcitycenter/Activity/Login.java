@@ -3,6 +3,8 @@ package com.example.irbidcitycenter.Activity;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -100,6 +102,9 @@ import java.util.logging.Filter;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
@@ -109,7 +114,7 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 public class Login extends AppCompatActivity {
 
     final int TAKE_PHOTO = 1;
-
+    boolean firsttime=false;
     final int FROM_STORAGE = 2;
     public static UserPermissions userPermissions;
     EditText username, password;
@@ -122,7 +127,7 @@ public class Login extends AppCompatActivity {
     public RoomAllData my_dataBase;
     public static TextView getListCom, selectedCompany;
     public String selectedCom = "", cono = "", coYear = "";
-    ;
+    public static final int PERMISSION_REQUEST_CODE = 200;
     Dialog logindialog;
     GeneralMethod generalMethod;
     TextView settings, show_UN;
@@ -143,7 +148,7 @@ public class Login extends AppCompatActivity {
 
     Handler collapseNotificationHandler;
     private boolean flage;
-
+    public static String CompName="";
 
     public static String SYSTEM_DIALOG_REASON_KEY = "reason";
     static String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
@@ -306,14 +311,29 @@ public class Login extends AppCompatActivity {
              userPermissions = new UserPermissions();
              ImportData importData = new ImportData(Login.this);
              if (appSettings.size() != 0)
+             {     firsttime=false;
+
                  importData.getUserPermissions(1);
-         }catch (Exception e){}
+
+             }
+         }catch (Exception e){
+             Log.e("Exception",e.getMessage());
+         }
         nav_header_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    Log.e("jjjjj","jjjjjjj");
-                    uploadimageDialogconfirm();
+
+
+
+                    if (checkPermission()) {
+                        uploadimageDialogconfirm();
+                    } else {
+                        requestPermission();
+                    }
+
+
+
 
 
                 }catch (Exception e){
@@ -889,7 +909,9 @@ public class Login extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (!s.toString().equals("")) {
                     my_dataBase.itemDao().deleteall();
+                    my_dataBase.companyDao().deleteall();
                     my_dataBase.companyDao().insertAll(ImportData.companyInList);
+
                 }
             }
         });
@@ -916,7 +938,7 @@ public class Login extends AppCompatActivity {
                         DBUserPermissions.clear();
                         DBUserPermissions = my_dataBase.userPermissionsDao().getAll();
                         Log.e(" DBUserPermissions", " " + DBUserPermissions.size());
-
+                   if(firsttime)     generalMethod.showSweetDialog(Login.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
                     } else {
 
                         Toast.makeText(Login.this, getString(R.string.netWorkError), Toast.LENGTH_SHORT).show();
@@ -954,7 +976,7 @@ public class Login extends AppCompatActivity {
 
         getListCom = dialog.findViewById(R.id.getListCom);
 
-
+//companyList.add("295");
         if (!userPermissions3.getCONO1().equals("")) companyList.add(userPermissions3.getCONO1());
         if (!userPermissions3.getCONO2().equals("")) companyList.add(userPermissions3.getCONO2());
         if (!userPermissions3.getCONO3().equals("")) companyList.add(userPermissions3.getCONO3());
@@ -994,12 +1016,18 @@ public class Login extends AppCompatActivity {
       }
 
       }*/
-
-        for(int i= 0;i<companyList.size();i++) {
-
-                companyinfo.add(companyList.get(i)+"  "+within(companyList.get(i)));
-
+        for(int j= 0;j< DBcompany.size();j++){
+            if(companyList.contains(DBcompany.get(j).getCoNo()))
+                companyinfo.add(DBcompany.get(j).getCoNo()+"  "+DBcompany.get(j).getCoNameA());
         }
+
+
+//    }
+//        for(int i= 0;i<companyList.size();i++) {
+//
+//                companyinfo.add(companyList.get(i)+"  "+within(companyList.get(i)));
+//
+//        }
 
       //case: if company not in DBcompany
  /*  if(companyinfo.size()!=companyList.size()){
@@ -1027,7 +1055,7 @@ public class Login extends AppCompatActivity {
         };
 try {
 
-        selectedCom = companyinfo.get(0);
+//        selectedCom = companyinfo.get(0);
 }
 
    catch (Exception e){
@@ -1072,13 +1100,15 @@ try {
             @Override
             public void onClick(View view) {
 
+if(selectedCom!=null&&!selectedCom.equals("")) {
+    my_dataBase.settingDao().updateCompanyInfo(selectedCom.substring(0, selectedCom.toString().indexOf("  ")));
+    CompName=selectedCom.substring(selectedCom.toString().indexOf("  "),selectedCom.length() );
 
-                my_dataBase.settingDao().updateCompanyInfo(selectedCom.substring(0,selectedCom.toString().indexOf("  ")));
-
-                Intent intent = new Intent(Login.this, MainActivity.class);
-                startActivity(intent);
-                dialog.dismiss();
-
+    Intent intent = new Intent(Login.this, MainActivity.class);
+    startActivity(intent);
+    dialog.dismiss();
+}
+else showSweetDialog(Login.this,3,getResources().getString(R.string.selectCompany),"");
 
             }
         });
@@ -1634,6 +1664,7 @@ try {
                         dialog.dismiss();
                         clearData();
                         importData = new ImportData(Login.this);
+                        firsttime=true;
                         importData.getUserPermissions(1);
                         importData.getCompanyInfo();
 
@@ -1687,7 +1718,7 @@ try {
         my_dataBase.userPermissionsDao().deleteall();
         DBUserPermissions.clear();
         show_UN.setText("");
-        generalMethod.showSweetDialog(this, 1, this.getResources().getString(R.string.savedSuccsesfule2), "");
+
 
     }
 
@@ -1962,7 +1993,18 @@ private void selectImage() {
         }
     }
 
+    private boolean checkPermission() {
+        // checking of permissions.
+        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        int permission3 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED&& permission3 == PackageManager.PERMISSION_GRANTED;
+    }
 
+    private void requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE,CAMERA}, PERMISSION_REQUEST_CODE);
+    }
 
 
 }

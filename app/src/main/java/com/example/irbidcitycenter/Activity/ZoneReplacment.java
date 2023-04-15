@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
-import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,9 +28,11 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.FlashlightProvider;
+import com.example.irbidcitycenter.Models.NewZonsData;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZoneRepLogs;
 import com.example.irbidcitycenter.Models.ZoneReplashmentModel;
@@ -62,20 +63,21 @@ import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
-import static com.example.irbidcitycenter.ImportData.listQtyZone;
+import static com.example.irbidcitycenter.ImportData.New_listQtyZone;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraAccessException;
+
 public class ZoneReplacment extends AppCompatActivity {
 
     private android.hardware.Camera cam;
     private Camera.Parameters parameters;
     private CameraManager camManager;
 //    android.hardware.Camera camera ;
-
+public static  TextView storrespon;
     public static EditText fromzone, tozone, RZ_itemcode;
     TextView FromZoneName, ToZoneName;
     public static int fromZoneRepActivity = 1;
@@ -119,7 +121,7 @@ public class ZoneReplacment extends AppCompatActivity {
     public static ZoneAdapter adapter;
     List<com.example.irbidcitycenter.Models.appSettings> appSettings;
     private String deviceId = "";
-
+    List<String> FromArray = new ArrayList<>();
     public static TextView ZR_itemkind;
     private String tozonetype;
     private String fromzonetype;
@@ -129,7 +131,7 @@ public class ZoneReplacment extends AppCompatActivity {
     TextView Zonescount,ZonestotalQty,AllZonestotalQty;
     public static List<ZoneReplashmentModel> DBlistZoneSofRepZon;
     AudioManager mode ;
-
+    Spinner store_spinner ;
     //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,18 @@ public class ZoneReplacment extends AppCompatActivity {
         init();
        mode = (AudioManager) ZoneReplacment.this.getSystemService(Context.AUDIO_SERVICE);
 
+        Storelist.clear();
+        Storelist=  my_dataBase.storeDao().getall();
+        if(Storelist.size()>0) {
 
+            for (int i = 0; i < Storelist.size(); i++) {
+                FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+            }
+            fillSp();
+        }else
+        {
+            getStors();
+        }
 
         CalculateTotalandCount();
         //ChecksavePermissition();
@@ -153,7 +166,20 @@ public class ZoneReplacment extends AppCompatActivity {
         ZR_nexttoZone.setEnabled(false);
 
     }
+    private void fillSp() {
 
+        //
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, FromArray);
+
+
+        store_spinner.setAdapter(adapter);
+
+        store_spinner.setSelection(0);
+
+
+    }
     private void loadLanguage() {
         SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
         String langCode = preferences.getString(KEY_LANG, Locale.getDefault().getLanguage() );
@@ -427,7 +453,7 @@ public class ZoneReplacment extends AppCompatActivity {
 
                                                     //if()
                                                     ZoneReplacment.fromZoneRepActivity = 1;
-                                                    importData.getQty();
+                                                    New_importqtyData();
                                                     Log.e("case5", "case5");
                                                 }
                                             }
@@ -467,7 +493,7 @@ public class ZoneReplacment extends AppCompatActivity {
                                             } else {
                                                 Log.e("case7", "case7");
                                                 ZoneReplacment.fromZoneRepActivity = 1;
-                                                importData.getQty();
+                                                New_importqtyData();
                                                 filladapter();
 
                                             }
@@ -941,7 +967,7 @@ public void saveData(){
 
                                             //if()
                                             ZoneReplacment.fromZoneRepActivity = 1;
-                                            importData.getQty();
+                                            New_importqtyData();
                                             Log.e("case5", "case5");
                                         }
                                     }
@@ -977,7 +1003,7 @@ public void saveData(){
                                     } else {
                                         Log.e("case7", "case7");
                                         ZoneReplacment.fromZoneRepActivity = 1;
-                                        importData.getQty();
+                                        New_importqtyData();
                                         filladapter();
 
                                     }
@@ -1059,11 +1085,57 @@ public void saveData(){
         ZR_save = findViewById(R.id.ZR_save);
         importData = new ImportData(ZoneReplacment.this);
         exportData = new ExportData(ZoneReplacment.this);
+        store_spinner= findViewById(R.id.store_spinner);
 
 
     //    importData.getAllZones();
 
 
+        storrespon= findViewById(R.id.storrespon);
+        storrespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().length() != 0) {
+
+                    if (editable.toString().equals("no data")) {
+
+
+                    } else {
+                        if (editable.toString().equals("fill")) {
+                            Log.e("afterTextChanged", "" + editable.toString());
+                            for (int i = 0; i < Storelist.size(); i++) {
+
+
+                                {
+
+                                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+                                }
+
+
+                            }
+                            my_dataBase.storeDao().insertAll(Storelist);
+                            fillSp();
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+        });
 
         generalMethod = new GeneralMethod(ZoneReplacment.this);
         zonelistview = findViewById(R.id.zonelist);
@@ -1182,7 +1254,7 @@ public void saveData(){
                 if (editable.toString().length() != 0) {
                     Log.e("afterTextChanged", ZR_respon.getText().toString());
                     if (ZR_respon.getText().toString().equals("QTY")) {
-                        if (Long.parseLong(listQtyZone.get(0).getQty()) > 0) {
+                        if (Long.parseLong(New_listQtyZone.get(0).getQTY()) > 0) {
                             {
                                 try {
                                     //   importData.getKindItem2(RZ_itemcode.getText().toString().trim());
@@ -1285,7 +1357,7 @@ public void saveData(){
                     replashmentModel.setToZone(tozone.getText().toString().trim());
                     replashmentModel.setItemcode(RZ_itemcode.getText().toString().trim());
                     replashmentModel.setTime(generalMethod.getCurentTimeDate(2));
-                    replashmentModel.setRecQty(listQtyZone.get(0).getQty());
+                    replashmentModel.setRecQty(New_listQtyZone.get(0).getQTY());
                     replashmentModel.setIsPosted("0");
                     replashmentModel.setUserNO(UserNo);
                     replashmentModel.setQty("1");
@@ -2671,6 +2743,24 @@ public void saveData(){
         ZonestotalQty.setText( zonsqty+"");
 
     }
+
+    private void importqtyData() {
+        importData.getQty();
+    }
+
+    private void New_importqtyData() {
+        NewZonsData newZonsData =my_dataBase.newZonsDataDao().getqty(fromzone.getText().toString().trim(),RZ_itemcode.getText().toString().trim());
+        if(newZonsData!=null )
+        {
+            ImportData.New_listQtyZone.clear();
+
+
+            ImportData.New_listQtyZone.add(newZonsData);
+            ZR_respon.setText("QTY");
+        }else{
+            ZR_respon.setText("nodata");
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -2723,6 +2813,10 @@ public void saveData(){
                     }
                 }).show();
 
+    }
+    private void getStors() {
+
+        importData.getStore(5);
     }
 //public void scanNow() {
 //    IntentIntegrator integrator = new IntentIntegrator(getActivity());

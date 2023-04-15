@@ -155,13 +155,32 @@ public  class ReplacementModel {
     public JSONObject getJSONObjectDelphi() {
         JSONObject obj = new JSONObject();
         try {
-            obj.put("VHFNO", SERIALZONE);
+
+            obj.put("VHFNO", SERIALZONE+"");
             obj.put("FROMSTR", From);
             obj.put("TOSTR", To);
             obj.put("ZONE", Zone);
             obj.put("ITEMCODE", Itemcode);
             obj.put("QTY", recQty);
             obj.put("DEVICEID", deviceId);
+
+
+
+          //new failds
+                obj.put("WHICHUNIT", "");
+
+               obj.put("WHICHUNITSTR", "");
+
+           obj.put("WHICHUQTY", "");
+
+            obj.put("UNITBARCODE", "");
+
+              obj.put("ENTERPRICE", "");
+
+              obj.put("CALCQTY", "");
+
+       obj.put("ENTERQTY", "");
+//
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");

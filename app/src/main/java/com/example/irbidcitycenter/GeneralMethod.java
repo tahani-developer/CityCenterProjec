@@ -2,6 +2,7 @@ package com.example.irbidcitycenter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -9,10 +10,12 @@ import android.widget.EditText;
 
 import com.example.irbidcitycenter.Activity.Login;
 import com.example.irbidcitycenter.Activity.MainActivity;
+import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.Models.appSettings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -166,7 +169,7 @@ public class GeneralMethod {
                 settings.setIP(SET_IP);
                 settings.setCompanyNum(SET_conNO);
                 settings.setUpdateQTY(SET_years);
-                settings.setYears("2021");
+                settings.setYears("2023");
                 settings.setUserNumber("6");
 //                saveData(settings);
                 my_dataBase.settingDao().insert(settings);
@@ -198,5 +201,78 @@ if(s!=null)
         else
     return false;
     }
+public  List<String> GetAllowedStore(){
+    String comNUm = "";
+    String Userno = "";
+    int count = 0;
+   List<appSettings >appSettings = my_dataBase.settingDao().getallsetting();
+    if (appSettings.size() != 0) {
+        Userno = appSettings.get(0).getUserNumber();
+        comNUm = appSettings.get(0).getCompanyNum();
 
+    }
+
+  UserPermissions userPermissions= my_dataBase.userPermissionsDao().getUserPermissions(Userno);
+    List<String> items = new ArrayList<>();
+    if(userPermissions!=null) {
+      if (userPermissions.getCONO1().equals(comNUm)) count = 1;
+      else if (userPermissions.getCONO2().equals(comNUm)) count = 2;
+      else if (userPermissions.getCONO3().equals(comNUm)) count = 3;
+      else if (userPermissions.getCONO4().equals(comNUm)) count = 4;
+      else if (userPermissions.getCONO5().equals(comNUm)) count = 5;
+      else if (userPermissions.getCONO6().equals(comNUm)) count = 6;
+      else if (userPermissions.getCONO7().equals(comNUm)) count = 7;
+      else if (userPermissions.getCONO8().equals(comNUm)) count = 8;
+      else if (userPermissions.getCONO9().equals(comNUm)) count = 9;
+      else if (userPermissions.getCONO10().equals(comNUm)) count = 10;
+
+
+
+      if (count == 1) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE1().split(";"));
+
+      } else if (count == 2) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE2().split(";"));
+
+      } else if (count == 3) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE3().split(";"));
+
+      } else if (count == 4) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE4().split(";"));
+
+      } else if (count == 5) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE5().split(";"));
+
+      } else if (count == 6) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE6().split(";"));
+
+      } else if (count == 7) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE7().split(";"));
+
+      } else if (count == 8) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE8().split(";"));
+
+      } else if (count == 9) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE9().split(";"));
+
+      } else if (count == 10) {
+
+          items = Arrays.asList(userPermissions.getCOSTORE10().split(";"));
+
+      }
+
+      for (int i = 0; i < items.size(); i++)
+          Log.e("items==", items.get(i) + "   " + items.size() + "");
+  }
+return items;
+}
 }

@@ -1,6 +1,7 @@
 package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.irbidcitycenter.Adapters.ShipmentsReportAdapter;
+import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.Models.ReplacementModel;
 import com.example.irbidcitycenter.Models.Shipment;
 import com.example.irbidcitycenter.R;
@@ -44,7 +46,7 @@ public class ShipmentsReport extends AppCompatActivity {
 TextView  SH_date,total_qty_text;
     Calendar myCalendar;
     EditText search_edt;
-         Spinner PONO_edt;
+    AppCompatSpinner PONO_edt;
     EditText         box;
     Button perview ,ponoperview;
     List<Shipment> shipments;
@@ -73,7 +75,7 @@ TextView  SH_date,total_qty_text;
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String today = df.format(currentTimeAndDate);
-        SH_date.setText(today);
+        SH_date.setText(GeneralMethod.convertToEnglish(today));
 
 
         allShipmentslist.clear();
@@ -443,6 +445,7 @@ TextView  SH_date,total_qty_text;
 }
 
     private void fillAdapterData(List<Shipment> searchlist) {
+        Log.e("searchlist==",searchlist.size()+"");
         ShipmentsReportAdapter reportAdapter=new ShipmentsReportAdapter(searchlist,ShipmentsReport.this);
         listView.setAdapter(reportAdapter);
         CalculateSum(searchlist);
@@ -490,7 +493,7 @@ TextView  SH_date,total_qty_text;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item,list );
-
+        Log.e("list",list.size()+"");
         PONO_edt.setAdapter(adapter);
 
 

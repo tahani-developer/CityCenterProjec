@@ -62,7 +62,7 @@
     <string name="clearAllData">مسح جميع البيانات؟؟</string>
     <string name="alertPoSearch">هل انت متأكد من خيارك؟</string>
     <string name="Qty">الكمية</string>
-    <string name="selectCompany">اختار شركة</string>
+    <string name="selectCompany">يرجى اختيار شركة</string>
     <string name="ComName">اسم الشركة</string>
     <string name="COYear">السنة</string>
 
@@ -106,7 +106,7 @@
     <string name="scanedqty">الكمية</string>
     <string name="storeqty">كمية المخزن</string>
     <string name="StockTake">الجرد </string>
-    <string name="itemcheck">التحقق من معلومات مادة</string>
+    <string name="itemcheck">التحقق من معلومات المادة</string>
     <string name="Itemkind">نوع المادة</string>
     <string name="saleprice">سعر البيع</string>
     <string name="aviqty">الكمية المتوفرة</string>
@@ -228,13 +228,15 @@
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
     <string name="invalidPONO">رقم الطلبية غير صحيح</string>
-    <string name="version">v 3.9</string>
+    <string name="version">v 4.2</string>
     <string name="app_name">اربد سيتي سينتر</string>
     <string name="errorsaving">حدث خطأ أثناء عملية الحفظ</string>
     <string name="welcome">مرحبا !</string>
     <string name="allStores">جميع المستودعات</string>
 
-    <string name="ZonestotalQty">مجموع كمية الرف</string>
+    <string name="ZonestotalQty">مجموع كمية الرفوف</string>
     <string name="Zonescount">عدد الرفوف</string>
     <string name="exits"> خروج</string>
+    <string name="backupData">نسخ البيانات</string>
+    <string name="backup_failed">تعذر نسخ البيانات</string>
 </resources>

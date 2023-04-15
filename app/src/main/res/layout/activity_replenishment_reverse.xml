@@ -63,20 +63,12 @@
                 android:text="@string/from"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/RepRev_fromspinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:theme="@style/Spinner"
                 android:layout_weight="1.5" />
-
-            <Spinner
-                android:id="@+id/RepRev_tospinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_weight="1.5" />
-
             <TextView
                 android:id="@+id/textview2"
                 android:layout_width="match_parent"
@@ -88,6 +80,15 @@
                 android:text="@string/to"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/RepRev_tospinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:theme="@style/Spinner"
+                android:layout_weight="1.5" />
+
 
 
             <TextView
@@ -299,7 +300,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="1dp"
+
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/recQty"

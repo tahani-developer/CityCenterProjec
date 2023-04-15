@@ -30,4 +30,6 @@ public interface UserPermissionsDao  {
     String getIsMaster(String username,String pass);
     @Query("SELECT UserName FROM UserPermissions_TABLE WHERE UserNO= :usernum")
     String getUSERnAM(String usernum);
+
+
 }

@@ -27,4 +27,9 @@ public interface ZonsDataDao {
     @Query("DELETE FROM ZonsDataTABLE")
     public void deleteAll();
 
+
+    @Query("SELECT ZONETYPE FROM ZonsDataTABLE where ZONECODE= :zonecode")
+    public String    getzonetype(String zonecode);
+
+
 }

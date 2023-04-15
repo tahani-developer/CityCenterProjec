@@ -39,8 +39,9 @@
             android:padding="3dp"
             android:layout_marginTop="7dp"
             />
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/DZRE_storespinner"
+            android:theme="@style/Spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

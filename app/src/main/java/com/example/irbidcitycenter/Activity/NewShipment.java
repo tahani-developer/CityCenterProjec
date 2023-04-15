@@ -16,7 +16,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.net.http.DelegatingSSLSession;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +24,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -42,7 +40,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,10 +52,9 @@ import com.example.irbidcitycenter.Adapters.PonoSearchAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.AllPOs;
+import com.example.irbidcitycenter.Models.NewAllPOsInfo;
 import com.example.irbidcitycenter.Models.PO;
 import com.example.irbidcitycenter.Models.ShipmentLogs;
-import com.example.irbidcitycenter.Models.UserPermissions;
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.RoomAllData;
 import com.example.irbidcitycenter.ScanActivity;
@@ -70,7 +66,6 @@ import com.google.zxing.integration.android.IntentResult;
 import com.example.irbidcitycenter.Adapters.ShipmentAdapter;
 import com.example.irbidcitycenter.Models.Shipment;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -89,7 +84,6 @@ import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.BoxNolist;
 import static com.example.irbidcitycenter.ImportData.POdetailslist;
 import static com.example.irbidcitycenter.ImportData.PoNolist;
-import static com.example.irbidcitycenter.ImportData.listQtyZone;
 
 
 public class NewShipment extends AppCompatActivity {
@@ -174,6 +168,7 @@ public class NewShipment extends AppCompatActivity {
     private Animation animation;
   HorizontalScrollView HorizontalScroll;
     public static List<String>allPOs;
+    public static List<String> POs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -2003,7 +1998,7 @@ public class NewShipment extends AppCompatActivity {
 
 
             if (i == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
+           //     onBackPressed();
 
 
             }
@@ -2019,7 +2014,7 @@ public class NewShipment extends AppCompatActivity {
 
                                 if (!pono.getText().toString().trim().equals("")) {
 
-                                    getboxData();
+                                    New_getboxData();
                                     next.setEnabled(false);
 
                                 } else {
@@ -2187,7 +2182,7 @@ public class NewShipment extends AppCompatActivity {
 
                             if (!pono.getText().toString().trim().equals("")) {
 
-                                getboxData();
+                                New_getboxData();
                                 next.setEnabled(false);
 
                             } else {
@@ -2395,7 +2390,16 @@ public class NewShipment extends AppCompatActivity {
         barCode = barcode.getText().toString().trim();
         importData.getPOdetails();
     }
-
+    private void New_getPOdetails() {
+        POdetailslist.clear();
+        barCode = barcode.getText().toString().trim();
+        NewAllPOsInfo shipment=my_dataBase.newAllPOsInfoDao().getPOdetails(poNo.trim() ,NewShipment.barCode.trim());
+        POdetailslist.add(shipment);
+if(shipment!=null)
+    NewShipment.respon.setText("ItemOCode");
+                    else
+        NewShipment.respon.setText("invlalid");
+    }
     public void exportData(List<Shipment> shipmentList) {
         exportData.exportShipmentsList(shipmentList);
     }
@@ -2464,7 +2468,7 @@ public class NewShipment extends AppCompatActivity {
                 barcode.requestFocus();
             } else {
                 Log.e("else", "not in local and db");
-                getPOdetails();
+                New_getPOdetails();
           /*   localList.clear();
             saveRow(shipment);
             localList.add(shipment);
@@ -2798,13 +2802,21 @@ public class NewShipment extends AppCompatActivity {
         importData = new ImportData(NewShipment.this);
         poststate = findViewById(R.id.poststate);
         Ship_delete = findViewById(R.id.Ship_delete);
+        POs=new ArrayList();
+        POs=my_dataBase.newAllPOsInfoDao().getAll();
+
         allPOs=new ArrayList();
-        allPOs=my_dataBase.allPOsDao().getAll();
-       if(allPOs.size()==0) {
+        allPOs.clear();
+        for(int i=0;i<POs.size();i++)
+        if(!allPOs.contains(POs.get(i)))allPOs.add(POs.get(i));
+   //     allPOs=my_dataBase.newAllPOsInfoDao().getAll();
 
-           getPoNu();
-
-       }
+//
+//       if(allPOs.size()==0) {
+//
+//           getPoNu();
+//
+//       }
         PONO_respon= findViewById(R.id.PONO_respon);
         next = findViewById(R.id.nextbox);
         boxnorespon = findViewById(R.id.boxnorespon);
@@ -3077,10 +3089,10 @@ public class NewShipment extends AppCompatActivity {
 
 
                             //NewShipment.respon.setText(POdetailslist.get(0).getBarcode().toString());
-                            itemname.setText(POdetailslist.get(0).getItemname());
+                            itemname.setText(POdetailslist.get(0).getITEMCODE());
                             Log.e("itemname",itemname.getText().toString());
-                            PoQTY.setText(POdetailslist.get(0).getPoqty());
-                            ImportData.poqty = POdetailslist.get(0).getPoqty();
+                            PoQTY.setText(POdetailslist.get(0).getQTY());
+                            ImportData.poqty = POdetailslist.get(0).getQTY();
                             //
 
 
@@ -3088,9 +3100,9 @@ public class NewShipment extends AppCompatActivity {
                             ImportData.posize = POdetailslist.size();
 
 
-                            Log.e("afterTextChanged", "" + POdetailslist.get(0).getPoqty() + "");
-                            if (Long.parseLong(POdetailslist.get(0).getPoqty()) > 0) {
-                                sum = Long.parseLong(POdetailslist.get(0).getPoqty().toString());
+                            Log.e("afterTextChanged", "" + POdetailslist.get(0).getQTY() + "");
+                            if (Long.parseLong(POdetailslist.get(0).getQTY()) > 0) {
+                                sum = Long.parseLong(POdetailslist.get(0).getQTY().toString());
                                 {
 
 
@@ -3107,11 +3119,11 @@ public class NewShipment extends AppCompatActivity {
                                     shipment.setDeviceId(deviceId);
                                     shipment.setShipmentTime(String.valueOf(generalMethod.getCurentTimeDate(2)));
                                     shipment.setShipmentDate(String.valueOf(generalMethod.getCurentTimeDate(1)));
-                                    shipment.setPoqty(POdetailslist.get(0).getPoqty());
-                                    PoQTY.setText(POdetailslist.get(0).getPoqty());
-                                    itemname.setText(POdetailslist.get(0).getItemname());
-                                    shipment.setItemname(POdetailslist.get(0).getItemname());
-                                    shipment.setReceivedBox(convertToEnglish(POdetailslist.get(0).getBoxNo()));
+                                    shipment.setPoqty(POdetailslist.get(0).getQTY());
+                                    PoQTY.setText(POdetailslist.get(0).getQTY());
+                                    itemname.setText(POdetailslist.get(0).getITEMCODE());
+                                    shipment.setItemname(POdetailslist.get(0).getITEMCODE());
+                                    shipment.setReceivedBox(convertToEnglish(POdetailslist.get(0).getBOXNO()));
                                     shipment.setUserNO(UserNo);
                                     long differ = getDiff(qty);
                                     if (differ > 0)
@@ -3307,8 +3319,7 @@ public class NewShipment extends AppCompatActivity {
                     if (editable.toString().equals("Not")) {
 
                         try {
-
-
+                            Log.e("case1",BoxNolist.size()+"New_getboxData");
                         if(mode!=null)mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                        // NewShipment.pono.setError(getResources().getString(R.string.invalid));
                         Handler h = new Handler(Looper.getMainLooper());
@@ -3334,7 +3345,7 @@ public class NewShipment extends AppCompatActivity {
 
                     } else {
                         if (editable.toString().equals("BOXNO")) {
-
+                            Log.e("case2",BoxNolist.size()+"New_getboxData");
                             NewShipment.boxno.setEnabled(true);
                             NewShipment.boxno.requestFocus();
 
@@ -3625,10 +3636,14 @@ public class NewShipment extends AppCompatActivity {
 
                 } else {
                     searcharrayAdapter.clear();
-                    for (int i = 0; i < searchBoxList.size(); i++) {
-                        if (editText.getText().toString().trim().equals(searchBoxList.get(i)))
-                            searcharrayAdapter.add(searchBoxList.get(i));
 
+                    for (int i = 0; i < searchBoxList.size(); i++) {
+                        Log.e(" searchBoxList33==", searchBoxList.get(i) + "");
+                      //  if (editText.getText().toString().trim().contains(searchBoxList.get(i)))
+                        if (searchBoxList.get(i).trim().contains(editText.getText().toString().trim())) {
+                            Log.e(" searchBoxList==", searchBoxList.get(i) + "");
+                            searcharrayAdapter.add(searchBoxList.get(i));
+                        }
                     }
 
                     boxsearchadapter2 = new BoxnoSearchAdapter(NewShipment.this, searcharrayAdapter);
@@ -3653,7 +3668,7 @@ public class NewShipment extends AppCompatActivity {
         try {
             pono.setText(allPOs.get(Integer.parseInt(ponotag)));
 
-            getboxData();
+            New_getboxData();
             boxno.setEnabled(true);
             boxno.requestFocus();
         } catch (Exception e) {
@@ -3713,9 +3728,9 @@ public class NewShipment extends AppCompatActivity {
         for (int i = 0; i < importData.POdetailslist.size(); i++) {
 
             if (!convertToEnglish(boxno.getText().toString().trim()).
-                    equals(importData.POdetailslist.get(i).getBoxNo())
+                    equals(importData.POdetailslist.get(i).getBOXNO())
                     && !convertToEnglish(barcode.getText().toString().trim()).
-                    equals(importData.POdetailslist.get(i).getBarcode())
+                    equals(importData.POdetailslist.get(i).getITEMCODE())
 
             ) {
                 f = false;
@@ -3775,4 +3790,20 @@ public class NewShipment extends AppCompatActivity {
                 }).show();
 
     }
-}
+
+    private static void New_getboxData() {
+Log.e("New_getboxData","New_getboxData");
+        poNo = pono.getText().toString().trim();
+
+        BoxNolist.clear();
+        BoxNolist = my_dataBase.newAllPOsInfoDao().getboxs(poNo.trim());
+
+        Log.e("BoxNolist",BoxNolist.size()+"New_getboxData");
+if(BoxNolist.size()!=0)
+        NewShipment.boxnorespon.setText("BOXNO");
+               else
+        NewShipment.boxnorespon.setText("Not");
+
+    }
+
+    }

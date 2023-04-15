@@ -1,6 +1,7 @@
 package com.example.irbidcitycenter.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,8 +69,8 @@ import static com.example.irbidcitycenter.ImportData.hideProgressDialogWithTitle
 import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 public class Stoketake extends AppCompatActivity {
-    static Spinner StoreSpinner;
-    static Spinner spinner, spinner2;
+    static AppCompatSpinner StoreSpinner;
+    static AppCompatSpinner spinner, spinner2;
     List<String> spinnerArray = new ArrayList<>();
     ImportData importData;
     public static TextView respone;
@@ -220,7 +221,7 @@ public class Stoketake extends AppCompatActivity {
     private void getStors() {
 
         Replacement.actvityflage = 2;
-        importData.getStore();
+        importData.getStore(2);
 
 
     }
@@ -234,52 +235,52 @@ public class Stoketake extends AppCompatActivity {
             if (i == KeyEvent.KEYCODE_BACK) {
 
 
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
-                    public void run() {
-                        animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
-                        backButton.startAnimation(animation);
-                        new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText(getResources().getString(R.string.confirm_title))
-                                .setContentText(getResources().getString(R.string.messageExit))
-                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        if (stocktakelist.size() > 0) {
-
-                                            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
-                                                    .setTitleText(getResources().getString(R.string.confirm_title))
-                                                    .setContentText(getResources().getString(R.string.messageExit2))
-                                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
-                                                        @Override
-                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-
-
-                                                            stocktakelist.clear();
-                                                            stocktakeAdapter.notifyDataSetChanged();
-                                                            sweetAlertDialog.dismissWithAnimation();
-                                                            finish();
-                                                        }
-                                                    })
-                                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                                                        @Override
-                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                            sweetAlertDialog.dismiss();
-                                                        }
-                                                    }).show();
-                                        } else {
-                                            sweetAlertDialog.dismiss();
-                                            finish();
-                                        }
-                                    }
-                                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismiss();
-                            }
-                        }).show();
-                    }
-                });
+//                Handler h = new Handler(Looper.getMainLooper());
+//                h.post(new Runnable() {
+//                    public void run() {
+//                        animation = AnimationUtils.loadAnimation(Stoketake.this, R.anim.modal_in);
+//                        backButton.startAnimation(animation);
+//                        new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+//                                .setTitleText(getResources().getString(R.string.confirm_title))
+//                                .setContentText(getResources().getString(R.string.messageExit))
+//                                .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+//                                    @Override
+//                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                                        if (stocktakelist.size() > 0) {
+//
+//                                            new SweetAlertDialog(Stoketake.this, SweetAlertDialog.WARNING_TYPE)
+//                                                    .setTitleText(getResources().getString(R.string.confirm_title))
+//                                                    .setContentText(getResources().getString(R.string.messageExit2))
+//                                                    .setConfirmButton(getResources().getString(R.string.yes), new SweetAlertDialog.OnSweetClickListener() {
+//                                                        @Override
+//                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+//
+//
+//                                                            stocktakelist.clear();
+//                                                            stocktakeAdapter.notifyDataSetChanged();
+//                                                            sweetAlertDialog.dismissWithAnimation();
+//                                                            finish();
+//                                                        }
+//                                                    })
+//                                                    .setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+//                                                        @Override
+//                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                                                            sweetAlertDialog.dismiss();
+//                                                        }
+//                                                    }).show();
+//                                        } else {
+//                                            sweetAlertDialog.dismiss();
+//                                            finish();
+//                                        }
+//                                    }
+//                                }).setCancelButton(getResources().getString(R.string.no), new SweetAlertDialog.OnSweetClickListener() {
+//                            @Override
+//                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                                sweetAlertDialog.dismiss();
+//                            }
+//                        }).show();
+//                    }
+//                });
             }
 
           else  if (i != KeyEvent.KEYCODE_ENTER) {

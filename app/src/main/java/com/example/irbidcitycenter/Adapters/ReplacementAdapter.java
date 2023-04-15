@@ -2,9 +2,6 @@ package com.example.irbidcitycenter.Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.net.http.LoggingEventHandler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,17 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.irbidcitycenter.R;
 import com.example.irbidcitycenter.Models.ReplacementModel;
-import com.example.irbidcitycenter.Activity.Replacement;
 import com.example.irbidcitycenter.RoomAllData;
 
 
 import java.util.List;
 
-import static com.example.irbidcitycenter.Activity.NewShipment.updateAdpapter;
 import static com.example.irbidcitycenter.Activity.Replacement.replacementlist;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
-import static com.example.irbidcitycenter.ImportData.itemn;
-import static com.example.irbidcitycenter.ImportData.listQtyZone;
+import static com.example.irbidcitycenter.ImportData.New_listQtyZone;
 
 public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.replacementViewHolder> {
     private List<ReplacementModel> list;
@@ -214,11 +208,11 @@ public class ReplacementAdapter extends RecyclerView.Adapter<ReplacementAdapter.
 
     public boolean checkQtyValidateinRow(String newQty, String itemco, String zonecode) {
         Log.e("checkQtyValidateinRow", "heckQtyValidate");
-        for (int i = 0; i < listQtyZone.size(); i++) {
-            if (itemco.trim().equals(listQtyZone.get(i).getItemCode().trim())
-                    && zonecode.trim().equals(listQtyZone.get(i).getZoneCode().trim())) {
-                if (Integer.parseInt(newQty) <= Integer.parseInt(listQtyZone.get(i).getQty())) {
-                    Log.e("checkQtyValidateinRow", listQtyZone.get(i).getQty() + " " + newQty);
+        for (int i = 0; i < New_listQtyZone.size(); i++) {
+            if (itemco.trim().equals(New_listQtyZone.get(i).getITEMCODE().trim())
+                    && zonecode.trim().equals(New_listQtyZone.get(i).getZONENO().trim())) {
+                if (Integer.parseInt(newQty) <= Integer.parseInt(New_listQtyZone.get(i).getQTY())) {
+                    Log.e("checkQtyValidateinRow", New_listQtyZone.get(i).getQTY() + " " + newQty);
                     return true;
 
                 } else {

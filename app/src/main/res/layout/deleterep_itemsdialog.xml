@@ -37,8 +37,9 @@
             android:layout_marginTop="5dp"
             android:layout_weight="3"
             />
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/DIRE_storespinner"
+            android:theme="@style/Spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

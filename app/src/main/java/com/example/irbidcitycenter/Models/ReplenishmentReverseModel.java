@@ -156,6 +156,21 @@ public class ReplenishmentReverseModel {
 
 
 
+            //new failds
+            obj.put("WHICHUNIT", "");
+
+            obj.put("WHICHUNITSTR", "");
+
+            obj.put("WHICHUQTY", "");
+
+            obj.put("UNITBARCODE", "");
+
+            obj.put("ENTERPRICE", "");
+
+            obj.put("CALCQTY", "");
+
+            obj.put("ENTERQTY", "");
+//
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");

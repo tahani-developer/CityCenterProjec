@@ -10,18 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +45,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,8 +54,7 @@ import com.example.irbidcitycenter.Adapters.ZoneSearchDBAdapter;
 import com.example.irbidcitycenter.ExportData;
 import com.example.irbidcitycenter.GeneralMethod;
 import com.example.irbidcitycenter.ImportData;
-import com.example.irbidcitycenter.Models.BecomingNoisyReceiver;
-import com.example.irbidcitycenter.Models.UserPermissions;
+import com.example.irbidcitycenter.Models.NewZonsData;
 import com.example.irbidcitycenter.Models.ZoneLogs;
 import com.example.irbidcitycenter.Models.ZoneModel;
 import com.example.irbidcitycenter.Models.ZonsData;
@@ -72,7 +68,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -82,20 +77,19 @@ import static com.example.irbidcitycenter.Activity.MainActivity.FILE_NAME;
 import static com.example.irbidcitycenter.Activity.MainActivity.KEY_LANG;
 import static com.example.irbidcitycenter.GeneralMethod.checkIfUserWhoLoginIsMaster;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
+import static com.example.irbidcitycenter.ImportData.Storelist;
 import static com.example.irbidcitycenter.ImportData.listAllZone;
-import static com.example.irbidcitycenter.ImportData.listQtyZone;
-import static com.example.irbidcitycenter.ImportData.pditeminfo;
 import static com.example.irbidcitycenter.ImportData.zonetype;
 import static com.example.irbidcitycenter.ImportData.zoneinfo;
 public class AddZone extends AppCompatActivity {
     GeneralMethod generalMethod;
     public static EditText editZoneCode, editItemCode, editQty, itemKintText, exportStateText;
     public static final int REQUEST_Camera_Barcode = 1;
-    public static ArrayList<ZoneModel> listZone;
+    public static ArrayList<ZoneModel> listZone=new ArrayList<>();
     public static List<ZoneModel> DBlistZoneS;
     public static List<ZoneModel> listofZonesUnPosted;
     public static List<ZoneModel> listtest = new ArrayList<>();
-    ;
+    public static  TextView storrespon;
     public List<ZoneModel> deletedZonsList = new ArrayList<>();
     ;
     public List<ZoneModel> zonescopylist = new ArrayList<>();
@@ -151,13 +145,15 @@ public class AddZone extends AppCompatActivity {
     RadioButton RB_add, RB_reduce;
     RadioGroup RadioGroup;
 String NewItemCode;
-
+    List<String> FromArray = new ArrayList<>();
     public static final int DPM_ACTIVATION_REQUEST_CODE = 100;
 
     private ComponentName adminComponent;
     private DevicePolicyManager devicePolicyManager;
     AudioManager mode;
 
+    Spinner store_spinner ;
+  String  SelectedStore="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +165,18 @@ String NewItemCode;
 
 
             initial();
+            Storelist.clear();
+            Storelist=  my_dataBase.storeDao().getall();
+            if(Storelist.size()>0) {
 
+                for (int i = 0; i < Storelist.size(); i++) {
+                    FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+                }
+                fillSp();
+            }else
+            {
+                getStors();
+            }
             mode = (AudioManager) AddZone.this.getSystemService(Context.AUDIO_SERVICE);
             mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
@@ -322,8 +329,54 @@ String NewItemCode;
 
         MainActivity.setflage = 0;
 
-
+        importData = new ImportData(AddZone.this);
+        exportData = new ExportData(AddZone.this);
         Zonescount = findViewById(R.id.Zonescount);
+        storrespon= findViewById(R.id.storrespon);
+        storrespon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().length() != 0) {
+
+                    if (editable.toString().equals("no data")) {
+
+
+                    } else {
+                        if (editable.toString().equals("fill")) {
+                            Log.e("afterTextChanged", "" + editable.toString());
+                            for (int i = 0; i < Storelist.size(); i++) {
+
+
+                                    {
+
+                                            FromArray.add(Storelist.get(i).getSTORENO() + "  " + Storelist.get(i).getSTORENAME());
+
+                                    }
+
+
+                            }
+                            my_dataBase.storeDao().insertAll(Storelist);
+                            fillSp();
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+        });
 
         ZonestotalQty = findViewById(R.id.ZonestotalQty);
         AllZonestotalQty = findViewById(R.id.AllZonestotalQty);
@@ -339,6 +392,20 @@ String NewItemCode;
         editZoneCode.setOnKeyListener(onKeyListener);
         listofZonesUnPosted = new ArrayList<>();
         delete = findViewById(R.id.delete_btn);
+        store_spinner= findViewById(R.id.store_spinner);
+        store_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SelectedStore=store_spinner.getSelectedItem().toString();
+                SelectedStore= SelectedStore. substring(0, SelectedStore.indexOf(" "));
+                Log.e("SelectedStore",SelectedStore.toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         editZoneCode.setOnEditorActionListener(onEditAction);
         editQty = findViewById(R.id.editQty);
@@ -352,8 +419,7 @@ String NewItemCode;
         recycleZone = findViewById(R.id.recycleZone);
         my_dataBase = RoomAllData.getInstanceDataBase(AddZone.this);
         if (userPermissions == null) getUsernameAndpass();
-        importData = new ImportData(AddZone.this);
-        exportData = new ExportData(AddZone.this);
+
         //       importData.getAllZones();
         editItemCode.setEnabled(false);
         editQty.setEnabled(false);
@@ -469,33 +535,66 @@ String NewItemCode;
                         h.post(new Runnable() {
                             public void run() {
                                 showSweetDialog(AddZone.this, 0, "Server Error", "");
+                                editItemCode.setText("");
+                                editZoneCode.setEnabled(true);
+                                editItemCode.setEnabled(false);
+                                editZoneCode.setText("");
+                                editZoneCode.requestFocus();
+                                zoneName.setText("");
+                                itemName.setText("");
                             }
                         });
 
 
                         listZone.clear();
+                        CalculateTotalandCount();
                         if (adapter != null) adapter.notifyDataSetChanged();
 
 
                     } else if (editable.toString().trim().equals("exported")) {
+
                         //saveDataLocaky(1);
                         Handler h = new Handler(Looper.getMainLooper());
                         h.post(new Runnable() {
                             public void run() {
                                 showSweetDialog(AddZone.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                                editItemCode.setText("");
+                                editZoneCode.setEnabled(true);
+                                editItemCode.setEnabled(false);
+                                editZoneCode.setText("");
+                                editZoneCode.requestFocus();
+                                zoneName.setText("");
+                                itemName.setText("");
+
                             }
                         });
                         updateRowsPosted();
+
+
+
+
                         listZone.clear();
+                        CalculateTotalandCount();
                         if (adapter != null) adapter.notifyDataSetChanged();
 
                     } else if (editable.toString().trim().equals("not")) {
+
                         //saveDataLocaky(0);
                         listZone.clear();
+                        CalculateTotalandCount();
                         if (adapter != null) adapter.notifyDataSetChanged();
 
                     } else {
+
+                        editItemCode.setText("");
+                        editZoneCode.setEnabled(true);
+                        editItemCode.setEnabled(false);
+                        editZoneCode.setText("");
+                        editZoneCode.requestFocus();
+                        zoneName.setText("");
+                        itemName.setText("");
                         listZone.clear();
+                        CalculateTotalandCount();
                         if (adapter != null) adapter.notifyDataSetChanged();
                     }
                 }
@@ -503,8 +602,8 @@ String NewItemCode;
         });
     }
 
-    public ZoneModel existsInDB(String zonebar, String itembar) {
-        return my_dataBase.zoneDao().getzone(zonebar, itembar);
+    public ZoneModel existsInDB(String zonebar, String itembar,String SelectedStore) {
+        return my_dataBase.zoneDao().getzone(zonebar, itembar,SelectedStore);
 
     }
 
@@ -515,7 +614,9 @@ String NewItemCode;
         //ayah edit
         for (int x = 0; x < listZone.size(); x++)
             if (listZone.get(x).getZoneCode().equals(zonecode)
-                    && listZone.get(x).getItemCode().equals(itemcode)) {
+                    && listZone.get(x).getItemCode().equals(itemcode)
+             && listZone.get(x).getStoreID().equals(SelectedStore)
+            ) {
 
 
                 index = x;
@@ -540,7 +641,7 @@ String NewItemCode;
             Log.e("keyEvent.getAction()", keyEvent.getAction() + "");
 
             if (i == KeyEvent.KEYCODE_BACK) {
-                onBackPressed();
+                //onBackPressed();
 
 
             } else if (i != KeyEvent.KEYCODE_ENTER) {
@@ -556,7 +657,7 @@ String NewItemCode;
                                     Log.e("editZoneCode", editZoneCode.getText().toString());
                                 } else {
                                     // editZoneCode.requestFocus();
-                                    editZoneCode.clearFocus();
+                                 //   editZoneCode.clearFocus();
                                     Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                     // Vibrate for 1000 milliseconds
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -583,7 +684,7 @@ String NewItemCode;
 
                                         validateKind = false;
                                         clearqtyiszero();
-                                        ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(),  NewItemCode);
+                                        ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(),  NewItemCode,SelectedStore);
                                         if (zoneModel != null) {
                                             if (!exists(editZoneCode.getText().toString().trim(),  NewItemCode))
                                                 listZone.add(zoneModel);
@@ -631,7 +732,7 @@ String NewItemCode;
                                                 Log.e("case", "case");
                                                 Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
                                                 if (itemKintText.getText().toString().equals("") && validateKind == false) {
-                                                    validateItemKind( NewItemCode);
+                                                    New_validateItemKind( NewItemCode);
                                                     Log.e("case3", "case3");
                                                     Log.e("getKindItem", "1=" + editItemCode.getText().toString());
                                                 }
@@ -781,7 +882,7 @@ String NewItemCode;
 
                                 validateKind = false;
                                 clearqtyiszero();
-                                ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(), editItemCode.getText().toString().trim());
+                                ZoneModel zoneModel = existsInDB(editZoneCode.getText().toString().trim(), editItemCode.getText().toString().trim(),SelectedStore);
                                 if (zoneModel != null) {
                                     if (!exists(editZoneCode.getText().toString().trim(), editItemCode.getText().toString()))
                                         listZone.add(zoneModel);
@@ -834,7 +935,7 @@ String NewItemCode;
                                         Log.e("case", "case");
                                         Log.e("itemKintText", "" + itemKintText.getText().toString() + "\t" + validateKind);
                                         if (itemKintText.getText().toString().equals("") && validateKind == false) {
-                                            validateItemKind(editItemCode.getText().toString().trim());
+                                            New_validateItemKind(editItemCode.getText().toString().trim());
                                             Log.e("case3", "case3");
                                         }
                                     } else {
@@ -886,7 +987,9 @@ String NewItemCode;
         validateKind = true;
         // http://localhost:8082/IrGetItemData?CONO=290&ITEMCODE=28200152701
 
-        importData.getKindItem(itemNo);
+    importData.getKindItem(itemNo);
+
+
     }
 
     private void searchZone(String codeZone) {
@@ -959,6 +1062,7 @@ String NewItemCode;
 
                         RB_add.setChecked(true);
                         itemZone.setIsPostd("0");
+                        itemZone.setStoreID(SelectedStore);
                         itemZone.setZONETYPE(zonetype);
                         itemZone.setItemName(itemName.getText().toString());
                         itemZone.setZONENAME(zoneName.getText().toString());
@@ -1171,6 +1275,13 @@ String NewItemCode;
             if (listofZonesUnPosted.get(i).getDeviceId() == null)
                 listofZonesUnPosted.get(i).setDeviceId(deviceId);
 
+        editItemCode.setText("");
+
+  editZoneCode.setText("");
+        editZoneCode.requestFocus();
+        zoneName.setText("");
+        itemName.setText("");
+
         exportData();
 
              /*   if(listZone.size()!=0)
@@ -1291,9 +1402,7 @@ String NewItemCode;
 
     private void showExitDialog() {
 
-        Handler h = new Handler(Looper.getMainLooper());
-        h.post(new Runnable() {
-            public void run() {
+
                 new SweetAlertDialog(AddZone.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText(getResources().getString(R.string.confirm_title))
                         .setContentText(getResources().getString(R.string.messageExit))
@@ -1310,7 +1419,7 @@ String NewItemCode;
 
                                                     listZone.clear();
                                                     adapter.notifyDataSetChanged();
-                                                    sweetAlertDialog.dismissWithAnimation();
+                                                    sweetAlertDialog.dismiss();
                                                     finish();
 
 
@@ -1339,8 +1448,7 @@ String NewItemCode;
                             }
                         })
                         .show();
-            }
-        });
+
 
 
     }
@@ -1348,15 +1456,10 @@ String NewItemCode;
 
     @Override
     public void onBackPressed() {
-        Handler h2 = new Handler(Looper.getMainLooper());
-        h2.post(new Runnable() {
-            public void run() {
 
+     //   super.onBackPressed();
                 showExitDialog();
-            }
-        });
 
-        // super.onBackPressed();
 //    System.exit(0);
     }
 
@@ -2929,6 +3032,42 @@ protected void onResume() {
         mode = (AudioManager) AddZone.this.getSystemService(Context.AUDIO_SERVICE);
 
         }
+
+
+
+    private void New_validateItemKind(String itemNo) {
+        validateKind = true;
+        importData.linkbarcode=itemNo.trim();
+      //   importData.getKindItem(itemNo);
+    NewZonsData newZonsData= my_dataBase.newZonsDataDao().getItemInfo(itemNo.trim());
+
+
+    if(newZonsData==null)itemKintText.setText("NOTEXIST");
+    else{
+
+        String ZONETYPE= my_dataBase.zonsDataDao().getzonetype(newZonsData.getZONENO());
+        itemKintText.setText(ZONETYPE);
+        }
+    }
+
+    private void getStors() {
+
+        importData.getStore(4);
+    }
+    private void fillSp() {
+
+        //
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, FromArray);
+
+
+        store_spinner.setAdapter(adapter);
+
+        store_spinner.setSelection(0);
+
+
+    }
 }
 
 

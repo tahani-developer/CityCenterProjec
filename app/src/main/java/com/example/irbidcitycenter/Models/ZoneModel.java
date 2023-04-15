@@ -53,6 +53,16 @@ public class ZoneModel {
 
     @ColumnInfo(name = "DEVICEID")
     String deviceId;
+    @ColumnInfo(name = "StoreID")
+    String StoreID;
+
+    public String getStoreID() {
+        return this.StoreID;
+    }
+
+    public void setStoreID(final String storeID) {
+        this.StoreID = storeID;
+    }
 
     public String getDeviceId() {
         return deviceId;

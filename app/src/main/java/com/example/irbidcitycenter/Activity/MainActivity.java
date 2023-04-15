@@ -5,9 +5,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -70,9 +72,11 @@ import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +84,9 @@ import java.util.Locale;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.irbidcitycenter.Activity.Login.userPermissions;
 import static com.example.irbidcitycenter.GeneralMethod.showSweetDialog;
 import static com.example.irbidcitycenter.ImportData.AllImportItemlist;
@@ -88,20 +95,24 @@ import static com.example.irbidcitycenter.ImportData.listAllZone;
 
 import java.io.InputStream;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     final int TAKE_PHOTO = 1;
-
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     final int FROM_STORAGE = 2;
     public  static TextView getzonerespon;
-
+    public  static ArrayList<Integer>Respon_arrayList=new ArrayList<>();
     private DrawerLayout drawerLayout;
     GeneralMethod generalMethod;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     Dialog    authenticationdialog;
     public static String SET_userNO;
-
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     private Toolbar toolbar;
     LinearLayout uploadimageLin,ReplacmentReverselinear, itemcheckerlinear, zoneLinear, shipmentlinear, replacmentlinear, stocktakelinear, zoneReplacmentlinear;
     public String SET_qtyup;
@@ -152,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initial();
 
 
-          //get Zone
+        //get Zone
         listAllZone.clear();
         listAllZone=my_dataBase.zonsDataDao().getAll();
         Log.e("listAllZone==",listAllZone.size()+"");
@@ -215,7 +226,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 try {
-                 selectImage();
+
+                    if (checkPermission()) {
+                        selectImage();
+                    } else {
+                        requestPermission();
+                    }
+
+
                 }catch (Exception e){
                     Toast.makeText(MainActivity.this, "Storage Permission", Toast.LENGTH_SHORT).show();
 
@@ -242,7 +260,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 uploadimage.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        selectImage();
+
+        if (checkPermission()) {
+            selectImage();
+        } else {
+            requestPermission();
+        }
+
     }
 });
     }
@@ -334,7 +358,7 @@ uploadimage.setOnClickListener(new View.OnClickListener() {
 
     public void getUsernameAndpass() {
 
-
+Log.e("getUsernameAndpass","getUsernameAndpass");
         String comNUm = "";
         String Userno = "";
         appSettings = my_dataBase.settingDao().getallsetting();
@@ -353,6 +377,7 @@ uploadimage.setOnClickListener(new View.OnClickListener() {
     }
 
     private void initial() {
+        generalMethod=new GeneralMethod(MainActivity.this);
         Lang_En = findViewById(R.id.  Lang_En);
         Lang_AR = findViewById(R.id.Lang_ER);
         if (userPermissions == null) getUsernameAndpass();
@@ -496,7 +521,11 @@ if(!s.equals("")){
                         h.post(new Runnable() {
                             public void run() {
                                 try {
+                                    Respon_arrayList.add(0);
                                     showSweetDialog(MainActivity.this, 0, "Internal Application Error", "");
+                                    importData.New_getAllPoDetalis();
+
+
                                 } catch (WindowManager.BadTokenException e) {
                                     //use a log message
                                 }
@@ -505,20 +534,25 @@ if(!s.equals("")){
 
                     }else
                     if (editable.toString().equals("ItemOCode")) {
-
+                        Respon_arrayList.add(1);
                         my_dataBase.itemDao().deleteall();
                         my_dataBase.itemDao().insertAll(AllImportItemlist);
                            Handler h = new Handler(Looper.getMainLooper());
                         h.post(new Runnable() {
                             public void run() {
                                 try {
-                                    showSweetDialog(MainActivity.this, 1, "Done,All data is stored", "");
+
+                                    importData.New_getAllPoDetalis();
+
                                 } catch (WindowManager.BadTokenException e) {
                                     //use a log message
                                 }
                             }
                         });
                     } else if (editable.toString().equals("nodata")) {
+                        Respon_arrayList.add(0);
+                        importData.New_getAllPoDetalis();
+
                       /*
                         Handler h = new Handler(Looper.getMainLooper());
 
@@ -580,12 +614,19 @@ if(!s.equals("")){
                 if (editable.toString().length() != 0) {
 
                     if(editable.toString().trim().equals("Internal Application Error")){
-                        showSweetDialog(MainActivity.this, 0, "Server Error", "");
+                     //   showSweetDialog(MainActivity.this, 0, "Server Error", "");
                     }else
                     if (re_res.getText().toString().trim().equals("exported")) {
                         my_dataBase.replacementDao().updateReplashmentPosted();
 
+
                     }
+                else    if (re_res.getText().toString().trim().equals("not")) {
+
+
+
+                    }
+
                 }
             }
         });
@@ -606,7 +647,7 @@ if(!s.equals("")){
                 if (editable.toString().length() != 0) {
                     if (editable.toString().trim().equals("exported")) {
                         my_dataBase.repReversDao().updateReplashmentPosted();
-                        showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
+                       showSweetDialog(MainActivity.this, 1, getResources().getString(R.string.savedSuccsesfule), "");
                     }
                 }
             }
@@ -616,7 +657,7 @@ if(!s.equals("")){
             String comNo = my_dataBase.settingDao().getCono().trim();
             String comname=my_dataBase.companyDao().getcomName(comNo);
             if (comNo != null) companyNum.setText(comNo);
-            if (comNo != null&&comname != null) companyNum.setText(comNo+" "+comname);
+            if (comNo != null&&comname != null) companyNum.setText(comNo+" "+Login.CompName);
             String UName = my_dataBase.userPermissionsDao().getUSERnAM(my_dataBase.settingDao().getUserNo());
             if (UName != null) username_show.setText(UName);
 
@@ -950,6 +991,7 @@ if(!s.equals("")){
                 } else {
                     exportFromMainAct = true;
                     exportAllData();
+
                 }
 
             }
@@ -961,6 +1003,7 @@ if(!s.equals("")){
                     if (CheckImportPermissitions() == true) {
 
                         getAllItems();
+
                     } else {
                         //showSweetDialog(MainActivity.this, 3, getResources().getString(R.string.Permission), "");
 
@@ -985,6 +1028,7 @@ if(!s.equals("")){
 
                     } } else {
                     getAllItems();
+
                 }
                 break;
             }
@@ -1086,12 +1130,57 @@ if(!s.equals("")){
            //     getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                 break;
             }
+            case  R.id.nav_backup_data: {
+//            locationPermissionRequest.closeLocation();
+                final Dialog dialog1 = new Dialog(MainActivity.this);
+                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog1.setCancelable(false);
+                dialog1.setContentView(R.layout.passworddailog);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog1.getWindow().getAttributes());
 
-            case R.id.enLang: {
-                saveLanguage("en");
-                getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                break;
-            }
+                lp.gravity = Gravity.CENTER;
+                dialog1.getWindow().setAttributes(lp);
+
+
+                EditText editText = dialog1.findViewById(R.id.passwordd);
+                Button donebutton = dialog1.findViewById(R.id.done);
+                Button cancelbutton = dialog1.findViewById(R.id.cancel);
+                donebutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (editText.getText().toString().trim().equals("2022000")) {
+                            try {
+                                verifyStoragePermissions(MainActivity.this);
+                                copyFile();
+                            }
+                            catch (Exception e)
+                            {verifyStoragePermissions(MainActivity.this);
+
+
+                                Toast.makeText(MainActivity.this, ""+getResources().getString(R.string.backup_failed), Toast.LENGTH_SHORT).show();
+                            }
+                            dialog1.dismiss();
+                        }else{
+                            editText.setError("");
+                        }
+                    }
+                });
+                cancelbutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        dialog1.dismiss();
+                    }
+                });
+
+
+                dialog1.show();
+
+
+
+          break;  }
+
         }
 
 
@@ -1219,7 +1308,7 @@ public void exit(){
     private void getAllItems() {
 
         try {
-
+            Respon_arrayList.clear();
             importData = new ImportData(MainActivity.this);
             importData.getAllItems(0);
 
@@ -1306,6 +1395,8 @@ public void exit(){
                             if (editText.getText().toString().trim().equals("304555")) {
                                 ip.setEnabled(true);
                                 dialog1.dismiss();
+                            }else{
+                                editText.setError("");
                             }
                         }
                     });
@@ -1467,6 +1558,7 @@ public void exit(){
                     if (isMaster != null && isMaster.equals("1")) {
                         if (enterflage == 1) {
                            getAllItems();
+
                             authenticationdialog.dismiss();
 
                         } else if (enterflage == 2) {
@@ -1734,5 +1826,72 @@ public void exit(){
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+    private boolean checkPermission() {
+        // checking of permissions.
+        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        int permission3 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED&& permission3 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE,CAMERA}, Login.PERMISSION_REQUEST_CODE);
+        selectImage();
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+    public void copyFile()
+    {
+        try
+        {
+            File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File data = Environment.getDataDirectory();
+            boolean isPresent = true;
+            if (!sd.canWrite())
+            {
+                isPresent= sd.mkdir();
+
+            }
+
+
+
+            String backupDBPath = "DBRoomIrbidCenter_backup";
+
+            File currentDB= getApplicationContext().getDatabasePath("DBRoomIrbidCenter");
+            File backupDB = new File(sd, backupDBPath);
+
+            if (currentDB.exists()&&isPresent) {
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+                Toast.makeText(MainActivity.this, "Backup Succesfulley", Toast.LENGTH_SHORT).show();
+            }else {
+
+                Toast.makeText(MainActivity.this, "Backup Failed", Toast.LENGTH_SHORT).show();
+            }
+            isPresent=false;
+
+
+            Log.e("backupDB.getA", backupDB.getAbsolutePath());
+        }
+        catch (Exception e) {
+            Log.e("Settings Backup", e.getMessage());
+        }
     }
 }
